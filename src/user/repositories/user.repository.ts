@@ -1,6 +1,7 @@
 import { Repository, EntityRepository } from "typeorm";
 import { User } from "src/shared/entities/user.entity";
 import { UserDto } from "src/shared/dto/user.dto";
+import { ParseUUIDPipe } from "@nestjs/common";
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -15,7 +16,7 @@ export class UserRepository extends Repository<User> {
     }
 
     async getUserById(id: string): Promise<User> {
-        return await this.findOne(id, { relations: ["courses"]});
+        return await this.findOne(id);
     }
 
     private createEntityFromDto(userDto: UserDto): User {

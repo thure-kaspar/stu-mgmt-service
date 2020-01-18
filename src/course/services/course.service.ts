@@ -1,27 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { CourseDto } from 'src/shared/dto/course.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CourseRepository } from '../repositories/course-repository';
+import { CourseRepository } from '../repositories/course.repository';
 import { Course } from 'src/shared/entities/course.entity';
 import { User } from 'src/shared/entities/user.entity';
 import { UserRepository } from 'src/user/repositories/user.repository';
+import { CourseUserRelation } from 'src/shared/entities/course-user-relation.entity';
+import { CourseUserRelationRepository } from '../repositories/course-user-relation.repository';
 
 @Injectable()
 export class CourseService {
 
     constructor(@InjectRepository(Course) private courseRepository: CourseRepository,
-                @InjectRepository(User) private userRepository: UserRepository) {}
+                @InjectRepository(User) private userRepository: UserRepository,
+                @InjectRepository(CourseUserRelation) private courseUserRepository: CourseUserRelationRepository) { }
 
     async createCourse(courseDto: CourseDto): Promise<CourseDto> {
         const createdCourse = await this.courseRepository.createCourse(courseDto);
         return this.createDtoFromEntity(createdCourse);
     }
 
-    async addUser(id: number, userId: string): Promise<boolean> {
+    async addUser(id: number, userId: string): Promise<any> {
         const course = await this.courseRepository.getCourseById(id);
         const user = await this.userRepository.getUserById(userId);
-
-        return await this.courseRepository.addUser(course, user);
+        return await this.courseUserRepository.addUserToCourse(course, user);
     }
 
     async getAllCourses(): Promise<CourseDto[]> {
@@ -52,7 +54,6 @@ export class CourseService {
             isClosed: courseEntity.isClosed,
             password: courseEntity.password,
             link: courseEntity.link,
-            users: courseEntity.users
         };
         return courseDto;
     }

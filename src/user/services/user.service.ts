@@ -20,7 +20,7 @@ export class UserService {
         const userDtos: UserDto[] = [];
         const users = await this.userRepository.getAllUsers();
         users.forEach(user => userDtos.push(this.createDtoFromEntity(user)));
-        return users;
+        return userDtos;
     }
 
     async getUserById(id: string): Promise<UserDto> {
@@ -34,7 +34,6 @@ export class UserService {
             id: userEntity.id,
             email: userEntity.email,
             role: userEntity.role,
-            courses: userEntity.courses
         }
         return userDto;
     }

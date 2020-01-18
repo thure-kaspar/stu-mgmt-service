@@ -1,5 +1,5 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, Unique, ManyToMany } from "typeorm";
-import { Course } from "./course.entity";
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, Unique, ManyToMany, OneToMany, PrimaryColumn } from "typeorm";
+import { CourseUserRelation } from "./course-user-relation.entity";
 
 @Entity("users")
 @Unique(["email"])
@@ -12,7 +12,7 @@ export class User extends BaseEntity {
 
     @Column()
     role: string;
-
-    @ManyToMany(type => Course, course => course.users)
-    courses: Course[];
+    
+    @OneToMany(type => CourseUserRelation, courseUserRelations => courseUserRelations.user)
+    courseUserRelations: CourseUserRelation[];
 }

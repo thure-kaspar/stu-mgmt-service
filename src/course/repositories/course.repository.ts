@@ -13,13 +13,6 @@ export class CourseRepository extends Repository<Course> {
         return createdCourse;
     }
 
-    async addUser(course: Course, user: User): Promise<boolean> {
-        course.users.push(user);
-        const updatedCourse = await course.save();
-        if (!updatedCourse) throw new BadRequestException("");
-        return true;
-    }
-
     async getAllCourses(): Promise<Course[]> {
         return await this.find();
     }

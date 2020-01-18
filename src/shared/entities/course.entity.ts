@@ -1,5 +1,5 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from "typeorm";
-import { User } from "./user.entity";
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { CourseUserRelation } from "./course-user-relation.entity";
 
 @Entity("courses")
 export class Course extends BaseEntity {
@@ -24,7 +24,6 @@ export class Course extends BaseEntity {
     @Column({ nullable: true })
     link?: string;
 
-    @ManyToMany(type => User, user => user.courses)
-    @JoinTable()
-    users: User[];
+    @OneToMany(type => CourseUserRelation, courseUserRelations => courseUserRelations.course)
+    courseUserRelations: CourseUserRelation[];
 }
