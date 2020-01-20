@@ -1,5 +1,6 @@
 ## Description
 ![Build Status](https://jenkins-2.sse.uni-hildesheim.de/buildStatus/icon?job=Teaching_StudentMgmt-Backend "Build Status")
+
 Backend of the student management system.
 
 ## Installation
