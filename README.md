@@ -3,6 +3,10 @@
 
 Backend of the student management system.
 
+## Requirements
+* npm
+* postgresql
+
 ## Installation
 
 ```bash
