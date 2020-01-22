@@ -1,4 +1,4 @@
-import { Controller, Get, Param, ParseIntPipe, Post, Body, ParseUUIDPipe, Logger, Patch } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Post, Body, ParseUUIDPipe } from '@nestjs/common';
 import { CourseService } from '../services/course.service';
 import { CourseDto } from 'src/shared/dto/course.dto';
 
@@ -33,5 +33,5 @@ export class CourseController {
 		@Param("semester") semester: string): Promise<CourseDto> {
 
 		return this.courseService.getCourseByCourseIdAndSemester(courseId, semester);
-	}
+    }
 }

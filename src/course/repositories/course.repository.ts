@@ -1,8 +1,6 @@
 import { Repository, EntityRepository } from "typeorm";
 import { Course } from "src/shared/entities/course.entity";
 import { CourseDto } from "src/shared/dto/course.dto";
-import { User } from "src/shared/entities/user.entity";
-import { BadRequestException } from "@nestjs/common/exceptions";
 
 @EntityRepository(Course)
 export class CourseRepository extends Repository<Course> {
@@ -18,7 +16,7 @@ export class CourseRepository extends Repository<Course> {
     }
 
     async getCourseById(id: number): Promise<Course> {
-        return await this.findOne(id);
+        return await this.findOne(id, { relations: ["courseUserRelations", "courseUserRelations.user"] });
     }
 
     async getCourseByCourseIdAndSemester(courseId: number, semester: string): Promise<Course> {
