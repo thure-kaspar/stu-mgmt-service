@@ -7,6 +7,7 @@ import { User } from 'src/shared/entities/user.entity';
 import { UserRepository } from 'src/user/repositories/user.repository';
 import { CourseUserRelation } from 'src/shared/entities/course-user-relation.entity';
 import { CourseUserRelationRepository } from '../repositories/course-user-relation.repository';
+import * as fromDtoFactory from "../../shared/dto-factory";
 
 @Injectable()
 export class CourseService {
@@ -17,7 +18,7 @@ export class CourseService {
 
     async createCourse(courseDto: CourseDto): Promise<CourseDto> {
         const createdCourse = await this.courseRepository.createCourse(courseDto);
-        return this.createDtoFromEntity(createdCourse);
+        return fromDtoFactory.createCourseDto(createdCourse);
     }
 
     async addUser(id: number, userId: string): Promise<any> {
@@ -29,32 +30,19 @@ export class CourseService {
     async getAllCourses(): Promise<CourseDto[]> {
         const courseDtos: CourseDto[] = [];
         const courses = await this.courseRepository.getAllCourses();
-        courses.forEach(course => courseDtos.push(this.createDtoFromEntity(course)));
+        courses.forEach(course => courseDtos.push(fromDtoFactory.createCourseDto(course)));
         return courseDtos;
     }
 
     async getCourseById(id: number): Promise<CourseDto> {
         const course = await this.courseRepository.getCourseById(id);
-        const courseDto = this.createDtoFromEntity(course);
+        const courseDto = fromDtoFactory.createCourseDto(course);
         return courseDto;
     }
 
     async getCourseByCourseIdAndSemester(courseId: number, semester: string): Promise<CourseDto> {
         const course = await this.courseRepository.getCourseByCourseIdAndSemester(courseId, semester);
-        const courseDto = this.createDtoFromEntity(course);
-        return courseDto;
-    }
-
-    private createDtoFromEntity(courseEntity: Course): CourseDto {
-        const courseDto: CourseDto = {
-            id: courseEntity.id,
-            courseId: courseEntity.courseId,
-            semester: courseEntity.semester,
-            title: courseEntity.title,
-            isClosed: courseEntity.isClosed,
-            password: courseEntity.password,
-            link: courseEntity.link,
-        };
+        const courseDto = fromDtoFactory.createCourseDto(course);
         return courseDto;
     }
 
