@@ -1,5 +1,6 @@
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 import { CourseUserRelation } from "./course-user-relation.entity";
+import { CourseGroupRelation } from "./course-group-relation.entity";
 
 @Entity("courses")
 export class Course extends BaseEntity {
@@ -26,4 +27,7 @@ export class Course extends BaseEntity {
 
     @OneToMany(type => CourseUserRelation, courseUserRelations => courseUserRelations.course)
     courseUserRelations: CourseUserRelation[];
+
+    @OneToMany(type => CourseGroupRelation, courseGroupRelation => courseGroupRelation.course)
+    courseGroupRelations: CourseGroupRelation[];
 }
