@@ -1,6 +1,7 @@
 import { Controller, Get, Param, ParseIntPipe, Post, Body, ParseUUIDPipe } from '@nestjs/common';
 import { CourseService } from '../services/course.service';
 import { CourseDto } from 'src/shared/dto/course.dto';
+import { GroupDto } from '../../shared/dto/group.dto';
 
 @Controller('courses')
 export class CourseController {
@@ -9,6 +10,14 @@ export class CourseController {
 	@Post()
 	createCourse(@Body() courseDto: CourseDto): Promise<CourseDto> {
 		return this.courseService.createCourse(courseDto);
+	}
+
+	@Post(":id/groups")
+	createGroup(
+		@Param("id", ParseIntPipe) id: number,
+		@Body() groupDto: GroupDto) {
+		
+		return this.courseService.createGroup(id, groupDto);
 	}
 
 	@Post(":id/users/:userId")

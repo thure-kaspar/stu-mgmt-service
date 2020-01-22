@@ -8,18 +8,23 @@ import { UserRepository } from 'src/user/repositories/user.repository';
 import { CourseUserRelation } from 'src/shared/entities/course-user-relation.entity';
 import { CourseUserRelationRepository } from '../repositories/course-user-relation.repository';
 import * as fromDtoFactory from "../../shared/dto-factory";
+import { GroupDto } from '../../shared/dto/group.dto';
 
 @Injectable()
 export class CourseService {
 
     constructor(@InjectRepository(Course) private courseRepository: CourseRepository,
                 @InjectRepository(User) private userRepository: UserRepository,
-                @InjectRepository(CourseUserRelation) private courseUserRepository: CourseUserRelationRepository) { }
+				@InjectRepository(CourseUserRelation) private courseUserRepository: CourseUserRelationRepository) { }
 
     async createCourse(courseDto: CourseDto): Promise<CourseDto> {
         const createdCourse = await this.courseRepository.createCourse(courseDto);
         return fromDtoFactory.createCourseDto(createdCourse);
-    }
+	}
+	
+	async createGroup(id: number, groupDto: GroupDto) {
+		// TODO
+	}
 
     async addUser(id: number, userId: string): Promise<any> {
         const course = await this.courseRepository.getCourseById(id);

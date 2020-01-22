@@ -2,7 +2,6 @@ import { Course } from "./entities/course.entity";
 import { CourseDto } from "./dto/course.dto";
 import { UserDto } from "./dto/user.dto";
 import { User } from "./entities/user.entity";
-import { CourseUserRelation } from "./entities/course-user-relation.entity";
 
 export function createCourseDto(courseEntity: Course): CourseDto {
     const courseDto: CourseDto = {

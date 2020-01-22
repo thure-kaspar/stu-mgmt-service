@@ -15,9 +15,8 @@ export class User extends BaseEntity {
     role: string;
     
     @OneToMany(type => CourseUserRelation, courseUserRelations => courseUserRelations.user)
-    courseUserRelations: CourseUserRelation[];
-
-    @OneToMany(type => UserGroupRelation, userGroupRelation => userGroupRelation.user)
-    userGroupRelations: UserGroupRelation[]; 
-    
+	courseUserRelations: CourseUserRelation[];
+	
+	@OneToMany(type => UserGroupRelation, userGroupRelation => userGroupRelation.user)
+	userGroupRelations: UserGroupRelation[];
 }

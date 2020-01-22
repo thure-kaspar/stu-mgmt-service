@@ -1,18 +1,21 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, OneToMany, Column, OneToOne } from "typeorm";
-import { CourseGroupRelation } from "./course-group-relation.entity";
+import { BaseEntity, Entity, PrimaryGeneratedColumn, OneToMany, Column, OneToOne, ManyToOne, CreateDateColumn } from "typeorm";
 import { UserGroupRelation } from "./user-group-relation.entity";
+import { Course } from "./course.entity";
 
-Entity("groups")
+@Entity("groups")
 export class Group extends BaseEntity {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 
     @Column()
-    name: string;
+	name: string;
+	
+	@ManyToOne(type => Course, course => course.group)
+	course: Course;
 
-    @OneToOne(type => CourseGroupRelation, courseGroupRelation => courseGroupRelation.course)
-    courseGroupRelations: CourseGroupRelation;
+	@OneToMany(type => UserGroupRelation, userGroupRelation => userGroupRelation.group)
+	userGroupRelations: UserGroupRelation[];
 
-    @OneToMany(type => UserGroupRelation, userGroupRelation => userGroupRelation.user)
-    userGroupRelations: UserGroupRelation[];
+	@CreateDateColumn()
+	createdAt: Date;
 }
