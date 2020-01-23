@@ -1,9 +1,9 @@
-import { Module, Logger } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { CourseController } from './controllers/course.controller';
 import { CourseService } from './services/course.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CourseRepository } from './repositories/course.repository';
-import { UserRepository } from 'src/user/repositories/user.repository';
+import { UserRepository } from '../user/repositories/user.repository';
 import { CourseUserRelationRepository } from './repositories/course-user-relation.repository';
 
 @Module({

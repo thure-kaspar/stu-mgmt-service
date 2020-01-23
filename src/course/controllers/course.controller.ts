@@ -1,6 +1,6 @@
 import { Controller, Get, Param, ParseIntPipe, Post, Body, ParseUUIDPipe } from '@nestjs/common';
 import { CourseService } from '../services/course.service';
-import { CourseDto } from 'src/shared/dto/course.dto';
+import { CourseDto } from '../../shared/dto/course.dto';
 import { GroupDto } from '../../shared/dto/group.dto';
 
 @Controller('courses')

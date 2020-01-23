@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserRepository } from '../repositories/user.repository';
-import { User } from 'src/shared/entities/user.entity';
-import { UserDto } from 'src/shared/dto/user.dto';
+import { User } from '../../shared/entities/user.entity';
+import { UserDto } from '../../shared/dto/user.dto';
 import * as fromDtoFactory from "../../shared/dto-factory";
 
 @Injectable()
