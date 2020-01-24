@@ -9,6 +9,12 @@ export class Group extends BaseEntity {
 
     @Column()
 	name: string;
+
+	@Column()
+	password: string;
+
+	@Column()
+	isClosed: boolean;
 	
 	@ManyToOne(type => Course, course => course.group)
 	course: Course;

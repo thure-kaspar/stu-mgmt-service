@@ -8,7 +8,7 @@ export class Course extends BaseEntity {
     id: number;
 
     @Column()
-    courseId: number;
+    shortname: string;
 
     @Column()
     semester: string;

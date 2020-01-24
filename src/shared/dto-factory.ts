@@ -6,7 +6,7 @@ import { User } from "./entities/user.entity";
 export function createCourseDto(courseEntity: Course): CourseDto {
     const courseDto: CourseDto = {
         id: courseEntity.id,
-        courseId: courseEntity.courseId,
+        shortname: courseEntity.shortname,
         semester: courseEntity.semester,
         title: courseEntity.title,
         isClosed: courseEntity.isClosed,
