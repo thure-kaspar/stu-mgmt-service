@@ -16,8 +16,11 @@ export class Group extends BaseEntity {
 	@Column()
 	isClosed: boolean;
 	
-	@ManyToOne(type => Course, course => course.group)
+	@ManyToOne(type => Course, course => course.groups)
 	course: Course;
+	
+	@Column()
+	courseId: number;
 
 	@OneToMany(type => UserGroupRelation, userGroupRelation => userGroupRelation.group)
 	userGroupRelations: UserGroupRelation[];

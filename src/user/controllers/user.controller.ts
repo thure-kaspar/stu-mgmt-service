@@ -2,11 +2,10 @@ import { Controller, Post, Body, Get, Param, ParseUUIDPipe } from '@nestjs/commo
 import { UserService } from '../services/user.service';
 import { UserDto } from '../../shared/dto/user.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { CourseService } from 'src/course/services/course.service';
 import { CourseDto } from 'src/shared/dto/course.dto';
 
 @ApiTags("users")
-@Controller('users')
+@Controller("users")
 export class UserController {
 
     constructor(private userService: UserService) { }

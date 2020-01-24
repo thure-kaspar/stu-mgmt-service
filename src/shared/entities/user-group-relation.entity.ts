@@ -11,7 +11,7 @@ export class UserGroupRelation extends BaseEntity {
 	user: User;	
 
     @Column()
-    userId: number;
+    userId: string;
 
 	@ManyToOne(type => Group, group => group.userGroupRelations)
 	group: Group;

@@ -29,5 +29,5 @@ export class Course extends BaseEntity {
 	courseUserRelations: CourseUserRelation[];
 	
 	@OneToMany(type => Group, group => group.course)
-	group: Group;
+	groups: Group[];
 }
