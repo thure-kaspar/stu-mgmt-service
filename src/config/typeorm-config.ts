@@ -1,8 +1,10 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { Course } from 'src/shared/entities/course.entity';
-import { User } from 'src/shared/entities/user.entity';
+import { Course } from '../shared/entities/course.entity';
+import { User } from '../shared/entities/user.entity';
 import * as config from "config"
-import { CourseUserRelation } from 'src/shared/entities/course-user-relation.entity';
+import { CourseUserRelation } from '../shared/entities/course-user-relation.entity';
+import { Group } from '../shared/entities/group.entity';
+import { UserGroupRelation } from '../shared/entities/user-group-relation.entity';
 
 const dbConfig = config.get("db");
 
@@ -14,5 +16,5 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   password: process.env.DB_PASSWORD || dbConfig.password,
   database: process.env.DB_DATABASE || dbConfig.database,
   synchronize: process.env.TYPEORM_SYNC || dbConfig.synchronize,
-  entities: [Course, User, CourseUserRelation],
+  entities: [Course, User, Group, CourseUserRelation, UserGroupRelation],
 };

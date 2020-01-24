@@ -1,8 +1,6 @@
 import { Repository, EntityRepository } from "typeorm";
-import { Course } from "src/shared/entities/course.entity";
-import { CourseDto } from "src/shared/dto/course.dto";
-import { User } from "src/shared/entities/user.entity";
-import { BadRequestException } from "@nestjs/common/exceptions";
+import { Course } from "../../shared/entities/course.entity";
+import { CourseDto } from "../../shared/dto/course.dto";
 
 @EntityRepository(Course)
 export class CourseRepository extends Repository<Course> {
@@ -18,20 +16,20 @@ export class CourseRepository extends Repository<Course> {
     }
 
     async getCourseById(id: number): Promise<Course> {
-        return await this.findOne(id);
+        return await this.findOne(id, { relations: ["courseUserRelations", "courseUserRelations.user"] });
     }
 
-    async getCourseByCourseIdAndSemester(courseId: number, semester: string): Promise<Course> {
+    async getCourseByNameAndSemester(name: string, semester: string): Promise<Course> {
         return await this.findOne({
             where: {
-                courseId: courseId,
+                shortname: name,
                 semester: semester
             }});
     }
 
     private createEntityFromDto(courseDto: CourseDto): Course {
         const course = new Course();
-        course.courseId = courseDto.courseId;
+        course.shortname = courseDto.shortname;
         course.semester = courseDto.semester;
         course.title = courseDto.title;
         course.isClosed = courseDto.isClosed;

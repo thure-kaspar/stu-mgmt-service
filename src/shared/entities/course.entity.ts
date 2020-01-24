@@ -1,5 +1,6 @@
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 import { CourseUserRelation } from "./course-user-relation.entity";
+import { Group } from "./group.entity";
 
 @Entity("courses")
 export class Course extends BaseEntity {
@@ -7,7 +8,7 @@ export class Course extends BaseEntity {
     id: number;
 
     @Column()
-    courseId: number;
+    shortname: string;
 
     @Column()
     semester: string;
@@ -25,5 +26,8 @@ export class Course extends BaseEntity {
     link?: string;
 
     @OneToMany(type => CourseUserRelation, courseUserRelations => courseUserRelations.course)
-    courseUserRelations: CourseUserRelation[];
+	courseUserRelations: CourseUserRelation[];
+	
+	@OneToMany(type => Group, group => group.course)
+	group: Group;
 }

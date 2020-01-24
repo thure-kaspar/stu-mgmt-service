@@ -2,7 +2,7 @@ import { UserDto } from "./user.dto";
 
 export class CourseDto {
     id: number;
-    courseId: number;
+    shortname: string;
     semester: string;
     title: string;
     isClosed: boolean;
