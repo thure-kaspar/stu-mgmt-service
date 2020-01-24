@@ -1,4 +1,5 @@
 import { UserDto } from "./user.dto";
+import { GroupDto } from "./group.dto";
 
 export class CourseDto {
     id: number;
@@ -9,5 +10,6 @@ export class CourseDto {
     password?: string;
     link?: string;
     users?: UserDto[];
+    groups?: GroupDto[];
     // assignments?: any[] // AssignmentDto[]
 }

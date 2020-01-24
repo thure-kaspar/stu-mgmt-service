@@ -27,6 +27,16 @@ export class CourseRepository extends Repository<Course> {
             }});
     }
 
+    async getGroupsOfCourse(name: string, semester: string): Promise<Course> {
+        return await this.findOne({
+            where: {
+                shortname: name,
+                semester: semester
+            }, 
+            relations: ["groups"]
+        });
+    }
+
     private createEntityFromDto(courseDto: CourseDto): Course {
         const course = new Course();
         course.shortname = courseDto.shortname;

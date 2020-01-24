@@ -1,25 +1,29 @@
 import { Controller, Get, Param, ParseIntPipe, Post, Body, ParseUUIDPipe } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { CourseService } from '../services/course.service';
 import { CourseDto } from '../../shared/dto/course.dto';
 import { GroupDto } from '../../shared/dto/group.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { GroupService } from '../services/group.service';
 
 @ApiTags("courses")
-@Controller('courses')
+@Controller("courses")
 export class CourseController {
-	constructor(private courseService: CourseService) { }
+	constructor(private courseService: CourseService,
+				private groupService: GroupService) { }
 
 	@Post()
 	createCourse(@Body() courseDto: CourseDto): Promise<CourseDto> {
 		return this.courseService.createCourse(courseDto);
 	}
 
-	@Post(":id/groups")
+	@Post(":name/:semester/groups")
 	createGroup(
-		@Param("id", ParseIntPipe) id: number,
-		@Body() groupDto: GroupDto) {
+		@Param("name") name: string,
+		@Param("semester") semester: string,
+		@Body() groupDto: GroupDto
+	): Promise<any>  {
 		
-		return this.courseService.createGroup(id, groupDto);
+		return this.groupService.createGroup(name, semester, groupDto);
 	}
 
 	@Post(":id/users/:userId")
@@ -41,8 +45,19 @@ export class CourseController {
 	@Get(":name/:semester")
 	getCourseByNameAndSemester(
 		@Param("name") name: string,
-		@Param("semester") semester: string): Promise<CourseDto> {
+		@Param("semester") semester: string
+	): Promise<CourseDto> {
 
 		return this.courseService.getCourseByNameAndSemester(name, semester);
-    }
+	}
+
+	@Get(":name/:semester/groups")
+	getGroupsOfCourse(
+		@Param("name") name: string,
+		@Param("semester") semester: string
+	): Promise<GroupDto[]> {
+		
+		return this.groupService.getGroupsOfCourse(name, semester);
+	}
+
 }
