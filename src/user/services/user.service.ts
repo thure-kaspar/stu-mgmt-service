@@ -4,6 +4,7 @@ import { UserRepository } from '../repositories/user.repository';
 import { User } from '../../shared/entities/user.entity';
 import { UserDto } from '../../shared/dto/user.dto';
 import * as fromDtoFactory from "../../shared/dto-factory";
+import { CourseDto } from 'src/shared/dto/course.dto';
 
 @Injectable()
 export class UserService {
@@ -27,6 +28,13 @@ export class UserService {
         const user = await this.userRepository.getUserById(id);
         const userDto = fromDtoFactory.createUserDto(user);
         return userDto;
+    }
+
+    async getCoursesOfUser(userId: string): Promise<CourseDto[]> {
+        const courses = await this.userRepository.getCoursesOfUser(userId);
+        const courseDtos: CourseDto[] = [];
+        courses.forEach(course => courseDtos.push(fromDtoFactory.createCourseDto(course)));
+        return courseDtos;
     }
     
 }
