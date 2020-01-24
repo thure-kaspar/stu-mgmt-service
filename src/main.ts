@@ -12,6 +12,8 @@ async function bootstrap() {
     .setTitle('Student-Management-System-API')
     .setDescription('The Student-Management-Sytem-API description.')
     .setVersion('1.0')
+    .addTag("courses")
+    .addTag("users")
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api', app, document);

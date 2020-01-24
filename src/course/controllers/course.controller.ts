@@ -2,7 +2,9 @@ import { Controller, Get, Param, ParseIntPipe, Post, Body, ParseUUIDPipe } from 
 import { CourseService } from '../services/course.service';
 import { CourseDto } from '../../shared/dto/course.dto';
 import { GroupDto } from '../../shared/dto/group.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags("courses")
 @Controller('courses')
 export class CourseController {
 	constructor(private courseService: CourseService) { }
@@ -36,11 +38,11 @@ export class CourseController {
 		return this.courseService.getCourseById(id);
 	}
 
-	@Get(":courseId/:semester")
-	getCourseByCourseIdAndSemester(
-		@Param("courseId", ParseIntPipe) courseId: number,
+	@Get(":name/:semester")
+	getCourseByNameAndSemester(
+		@Param("name") name: string,
 		@Param("semester") semester: string): Promise<CourseDto> {
 
-		return this.courseService.getCourseByCourseIdAndSemester(courseId, semester);
+		return this.courseService.getCourseByNameAndSemester(name, semester);
     }
 }
