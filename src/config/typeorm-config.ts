@@ -5,6 +5,8 @@ import * as config from "config"
 import { CourseUserRelation } from '../shared/entities/course-user-relation.entity';
 import { Group } from '../shared/entities/group.entity';
 import { UserGroupRelation } from '../shared/entities/user-group-relation.entity';
+import { Assignment } from 'src/shared/entities/assignment.entity';
+import { Assessment } from "../shared/entities/assessment.entity";
 
 const dbConfig = config.get("db");
 
@@ -16,5 +18,5 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   password: process.env.DB_PASSWORD || dbConfig.password,
   database: process.env.DB_DATABASE || dbConfig.database,
   synchronize: process.env.TYPEORM_SYNC || dbConfig.synchronize,
-  entities: [Course, User, Group, CourseUserRelation, UserGroupRelation],
+  entities: [Course, User, Group, CourseUserRelation, UserGroupRelation, Assignment, Assessment],
 };

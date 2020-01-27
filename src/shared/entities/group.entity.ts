@@ -1,6 +1,7 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, OneToMany, Column, OneToOne, ManyToOne, CreateDateColumn } from "typeorm";
+import { BaseEntity, Entity, PrimaryGeneratedColumn, OneToMany, Column, OneToOne, CreateDateColumn } from "typeorm";
 import { UserGroupRelation } from "./user-group-relation.entity";
 import { Course } from "./course.entity";
+import { Assessment } from "./assessment.entity";
 
 @Entity("groups")
 export class Group extends BaseEntity {
@@ -15,8 +16,11 @@ export class Group extends BaseEntity {
 
 	@Column()
 	isClosed: boolean;
+
+	@CreateDateColumn()
+	createdAt: Date;
 	
-	@ManyToOne(type => Course, course => course.groups)
+	@OneToOne(type => Course, course => course.groups)
 	course: Course;
 	
 	@Column()
@@ -25,6 +29,6 @@ export class Group extends BaseEntity {
 	@OneToMany(type => UserGroupRelation, userGroupRelation => userGroupRelation.group)
 	userGroupRelations: UserGroupRelation[];
 
-	@CreateDateColumn()
-	createdAt: Date;
+	@OneToMany(type => Assessment, assessment => assessment.group)
+    assessments: Assessment[];
 }

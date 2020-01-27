@@ -8,10 +8,21 @@ import { CourseUserRelationRepository } from './repositories/course-user-relatio
 import { GroupService } from './services/group.service';
 import { GroupRepository } from './repositories/group.repository';
 import { GroupController } from './controllers/group.controller';
+import { AssignmentService } from './services/assignment.service';
+import { AssignmentRepository } from "./repositories/assignment.repository";
+import { AssessmentService } from "./services/assessment.service";
+import { AssessmentRepository } from "./repositories/assessment.repository";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([CourseRepository, UserRepository, CourseUserRelationRepository, GroupRepository])],
+  imports: [TypeOrmModule.forFeature([
+    CourseRepository, 
+    UserRepository, 
+    CourseUserRelationRepository, 
+    GroupRepository, 
+    AssignmentRepository, 
+    AssessmentRepository
+  ])],
   controllers: [CourseController, GroupController],
-  providers: [CourseService, GroupService]
+  providers: [CourseService, GroupService, AssignmentService, AssessmentService]
 })
 export class CourseModule {}

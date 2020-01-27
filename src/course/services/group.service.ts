@@ -16,7 +16,9 @@ export class GroupService {
 
 	async createGroup(courseName: string, semester: string, groupDto: GroupDto): Promise<GroupDto> {
 		const course = await this.courseRepository.getCourseByNameAndSemester(courseName, semester);
-		return await this.groupRepositoy.createGroup(course, groupDto);
+		const createdGroup = await this.groupRepositoy.createGroup(course, groupDto);
+		const createdGroupDto = fromDtoFactory.createGroupDto(createdGroup);
+		return createdGroupDto;
 	}
 
 	async addUserToGroup(groupId: string, userId: string): Promise<any> {
