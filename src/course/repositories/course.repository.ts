@@ -15,7 +15,7 @@ export class CourseRepository extends Repository<Course> {
         return await this.find();
     }
 
-    async getCourseById(id: number): Promise<Course> {
+    async getCourseById(id: string): Promise<Course> {
         return await this.findOne(id, { relations: ["courseUserRelations", "courseUserRelations.user"] });
     }
 
@@ -39,6 +39,7 @@ export class CourseRepository extends Repository<Course> {
 
     private createEntityFromDto(courseDto: CourseDto): Course {
         const course = new Course();
+        course.id = courseDto.shortname + "-" + courseDto.semester;
         course.shortname = courseDto.shortname;
         course.semester = courseDto.semester;
         course.title = courseDto.title;

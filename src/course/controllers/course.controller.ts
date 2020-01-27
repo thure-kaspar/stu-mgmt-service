@@ -27,7 +27,7 @@ export class CourseController {
 	}
 
 	@Post(":id/users/:userId")
-	addUser(@Param("id", ParseIntPipe) id: number,
+	addUser(@Param("id") id: string,
 			@Param("userId", ParseUUIDPipe) userId: string): Promise<any> {
 		return this.courseService.addUser(id, userId);
 	}
@@ -38,7 +38,7 @@ export class CourseController {
 	}
 
 	@Get(":id")
-	getCourseById(@Param("id", ParseIntPipe) id: number): Promise<CourseDto> {
+	getCourseById(@Param("id") id: string): Promise<CourseDto> {
 		return this.courseService.getCourseById(id);
 	}
 

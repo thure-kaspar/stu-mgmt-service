@@ -22,7 +22,7 @@ export class CourseService {
         return fromDtoFactory.createCourseDto(createdCourse);
 	}
 	
-    async addUser(id: number, userId: string): Promise<any> {
+    async addUser(id: string, userId: string): Promise<any> {
         const course = await this.courseRepository.getCourseById(id);
         const user = await this.userRepository.getUserById(userId);
         return await this.courseUserRepository.addUserToCourse(course, user);
@@ -35,7 +35,7 @@ export class CourseService {
         return courseDtos;
     }
 
-    async getCourseById(id: number): Promise<CourseDto> {
+    async getCourseById(id: string): Promise<CourseDto> {
         const course = await this.courseRepository.getCourseById(id);
         const courseDto = fromDtoFactory.createCourseDto(course);
         return courseDto;

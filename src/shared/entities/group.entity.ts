@@ -20,7 +20,7 @@ export class Group extends BaseEntity {
 	course: Course;
 	
 	@Column()
-	courseId: number;
+	courseId: string;
 
 	@OneToMany(type => UserGroupRelation, userGroupRelation => userGroupRelation.group)
 	userGroupRelations: UserGroupRelation[];
