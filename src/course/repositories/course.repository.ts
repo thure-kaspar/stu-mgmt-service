@@ -1,4 +1,4 @@
-import { Repository, EntityRepository } from "typeorm";
+import { Repository, EntityRepository, DeleteResult } from "typeorm";
 import { Course } from "../../shared/entities/course.entity";
 import { CourseDto } from "../../shared/dto/course.dto";
 
@@ -27,7 +27,7 @@ export class CourseRepository extends Repository<Course> {
             }});
     }
 
-    async getGroupsOfCourse(name: string, semester: string): Promise<Course> {
+    async getCourseWithGroups(name: string, semester: string): Promise<Course> {
         return await this.findOne({
             where: {
                 shortname: name,
@@ -35,6 +35,19 @@ export class CourseRepository extends Repository<Course> {
             }, 
             relations: ["groups"]
         });
+    }
+
+    async updateCourse(name: string, semester: string, courseDto: CourseDto): Promise<Course> {
+        const course = this.createEntityFromDto(courseDto);
+        return course.save();
+    }
+
+    async deleteCourse(name: string, semester: string): Promise<boolean> {
+        const deleteResult = await this.delete({
+            shortname: name,
+            semester: semester
+        });
+        return deleteResult.affected == 1;
     }
 
     private createEntityFromDto(courseDto: CourseDto): Course {
@@ -45,6 +58,7 @@ export class CourseRepository extends Repository<Course> {
         course.title = courseDto.title;
         course.isClosed = courseDto.isClosed;
         course.password = courseDto.password;
+        course.link = courseDto.link;
         return course;
     }
 

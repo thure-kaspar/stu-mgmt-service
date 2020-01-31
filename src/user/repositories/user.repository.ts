@@ -1,4 +1,4 @@
-import { Repository, EntityRepository } from "typeorm";
+import { Repository, EntityRepository, FindOperator } from "typeorm";
 import { User } from "../../shared/entities/user.entity";
 import { UserDto } from "../../shared/dto/user.dto";
 import { Course } from "src/shared/entities/course.entity";

@@ -12,6 +12,7 @@ import { AssignmentService } from './services/assignment.service';
 import { AssignmentRepository } from "./repositories/assignment.repository";
 import { AssessmentService } from "./services/assessment.service";
 import { AssessmentRepository } from "./repositories/assessment.repository";
+import { AssessmentUserRelationRepository } from "./repositories/assessment-user-relation.repository";
 
 @Module({
   imports: [TypeOrmModule.forFeature([
@@ -20,7 +21,8 @@ import { AssessmentRepository } from "./repositories/assessment.repository";
     CourseUserRelationRepository, 
     GroupRepository, 
     AssignmentRepository, 
-    AssessmentRepository
+    AssessmentRepository,
+    AssessmentUserRelationRepository
   ])],
   controllers: [CourseController, GroupController],
   providers: [CourseService, GroupService, AssignmentService, AssessmentService]

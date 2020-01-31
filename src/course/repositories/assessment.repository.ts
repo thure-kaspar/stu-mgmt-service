@@ -10,7 +10,7 @@ export class AssessmentRepository extends Repository<Assessment> {
 		return await assessment.save();
 	}
 
-	async getAssessmentsForAssignment(assignmentId: string): Promise<Assessment[]> {
+	async getAllAssessmentsForAssignment(assignmentId: string): Promise<Assessment[]> {
 		return await this.find({
 			where: {
 				assignmentId: assignmentId

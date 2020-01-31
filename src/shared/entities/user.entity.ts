@@ -1,6 +1,7 @@
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, Unique, ManyToMany, OneToMany, PrimaryColumn } from "typeorm";
 import { CourseUserRelation } from "./course-user-relation.entity";
 import { UserGroupRelation } from "./user-group-relation.entity";
+import { AssessmentUserRelation } from "./assessment-user-relation.entity";
 
 @Entity("users")
 @Unique(["email"])
@@ -18,5 +19,8 @@ export class User extends BaseEntity {
 	courseUserRelations: CourseUserRelation[];
 	
 	@OneToMany(type => UserGroupRelation, userGroupRelation => userGroupRelation.user)
-	userGroupRelations: UserGroupRelation[];
+    userGroupRelations: UserGroupRelation[];
+    
+    @OneToMany(type => AssessmentUserRelation, assessmentUserRelation => assessmentUserRelation.user)
+    assessmentUserRelations: AssessmentUserRelation[];
 }

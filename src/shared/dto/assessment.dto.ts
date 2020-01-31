@@ -3,5 +3,6 @@ export class AssessmentDto {
 	achievedPoints: number;
 	comment?: string;
 	assignmentId: string;
-	groupId?: number;
+	groupId?: string; // Assessment should apply to a group
+	userId?: string; // Assessment should apply to a single user
 }

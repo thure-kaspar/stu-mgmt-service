@@ -1,10 +1,10 @@
-import { Controller, Get, Param, ParseIntPipe, Post, Body, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, ParseUUIDPipe, Patch, Delete } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CourseService } from '../services/course.service';
 import { CourseDto } from '../../shared/dto/course.dto';
 import { GroupDto } from '../../shared/dto/group.dto';
 import { GroupService } from '../services/group.service';
-import { AssignmentDto } from 'src/shared/dto/assignment.dto';
+import { AssignmentDto } from '../../shared/dto/assignment.dto';
 import { AssignmentService } from "../services/assignment.service";
 import { AssessmentDto } from "../../shared/dto/assessment.dto";
 import { AssessmentService } from "../services/assessment.service";
@@ -52,10 +52,9 @@ export class CourseController {
 	createAssessment(
 		@Param("assignmentId", ParseUUIDPipe) assignmentId: string,
 		@Body() assessmentDto: AssessmentDto
-	) : Promise<AssessmentDto> {
+	): Promise<AssessmentDto> {
 
 		// TODO: Check if user is allowed to submit assessments for this course
-
 		return this.assessmentService.createAssessment(assignmentId, assessmentDto);
 	}
 
@@ -97,7 +96,7 @@ export class CourseController {
 	}
 
 	@Get(":name/:semester/assignments/:assignmentId/assessments")
-	getAssessmentsForAssignment(
+	getAllAssessmentsForAssignment(
 		@Param("name") name: string,
 		@Param("semester") semester: string,
 		@Param("assignmentId", ParseUUIDPipe) assignmentId: string
@@ -106,5 +105,27 @@ export class CourseController {
 		// TODO: Check if user is allowed to request all assessments
 		return this.assessmentService.getAssessmentsForAssignment(assignmentId);
 	}
+
+	@Patch(":name/:semester")
+	updateCourse(
+		@Param("name") name: string,
+		@Param("semester") semester: string,
+		@Body() courseDto: CourseDto
+	): Promise<CourseDto> {
+
+		return this.courseService.updateCourse(name, semester, courseDto);
+	}
+
+	@Delete(":name/:semester")
+	deleteCourse(
+		@Param("name") name: string,
+		@Param("semester") semester: string,
+	): Promise<boolean> {
+
+		this.courseService.deleteCourse(name, semester);
+		return null;
+	}
+
+
 
 }

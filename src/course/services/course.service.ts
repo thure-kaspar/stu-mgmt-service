@@ -8,7 +8,6 @@ import { UserRepository } from '../../user/repositories/user.repository';
 import { CourseUserRelation } from '../../shared/entities/course-user-relation.entity';
 import { CourseUserRelationRepository } from '../repositories/course-user-relation.repository';
 import * as fromDtoFactory from "../../shared/dto-factory";
-import { GroupDto } from '../../shared/dto/group.dto';
 
 @Injectable()
 export class CourseService {
@@ -45,6 +44,14 @@ export class CourseService {
         const course = await this.courseRepository.getCourseByNameAndSemester(name, semester);
         const courseDto = fromDtoFactory.createCourseDto(course);
         return courseDto;
+    }
+
+    async updateCourse(name: string, semester: string, courseDto: CourseDto): Promise<CourseDto> {
+        return await this.courseRepository.updateCourse(name, semester, courseDto);
+    }
+
+    async deleteCourse(name: string, semester: string): Promise<boolean> {
+        return await this.courseRepository.deleteCourse(name, semester);
     }
 
 }

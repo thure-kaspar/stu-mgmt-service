@@ -1,6 +1,8 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToOne } from "typeorm";
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToOne, ManyToMany, ManyToOne, OneToMany } from "typeorm";
 import { Assignment } from "./assignment.entity";
 import { Group } from "./group.entity";
+import { User } from "./user.entity";
+import { AssessmentUserRelation } from "./assessment-user-relation.entity";
 
 @Entity("assessments")
 export class Assessment extends BaseEntity {
@@ -23,9 +25,10 @@ export class Assessment extends BaseEntity {
 	group: Group;
 
 	@Column({ nullable: true })
-	groupId: number;
+	groupId: string;
 
 	// We need to assign the points to users individually, in case they switch group
-	// users: User[];
+	@OneToMany(type => AssessmentUserRelation, assessmentUserRelation => assessmentUserRelation.assessment)
+	assessmentUserRelations: AssessmentUserRelation[];
 
 }

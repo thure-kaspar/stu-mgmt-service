@@ -31,4 +31,16 @@ export class GroupRepository extends Repository<Group> {
 		});
 	}
 
+	async getGroupsOfCourse(courseId: string) {
+		return await this.find({
+			where: {
+				courseId: courseId
+			}
+		});
+	}
+
+	async getGroupOfUserForCourse(courseId: string, userId: string): Promise<any> {
+		throw new Error("Not implemented");
+	}
+
 }
