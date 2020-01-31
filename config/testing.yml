@@ -1,0 +1,8 @@
+db: 
+  type: "postgres"
+  port: 5432
+  database: "StudentMgmtDb_Test"
+  host: "localhost"
+  username: "postgres"
+  password: "root"
+  synchronize: true
