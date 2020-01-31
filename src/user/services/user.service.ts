@@ -1,15 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserRepository } from '../repositories/user.repository';
 import { User } from '../../shared/entities/user.entity';
 import { UserDto } from '../../shared/dto/user.dto';
 import * as fromDtoFactory from "../../shared/dto-factory";
 import { CourseDto } from 'src/shared/dto/course.dto';
+import { GroupDto } from "../../shared/dto/group.dto";
+import { Group } from "../../shared/entities/group.entity";
+import { GroupRepository } from "../../course/repositories/group.repository";
 
 @Injectable()
 export class UserService {
 
-    constructor(@InjectRepository(User) private userRepository: UserRepository) { }
+    constructor(@InjectRepository(User) private userRepository: UserRepository,
+                @InjectRepository(Group) private groupRepository: GroupRepository) { }
 
     async createUser(userDto: UserDto): Promise<UserDto> {
         const createdUser = await this.userRepository.createUser(userDto);
@@ -35,6 +39,12 @@ export class UserService {
         const courseDtos: CourseDto[] = [];
         courses.forEach(course => courseDtos.push(fromDtoFactory.createCourseDto(course)));
         return courseDtos;
+    }
+
+    async getGroupOfUserForCourse(userId: string, courseName: string, semester: string): Promise<GroupDto> {
+        const group = await this.groupRepository.getGroupOfUserForCourse(courseName + "-" + semester, userId); // TODO: Refactor
+        console.log(group);
+        return null;
     }
     
 }

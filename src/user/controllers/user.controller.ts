@@ -2,11 +2,12 @@ import { Controller, Post, Body, Get, Param, ParseUUIDPipe } from '@nestjs/commo
 import { UserService } from '../services/user.service';
 import { UserDto } from '../../shared/dto/user.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { CourseService } from 'src/course/services/course.service';
 import { CourseDto } from 'src/shared/dto/course.dto';
+import { AssessmentDto } from "../../shared/dto/assessment.dto";
+import { GroupDto } from "../../shared/dto/group.dto";
 
 @ApiTags("users")
-@Controller('users')
+@Controller("users")
 export class UserController {
 
     constructor(private userService: UserService) { }
@@ -30,5 +31,14 @@ export class UserController {
     getCoursesOfUser(@Param("id", ParseUUIDPipe) id: string): Promise<CourseDto[]> {
         return this.userService.getCoursesOfUser(id);
     }
-    
+
+    @Get(":id/courses/:courseName/:semester/groups")
+    getGroupOfUserForCourse(
+        @Param("id", ParseUUIDPipe) id: string,
+        @Param("courseName") courseName: string,
+        @Param("semester") semester: string
+    ): Promise<GroupDto> {
+
+        return this.userService.getGroupOfUserForCourse(id, courseName, semester);
+    }
 }

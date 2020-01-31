@@ -13,6 +13,7 @@ async function bootstrap() {
     .setDescription('The Student-Management-Sytem-API description.')
     .setVersion('1.0')
     .addTag("courses")
+    .addTag("groups")
     .addTag("users")
     .build();
   const document = SwaggerModule.createDocument(app, options);

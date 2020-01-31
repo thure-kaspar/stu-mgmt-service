@@ -2,6 +2,12 @@ import { Course } from "./entities/course.entity";
 import { CourseDto } from "./dto/course.dto";
 import { UserDto } from "./dto/user.dto";
 import { User } from "./entities/user.entity";
+import { GroupDto } from "./dto/group.dto";
+import { Group } from "./entities/group.entity";
+import { AssignmentDto } from "./dto/assignment.dto";
+import { Assignment } from "./entities/assignment.entity";
+import { Assessment } from "./entities/assessment.entity";
+import { AssessmentDto } from "./dto/assessment.dto";
 
 export function createCourseDto(courseEntity: Course): CourseDto {
     const courseDto: CourseDto = {
@@ -10,7 +16,6 @@ export function createCourseDto(courseEntity: Course): CourseDto {
         semester: courseEntity.semester,
         title: courseEntity.title,
         isClosed: courseEntity.isClosed,
-        password: courseEntity.password,
         link: courseEntity.link
     };
 
@@ -41,4 +46,38 @@ export function createUserDto(userEntity: User): UserDto {
     }
 
     return userDto;
+}
+
+export function createGroupDto(groupEntity: Group): GroupDto {
+    const groupDto: GroupDto = {
+        id: groupEntity.id,
+        name: groupEntity.name,
+        isClosed:groupEntity.isClosed,
+        course: groupEntity.course
+    }
+    return groupDto;
+}
+
+export function createAssignmentDto(assignmentEntity: Assignment) {
+    const assignmentDto: AssignmentDto = {
+        id: assignmentEntity.id,
+        courseId: assignmentEntity.courseId,
+        name: assignmentEntity.name,
+        comment: assignmentEntity.comment,
+        link: assignmentEntity.link,
+        type: assignmentEntity.type,
+        maxPoints: assignmentEntity.maxPoints
+    };
+    return assignmentDto;
+}
+
+export function createAssessmentDto(assessmentEntity: Assessment) {
+    const assessmentDto: AssessmentDto = {
+        id: assessmentEntity.id,
+        assignmentId: assessmentEntity.assignmentId,
+        groupId: assessmentEntity.groupId,
+        achievedPoints: assessmentEntity.achievedPoints,
+        comment: assessmentEntity.comment
+    };
+    return assessmentDto;
 }
