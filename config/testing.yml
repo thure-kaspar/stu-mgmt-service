@@ -1,8 +1,4 @@
 db: 
-  type: "postgres"
-  port: 5432
-  database: "StudentMgmtDb_Test"
-  host: "localhost"
-  username: "postgres"
-  password: "root"
+  type: "sqlite"
+  database: "../../StudentMgmtDb_Test.db"
   synchronize: true
