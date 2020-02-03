@@ -10,6 +10,7 @@
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "env NODE_ENV=development nest start --watch",
+    "start:demo": "env NODE_ENV=demo nest start",
     "start:debug": "nest start --debug --watch",
     "start:prod": "env NODE_ENV=production node dist/main",
     "lint": "tslint -p tsconfig.json -c tslint.json",

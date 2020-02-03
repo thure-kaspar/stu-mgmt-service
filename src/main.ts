@@ -20,12 +20,6 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api', app, document);
 
-  const dropDatabase = true;
-  if (dropDatabase) {
-    await getConnection().dropDatabase();
-    await getConnection().synchronize(true);
-  }
-
   await app.listen(port);
 }
 bootstrap();
