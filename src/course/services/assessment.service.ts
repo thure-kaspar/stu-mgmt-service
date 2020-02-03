@@ -35,7 +35,7 @@ export class AssessmentService {
 				userIds.push(userGroupRelation.userId);
 			});
 		// If assessment should only apply to a specified user
-		} else if(assessmentDto.userId) {
+		} else if (assessmentDto.userId) {
 			userIds.push(assessmentDto.userId);
 		}
 

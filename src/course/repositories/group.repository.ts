@@ -7,9 +7,9 @@ import { UserGroupRelation } from "../../shared/entities/user-group-relation.ent
 @EntityRepository(Group)
 export class GroupRepository extends Repository<Group> {
 
-	async createGroup(course: Course, groupDto: GroupDto): Promise<Group> {
+	async createGroup(courseId: string, groupDto: GroupDto): Promise<Group> {
 		const group = new Group();
-		group.courseId = course.id;
+		group.courseId = courseId;
 		group.name = groupDto.name;
 		group.password = groupDto.password;
 		group.isClosed = groupDto.isClosed;

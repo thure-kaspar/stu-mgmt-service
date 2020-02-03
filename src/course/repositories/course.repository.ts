@@ -27,32 +27,27 @@ export class CourseRepository extends Repository<Course> {
             }});
     }
 
-    async getCourseWithGroups(name: string, semester: string): Promise<Course> {
-        return await this.findOne({
-            where: {
-                shortname: name,
-                semester: semester
-            }, 
+    async getCourseWithGroups(courseId: string): Promise<Course> {
+        return await this.findOne(courseId, {
             relations: ["groups"]
         });
     }
 
-    async updateCourse(name: string, semester: string, courseDto: CourseDto): Promise<Course> {
+    async updateCourse(courseId: string, courseDto: CourseDto): Promise<Course> {
         const course = this.createEntityFromDto(courseDto);
         return course.save();
     }
 
-    async deleteCourse(name: string, semester: string): Promise<boolean> {
+    async deleteCourse(courseId: string): Promise<boolean> {
         const deleteResult = await this.delete({
-            shortname: name,
-            semester: semester
+            id: courseId
         });
         return deleteResult.affected == 1;
     }
 
     private createEntityFromDto(courseDto: CourseDto): Course {
         const course = new Course();
-        course.id = courseDto.shortname + "-" + courseDto.semester;
+        course.id = courseDto.id ?? courseDto.shortname + "-" + courseDto.semester; // If no id was supplied, <shortname-semester> will be the id
         course.shortname = courseDto.shortname;
         course.semester = courseDto.semester;
         course.title = courseDto.title;

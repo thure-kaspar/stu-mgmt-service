@@ -2,7 +2,7 @@ import { UserDto } from "./user.dto";
 import { GroupDto } from "./group.dto";
 
 export class CourseDto {
-    id: string;
+    id?: string; // Optional: If (unused) id is supplied for creation, it will be used
     shortname: string;
     semester: string;
     title: string;

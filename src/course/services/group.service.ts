@@ -14,9 +14,8 @@ export class GroupService {
 	constructor(@InjectRepository(Group) private groupRepositoy: GroupRepository,
 				@InjectRepository(Course) private courseRepository: CourseRepository) { }
 
-	async createGroup(courseName: string, semester: string, groupDto: GroupDto): Promise<GroupDto> {
-		const course = await this.courseRepository.getCourseByNameAndSemester(courseName, semester);
-		const createdGroup = await this.groupRepositoy.createGroup(course, groupDto);
+	async createGroup(courseId: string, groupDto: GroupDto): Promise<GroupDto> {
+		const createdGroup = await this.groupRepositoy.createGroup(courseId, groupDto);
 		const createdGroupDto = fromDtoFactory.createGroupDto(createdGroup);
 		return createdGroupDto;
 	}
@@ -25,8 +24,8 @@ export class GroupService {
 		return await this.groupRepositoy.addUserToGroup(groupId, userId);
 	}
 
-	async getGroupsOfCourse(courseName: string, semester: string): Promise<GroupDto[]> {
-		const groups = await this.groupRepositoy.getGroupsOfCourse(courseName + "-" + semester);
+	async getGroupsOfCourse(courseId: string): Promise<GroupDto[]> {
+		const groups = await this.groupRepositoy.getGroupsOfCourse(courseId);
 		return groups;
 	}
 

@@ -22,14 +22,13 @@ export class CourseController {
 		return this.courseService.createCourse(courseDto);
 	}
 
-	@Post(":name/:semester/groups")
+	@Post(":id/groups")
 	createGroup(
-		@Param("name") name: string,
-		@Param("semester") semester: string,
+		@Param("id") id: string,
 		@Body() groupDto: GroupDto
 	): Promise<GroupDto> {
 
-		return this.groupService.createGroup(name, semester, groupDto);
+		return this.groupService.createGroup(id, groupDto);
 	}
 
 	@Post(":id/users/:userId")
@@ -38,17 +37,16 @@ export class CourseController {
 		return this.courseService.addUser(id, userId);
 	}
 
-	@Post(":name/:semester/assignments")
+	@Post(":id/assignments")
 	createAssignment(
-		@Param("name") name: string,
-		@Param("semester") semester: string,
+		@Param("id") id: string,
 		@Body() assignmentDto: AssignmentDto
 	): Promise<AssignmentDto> {
 
-		return this.assignmentService.createAssignment(name, semester, assignmentDto);
+		return this.assignmentService.createAssignment(id, assignmentDto);
 	}
 
-	@Post(":name/:semester/assignments/:assignmentId/assessments")
+	@Post(":id/assignments/:assignmentId/assessments")
 	createAssessment(
 		@Param("assignmentId", ParseUUIDPipe) assignmentId: string,
 		@Body() assessmentDto: AssessmentDto
@@ -77,28 +75,25 @@ export class CourseController {
 		return this.courseService.getCourseByNameAndSemester(name, semester);
 	}
 
-	@Get(":name/:semester/groups")
+	@Get(":id/groups")
 	getGroupsOfCourse(
-		@Param("name") name: string,
-		@Param("semester") semester: string
+		@Param("id") id: string,
 	): Promise<GroupDto[]> {
 
-		return this.groupService.getGroupsOfCourse(name, semester);
+		return this.groupService.getGroupsOfCourse(id);
 	}
 
-	@Get(":name/:semester/assignments")
+	@Get(":id/assignments")
 	getAssignmentsOfCourse(
-		@Param("name") name: string,
-		@Param("semester") semester: string
+		@Param("id") id: string,
 	): Promise<AssignmentDto[]> {
 
-		return this.assignmentService.getAssignments(name, semester);
+		return this.assignmentService.getAssignments(id);
 	}
 
-	@Get(":name/:semester/assignments/:assignmentId/assessments")
+	@Get(":id/assignments/:assignmentId/assessments")
 	getAllAssessmentsForAssignment(
-		@Param("name") name: string,
-		@Param("semester") semester: string,
+		@Param("id") id: string,
 		@Param("assignmentId", ParseUUIDPipe) assignmentId: string
 	): Promise<AssessmentDto[]> {
 
@@ -106,24 +101,21 @@ export class CourseController {
 		return this.assessmentService.getAssessmentsForAssignment(assignmentId);
 	}
 
-	@Patch(":name/:semester")
+	@Patch(":id")
 	updateCourse(
-		@Param("name") name: string,
-		@Param("semester") semester: string,
+		@Param("id") id: string,
 		@Body() courseDto: CourseDto
 	): Promise<CourseDto> {
 
-		return this.courseService.updateCourse(name, semester, courseDto);
+		return this.courseService.updateCourse(id, courseDto);
 	}
 
-	@Delete(":name/:semester")
+	@Delete(":id")
 	deleteCourse(
-		@Param("name") name: string,
-		@Param("semester") semester: string,
+		@Param("id") id: string,
 	): Promise<boolean> {
 
-		this.courseService.deleteCourse(name, semester);
-		return null;
+		return this.courseService.deleteCourse(id);
 	}
 
 

@@ -21,10 +21,8 @@ export class CourseService {
         return fromDtoFactory.createCourseDto(createdCourse);
 	}
 	
-    async addUser(id: string, userId: string): Promise<any> {
-        const course = await this.courseRepository.getCourseById(id);
-        const user = await this.userRepository.getUserById(userId);
-        return await this.courseUserRepository.addUserToCourse(course, user);
+    async addUser(courseId: string, userId: string): Promise<any> { // TODO: don't return any
+        return await this.courseUserRepository.addUserToCourse(courseId, userId, "student"); // TODO: don't hardcode role 
     }
 
     async getAllCourses(): Promise<CourseDto[]> {
@@ -46,12 +44,12 @@ export class CourseService {
         return courseDto;
     }
 
-    async updateCourse(name: string, semester: string, courseDto: CourseDto): Promise<CourseDto> {
-        return await this.courseRepository.updateCourse(name, semester, courseDto);
+    async updateCourse(courseId: string, courseDto: CourseDto): Promise<CourseDto> {
+        return await this.courseRepository.updateCourse(courseId, courseDto);
     }
 
-    async deleteCourse(name: string, semester: string): Promise<boolean> {
-        return await this.courseRepository.deleteCourse(name, semester);
+    async deleteCourse(courseId: string): Promise<boolean> {
+        return await this.courseRepository.deleteCourse(courseId);
     }
 
 }

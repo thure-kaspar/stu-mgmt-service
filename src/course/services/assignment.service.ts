@@ -10,15 +10,13 @@ export class AssignmentService {
 
 	constructor(@InjectRepository(Assignment) private assignmentRepository: AssignmentRepository) { }
 
-	async createAssignment(courseName: string, semester: string, assignmentDto: AssignmentDto): Promise<AssignmentDto> {
-		const courseId = courseName + "-" + semester; // TODO: Refactor
+	async createAssignment(courseId: string, assignmentDto: AssignmentDto): Promise<AssignmentDto> {
 		const createdAssignment = await this.assignmentRepository.createAssignment(courseId, assignmentDto);
 		const createdAssignmentDto = fromDtoFactory.createAssignmentDto(createdAssignment);
 		return createdAssignmentDto;
 	}
 
-	async getAssignments(courseName: string, semester: string): Promise<AssignmentDto[]> {
-		const courseId = courseName + "-" + semester; // TODO: Refactor
+	async getAssignments(courseId: string,): Promise<AssignmentDto[]> {
 		const assignments = await this.assignmentRepository.getAssignments(courseId);
 		const assignmentDtos: AssignmentDto[] = [];
 		assignments.forEach(assignment => {

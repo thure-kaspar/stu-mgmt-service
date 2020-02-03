@@ -11,7 +11,7 @@ import { Course } from "./course.entity";
 	course: Course;
 
 	@Column()
-	courseId: number;
+	courseId: string;
 
 	@ManyToOne(type => User, user => user.courseUserRelations, { primary: true })
 	user: User;
