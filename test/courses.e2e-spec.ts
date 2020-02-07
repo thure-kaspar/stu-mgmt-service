@@ -8,8 +8,10 @@ import { AssessmentDto } from "../src/shared/dto/assessment.dto";
 import { AssignmentDto } from "../src/shared/dto/assignment.dto";
 import { GroupDto } from "../src/shared/dto/group.dto";
 import { CourseDto } from "../src/shared/dto/course.dto";
+import { UserDto } from '../src/shared/dto/user.dto';
 
 let courses: CourseDto[];
+let users: UserDto[];
 let groups: GroupDto[];
 let assignments: AssignmentDto[];
 let assessments: AssessmentDto[];
@@ -27,11 +29,12 @@ describe('GET-REQUESTS of CourseController (e2e)', () => {
 
 		// Setup mocks
 		const dbMockService = new DbMockService(getConnection());
+		await dbMockService.createAll();
 		courses = dbMockService.courses;
+		users = dbMockService.users;
 		groups = dbMockService.groups;
 		assignments = dbMockService.assignments;
 		assessments = dbMockService.assessments;
-		await dbMockService.createAll();
 	});
 
 	afterAll(async () => {
@@ -49,7 +52,7 @@ describe('GET-REQUESTS of CourseController (e2e)', () => {
 
 	it("(GET) /courses/{courseId} Retrieves the course", () => {
 		return request(app.getHttpServer())
-			.get("/courses/"+ courses[0].id)
+			.get(`/courses/${courses[0].id}`)
 			.expect(({ body }) => {
 				expect(body.id).toEqual(courses[0].id); 
 			});
@@ -57,7 +60,7 @@ describe('GET-REQUESTS of CourseController (e2e)', () => {
 
 	it("(GET) /courses/{courseId}/groups Retrieves all groups of a course", () => {
 		return request(app.getHttpServer())
-			.get("/courses/" + courses[0].id +"/groups")
+			.get(`/courses/${courses[0].id}/groups`)
 			.expect(({ body }) => {
 				expect(body.length).toEqual(groups.length); 
 			});
@@ -65,7 +68,7 @@ describe('GET-REQUESTS of CourseController (e2e)', () => {
 
 	it("(GET) /courses/{courseId}/assignments Retrieves all assignments of a course", () => {
 		return request(app.getHttpServer())
-			.get("/courses/" + courses[0].id + "/assignments")
+			.get(`/courses/${courses[0].id}/assignments`)
 			.expect(({ body }) => {
 				expect(body.length).toEqual(assignments.length); 
 			});
@@ -74,7 +77,7 @@ describe('GET-REQUESTS of CourseController (e2e)', () => {
 	// SKIP: Not implemented
 	it.skip("(GET) /courses/{courseId}/assignments/{assignmentId} Retrieves the assignment", () => {
 		return request(app.getHttpServer())
-			.get("/courses/" + courses[0].id + "/assignments/" + assignments[0].id)
+			.get(`/courses/${courses[0].id}/assignments/${assignments[0].id}`)
 			.expect(({ body }) => {
 				expect(body.id).toEqual(assignments[0].id); 
 			});
@@ -82,7 +85,7 @@ describe('GET-REQUESTS of CourseController (e2e)', () => {
 
 	it("(GET) /courses/{courseId}/assignments/{assignmentId}/assessments Retrieves all assessments for the assignment", () => {
 		return request(app.getHttpServer())
-			.get("/courses/" + courses[0].id + "/assignments/" + assignments[0].id + "/assessments")
+		.get(`/courses/${courses[0].id}/assignments/${assignments[0].id}/assessments`)
 			.expect(({ body }) => {
 				expect(body.length).toEqual(1); // There is only one assessment for this assignment
 			});
@@ -91,7 +94,7 @@ describe('GET-REQUESTS of CourseController (e2e)', () => {
 	// SKIP: Not implemented
 	it.skip("(GET) /courses/{courseId}/assignment/{assignmentId}/assessments/{assessmentId} Retrieves the assessment", () => {
 		return request(app.getHttpServer())
-		.get("/courses/assignments/" + assignments[0].id + "/assessments/"+ assessments[0].id)
+		.get(`/courses/${courses[0].id}/assignments/${assignments[0].id}/assessments/${assessments[0].id}`)
 		.expect(({ body }) => {
 			expect(body.id).toEqual(assessments[0].id); 
 		});
@@ -145,7 +148,7 @@ describe('POST-REQUEST of CourseController (e2e)', () => {
 
 	it("(POST) /courses/{courseId}/groups Creates the given group and returns it (Part 1/2)", () => {
 		return request(app.getHttpServer())
-			.post("/courses/" + courses[0].id + "/groups")
+			.post(`/courses/${courses[0].id}/groups`)
 			.send(groups[0]) // CourseId does not need to be specified here, because Course was created with given Id
 			.expect(201)
 			.expect(({ body }) => {
@@ -156,7 +159,7 @@ describe('POST-REQUEST of CourseController (e2e)', () => {
 
 	it("(POST) /courses/{courseId}/groups Creates the given group and returns it (Part 2/2)", () => {
 		return request(app.getHttpServer())
-			.post("/courses/"  + courses[0].id + "/groups")
+			.post(`/courses/${courses[0].id}/groups`)
 			.send(groups[1]) // CourseId does not need to be specified here, because Course was created with given Id
 			.expect(201)
 			.expect(({ body }) => {
@@ -167,7 +170,7 @@ describe('POST-REQUEST of CourseController (e2e)', () => {
 
 	it("(POST) /courses/{courseId}/assignments Creates the given assignment and returns it", () => {
 		return request(app.getHttpServer())
-			.post("/courses/" + courses[0].id + "/assignments")
+			.post(`/courses/${courses[0].id}/assignments`)
 			.send(assignments[0]) // CourseId does not need to be specified here, because Course was created with given Id
 			.expect(201)
 			.expect(({ body }) => {
@@ -180,7 +183,7 @@ describe('POST-REQUEST of CourseController (e2e)', () => {
 
 	it("(POST) /courses/{courseId}/assignments/{assignmentId}/assessments Creates the given assessment and returns it #", () => {
 		return request(app.getHttpServer())
-			.post("/courses/" + courses[0].id + "/assignments/" + assignments[0].id + "/assessments")
+			.post(`/courses/${courses[0].id}/assignments/${assignments[0].id}/assessments`)
 			.send(assessments[0])
 			.expect(201)
 			.expect(({ body }) => {
@@ -189,6 +192,5 @@ describe('POST-REQUEST of CourseController (e2e)', () => {
 				expect(body.comment).toEqual(assessments[0].comment);
 			});
 	});
-
 
 });
