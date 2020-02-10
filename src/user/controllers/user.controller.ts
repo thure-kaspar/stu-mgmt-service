@@ -22,22 +22,22 @@ export class UserController {
         return this.userService.getAllUsers();
     }
 
-    @Get(":id")
-    getUserById(@Param("id") id: string): Promise<UserDto> {
-        return this.userService.getUserById(id);
+    @Get(":userId")
+    getUserById(@Param("userId") userId: string): Promise<UserDto> {
+        return this.userService.getUserById(userId);
     }
 
-    @Get(":id/courses")
-    getCoursesOfUser(@Param("id", ParseUUIDPipe) id: string): Promise<CourseDto[]> {
-        return this.userService.getCoursesOfUser(id);
+    @Get(":userId/courses")
+    getCoursesOfUser(@Param("userId", ParseUUIDPipe) userId: string): Promise<CourseDto[]> {
+        return this.userService.getCoursesOfUser(userId);
     }
 
-    @Get(":id/courses/:courseId/groups")
+    @Get(":userId/courses/:courseId/groups")
     getGroupOfUserForCourse(
-        @Param("id", ParseUUIDPipe) id: string,
+        @Param("userId", ParseUUIDPipe) userId: string,
         @Param("courseId", ParseUUIDPipe) courseId: string,
     ): Promise<GroupDto> {
 
-        return this.userService.getGroupOfUserForCourse(id, courseId);
+        return this.userService.getGroupOfUserForCourse(userId, courseId);
     }
 }

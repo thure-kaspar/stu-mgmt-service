@@ -8,21 +8,21 @@ import { ApiTags } from "@nestjs/swagger";
 export class GroupController {
 	constructor(private groupService: GroupService) { }
 
-	@Post(":id/users/:userId")
+	@Post(":groupId/users/:userId")
 	addUserToGroup(
-		@Param("id", ParseUUIDPipe) id: string,
+		@Param("groupId", ParseUUIDPipe) groupId: string,
 		@Param("userId", ParseUUIDPipe) userId: string
 	): Promise<any> {
 
-		return this.groupService.addUserToGroup(id, userId);
+		return this.groupService.addUserToGroup(groupId, userId);
 	}
 
-	@Get(":id/users")
+	@Get(":groupId/users")
 	getUsersOfGroup(
-		@Param("id", ParseUUIDPipe) id: string
+		@Param("groupId", ParseUUIDPipe) groupId: string
 	): Promise<UserDto[]> {
 
-		return this.groupService.getUsersOfGroup(id);
+		return this.groupService.getUsersOfGroup(groupId);
 	}
 
 }
