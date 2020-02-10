@@ -102,7 +102,8 @@ describe('GET-REQUESTS of CourseController (e2e)', () => {
 
 });
 
-describe('POST-REQUEST of CourseController (e2e)', () => {
+// TODO: Tests should fail when referenced foreign key is invalid, i.e doesn't exist (use JoinColumn?)
+describe('POST-REQUESTS of CourseController (e2e)', () => {
 	let app: INestApplication;
 
 	beforeAll(async () => {
@@ -191,6 +192,41 @@ describe('POST-REQUEST of CourseController (e2e)', () => {
 				expect(body.achievedPoints).toEqual(assessments[0].achievedPoints);
 				expect(body.comment).toEqual(assessments[0].comment);
 			});
+	});
+
+});
+
+// TODO: Some of the tests from above need to moved here.
+describe('POST-REQUESTS for relations (Db contains data) of CourseController (e2e)', () => {
+	let app: INestApplication;
+
+	beforeAll(async () => {
+		const moduleFixture: TestingModule = await Test.createTestingModule({
+			imports: [AppModule],
+		}).compile();
+
+		app = moduleFixture.createNestApplication();
+		await app.init();
+
+		// Setup mocks - these tests require a filled db
+		const dbMockService = new DbMockService(getConnection());
+		await dbMockService.createAll();
+		courses = dbMockService.courses;
+		users = dbMockService.users;
+		groups = dbMockService.groups;
+		assignments = dbMockService.assignments;
+		assessments = dbMockService.assessments;
+	});
+
+	afterAll(async () => {
+		await getConnection().dropDatabase(); // Drop database with all tables and data
+		await getConnection().close(); // Close Db-Connection after all tests have been executed
+	});
+
+	it("(POST) /courses/{courseId}/users/{userId} Adds the user to the course", () => {
+		return request(app.getHttpServer())
+			.post(`/courses/${courses[0].id}/users/${users[0].id}`)
+			.expect(201)
 	});
 
 });
