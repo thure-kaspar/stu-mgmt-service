@@ -1,6 +1,7 @@
-import { Repository, EntityRepository } from "typeorm";
+import { Repository, EntityRepository, IsNull } from "typeorm";
 import { Assessment } from "../../shared/entities/assessment.entity";
 import { AssessmentDto } from "../../shared/dto/assessment.dto";
+import { Group } from "../../shared/entities/group.entity";
 
 @EntityRepository(Assessment)
 export class AssessmentRepository extends Repository<Assessment> {
@@ -16,6 +17,35 @@ export class AssessmentRepository extends Repository<Assessment> {
 				assignmentId: assignmentId
 			}
 		});
+	}
+
+	async getAssessmentsOfUserForCourse(courseId: string, userId: string): Promise<Assessment[]> {
+		return await this.find({
+			where: {
+				assignment: {
+					courseId: courseId
+				},
+				assessmentUserRelations: {
+					userId: userId
+				}
+			}
+		});
+	}
+
+	async getAssessmentsOfUserForCourse_WithGroups(courseId: string, userId: string): Promise<Assessment[]> {
+		const assessments = await this.find({
+			where: {
+				assignment: {
+					courseId: courseId
+				},
+				assessmentUserRelations: {
+					userId: userId
+				},
+			},
+			relations: ["group"]
+		});
+
+		return assessments;
 	}
 
 	private createEntityFromDto(assessmentDto: AssessmentDto): Assessment {

@@ -39,9 +39,23 @@ export class GroupRepository extends Repository<Group> {
 		});
 	}
 
-	async getGroupOfUserForCourse(courseId: string, userId: string): Promise<any> {
-		const repo = new Repository<UserGroupRelation>();
-		throw new Error("NYE");
+	/**
+	 * Returns all groups that the user is currently a part of in the given course.
+	 *
+	 * @param {string} courseId
+	 * @param {string} userId
+	 * @returns {Promise<Group>}
+	 * @memberof GroupRepository
+	 */
+	async getCurrentGroupsOfUserForCourse(courseId: string, userId: string): Promise<Group[]> {
+		return await this.find({
+			where: {
+				courseId: courseId,
+				userGroupRelations: {
+					userId: userId
+				}
+			}
+		});
 	}
 
 }

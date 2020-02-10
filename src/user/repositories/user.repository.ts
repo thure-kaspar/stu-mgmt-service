@@ -30,8 +30,8 @@ export class UserRepository extends Repository<User> {
         }
 
         return courses;
-    }
-
+	}
+	
     private createEntityFromDto(userDto: UserDto): User {
         const user = new User();
         user.email = userDto.email;

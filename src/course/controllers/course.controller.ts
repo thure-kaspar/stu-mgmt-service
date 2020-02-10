@@ -38,7 +38,6 @@ export class CourseController {
 		return this.courseService.addUser(courseId, userId);
 	}
 	
-
 	@Post(":courseId/assignments")
 	createAssignment(
 		@Param("courseId") courseId: string,
