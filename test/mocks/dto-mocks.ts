@@ -77,12 +77,51 @@ export const AssessmentsMock: AssessmentDto[] = [
 		id: "8f60f844-4129-48a4-a625-7a74c7defd0d",
 		assignmentId: AssignmentsMock[0].id,
 		achievedPoints: 75,
-		comment: "Test_Assessment #1 for TestAssignment 01"
+		comment: "Test_Assessment #1 for TestAssignment 01 (Group-Assessment)",
+		groupId: GroupsMock[0].id
 	}, 
 	{
 		id: "ba56b749-6e65-4be8-aa55-33228433a897",
 		assignmentId: AssignmentsMock[1].id,
 		achievedPoints: 25,
-		comment: "Test_Assessment #1 for TestAssignment 02"
+		comment: "Test_Assessment #1 for TestAssignment 02 (User-Assessment)",
+		userId: UsersMock[0].id
 	}
+]
+
+export const CourseUserRelationsMock = [
+	{
+		id: 1,
+		courseId: CoursesMock[0].id,
+		userId: UsersMock[0].id,
+		role: "student"
+	},
+	{
+		id: 2,
+		courseId: CoursesMock[0].id,
+		userId: UsersMock[1].id,
+		role: "student"
+	}
+]
+
+export const AssessmentUserRelationsMock = [
+	{
+		id: 1,
+		assessmentId: AssessmentsMock[1].id,
+		userId: UsersMock[0].id
+	}
+]
+
+export const UserGroupRelationsMock = [
+	{
+		id: 1,
+		userId: UsersMock[0].id,
+		groupId: GroupsMock[0].id
+	},
+	{
+		id: 2,
+		userId: UsersMock[1].id,
+		groupId: GroupsMock[0].id
+	}
+
 ]

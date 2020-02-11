@@ -4,22 +4,20 @@ import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { getConnection } from 'typeorm';
 import { DbMockService } from "./mocks/db-mock.service";
-import { AssessmentDto } from "../src/shared/dto/assessment.dto";
-import { AssignmentDto } from "../src/shared/dto/assignment.dto";
-import { GroupDto } from "../src/shared/dto/group.dto";
-import { CourseDto } from "../src/shared/dto/course.dto";
-import { UserDto } from '../src/shared/dto/user.dto';
+import * as fromDtoMocks from "./mocks/dto-mocks";
 
-let courses: CourseDto[];
-let users: UserDto[];
-let groups: GroupDto[];
-let assignments: AssignmentDto[];
-let assessments: AssessmentDto[];
+let dbMockService: DbMockService; // Should be initialized in every describe-block
+
+const courses = fromDtoMocks.CoursesMock;
+const groups = fromDtoMocks.GroupsMock;
+const users = fromDtoMocks.UsersMock;
+const assignments = fromDtoMocks.AssignmentsMock;
+const assessments = fromDtoMocks.AssessmentsMock;
 
 describe('POST-REQUESTS for relations (Db contains data) of GroupController (e2e)', () => {
 	let app: INestApplication;
 
-	beforeAll(async () => {
+	beforeEach(async () => {
 		const moduleFixture: TestingModule = await Test.createTestingModule({
 			imports: [AppModule],
 		}).compile();
@@ -28,16 +26,14 @@ describe('POST-REQUESTS for relations (Db contains data) of GroupController (e2e
 		await app.init();
 
 		// Setup mocks - these tests require a filled db
-		const dbMockService = new DbMockService(getConnection());
-		await dbMockService.createAll();
-		courses = dbMockService.courses;
-		users = dbMockService.users;
-		groups = dbMockService.groups;
-		assignments = dbMockService.assignments;
-		assessments = dbMockService.assessments;
+		dbMockService = new DbMockService(getConnection());
+		await dbMockService.createCourses();
+		await dbMockService.createUsers();
+		await dbMockService.createCourseUserRelations();
+		await dbMockService.createGroups();
 	});
 
-	afterAll(async () => {
+	afterEach(async () => {
 		await getConnection().dropDatabase(); // Drop database with all tables and data
 		await getConnection().close(); // Close Db-Connection after all tests have been executed
 	});
