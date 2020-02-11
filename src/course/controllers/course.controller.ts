@@ -88,6 +88,15 @@ export class CourseController {
 		return this.assignmentService.getAssignments(courseId);
 	}
 
+	@Get(":courseId/assignments/:assignmentId")
+	getAssignmentById(
+		@Param("courseId") courseId: string,
+		@Param("assignmentId", ParseUUIDPipe) assignmentId: string 
+	): Promise<AssignmentDto> {
+
+		return this.assignmentService.getAssignmentById(assignmentId);
+	}
+
 	@Get(":courseId/assignments/:assignmentId/assessments")
 	getAllAssessmentsForAssignment(
 		@Param("courseId") courseId: string,
@@ -96,6 +105,16 @@ export class CourseController {
 
 		// TODO: Check if user is allowed to request all assessments
 		return this.assessmentService.getAssessmentsForAssignment(assignmentId);
+	}
+
+	@Get(":courseId/assignments/:assignmentId/assessments/:assessmentId")
+	getAssessmentById(
+		@Param("courseId") courseId: string,
+		@Param("assignmentId", ParseUUIDPipe) assignmentId: string,
+		@Param("assessmentId", ParseUUIDPipe) assessmentId: string
+	): Promise<AssessmentDto> {
+
+		return this.assessmentService.getAssessmentById(assessmentId);
 	}
 
 	@Get(":name/:semester")

@@ -25,4 +25,9 @@ export class AssignmentService {
 		return assignmentDtos;
 	}
 
+	async getAssignmentById(assignmentId: string): Promise<AssignmentDto> {
+		const assignment = await this.assignmentRepository.getAssignmentById(assignmentId);
+		return fromDtoFactory.createAssignmentDto(assignment);
+	}
+
 }

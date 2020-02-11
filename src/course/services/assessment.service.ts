@@ -55,4 +55,9 @@ export class AssessmentService {
 		return assessmentDtos;
 	}
 
+	async getAssessmentById(assessmentId: string): Promise<AssessmentDto> {
+		const assessment = await this.assessmentRepository.getAssessmentById(assessmentId);
+		return fromDtoFactoy.createAssessmentDto(assessment);
+	}
+
 }

@@ -11,6 +11,10 @@ export class AssessmentRepository extends Repository<Assessment> {
 		return await assessment.save();
 	}
 
+	async getAssessmentById(assessmentId: string): Promise<Assessment> {
+		return await this.findOne(assessmentId);
+	}
+
 	async getAllAssessmentsForAssignment(assignmentId: string): Promise<Assessment[]> {
 		return await this.find({
 			where: {

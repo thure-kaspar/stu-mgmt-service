@@ -19,7 +19,11 @@ export class AssignmentRepository extends Repository<Assignment> {
 		});
 	}
 
-	async getAssignmentWithAssessments(assignmentId: string): Promise<Assignment> {
+	async getAssignmentById(assignmentId: string): Promise<Assignment> {
+		return await this.findOne(assignmentId);
+	}
+
+	async getAssignmentById_WithAssessments(assignmentId: string): Promise<Assignment> {
 		return await this.findOne(assignmentId, {
 			relations: ["assessments"]
 		});
