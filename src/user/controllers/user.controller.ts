@@ -34,7 +34,7 @@ export class UserController {
     }
 
     /**
-	 *	Returns a collection of all groups the user was/is part of in the given course.
+	 *	Returns a collection of all groups the user is part of in the given course.
 	 *	
 	 * @param {string} userId
 	 * @param {string} courseId
@@ -42,10 +42,10 @@ export class UserController {
 	 * @memberof UserController
 	 */
 	@Get(":userId/courses/:courseId/groups")
-    getGroupOfUserForCourse(
+    getGroupsOfUserForCourse(
         @Param("userId", ParseUUIDPipe) userId: string,
         @Param("courseId") courseId: string,
-    ): Promise<any> {
+    ): Promise<GroupDto[]> {
 
         return this.userService.getGroupsOfUserForCourse(userId, courseId);
     }
