@@ -51,12 +51,12 @@ export class UserController {
     }
 
     @Get(":userId/courses/:courseId/assessmentsWithGroups")
-    getAssessmentGroupMapOfUserForCourse(
+    getAssessmentsWithGroupsOfUserForCourse(
         @Param("userId", ParseUUIDPipe) userId: string,
         @Param("courseId") courseId: string,
-    ): Promise<{assessment: AssessmentDto, group: GroupDto}[]> {
+    ): Promise<AssessmentDto[]> {
 
-        return this.userService.getAssessmentGroupMapOfUserForCourse(userId, courseId);
+        return this.userService.getAssessmentsWithGroupsOfUserForCourse(userId, courseId);
     }
 
     @Delete(":userId")
