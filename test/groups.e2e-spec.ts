@@ -90,7 +90,8 @@ describe('PATCH-REQUESTS (Db contains data) of GroupController (e2e)', () => {
 
 		// Setup mocks - these tests require a filled db
 		dbMockService = new DbMockService(getConnection());
-		//await dbMockService.createAll();
+		await dbMockService.createCourses();
+		await dbMockService.createGroups();
 	});
 
 	afterEach(async () => {
@@ -98,7 +99,7 @@ describe('PATCH-REQUESTS (Db contains data) of GroupController (e2e)', () => {
 		await getConnection().close(); // Close Db-Connection after all tests have been executed
 	});
 
-	it.skip("(PATCH) /groups/{groupId} Updates the group", () => {
+	it("(PATCH) /groups/{groupId} Updates the group", () => {
 		// Create clone of original data and then perform some changes
 		let changedGroup = new GroupDto();
 		Object.assign(changedGroup, groups[0]);
@@ -113,7 +114,7 @@ describe('PATCH-REQUESTS (Db contains data) of GroupController (e2e)', () => {
 			.expect(({ body }) => {
 				expect(body.name).toEqual(changedGroup.name)
 				expect(body.isClosed).toEqual(changedGroup.isClosed)
-				expect(body.password).toEqual(changedGroup.password)
+				// expect(body.password).toEqual(changedGroup.password) Can't check password, since it's not send to clients
 			});
 	});
 
@@ -140,6 +141,7 @@ describe('DELETE-REQUESTS (Db contains data) of GroupController (e2e)', () => {
 		await getConnection().close(); // Close Db-Connection after all tests have been executed
 	});
 
+	// SKIP - Fails because onDelete: Cascade is missing (Violation of foreign key contraint)
 	it.skip("(DELETE) /groups/{groupId} Deletes the group", () => {
 		return request(app.getHttpServer())
 			.delete(`/groups/${groups[0].id}`)

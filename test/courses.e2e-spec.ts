@@ -6,7 +6,6 @@ import { getConnection } from 'typeorm';
 import { DbMockService } from "./mocks/db-mock.service";
 import * as fromDtoMocks from "./mocks/dto-mocks";
 
-
 let dbMockService: DbMockService; // Should be initialized in every describe-block that requires data in db
 
 const courses = fromDtoMocks.CoursesMock;

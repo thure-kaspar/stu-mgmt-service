@@ -3,23 +3,19 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { getConnection } from 'typeorm';
-import { CourseDto } from "../src/shared/dto/course.dto";
-import { GroupDto } from "../src/shared/dto/group.dto";
-import { AssignmentDto } from "../src/shared/dto/assignment.dto";
-import { AssessmentDto } from "../src/shared/dto/assessment.dto";
 import { DbMockService } from "./mocks/db-mock.service";
-import { UserDto } from "../src/shared/dto/user.dto";
+import * as fromDtoMocks from "./mocks/dto-mocks";
 
-let users: UserDto[];
-let courses: CourseDto[];
-let groups: GroupDto[];
-let assignments: AssignmentDto[];
-let assessments: AssessmentDto[];
+const courses = fromDtoMocks.CoursesMock;
+const groups = fromDtoMocks.GroupsMock;
+const users = fromDtoMocks.UsersMock;
+const assignments = fromDtoMocks.AssignmentsMock;
+const assessments = fromDtoMocks.AssessmentsMock;
 
 describe('GET-REQUESTS of UserController (e2e)', () => {
 	let app: INestApplication;
 	
-	beforeAll(async () => {
+	beforeEach(async () => {
 		const moduleFixture: TestingModule = await Test.createTestingModule({
 			imports: [AppModule],
 		}).compile();
@@ -29,15 +25,10 @@ describe('GET-REQUESTS of UserController (e2e)', () => {
 
 		// Setup mocks
 		const dbMockService = new DbMockService(getConnection());
-		courses = dbMockService.courses;
-		users = dbMockService.users;
-		groups = dbMockService.groups;
-		assignments = dbMockService.assignments;
-		assessments = dbMockService.assessments;
 		await dbMockService.createAll();
 	});
 
-	afterAll(async () => {
+	afterEach(async () => {
 		await getConnection().dropDatabase(); // Drop database with all tables and data
 		await getConnection().close(); // Close Db-Connection after all tests have been executed
 	});
@@ -55,7 +46,7 @@ describe('GET-REQUESTS of UserController (e2e)', () => {
 describe('POST-REQUESTS of UserController (e2e)', () => {
 	let app: INestApplication;
 	
-	beforeAll(async () => {
+	beforeEach(async () => {
 		const moduleFixture: TestingModule = await Test.createTestingModule({
 			imports: [AppModule],
 		}).compile();
@@ -65,14 +56,9 @@ describe('POST-REQUESTS of UserController (e2e)', () => {
 
 		// Setup mocks
 		const dbMockService = new DbMockService(getConnection());
-		courses = dbMockService.courses;
-		users = dbMockService.users;
-		groups = dbMockService.groups;
-		assignments = dbMockService.assignments;
-		assessments = dbMockService.assessments;
 	});
 
-	afterAll(async () => {
+	afterEach(async () => {
 		await getConnection().dropDatabase(); // Drop database with all tables and data
 		await getConnection().close(); // Close Db-Connection after all tests have been executed
 	});
