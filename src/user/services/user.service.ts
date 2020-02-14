@@ -10,6 +10,7 @@ import { Group } from "../../shared/entities/group.entity";
 import { GroupRepository } from "../../course/repositories/group.repository";
 import { Assessment } from '../../shared/entities/assessment.entity';
 import { AssessmentRepository } from '../../course/repositories/assessment.repository';
+import { AssessmentDto } from "../../shared/dto/assessment.dto";
 
 @Injectable()
 export class UserService {
@@ -52,7 +53,7 @@ export class UserService {
 	 * @returns {Promise<any>}
 	 * @memberof UserService
 	 */
-	async getGroupsOfUserForCourse(userId: string, courseId: string): Promise<any> {
+	async getGroupsOfUserForCourse(userId: string, courseId: string): Promise<GroupDto[]> {
 		// Retrieve groups that user is currently a member of
 		const currentGroups = await this.groupRepository.getCurrentGroupsOfUserForCourse(courseId, userId);
 		const currentGroupDtos: GroupDto[] = [];
@@ -60,20 +61,31 @@ export class UserService {
 			currentGroupDtos.push(fromDtoFactory.createGroupDto(group));
 		});
 
-		// Retrieve groups that user was/is a member of by checking assessments
+		// TODO: Define a proper format for return value or split in two methods
+		return currentGroupDtos;
+	}
+
+	async getAssessmentGroupMapOfUserForCourse(userId: string, courseId: string): Promise<{assessment: AssessmentDto, group: GroupDto}[]> {
+		// Retrieve assessments of user with group
 		const assessments = await this.assessmentRepository.getAssessmentsOfUserForCourse_WithGroups(courseId, userId);
 	
 		// Create [AssignmentId, GroupId]-Map
-		const assignmentGroupMap = [];
+		const assessmentGroupMap = [];
 		assessments.forEach(assessment => {
 			// We only care about group-assessments here
 			if (assessment.groupId) {
-				assignmentGroupMap.push([assessment.assignmentId, assessment.groupId]);
+				assessmentGroupMap.push([
+					fromDtoFactory.createAssessmentDto(assessment), 
+					fromDtoFactory.createGroupDto(assessment.group)
+				]);
 			}
 		});
 
-		// TODO: Define a proper format for return value or split in two methods
-		return [currentGroupDtos, assignmentGroupMap];
-    }
+		return assessmentGroupMap;
+	}
+	
+	async deleteUser(userId: string): Promise<boolean> {
+		return await this.userRepository.deleteUser(userId);
+	}
     
 }
