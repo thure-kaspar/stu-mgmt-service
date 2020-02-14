@@ -13,4 +13,4 @@ npm install
 #npm run test:cov
 
 # Deploy on demo server
-./deploy.sh
+scripts/deploy.sh
