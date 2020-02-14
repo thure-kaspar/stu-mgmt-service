@@ -19,7 +19,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "env NODE_ENV=testing jest --runInBand --config ./test/jest-e2e.json",
-    "script:demodb": "env NODE_ENV=development jest --runInBand --config ./scripts/jest-e2e.json"
+    "script:demodb": "env NODE_ENV=demo jest --runInBand --config ./scripts/jest-e2e.json"
   },
   "dependencies": {
     "@nestjs/common": "^6.7.2",
