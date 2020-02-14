@@ -32,6 +32,16 @@ export class UserRepository extends Repository<User> {
         return courses;
     }
 
+    async updateUser(userId: string, userDto: UserDto): Promise<User> {
+        const user = await this.getUserById(userId);
+
+        // TODO: Define Patch-Object or create method
+        user.email = userDto.email;
+        user.role = userDto.role;
+
+        return await user.save();
+    }
+
     async deleteUser(userId: string): Promise<boolean> {
         const deleteResult = await this.delete(userId);
         return deleteResult.affected == 1;

@@ -38,8 +38,17 @@ export class CourseRepository extends Repository<Course> {
     }
 
     async updateCourse(courseId: string, courseDto: CourseDto): Promise<Course> {
-        const course = this.createEntityFromDto(courseDto);
-        return course.save();
+        const course = await this.getCourseById(courseId);
+
+        // TODO: Define Patch-Object or create method
+        course.shortname = courseDto.shortname;
+        course.semester = courseDto.semester;
+        course.title = courseDto.title;
+        course.isClosed = courseDto.isClosed;
+        course.password = courseDto.password;
+        course.link = courseDto.link;
+    
+        return await course.save();
     }
 
     async deleteCourse(courseId: string): Promise<boolean> {

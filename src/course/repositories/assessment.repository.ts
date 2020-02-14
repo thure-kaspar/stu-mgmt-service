@@ -61,7 +61,12 @@ export class AssessmentRepository extends Repository<Assessment> {
 	 * @memberof AssessmentRepository
 	 */
 	async updateAssessment(assessmentId: string, assessmentDto: AssessmentDto): Promise<Assessment> {
-		const assessment = this.createEntityFromDto(assessmentDto);
+		const assessment = await this.getAssessmentById(assessmentId);
+
+		// TODO: Define Patch-Object or create method
+		assessment.achievedPoints = assessmentDto.achievedPoints;
+		assessment.comment = assessmentDto.comment;
+
 		return await assessment.save();
 	}
 

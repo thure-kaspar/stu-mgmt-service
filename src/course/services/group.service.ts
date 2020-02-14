@@ -40,7 +40,7 @@ export class GroupService {
 
 	async updateGroup(groupId: string, groupDto: GroupDto): Promise<GroupDto> {
 		if (groupId !== groupDto.id) {
-			throw new BadRequestException("GroupId refers to a different group");
+			throw new BadRequestException("GroupId refers to a different group.");
 		}
 		const group = await this.groupRepositoy.updateGroup(groupId, groupDto);
 		return fromDtoFactory.createGroupDto(group);

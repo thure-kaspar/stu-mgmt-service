@@ -88,16 +88,23 @@ export class GroupRepository extends Repository<Group> {
 		});
 	}
 
+	/**
+	 * Updates the group. Does not update any included relations.
+	 *
+	 * @param {string} groupId
+	 * @param {GroupDto} groupDto
+	 * @returns {Promise<Group>}
+	 * @memberof GroupRepository
+	 */
 	async updateGroup(groupId: string, groupDto: GroupDto): Promise<Group> {
 		const group = await this.getGroupById(groupId);
-		const updatedGroup = this.createEntityFromDto(groupDto);
 		
 		// TODO: Define Patch-Object or create method
-		group.name = updatedGroup.name;
-		group.isClosed = updatedGroup.isClosed;
-		group.password = updatedGroup.password;
+		group.name = groupDto.name;
+		group.isClosed = groupDto.isClosed;
+		group.password = groupDto.password;
 		
-		return group.save();
+		return await group.save();
 	}
 
 	/**

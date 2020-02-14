@@ -38,7 +38,15 @@ export class AssignmentRepository extends Repository<Assignment> {
 	 * @memberof AssignmentRepository
 	 */
 	async updateAssignment(assignmentId: string, assignmentDto: AssignmentDto): Promise<Assignment> {
-		const assignment = this.createEntityFromDto(assignmentDto);
+		const assignment = await this.getAssignmentById(assignmentId);
+
+		// TODO: Define Patch-Object or create method
+		assignment.name = assignmentDto.name;
+		assignment.type = assignmentDto.type;
+		assignment.maxPoints = assignmentDto.maxPoints;
+		assignment.comment = assignmentDto.comment;
+		assignment.link = assignmentDto.link;
+
 		return await assignment.save();
 	}
 

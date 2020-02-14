@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserRepository } from '../repositories/user.repository';
 import { User } from '../../shared/entities/user.entity';
@@ -77,6 +77,14 @@ export class UserService {
 		});
 
 		return assessments;
+	}
+
+	async updateUser(userId: string, userDto: UserDto): Promise<UserDto> {
+		if (userId !== userDto.id) {
+			throw new BadRequestException("UserId refers to a different user.");
+		}
+		const user = await this.userRepository.updateUser(userId, userDto);
+		return fromDtoFactory.createUserDto(user);
 	}
 	
 	async deleteUser(userId: string): Promise<boolean> {
