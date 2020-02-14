@@ -1,7 +1,8 @@
-import { Controller, Get, Param, ParseUUIDPipe, Post } from "@nestjs/common";
+import { Controller, Get, Param, ParseUUIDPipe, Post, Delete, Patch, Body } from "@nestjs/common";
 import { GroupService } from "../services/group.service";
 import { UserDto } from "../../shared/dto/user.dto";
 import { ApiTags } from "@nestjs/swagger";
+import { GroupDto } from "../../shared/dto/group.dto";
 
 @ApiTags("groups")
 @Controller("groups")
@@ -23,6 +24,23 @@ export class GroupController {
 	): Promise<UserDto[]> {
 
 		return this.groupService.getUsersOfGroup(groupId);
+	}
+
+	@Patch(":groupId")
+	updateGroup(
+		@Param("groupId", ParseUUIDPipe) groupId: string,
+		@Body() groupDto: GroupDto
+	): Promise<GroupDto> {
+
+		return this.groupService.updateGroup(groupId, groupDto);
+	}
+
+	@Delete(":groupId")
+	deleteGroup(
+		@Param("groupId", ParseUUIDPipe) groupId: string
+	): Promise<boolean> {
+
+		return this.groupService.deleteGroup(groupId);
 	}
 
 }

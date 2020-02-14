@@ -60,4 +60,16 @@ export class AssessmentService {
 		return fromDtoFactoy.createAssessmentDto(assessment);
 	}
 
+	async updateAssessment(assessmentId: string, assessmentDto: AssessmentDto): Promise<AssessmentDto> {
+		if (assessmentId !== assessmentDto.id) {
+			throw new BadRequestException("AssessmentId refers to a different assessment.");
+		}
+		const assessment = await this.assessmentRepository.updateAssessment(assessmentId, assessmentDto);
+		return fromDtoFactoy.createAssessmentDto(assessment);
+	}
+
+	async deleteAssessment(assessmentId: string): Promise<boolean> {
+		return await this.assessmentRepository.deleteAssessment(assessmentId);
+	}
+
 }

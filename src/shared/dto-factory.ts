@@ -80,5 +80,10 @@ export function createAssessmentDto(assessmentEntity: Assessment) {
         achievedPoints: assessmentEntity.achievedPoints,
         comment: assessmentEntity.comment
     };
+
+    if (assessmentEntity.group) {
+        assessmentDto.group = createGroupDto(assessmentEntity.group);
+    }
+
     return assessmentDto;
 }

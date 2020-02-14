@@ -7,17 +7,29 @@ import { UserGroupRelation } from "../../shared/entities/user-group-relation.ent
 @EntityRepository(Group)
 export class GroupRepository extends Repository<Group> {
 
+	/**
+	 * Inserts the given group into the database.
+	 *
+	 * @param {string} courseId
+	 * @param {GroupDto} groupDto
+	 * @returns {Promise<Group>}
+	 * @memberof GroupRepository
+	 */
 	async createGroup(courseId: string, groupDto: GroupDto): Promise<Group> {
-		const group = new Group();
+		const group = this.createEntityFromDto(groupDto);
 		group.courseId = courseId;
-		group.name = groupDto.name;
-		group.password = groupDto.password;
-		group.isClosed = groupDto.isClosed;
 		await group.save();
-
 		return group;
 	}
 
+	/**
+	 * Adds the given user to the group.
+	 *
+	 * @param {string} groupId
+	 * @param {string} userId
+	 * @returns {Promise<any>}
+	 * @memberof GroupRepository
+	 */
 	async addUserToGroup(groupId: string, userId: string): Promise<any> {
 		const userGroupRelation = new UserGroupRelation();
 		userGroupRelation.groupId = groupId;
@@ -25,12 +37,30 @@ export class GroupRepository extends Repository<Group> {
 		return await userGroupRelation.save();
 	}
 
+	async getGroupById(groupId: string): Promise<Group> {
+		return await this.findOne(groupId);
+	}
+
+	/**
+	 * Returns the group with its members.
+	 *
+	 * @param {string} groupId
+	 * @returns
+	 * @memberof GroupRepository
+	 */
 	async getGroupWithUsers(groupId: string) {
 		return await this.findOne(groupId, {
 			relations: ["userGroupRelations", "userGroupRelations.user"]
 		});
 	}
 
+	/**
+	 * Returns all groups, that belong to the given course.
+	 *
+	 * @param {string} courseId
+	 * @returns
+	 * @memberof GroupRepository
+	 */
 	async getGroupsOfCourse(courseId: string) {
 		return await this.find({
 			where: {
@@ -56,6 +86,40 @@ export class GroupRepository extends Repository<Group> {
 				}
 			}
 		});
+	}
+
+	async updateGroup(groupId: string, groupDto: GroupDto): Promise<Group> {
+		const group = await this.getGroupById(groupId);
+		const updatedGroup = this.createEntityFromDto(groupDto);
+		
+		// TODO: Define Patch-Object or create method
+		group.name = updatedGroup.name;
+		group.isClosed = updatedGroup.isClosed;
+		group.password = updatedGroup.password;
+		
+		return group.save();
+	}
+
+	/**
+	 * Deletes the group from the database.
+	 *
+	 * @param {string} groupId
+	 * @returns {Promise<boolean>}
+	 * @memberof GroupRepository
+	 */
+	async deleteGroup(groupId: string): Promise<boolean> {
+		const deleteResult = await this.delete(groupId);
+		return deleteResult.affected == 1;
+	}
+
+	private createEntityFromDto(groupDto: GroupDto): Group {
+		const group = new Group();
+		group.id = groupDto.id;
+		group.courseId = groupDto.courseId
+		group.name = groupDto.name;
+		group.password = groupDto.password;
+		group.isClosed = groupDto.isClosed;
+		return group;
 	}
 
 }

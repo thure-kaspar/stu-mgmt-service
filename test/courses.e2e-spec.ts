@@ -239,3 +239,102 @@ describe('POST-REQUESTS for relations (db contains data) of CourseController (e2
 	});
 
 });
+
+describe('POST-REQUESTS for relations (db contains data) of CourseController (e2e)', () => {
+	let app: INestApplication;
+
+	beforeEach(async () => {
+		const moduleFixture: TestingModule = await Test.createTestingModule({
+			imports: [AppModule],
+		}).compile();
+
+		app = moduleFixture.createNestApplication();
+		await app.init();
+
+		// Setup mocks - all of these tests require (at least) existing courses and users
+		dbMockService = new DbMockService(getConnection());
+		await dbMockService.createCourses();
+		await dbMockService.createUsers();
+	});
+
+	afterEach(async () => {
+		await getConnection().dropDatabase(); // Drop database with all tables and data
+		await getConnection().close(); // Close Db-Connection after all tests have been executed
+	});
+
+	it("(POST) /courses/{courseId}/users/{userId} Adds the user to the course", () => {
+		return request(app.getHttpServer())
+			.post(`/courses/${courses[0].id}/users/${users[0].id}`)
+			.expect(201)
+	});
+
+	it("(POST) /courses/{courseId}/groups Creates the given group and returns it (Part 1/2)", () => {
+		return request(app.getHttpServer())
+			.post(`/courses/${groups[0].courseId}/groups`)
+			.send(groups[0]) // CourseId does not need to be specified here, because Course was created with given Id
+			.expect(201)
+			.expect(({ body }) => {
+				expect(body.courseId).toEqual(groups[0].courseId);
+				expect(body.name).toEqual(groups[0].name);
+			})
+	});
+
+	it("(POST) /courses/{courseId}/groups Creates the given group and returns it (Part 2/2)", () => {
+		return request(app.getHttpServer())
+			.post(`/courses/${groups[1].courseId}/groups`)
+			.send(groups[1]) // CourseId does not need to be specified here, because Course was created with given Id
+			.expect(201)
+			.expect(({ body }) => {
+				expect(body.courseId).toEqual(groups[1].courseId);
+				expect(body.name).toEqual(groups[1].name);
+			})
+	});
+
+	it("(POST) /courses/{courseId}/assignments Creates the given assignment and returns it", () => {
+		return request(app.getHttpServer())
+			.post(`/courses/${assignments[0].courseId}/assignments`)
+			.send(assignments[0]) // CourseId does not need to be specified here, because Course was created with given Id
+			.expect(201)
+			.expect(({ body }) => {
+				expect(body.courseId).toEqual(assignments[0].courseId);
+				expect(body.name).toEqual(assignments[0].name);
+				expect(body.type).toEqual(assignments[0].type);
+				expect(body.maxPoints).toEqual(assignments[0].maxPoints);
+			});
+	});
+
+	// TODO: Verify that assessment-user-relation gets created
+	it("(POST) /courses/{courseId}/assignments/{assignmentId}/assessments Creates the given (group-)assessment and returns it", async () => {
+		// Setup
+		await dbMockService.createGroups();
+		await dbMockService.createAssignments();
+
+		return request(app.getHttpServer())
+			.post(`/courses/${assignments[0].courseId}/assignments/${assessments[0].assignmentId}/assessments`)
+			.send(assessments[0])
+			.expect(201)
+			.expect(({ body }) => {
+				expect(body.assignmentId).toEqual(assessments[0].assignmentId);
+				expect(body.achievedPoints).toEqual(assessments[0].achievedPoints);
+				expect(body.comment).toEqual(assessments[0].comment);
+			});
+	});
+
+	// TODO: Verify that assessment-user-relation gets created
+	it("(POST) /courses/{courseId}/assignments/{assignmentId}/assessments Creates the given (user-)assessment and returns it", async () => {
+		// Setup
+		await dbMockService.createAssignments();
+
+		return request(app.getHttpServer())
+			.post(`/courses/${assignments[1].courseId}/assignments/${assessments[1].assignmentId}/assessments`)
+			.send(assessments[1])
+			.expect(201)
+			.expect(({ body }) => {
+				expect(body.assignmentId).toEqual(assessments[1].assignmentId);
+				expect(body.achievedPoints).toEqual(assessments[1].achievedPoints);
+				expect(body.comment).toEqual(assessments[1].comment);
+			});
+	});
+
+});
+

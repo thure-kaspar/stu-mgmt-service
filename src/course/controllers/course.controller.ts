@@ -135,12 +135,52 @@ export class CourseController {
 		return this.courseService.updateCourse(courseId, courseDto);
 	}
 
+	@Patch(":courseId/assignments/:assignmentId")
+	updateAssignment(
+		@Param("courseId") courseId: string,
+		@Param("assignmentId", ParseUUIDPipe) assignmentId: string,
+		@Body() assignmentDto: AssignmentDto
+	): Promise<AssignmentDto> {
+
+		return this.assignmentService.updateAssignment(assignmentId, assignmentDto);
+	}
+
+	@Patch(":courseId/assignments/:assignmentId/assessments/:assessmentId")
+	updateAssessment(
+		@Param("courseId") courseId: string,
+		@Param("assignmentId", ParseUUIDPipe) assignmentId: string,
+		@Param("assessmentId", ParseUUIDPipe) assessmentId: string,
+		@Body() assessmentDto: AssessmentDto
+	): Promise<AssessmentDto> {
+
+		return this.assessmentService.updateAssessment(assessmentId, assessmentDto);
+	}
+
 	@Delete(":courseId")
 	deleteCourse(
 		@Param("courseId") courseId: string,
 	): Promise<boolean> {
 
 		return this.courseService.deleteCourse(courseId);
+	}
+
+	@Delete(":courseId/assignments/:assignmentId")
+	deleteAssignment(
+		@Param("courseId") courseId: string,
+		@Param("assignmentId", ParseUUIDPipe) assignmentId: string
+	): Promise<boolean> {
+
+		return this.assignmentService.deleteAssignment(assignmentId);
+	}
+
+	@Delete(":courseId/assignments/:assignmentId/assessments/:assessmentId")
+	deleteAssessment(
+		@Param("courseId") courseId: string,
+		@Param("assignmentId", ParseUUIDPipe) assignmentId: string,
+		@Param("assessmentId", ParseUUIDPipe) assessmentId: string
+	): Promise<boolean> {
+
+		return this.assessmentService.deleteAssessment(assessmentId);
 	}
 
 }

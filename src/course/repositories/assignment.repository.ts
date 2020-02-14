@@ -29,6 +29,24 @@ export class AssignmentRepository extends Repository<Assignment> {
 		});
 	}
 
+	/**
+	 * Updates the assignment. 
+	 *
+	 * @param {string} assignmentId
+	 * @param {AssignmentDto} assignmentDto
+	 * @returns {Promise<Assignment>}
+	 * @memberof AssignmentRepository
+	 */
+	async updateAssignment(assignmentId: string, assignmentDto: AssignmentDto): Promise<Assignment> {
+		const assignment = this.createEntityFromDto(assignmentDto);
+		return await assignment.save();
+	}
+
+	async deleteAssignment(assignmentId: string): Promise<boolean> {
+		const deleteResult = await this.delete(assignmentId);
+		return deleteResult.affected == 1;
+	}
+
 	private createEntityFromDto(assignmentDto: AssignmentDto): Assignment {
 		const assignment = new Assignment();
 		assignment.name = assignmentDto.name;

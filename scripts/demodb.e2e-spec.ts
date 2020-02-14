@@ -4,7 +4,7 @@ import { AppModule } from '../src/app.module';
 import { getConnection } from 'typeorm';
 import { DbMockService } from "../test/mocks/db-mock.service";
 
-describe('GET-REQUESTS of CourseController (e2e)', () => {
+describe('Demo-Database Creation', () => {
 	let app: INestApplication;
 
 	beforeAll(async () => {
@@ -14,6 +14,7 @@ describe('GET-REQUESTS of CourseController (e2e)', () => {
 
 		app = moduleFixture.createNestApplication();
 		await app.init();
+		await getConnection().synchronize(true);
 
 		// Setup mocks
 		const dbMockService = new DbMockService(getConnection());

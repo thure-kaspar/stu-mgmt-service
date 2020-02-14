@@ -38,4 +38,16 @@ export class GroupService {
 		return userDtos;
 	}
 
+	async updateGroup(groupId: string, groupDto: GroupDto): Promise<GroupDto> {
+		if (groupId !== groupDto.id) {
+			throw new BadRequestException("GroupId refers to a different group");
+		}
+		const group = await this.groupRepositoy.updateGroup(groupId, groupDto);
+		return fromDtoFactory.createGroupDto(group);
+	}
+
+	async deleteGroup(groupId: string): Promise<boolean> {
+		return await this.groupRepositoy.deleteGroup(groupId);
+	}
+
 }

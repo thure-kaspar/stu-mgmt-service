@@ -32,11 +32,10 @@ export class UserRepository extends Repository<User> {
         return courses;
     }
 
-    // REMOVED ON PURPOSE
-    // async deleteUser(userId: string): Promise<boolean> {
-    //     const deleteResult = await this.delete(userId);
-    //     return deleteResult.affected == 1;
-    // }
+    async deleteUser(userId: string): Promise<boolean> {
+        const deleteResult = await this.delete(userId);
+        return deleteResult.affected == 1;
+    }
 	
     private createEntityFromDto(userDto: UserDto): User {
         const user = new User();

@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, BadRequestException } from "@nestjs/common";
 import { AssignmentDto } from "../../shared/dto/assignment.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Assignment } from "../../shared/entities/assignment.entity";
@@ -28,6 +28,18 @@ export class AssignmentService {
 	async getAssignmentById(assignmentId: string): Promise<AssignmentDto> {
 		const assignment = await this.assignmentRepository.getAssignmentById(assignmentId);
 		return fromDtoFactory.createAssignmentDto(assignment);
+	}
+
+	async updateAssignment(assignmentId: string, assignmentDto: AssignmentDto): Promise<AssignmentDto> {
+		if (assignmentId !== assignmentDto.id) {
+			throw new BadRequestException("AssignmentId refers to a different assignment.");
+		}
+		const assignment = await this.assignmentRepository.updateAssignment(assignmentId, assignmentDto);
+		return fromDtoFactory.createAssignmentDto(assignment);
+	}
+
+	async deleteAssignment(assignmentId: string): Promise<boolean> {
+		return await this.assignmentRepository.deleteAssignment(assignmentId);
 	}
 
 }
