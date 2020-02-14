@@ -36,7 +36,7 @@ export class AssessmentRepository extends Repository<Assessment> {
 		});
 	}
 
-	async getAssessmentsOfUserForCourse_WithGroups(courseId: string, userId: string): Promise<Assessment[]> {
+	async getAssessmentsOfUserForCourse_WithAssignment_WithGroups(courseId: string, userId: string): Promise<Assessment[]> {
 		const assessments = await this.find({
 			where: {
 				assignment: {
@@ -46,10 +46,28 @@ export class AssessmentRepository extends Repository<Assessment> {
 					userId: userId
 				},
 			},
-			relations: ["group"]
+			relations: ["assignment, group"]
 		});
 
 		return assessments;
+	}
+
+	/**
+	 * Updates the assessment.
+	 *
+	 * @param {string} assessmentId
+	 * @param {AssessmentDto} assessmentDto
+	 * @returns {Promise<Assessment>}
+	 * @memberof AssessmentRepository
+	 */
+	async updateAssessment(assessmentId: string, assessmentDto: AssessmentDto): Promise<Assessment> {
+		const assessment = this.createEntityFromDto(assessmentDto);
+		return await assessment.save();
+	}
+
+	async deleteAssessment(assessmentId: string): Promise<boolean> {
+		const deleteResult = await this.delete(assessmentId);
+		return deleteResult.affected == 1;
 	}
 
 	private createEntityFromDto(assessmentDto: AssessmentDto): Assessment {
