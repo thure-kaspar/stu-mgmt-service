@@ -1,6 +1,7 @@
 import { BaseEntity, Entity, Column, CreateDateColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "./user.entity";
 import { Course } from "./course.entity";
+import { UserRoles } from "../enums";
 
 @Entity("course_user_relations")
  export class CourseUserRelation extends BaseEntity {
@@ -20,7 +21,7 @@ import { Course } from "./course.entity";
 	userId: string;
 
 	@Column()
-	role: string;  
+	role: UserRoles;  
 
 	@CreateDateColumn()
 	joinedAt: Date;

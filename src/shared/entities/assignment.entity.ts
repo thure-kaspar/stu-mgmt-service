@@ -1,6 +1,7 @@
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany } from "typeorm";
 import { Course } from "./course.entity";
 import { Assessment } from "./assessment.entity";
+import { AssignmentStates, AssignmentTypes } from "../enums";
 
 @Entity("assignments")
 export class Assignment extends BaseEntity {
@@ -10,6 +11,15 @@ export class Assignment extends BaseEntity {
 	@Column()
 	name: string;
 
+	@Column()
+	state: AssignmentStates;
+
+	@Column({ nullable: true })
+	startDate: Date;
+
+	@Column({ nullable: true })
+	endDate: Date;
+
 	@Column({ nullable: true })
 	comment: string;
 
@@ -17,7 +27,7 @@ export class Assignment extends BaseEntity {
 	link: string;
 
 	@Column()
-	type: string;
+	type: AssignmentTypes;
 
 	@Column()
 	maxPoints: number;

@@ -3,6 +3,7 @@ import { GroupDto } from "../../src/shared/dto/group.dto";
 import { AssignmentDto } from "../../src/shared/dto/assignment.dto";
 import { AssessmentDto } from "../../src/shared/dto/assessment.dto";
 import { UserDto } from "../../src/shared/dto/user.dto";
+import { UserRoles, AssignmentStates, AssignmentTypes } from "../../src/shared/enums";
 
 export const CoursesMock: CourseDto[] = [
 	{ 
@@ -29,12 +30,12 @@ export const UsersMock: UserDto[] = [
 	{
 		id: "a019ea22-5194-4b83-8d31-0de0dc9bca53",
 		email: "user.one@test.com",
-		role: "student"
+		role: UserRoles.STUDENT
 	},
 	{
 		id: "40f59aad-7473-4455-a3ea-1214f19b2565",
 		email: "user.two@test.com",
-		role: "student"
+		role: UserRoles.STUDENT
 	}
 ];
 
@@ -61,14 +62,16 @@ export const AssignmentsMock: AssignmentDto[] = [
 		courseId: CoursesMock[0].id,
 		name: "Test_Assignment 01 (Java)",
 		maxPoints: 100,
-		type: "homework"
+		type: AssignmentTypes.HOMEWORK,
+		state: AssignmentStates.IN_PROGRESS
 	},
 	{
 		id: "74aa124c-0753-467f-8f52-48d1901282f8",
 		courseId: CoursesMock[0].id,
 		name: "Test_Assignment 02 (Java)",
 		maxPoints: 100,
-		type: "homework"
+		type: AssignmentTypes.HOMEWORK,
+		state: AssignmentStates.IN_PROGRESS
 	}
 ]
 
@@ -94,13 +97,13 @@ export const CourseUserRelationsMock = [
 		id: 1,
 		courseId: CoursesMock[0].id,
 		userId: UsersMock[0].id,
-		role: "student"
+		role: UserRoles.STUDENT
 	},
 	{
 		id: 2,
 		courseId: CoursesMock[0].id,
 		userId: UsersMock[1].id,
-		role: "student"
+		role: UserRoles.STUDENT
 	}
 ]
 

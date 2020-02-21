@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param, ParseUUIDPipe, Delete } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, ParseUUIDPipe, Delete, Patch } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { UserDto } from '../../shared/dto/user.dto';
 import { ApiTags } from '@nestjs/swagger';
@@ -59,8 +59,16 @@ export class UserController {
         return this.userService.getAssessmentsWithGroupsOfUserForCourse(userId, courseId);
     }
 
+    @Patch(":userId")
+    updateUser(
+        @Param("userId", ParseUUIDPipe) userId: string,
+        @Body() userDto: UserDto
+    ): Promise<UserDto> {
+        return this.userService.updateUser(userId, userDto);
+    }
+
     @Delete(":userId")
-    deleteUser(@Param("userId") userId: string): Promise<boolean> {
+    deleteUser(@Param("userId", ParseUUIDPipe) userId: string): Promise<boolean> {
         return this.userService.deleteUser(userId);
     }
 }

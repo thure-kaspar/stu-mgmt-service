@@ -9,6 +9,7 @@ import { CourseUserRelation } from '../../shared/entities/course-user-relation.e
 import { CourseUserRelationRepository } from '../repositories/course-user-relation.repository';
 import * as fromDtoFactory from "../../shared/dto-factory";
 import { UserDto } from "../../shared/dto/user.dto";
+import { UserRoles } from "../../shared/enums";
 
 @Injectable()
 export class CourseService {
@@ -23,7 +24,7 @@ export class CourseService {
 	}
 	
     async addUser(courseId: string, userId: string): Promise<any> { // TODO: don't return any
-        return await this.courseUserRepository.addUserToCourse(courseId, userId, "student"); // TODO: don't hardcode role 
+        return await this.courseUserRepository.addUserToCourse(courseId, userId, UserRoles.STUDENT); // TODO: don't hardcode role 
     }
 
     async getAllCourses(): Promise<CourseDto[]> {

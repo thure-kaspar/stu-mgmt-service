@@ -1,10 +1,13 @@
-import { CourseDto } from "./course.dto";
+import { AssignmentStates, AssignmentTypes } from "../enums";
 
 export class AssignmentDto {
 	id?: string;
 	courseId: string;
 	name: string;
-	type: string;
+	state: AssignmentStates;
+	startDate?: Date;
+	endDate?: Date;
+	type: AssignmentTypes;
 	maxPoints: number;
 	comment?: string;
 	link?: string;

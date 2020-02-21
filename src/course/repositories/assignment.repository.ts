@@ -43,6 +43,9 @@ export class AssignmentRepository extends Repository<Assignment> {
 		// TODO: Define Patch-Object or create method
 		assignment.name = assignmentDto.name;
 		assignment.type = assignmentDto.type;
+		assignment.state = assignmentDto.state;
+		assignment.startDate = assignmentDto.startDate;
+		assignment.endDate = assignmentDto.endDate;
 		assignment.maxPoints = assignmentDto.maxPoints;
 		assignment.comment = assignmentDto.comment;
 		assignment.link = assignmentDto.link;
@@ -58,6 +61,9 @@ export class AssignmentRepository extends Repository<Assignment> {
 	private createEntityFromDto(assignmentDto: AssignmentDto): Assignment {
 		const assignment = new Assignment();
 		assignment.name = assignmentDto.name;
+		assignment.state = assignmentDto.state;
+		assignment.startDate = assignmentDto.startDate;
+		assignment.endDate = assignmentDto.endDate;
 		assignment.comment = assignmentDto.comment;
 		assignment.link = assignmentDto.link;
 		assignment.type = assignmentDto.type;
