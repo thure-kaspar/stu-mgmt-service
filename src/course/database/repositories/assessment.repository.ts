@@ -1,7 +1,6 @@
 import { Repository, EntityRepository, IsNull } from "typeorm";
-import { Assessment } from "../../shared/entities/assessment.entity";
-import { AssessmentDto } from "../../shared/dto/assessment.dto";
-import { Group } from "../../shared/entities/group.entity";
+import { Assessment } from "../../../shared/entities/assessment.entity";
+import { AssessmentDto } from "../../../shared/dto/assessment.dto";
 
 @EntityRepository(Assessment)
 export class AssessmentRepository extends Repository<Assessment> {

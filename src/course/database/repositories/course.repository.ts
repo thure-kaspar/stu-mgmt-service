@@ -1,6 +1,6 @@
 import { Repository, EntityRepository, DeleteResult } from "typeorm";
-import { Course } from "../../shared/entities/course.entity";
-import { CourseDto } from "../../shared/dto/course.dto";
+import { Course } from "../../../shared/entities/course.entity";
+import { CourseDto } from "../../../shared/dto/course.dto";
 
 @EntityRepository(Course)
 export class CourseRepository extends Repository<Course> {

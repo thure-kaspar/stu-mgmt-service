@@ -2,14 +2,14 @@ import { Injectable, BadRequestException } from "@nestjs/common";
 import { AssessmentDto } from "../../shared/dto/assessment.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Assessment } from "../../shared/entities/assessment.entity";
-import { AssessmentRepository } from "../repositories/assessment.repository";
+import { AssessmentRepository } from "../database/repositories/assessment.repository";
 import * as fromDtoFactoy from "../../shared/dto-factory";
 import { Assignment } from "../../shared/entities/assignment.entity";
-import { AssignmentRepository } from "../repositories/assignment.repository";
-import { GroupRepository } from "../repositories/group.repository";
+import { AssignmentRepository } from "../database/repositories/assignment.repository";
+import { GroupRepository } from "../database/repositories/group.repository";
 import { Group } from "../../shared/entities/group.entity";
 import { AssessmentUserRelation } from "../../shared/entities/assessment-user-relation.entity";
-import { AssessmentUserRelationRepository } from "../repositories/assessment-user-relation.repository";
+import { AssessmentUserRelationRepository } from "../database/repositories/assessment-user-relation.repository";
 
 @Injectable()
 export class AssessmentService {

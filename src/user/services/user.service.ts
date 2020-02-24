@@ -7,9 +7,9 @@ import * as fromDtoFactory from "../../shared/dto-factory";
 import { CourseDto } from 'src/shared/dto/course.dto';
 import { GroupDto } from "../../shared/dto/group.dto";
 import { Group } from "../../shared/entities/group.entity";
-import { GroupRepository } from "../../course/repositories/group.repository";
+import { GroupRepository } from "../../course/database/repositories/group.repository";
 import { Assessment } from '../../shared/entities/assessment.entity';
-import { AssessmentRepository } from '../../course/repositories/assessment.repository';
+import { AssessmentRepository } from '../../course/database/repositories/assessment.repository';
 import { AssessmentDto } from "../../shared/dto/assessment.dto";
 
 @Injectable()

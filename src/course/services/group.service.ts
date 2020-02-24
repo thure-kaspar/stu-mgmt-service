@@ -1,7 +1,7 @@
 import { Injectable, BadRequestException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { GroupRepository } from "../repositories/group.repository";
-import { CourseRepository } from "../repositories/course.repository";
+import { GroupRepository } from "../database/repositories/group.repository";
+import { CourseRepository } from "../database/repositories/course.repository";
 import { Course } from "../../shared/entities/course.entity";
 import { Group } from "../../shared/entities/group.entity";
 import { GroupDto } from "../../shared/dto/group.dto";

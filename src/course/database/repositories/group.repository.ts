@@ -1,8 +1,9 @@
 import { Repository, EntityRepository, QueryBuilder } from "typeorm";
-import { Group } from "../../shared/entities/group.entity";
-import { GroupDto } from "../../shared/dto/group.dto";
-import { Course } from "../../shared/entities/course.entity";
-import { UserGroupRelation } from "../../shared/entities/user-group-relation.entity";
+import { Group } from "../../../shared/entities/group.entity";
+import { GroupDto } from "../../../shared/dto/group.dto";
+import { Course } from "../../../shared/entities/course.entity";
+import { UserGroupRelation } from "../../../shared/entities/user-group-relation.entity";
+import { ConflictException } from "@nestjs/common";
 
 @EntityRepository(Group)
 export class GroupRepository extends Repository<Group> {
@@ -34,7 +35,11 @@ export class GroupRepository extends Repository<Group> {
 		const userGroupRelation = new UserGroupRelation();
 		userGroupRelation.groupId = groupId;
 		userGroupRelation.userId = userId;
-		return await userGroupRelation.save();
+		const savedUserGroupRelation = await userGroupRelation.save()
+			.catch((error) => {
+				if (error.code === "23505")
+					throw new ConflictException("This user is already a member of this group.");
+			});
 	}
 
 	async getGroupById(groupId: string): Promise<Group> {

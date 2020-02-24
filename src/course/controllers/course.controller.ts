@@ -49,6 +49,7 @@ export class CourseController {
 
 	@Post(":courseId/assignments/:assignmentId/assessments")
 	createAssessment(
+		@Param("courseId") courseId: string,
 		@Param("assignmentId", ParseUUIDPipe) assignmentId: string,
 		@Body() assessmentDto: AssessmentDto
 	): Promise<AssessmentDto> {
