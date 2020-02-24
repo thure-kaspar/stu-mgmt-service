@@ -1,4 +1,4 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany } from "typeorm";
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, JoinColumn, ManyToOne } from "typeorm";
 import { Course } from "./course.entity";
 import { Assessment } from "./assessment.entity";
 import { AssignmentStates, AssignmentTypes } from "../enums";
@@ -32,7 +32,8 @@ export class Assignment extends BaseEntity {
 	@Column()
 	maxPoints: number;
 
-	@OneToOne(type => Course, course => course.assignments)
+	@ManyToOne(type => Course, course => course.assignments, { onDelete: "CASCADE" })
+	@JoinColumn()
 	course: Course;
 
 	@Column()

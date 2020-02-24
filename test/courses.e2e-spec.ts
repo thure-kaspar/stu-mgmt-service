@@ -93,7 +93,7 @@ describe('GET-REQUESTS of CourseController (e2e)', () => {
 			});
 	});
 
-	it("(GET) /courses/{courseId}/assignment/{assignmentId}/assessments/{assessmentId} Retrieves the assessment", () => {
+	it("(GET) /courses/{courseId}/assignments/{assignmentId}/assessments/{assessmentId} Retrieves the assessment", () => {
 		return request(app.getHttpServer())
 		.get(`/courses/${courses[0].id}/assignments/${assignments[0].id}/assessments/${assessments[0].id}`)
 		.expect(({ body }) => {
@@ -242,7 +242,7 @@ describe('POST-REQUESTS for relations (db contains data) of CourseController (e2
 });
 
 // SKIP - TODO: Test fails because db is not dropped fast enough ?
-describe.skip('PATCH-REQUESTS (Db contains data) of CourseController (e2e)', () => {
+describe('PATCH-REQUESTS (Db contains data) of CourseController (e2e)', () => {
 	let app: INestApplication;
 
 	beforeEach(async () => {
@@ -255,14 +255,7 @@ describe.skip('PATCH-REQUESTS (Db contains data) of CourseController (e2e)', () 
 
 		// Setup mocks - these tests require a filled db
 		dbMockService = new DbMockService(getConnection());
-		await dbMockService.createCourses();
-		await dbMockService.createUsers();
-		await dbMockService.createGroups();
-		await dbMockService.createAssignments();
-		await dbMockService.createAssessments();
-		await dbMockService.createCourseUserRelations();
-		await dbMockService.createUserGroupRelations();
-		await dbMockService.createAssessmentUserRelations();
+		await dbMockService.createAll();
 	});
 
 	afterEach(async () => {
@@ -306,6 +299,47 @@ describe.skip('PATCH-REQUESTS (Db contains data) of CourseController (e2e)', () 
 				expect(body.achievedPoints).toEqual(changedAssessment.achievedPoints);
 				expect(body.comment).toEqual(changedAssessment.comment);
 			})
+	});
+
+});
+
+describe('DELETE-REQUESTS (Db contains data) of CourseController (e2e)', () => {
+	let app: INestApplication;
+
+	beforeEach(async () => {
+		const moduleFixture: TestingModule = await Test.createTestingModule({
+			imports: [AppModule],
+		}).compile();
+
+		app = moduleFixture.createNestApplication();
+		await app.init();
+
+		// Setup mocks - these tests require a filled db
+		dbMockService = new DbMockService(getConnection());
+		await dbMockService.createAll();
+	});
+
+	afterEach(async () => {
+		await getConnection().dropDatabase(); // Drop database with all tables and data
+		await getConnection().close(); // Close Db-Connection after all tests have been executed
+	});
+
+	it("(DELETE) /courses/{courseId} Deletes the course", () => {
+		return request(app.getHttpServer())
+			.delete(`/courses/${courses[0].id}`)
+			.expect(200)
+	});
+
+	it("(DELETE) /courses/{courseId}/assignments/{assignmentId} Deletes the assignment", () => {
+		return request(app.getHttpServer())
+			.delete(`/courses/${courses[0].id}/assignments/${assignments[0].id}`)
+			.expect(200)
+	});
+
+	it("(DELETE) /courses/{courseId}/assignments/{assignmentId}/assessment/{assessmentId} Deletes the assessment", () => {
+		return request(app.getHttpServer())
+			.delete(`/courses/${courses[0].id}/assignments/${assignments[0].id}/assessments/${assessments[0].id}`)
+			.expect(200)
 	});
 
 });

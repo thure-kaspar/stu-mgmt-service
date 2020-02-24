@@ -7,7 +7,7 @@ npm install
 #npm run test
 
 # End to End tests
-npm run test:e2e
+#npm run test:e2e Disabled until sqlite issue is fixed
 
 # test coverage
 #npm run test:cov

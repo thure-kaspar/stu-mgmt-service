@@ -141,13 +141,10 @@ describe('DELETE-REQUESTS (Db contains data) of GroupController (e2e)', () => {
 		await getConnection().close(); // Close Db-Connection after all tests have been executed
 	});
 
-	// SKIP - Fails because onDelete: Cascade is missing (Violation of foreign key contraint)
-	it.skip("(DELETE) /groups/{groupId} Deletes the group", () => {
+	it("(DELETE) /groups/{groupId} Deletes the group", () => {
 		return request(app.getHttpServer())
 			.delete(`/groups/${groups[0].id}`)
-			.expect(({ body }) => {
-				expect(body).toEqual(true);
-			});
+			.expect(200)
 	});
 
 });

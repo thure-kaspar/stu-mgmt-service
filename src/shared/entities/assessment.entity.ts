@@ -20,7 +20,7 @@ export class Assessment extends BaseEntity {
 	@Column()
 	assignmentId: string;
 
-	@OneToOne(type => Group, group => group.assessments)
+	@OneToOne(type => Group, group => group.assessments, { onDelete: "SET NULL"})
 	@JoinColumn()
 	group: Group;
 

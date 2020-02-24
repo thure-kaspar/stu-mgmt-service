@@ -80,7 +80,7 @@ describe('POST-REQUESTS of UserController (e2e)', () => {
 });
 
 // SKIP - TODO: Test fails because db is not dropped fast enough ?
-describe.skip('PATCH-REQUESTS (Db contains data) of GroupController (e2e)', () => {
+describe('PATCH-REQUESTS (Db contains data) of GroupController (e2e)', () => {
 	let app: INestApplication;
 
 	beforeEach(async () => {
@@ -117,6 +117,35 @@ describe.skip('PATCH-REQUESTS (Db contains data) of GroupController (e2e)', () =
 				expect(body.email).toEqual(changedUser.email);
 				expect(body.role).toEqual(changedUser.role);
 			})
+	});
+
+});
+
+describe('DELETE-REQUESTS (Db contains data) of GroupController (e2e)', () => {
+	let app: INestApplication;
+
+	beforeEach(async () => {
+		const moduleFixture: TestingModule = await Test.createTestingModule({
+			imports: [AppModule],
+		}).compile();
+
+		app = moduleFixture.createNestApplication();
+		await app.init();
+
+		// Setup mocks - these tests require a filled db
+		dbMockService = new DbMockService(getConnection());
+		await dbMockService.createAll();
+	});
+
+	afterEach(async () => {
+		await getConnection().dropDatabase(); // Drop database with all tables and data
+		await getConnection().close(); // Close Db-Connection after all tests have been executed
+	});
+
+	it("(DELETE) /users/{userId} Deletes the user", () => {
+		return request(app.getHttpServer())
+			.delete(`/users/${users[0].id}`)
+			.expect(200) // TODO: 
 	});
 
 });

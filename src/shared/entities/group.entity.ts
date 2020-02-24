@@ -1,4 +1,4 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, OneToMany, Column, OneToOne, CreateDateColumn } from "typeorm";
+import { BaseEntity, Entity, PrimaryGeneratedColumn, OneToMany, Column, OneToOne, CreateDateColumn, JoinColumn, ManyToOne } from "typeorm";
 import { UserGroupRelation } from "./user-group-relation.entity";
 import { Course } from "./course.entity";
 import { Assessment } from "./assessment.entity";
@@ -20,7 +20,8 @@ export class Group extends BaseEntity {
 	@CreateDateColumn()
 	createdAt: Date;
 	
-	@OneToOne(type => Course, course => course.groups)
+	@ManyToOne(type => Course, course => course.groups, { onDelete: "CASCADE" })
+	@JoinColumn()
 	course: Course;
 	
 	@Column()
