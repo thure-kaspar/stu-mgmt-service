@@ -58,7 +58,11 @@ export class CourseService {
     async updateCourse(courseId: string, courseDto: CourseDto): Promise<CourseDto> {
         const course = await this.courseRepository.updateCourse(courseId, courseDto);
         return fromDtoFactory.createCourseDto(course);
-    }
+	}
+	
+	async updateUserRole(courseId: string, userId: string, role: UserRoles): Promise<boolean> {
+		return await this.courseUserRepository.updateUserRole(courseId, userId, role);
+	}
 
     async deleteCourse(courseId: string): Promise<boolean> {
         return await this.courseRepository.deleteCourse(courseId);

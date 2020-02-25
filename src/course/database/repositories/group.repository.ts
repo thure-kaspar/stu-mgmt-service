@@ -55,7 +55,7 @@ export class GroupRepository extends Repository<Group> {
 	 */
 	async getGroupWithUsers(groupId: string) {
 		return await this.findOne(groupId, {
-			relations: ["userGroupRelations", "userGroupRelations.user"]
+			relations: ["course", "userGroupRelations", "userGroupRelations.user"]
 		});
 	}
 

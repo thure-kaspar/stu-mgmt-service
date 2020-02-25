@@ -21,4 +21,9 @@ export class CourseUserRelationRepository extends Repository<CourseUserRelation>
 
 		return courseUserRelation;
 	}
+
+	async updateUserRole(courseId: string, userId: string, role: UserRoles): Promise<boolean> {
+		const result = await this.update({ courseId, userId }, { role: role});
+		return result.affected == 1;
+	}
 }

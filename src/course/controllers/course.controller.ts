@@ -9,6 +9,7 @@ import { AssignmentService } from "../services/assignment.service";
 import { AssessmentDto } from "../../shared/dto/assessment.dto";
 import { AssessmentService } from "../services/assessment.service";
 import { UserDto } from "../../shared/dto/user.dto";
+import { UserRoles } from '../../shared/enums';
 
 @ApiTags("courses") 
 @Controller("courses")
@@ -155,6 +156,16 @@ export class CourseController {
 	): Promise<AssessmentDto> {
 
 		return this.assessmentService.updateAssessment(assessmentId, assessmentDto);
+	}
+
+	@Patch(":courseId/users/:userId/role")
+	updateUserRole(
+		@Param("courseId") courseId: string,
+		@Param("userId", ParseUUIDPipe) userId: string,
+		@Body("role") role: UserRoles
+	): Promise<boolean> {
+
+		return this.courseService.updateUserRole(courseId, userId, role);
 	}
 
 	@Delete(":courseId")

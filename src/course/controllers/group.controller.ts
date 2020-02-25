@@ -12,10 +12,11 @@ export class GroupController {
 	@Post(":groupId/users/:userId")
 	addUserToGroup(
 		@Param("groupId", ParseUUIDPipe) groupId: string,
-		@Param("userId", ParseUUIDPipe) userId: string
+		@Param("userId", ParseUUIDPipe) userId: string,
+		@Body("password") password?: string
 	): Promise<any> {
 
-		return this.groupService.addUserToGroup(groupId, userId);
+		return this.groupService.addUserToGroup(groupId, userId, password);
 	}
 
 	@Get(":groupId/users")

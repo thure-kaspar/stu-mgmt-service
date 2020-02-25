@@ -24,7 +24,13 @@ export class Course extends BaseEntity {
     password?: string;
 
     @Column({ nullable: true })
-    link?: string;
+	link?: string;
+	
+	@Column()
+	allowGroups: boolean;
+
+	@Column()
+	maxGroupSize: number;
 
     @OneToMany(type => CourseUserRelation, courseUserRelations => courseUserRelations.course)
 	courseUserRelations: CourseUserRelation[];

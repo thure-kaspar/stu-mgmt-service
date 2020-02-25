@@ -69,10 +69,25 @@ describe('POST-REQUESTS for relations (Db contains data) of GroupController (e2e
 		await getConnection().close(); // Close Db-Connection after all tests have been executed
 	});
 
-	it("(POST) /groups/{groupId}/users/{userId} Adds the user to the group", () => {
+	it("(POST) /groups/{groupId}/users/{userId} Correct password, joining is possible -> Adds the user to the group", () => {
 		return request(app.getHttpServer())
 			.post(`/groups/${groups[0].id}/users/${users[0].id}`)
+			.send({ password: groups[0].password })
 			.expect(201)
+	});
+
+	it ("(POST) /groups/{groupId}/users/{userId} Incorrect password -> 401 Unauthorized", () => {
+		return request(app.getHttpServer())
+		.post(`/groups/${groups[0].id}/users/${users[0].id}`)
+		.send({ password: "wrong_password" })
+		.expect(401)
+	});
+
+	it ("(POST) /groups/{groupId}/users/{userId} Group is closed -> 409 Conflict", () => {
+		return request(app.getHttpServer())
+		.post(`/groups/${groups[1].id}/users/${users[0].id}`)
+		.send({ password: groups[1].password })
+		.expect(409)
 	});
 
 });

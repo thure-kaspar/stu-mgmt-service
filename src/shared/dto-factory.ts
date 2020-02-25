@@ -16,7 +16,9 @@ export function createCourseDto(courseEntity: Course): CourseDto {
         semester: courseEntity.semester,
         title: courseEntity.title,
         isClosed: courseEntity.isClosed,
-        link: courseEntity.link
+		link: courseEntity.link,
+		allowGroups: courseEntity.allowGroups,
+		maxGroupSize: courseEntity.maxGroupSize
     };
 
     // Add relational data, if available

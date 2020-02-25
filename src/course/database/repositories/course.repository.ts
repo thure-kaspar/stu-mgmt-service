@@ -40,13 +40,15 @@ export class CourseRepository extends Repository<Course> {
     async updateCourse(courseId: string, courseDto: CourseDto): Promise<Course> {
         const course = await this.getCourseById(courseId);
 
-        // TODO: Define Patch-Object or create method
+		// TODO: Define Patch-Object or create method
         course.shortname = courseDto.shortname;
         course.semester = courseDto.semester;
         course.title = courseDto.title;
         course.isClosed = courseDto.isClosed;
         course.password = courseDto.password;
-        course.link = courseDto.link;
+		course.link = courseDto.link;
+		course.allowGroups = courseDto.allowGroups;
+		course.maxGroupSize = courseDto.maxGroupSize;
     
         return await course.save();
     }
@@ -66,7 +68,9 @@ export class CourseRepository extends Repository<Course> {
         course.title = courseDto.title;
         course.isClosed = courseDto.isClosed;
         course.password = courseDto.password;
-        course.link = courseDto.link;
+		course.link = courseDto.link;
+		course.allowGroups = courseDto.allowGroups;
+		course.maxGroupSize = courseDto.maxGroupSize;
         return course;
     }
 

@@ -13,7 +13,9 @@ export const CoursesMock: CourseDto[] = [
 		title: "Programmierpraktikum I: Java", 
 		isClosed: false, 
 		password: "java", 
-		link: "test.test" 
+		link: "test.test",
+		allowGroups: true,
+		maxGroupSize: 3
 	},
 	{ 
 		id: "info2-sose2020", 
@@ -22,7 +24,9 @@ export const CoursesMock: CourseDto[] = [
 		title: "Informatik II: Algorithmen und Datenstrukturen", 
 		isClosed: true, 
 		password: "info2", 
-		link: "test.test" 
+		link: "test.test",
+		allowGroups: false,
+		maxGroupSize: 0 
 	},
 ]
 
@@ -52,7 +56,7 @@ export const GroupsMock: GroupDto[] = [
 		courseId: CoursesMock[0].id,
 		name: "Testgroup 2",
 		password: "password123",
-		isClosed: false
+		isClosed: true
 	},
 ]
 

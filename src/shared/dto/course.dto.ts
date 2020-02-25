@@ -8,7 +8,9 @@ export class CourseDto {
     title: string;
     isClosed: boolean;
     password?: string;
-    link?: string;
+	link?: string;
+	allowGroups: boolean;
+	maxGroupSize: number;
     users?: UserDto[];
     groups?: GroupDto[];
     // assignments?: any[] // AssignmentDto[]
