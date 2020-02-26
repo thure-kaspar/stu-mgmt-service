@@ -8,15 +8,15 @@ export class UserRepository extends Repository<User> {
 
     async createUser(userDto: UserDto): Promise<User> {
         const user = this.createEntityFromDto(userDto);
-        return await user.save();
+        return user.save();
     }
 
     async getAllUsers(): Promise<User[]> {
-        return await this.find();
+        return this.find();
     }
 
     async getUserById(id: string): Promise<User> {
-        return await this.findOne(id, { relations: ["courseUserRelations", "courseUserRelations.course"] });
+        return this.findOne(id, { relations: ["courseUserRelations", "courseUserRelations.course"] });
     }
 
     async getCoursesOfUser(userId: string): Promise<Course[]> {
@@ -39,7 +39,7 @@ export class UserRepository extends Repository<User> {
         user.email = userDto.email;
         user.role = userDto.role;
 
-        return await user.save();
+        return user.save();
     }
 
     async deleteUser(userId: string): Promise<boolean> {

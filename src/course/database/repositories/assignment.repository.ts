@@ -8,11 +8,11 @@ export class AssignmentRepository extends Repository<Assignment> {
 	async createAssignment(courseId: string, assignmentDto: AssignmentDto): Promise<Assignment> {
 		const assignment = this.createEntityFromDto(assignmentDto);
 		assignment.courseId = courseId;
-		return await assignment.save();
+		return assignment.save();
 	}
 
 	async getAssignments(courseId: string): Promise<Assignment[]> {
-		return await this.find({
+		return this.find({
 			where: {
 				courseId: courseId
 			}
@@ -20,11 +20,11 @@ export class AssignmentRepository extends Repository<Assignment> {
 	}
 
 	async getAssignmentById(assignmentId: string): Promise<Assignment> {
-		return await this.findOne(assignmentId);
+		return this.findOne(assignmentId);
 	}
 
 	async getAssignmentById_WithAssessments(assignmentId: string): Promise<Assignment> {
-		return await this.findOne(assignmentId, {
+		return this.findOne(assignmentId, {
 			relations: ["assessments"]
 		});
 	}
@@ -50,7 +50,7 @@ export class AssignmentRepository extends Repository<Assignment> {
 		assignment.comment = assignmentDto.comment;
 		assignment.link = assignmentDto.link;
 
-		return await assignment.save();
+		return assignment.save();
 	}
 
 	async deleteAssignment(assignmentId: string): Promise<boolean> {

@@ -7,15 +7,15 @@ export class AssessmentRepository extends Repository<Assessment> {
 
 	async createAssessment(assessmentDto: AssessmentDto): Promise<Assessment> {
 		const assessment = this.createEntityFromDto(assessmentDto);
-		return await assessment.save();
+		return assessment.save();
 	}
 
 	async getAssessmentById(assessmentId: string): Promise<Assessment> {
-		return await this.findOne(assessmentId);
+		return this.findOne(assessmentId);
 	}
 
 	async getAllAssessmentsForAssignment(assignmentId: string): Promise<Assessment[]> {
-		return await this.find({
+		return this.find({
 			where: {
 				assignmentId: assignmentId
 			}
@@ -23,7 +23,7 @@ export class AssessmentRepository extends Repository<Assessment> {
 	}
 
 	async getAssessmentsOfUserForCourse(courseId: string, userId: string): Promise<Assessment[]> {
-		return await this.find({
+		return this.find({
 			where: {
 				assignment: {
 					courseId: courseId
@@ -66,7 +66,7 @@ export class AssessmentRepository extends Repository<Assessment> {
 		assessment.achievedPoints = assessmentDto.achievedPoints;
 		assessment.comment = assessmentDto.comment;
 
-		return await assessment.save();
+		return assessment.save();
 	}
 
 	async deleteAssessment(assessmentId: string): Promise<boolean> {

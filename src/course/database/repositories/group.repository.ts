@@ -43,7 +43,7 @@ export class GroupRepository extends Repository<Group> {
 	}
 
 	async getGroupById(groupId: string): Promise<Group> {
-		return await this.findOne(groupId);
+		return this.findOne(groupId);
 	}
 
 	/**
@@ -54,7 +54,7 @@ export class GroupRepository extends Repository<Group> {
 	 * @memberof GroupRepository
 	 */
 	async getGroupWithUsers(groupId: string) {
-		return await this.findOne(groupId, {
+		return this.findOne(groupId, {
 			relations: ["course", "userGroupRelations", "userGroupRelations.user"]
 		});
 	}
@@ -67,7 +67,7 @@ export class GroupRepository extends Repository<Group> {
 	 * @memberof GroupRepository
 	 */
 	async getGroupsOfCourse(courseId: string) {
-		return await this.find({
+		return this.find({
 			where: {
 				courseId: courseId
 			}
@@ -83,7 +83,7 @@ export class GroupRepository extends Repository<Group> {
 	 * @memberof GroupRepository
 	 */
 	async getCurrentGroupsOfUserForCourse(courseId: string, userId: string): Promise<Group[]> {
-		return await this.find({
+		return this.find({
 			where: {
 				courseId: courseId,
 				userGroupRelations: {
@@ -109,7 +109,7 @@ export class GroupRepository extends Repository<Group> {
 		group.isClosed = groupDto.isClosed;
 		group.password = groupDto.password;
 		
-		return await group.save();
+		return group.save();
 	}
 
 	/**

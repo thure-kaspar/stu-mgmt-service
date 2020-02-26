@@ -12,15 +12,15 @@ export class CourseRepository extends Repository<Course> {
     }
 
     async getAllCourses(): Promise<Course[]> {
-        return await this.find();
+        return this.find();
     }
 
     async getCourseById(id: string): Promise<Course> {
-        return await this.findOne(id);
+        return this.findOne(id);
     }
 
     async getCourseByNameAndSemester(name: string, semester: string): Promise<Course> {
-        return await this.findOne({
+        return this.findOne({
             where: {
                 shortname: name,
                 semester: semester
@@ -28,11 +28,11 @@ export class CourseRepository extends Repository<Course> {
     }
 
     async getCourseWithUsers(id: string): Promise<Course> {
-        return await this.findOne(id, { relations: ["courseUserRelations", "courseUserRelations.user"] });
+        return this.findOne(id, { relations: ["courseUserRelations", "courseUserRelations.user"] });
     }
 
     async getCourseWithGroups(courseId: string): Promise<Course> {
-        return await this.findOne(courseId, {
+        return this.findOne(courseId, {
             relations: ["groups"]
         });
     }
@@ -50,7 +50,7 @@ export class CourseRepository extends Repository<Course> {
 		course.allowGroups = courseDto.allowGroups;
 		course.maxGroupSize = courseDto.maxGroupSize;
     
-        return await course.save();
+        return course.save();
     }
 
     async deleteCourse(courseId: string): Promise<boolean> {
