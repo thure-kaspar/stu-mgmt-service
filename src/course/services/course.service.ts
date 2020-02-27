@@ -10,6 +10,7 @@ import { CourseUserRelationRepository } from '../database/repositories/course-us
 import * as fromDtoFactory from "../../shared/dto-factory";
 import { UserDto } from "../../shared/dto/user.dto";
 import { UserRoles } from "../../shared/enums";
+import { CourseFilterDto } from '../../shared/dto/course-filter.dto';
 
 @Injectable()
 export class CourseService {
@@ -24,12 +25,12 @@ export class CourseService {
 	}
 	
     async addUser(courseId: string, userId: string): Promise<any> { // TODO: don't return any
-        return await this.courseUserRepository.addUserToCourse(courseId, userId, UserRoles.STUDENT); // TODO: don't hardcode role 
+        return this.courseUserRepository.addUserToCourse(courseId, userId, UserRoles.STUDENT); // TODO: don't hardcode role 
     }
 
-    async getAllCourses(): Promise<CourseDto[]> {
+    async getCourses(filter?: CourseFilterDto): Promise<CourseDto[]> {
+		const courses = await this.courseRepository.getCourses(filter);
         const courseDtos: CourseDto[] = [];
-        const courses = await this.courseRepository.getAllCourses();
         courses.forEach(course => courseDtos.push(fromDtoFactory.createCourseDto(course)));
         return courseDtos;
     }
@@ -61,11 +62,11 @@ export class CourseService {
 	}
 	
 	async updateUserRole(courseId: string, userId: string, role: UserRoles): Promise<boolean> {
-		return await this.courseUserRepository.updateUserRole(courseId, userId, role);
+		return this.courseUserRepository.updateUserRole(courseId, userId, role);
 	}
 
     async deleteCourse(courseId: string): Promise<boolean> {
-        return await this.courseRepository.deleteCourse(courseId);
+        return this.courseRepository.deleteCourse(courseId);
     }
 
 }

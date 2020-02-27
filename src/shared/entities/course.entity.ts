@@ -1,9 +1,10 @@
-import { BaseEntity, Entity, Column, OneToMany, PrimaryColumn } from "typeorm";
+import { BaseEntity, Entity, Column, OneToMany, PrimaryColumn, Index } from "typeorm";
 import { CourseUserRelation } from "./course-user-relation.entity";
 import { Group } from "./group.entity";
 import { Assignment } from "./assignment.entity";
 
 @Entity("courses")
+@Index(["shortname", "semester"], { unique: true })
 export class Course extends BaseEntity {
     @PrimaryColumn()
     id: string;

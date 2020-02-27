@@ -18,7 +18,7 @@ const assessments = fromDtoMocks.AssessmentsMock;
 describe('GET-REQUESTS of GroupController (e2e)', () => {
 	let app: INestApplication;
 
-	beforeEach(async () => {
+	beforeAll(async () => {
 		const moduleFixture: TestingModule = await Test.createTestingModule({
 			imports: [AppModule],
 		}).compile();
@@ -31,14 +31,14 @@ describe('GET-REQUESTS of GroupController (e2e)', () => {
 		await dbMockService.createAll();
 	});
 
-	afterEach(async () => {
+	afterAll(async () => {
 		await getConnection().dropDatabase(); // Drop database with all tables and data
 		await getConnection().close(); // Close Db-Connection after all tests have been executed
 	});
 
 	it("(GET) /groups/{groupId}/users Retrieves all members of the group", () => {
 		return request(app.getHttpServer())
-			.get(`/groups/${groups[0].id}/users`)
+			.get(`/courses/${courses[0].id}/groups/${groups[0].id}/users`)
 			.expect(({ body }) => {
 				expect(body.length).toEqual(users.length);
 			});
@@ -71,21 +71,21 @@ describe('POST-REQUESTS for relations (Db contains data) of GroupController (e2e
 
 	it("(POST) /groups/{groupId}/users/{userId} Correct password, joining is possible -> Adds the user to the group", () => {
 		return request(app.getHttpServer())
-			.post(`/groups/${groups[0].id}/users/${users[0].id}`)
+			.post(`/courses/${courses[0].id}/groups/${groups[0].id}/users/${users[0].id}`)
 			.send({ password: groups[0].password })
 			.expect(201)
 	});
 
 	it ("(POST) /groups/{groupId}/users/{userId} Incorrect password -> 401 Unauthorized", () => {
 		return request(app.getHttpServer())
-		.post(`/groups/${groups[0].id}/users/${users[0].id}`)
+		.post(`/courses/${courses[0].id}/groups/${groups[0].id}/users/${users[0].id}`)
 		.send({ password: "wrong_password" })
 		.expect(401)
 	});
 
 	it ("(POST) /groups/{groupId}/users/{userId} Group is closed -> 409 Conflict", () => {
 		return request(app.getHttpServer())
-		.post(`/groups/${groups[1].id}/users/${users[0].id}`)
+		.post(`/courses/${courses[0].id}/groups/${groups[1].id}/users/${users[0].id}`)
 		.send({ password: groups[1].password })
 		.expect(409)
 	});
@@ -124,7 +124,7 @@ describe('PATCH-REQUESTS (Db contains data) of GroupController (e2e)', () => {
 		changedGroup.password = "new password";
 
 		return request(app.getHttpServer())
-			.patch(`/groups/${groups[0].id}`)
+			.patch(`/courses/${courses[0].id}/groups/${groups[0].id}`)
 			.send(changedGroup)
 			.expect(({ body }) => {
 				expect(body.name).toEqual(changedGroup.name)
@@ -158,7 +158,7 @@ describe('DELETE-REQUESTS (Db contains data) of GroupController (e2e)', () => {
 
 	it("(DELETE) /groups/{groupId} Deletes the group", () => {
 		return request(app.getHttpServer())
-			.delete(`/groups/${groups[0].id}`)
+			.delete(`/courses/${courses[0].id}/groups/${groups[0].id}`)
 			.expect(200)
 	});
 

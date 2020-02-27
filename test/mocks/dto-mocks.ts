@@ -28,6 +28,17 @@ export const CoursesMock: CourseDto[] = [
 		allowGroups: false,
 		maxGroupSize: 0 
 	},
+	{ 
+		id: "java-wise1819", 
+		shortname: "java", 
+		semester: "wise1819", 
+		title: "Programmierpraktikum I: Java", 
+		isClosed: true, 
+		password: "java", 
+		link: "test.test",
+		allowGroups: true,
+		maxGroupSize: 3
+	},
 ]
 
 export const UsersMock: UserDto[] = [

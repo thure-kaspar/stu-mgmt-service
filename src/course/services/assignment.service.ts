@@ -39,7 +39,7 @@ export class AssignmentService {
 	}
 
 	async deleteAssignment(assignmentId: string): Promise<boolean> {
-		return await this.assignmentRepository.deleteAssignment(assignmentId);
+		return this.assignmentRepository.deleteAssignment(assignmentId);
 	}
 
 }

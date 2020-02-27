@@ -5,10 +5,19 @@ import { ApiTags } from "@nestjs/swagger";
 import { GroupDto } from "../../shared/dto/group.dto";
 
 @ApiTags("groups")
-@Controller("groups")
+@Controller("courses/:courseId/groups")
 export class GroupController {
 	constructor(private groupService: GroupService) { }
 
+	@Post()
+	createGroup(
+		@Param("courseId") courseId: string,
+		@Body() groupDto: GroupDto
+	): Promise<GroupDto> {
+
+		return this.groupService.createGroup(courseId, groupDto);
+	}
+	
 	@Post(":groupId/users/:userId")
 	addUserToGroup(
 		@Param("groupId", ParseUUIDPipe) groupId: string,
@@ -17,6 +26,14 @@ export class GroupController {
 	): Promise<any> {
 
 		return this.groupService.addUserToGroup(groupId, userId, password);
+	}
+
+	@Get()
+	getGroupsOfCourse(
+		@Param("courseId") courseId: string,
+	): Promise<GroupDto[]> {
+		
+		return this.groupService.getGroupsOfCourse(courseId);
 	}
 
 	@Get(":groupId/users")

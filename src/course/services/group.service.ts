@@ -33,14 +33,14 @@ export class GroupService {
 		if (group.userGroupRelations.length >= group.course.maxGroupSize) throw new ConflictException("Group is full.");
 		if (group.password !== password) throw new UnauthorizedException("The given password was incorrect.");
 
-		return await this.groupRepository.addUserToGroup(groupId, userId);
+		return this.groupRepository.addUserToGroup(groupId, userId);
 	}
 
 	/**
 	 * Adds the user to the group without checking any constraints. 
 	 */
 	async addUserToGroup_Force(groupId: string, userId: string, password?: string): Promise<any> {
-		return await this.groupRepository.addUserToGroup(groupId, userId);
+		return this.groupRepository.addUserToGroup(groupId, userId);
 	}
 
 	async getGroupsOfCourse(courseId: string): Promise<GroupDto[]> {
@@ -66,7 +66,7 @@ export class GroupService {
 	}
 
 	async deleteGroup(groupId: string): Promise<boolean> {
-		return await this.groupRepository.deleteGroup(groupId);
+		return this.groupRepository.deleteGroup(groupId);
 	}
 
 }

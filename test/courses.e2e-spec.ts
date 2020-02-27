@@ -7,6 +7,7 @@ import { DbMockService } from "./mocks/db-mock.service";
 import * as fromDtoMocks from "./mocks/dto-mocks";
 import { AssignmentDto } from "../src/shared/dto/assignment.dto";
 import { AssessmentDto } from "../src/shared/dto/assessment.dto";
+import { CourseFilterDto } from '../src/shared/dto/course-filter.dto';
 
 let dbMockService: DbMockService; // Should be initialized in every describe-block that requires data in db
 
@@ -45,6 +46,33 @@ describe('GET-REQUESTS of CourseController (e2e)', () => {
 			});
 	});
 
+	it("(GET) /courses With filter -> Retrieves the filtered courses", () => {
+		const filter: CourseFilterDto = { 
+			shortname: "java", 
+			title: "Programmier" 
+		};
+
+		return request(app.getHttpServer())
+		.get("/courses")
+		.send(filter)
+		.expect(({ body }) => {
+			expect(body.length).toEqual(2);
+		});
+	});
+
+	it("(GET) /courses With filter -> Retrieves all iterations of the course", () => {
+		const filter: CourseFilterDto = { 
+			shortname: "java"
+		};
+
+		return request(app.getHttpServer())
+		.get("/courses")
+		.send(filter)
+		.expect(({ body }) => {
+			expect(body.length).toEqual(2);
+		});
+	});
+
 	it("(GET) /courses/{courseId} Retrieves the course", () => {
 		return request(app.getHttpServer())
 			.get(`/courses/${courses[0].id}`)
@@ -53,9 +81,9 @@ describe('GET-REQUESTS of CourseController (e2e)', () => {
 			});
 	});
 
-	it("(GET) /courses/{name}/{semester} Retrieves the course", () => {
+	it("(GET) /courses/{name}/semester/{semester} Retrieves the course", () => {
 		return request(app.getHttpServer())
-		.get(`/courses/${courses[0].shortname}/${courses[0].semester}`)
+		.get(`/courses/${courses[0].shortname}/semester/${courses[0].semester}`)
 		.expect(({ body }) => {
 			expect(body.id).toEqual(courses[0].id); 
 		});

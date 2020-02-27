@@ -19,7 +19,7 @@ const assessments = fromDtoMocks.AssessmentsMock;
 describe('GET-REQUESTS of UserController (e2e)', () => {
 	let app: INestApplication;
 	
-	beforeEach(async () => {
+	beforeAll(async () => {
 		const moduleFixture: TestingModule = await Test.createTestingModule({
 			imports: [AppModule],
 		}).compile();
@@ -32,7 +32,7 @@ describe('GET-REQUESTS of UserController (e2e)', () => {
 		await dbMockService.createAll();
 	});
 
-	afterEach(async () => {
+	afterAll(async () => {
 		await getConnection().dropDatabase(); // Drop database with all tables and data
 		await getConnection().close(); // Close Db-Connection after all tests have been executed
 	});

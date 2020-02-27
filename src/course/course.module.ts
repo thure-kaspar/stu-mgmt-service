@@ -13,6 +13,8 @@ import { AssignmentRepository } from "./database/repositories/assignment.reposit
 import { AssessmentService } from "./services/assessment.service";
 import { AssessmentRepository } from "./database/repositories/assessment.repository";
 import { AssessmentUserRelationRepository } from "./database/repositories/assessment-user-relation.repository";
+import { AssessmentController } from './controllers/assessment.controller';
+import { AssignmentController } from './controllers/assignment.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([
@@ -24,7 +26,7 @@ import { AssessmentUserRelationRepository } from "./database/repositories/assess
     AssessmentRepository,
     AssessmentUserRelationRepository
   ])],
-  controllers: [CourseController, GroupController],
+  controllers: [AssessmentController, AssignmentController, CourseController, GroupController],
   providers: [CourseService, GroupService, AssignmentService, AssessmentService]
 })
 export class CourseModule {}
