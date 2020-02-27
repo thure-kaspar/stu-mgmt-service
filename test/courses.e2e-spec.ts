@@ -53,8 +53,7 @@ describe('GET-REQUESTS of CourseController (e2e)', () => {
 		};
 
 		return request(app.getHttpServer())
-		.get("/courses")
-		.send(filter)
+		.get(`/courses?shortname=${filter.shortname}&title=${filter.title}`)
 		.expect(({ body }) => {
 			expect(body.length).toEqual(2);
 		});
@@ -66,8 +65,7 @@ describe('GET-REQUESTS of CourseController (e2e)', () => {
 		};
 
 		return request(app.getHttpServer())
-		.get("/courses")
-		.send(filter)
+		.get(`/courses?shortname=${filter.shortname}`)
 		.expect(({ body }) => {
 			expect(body.length).toEqual(2);
 		});

@@ -1,6 +1,7 @@
 import { Repository, EntityRepository, DeleteResult } from "typeorm";
 import { Course } from "../../../shared/entities/course.entity";
 import { CourseDto } from "../../../shared/dto/course.dto";
+import { CourseFilterDto } from "../../../shared/dto/course-filter.dto";
 
 @EntityRepository(Course)
 export class CourseRepository extends Repository<Course> {
@@ -11,10 +12,22 @@ export class CourseRepository extends Repository<Course> {
         return createdCourse;
     }
 
-    async getAllCourses(): Promise<Course[]> {
-        return this.find();
-    }
+    async getCourses(filter?: CourseFilterDto): Promise<Course[]> {
+        // Check if filter-object was supplied with properties
+        if (filter && Object.keys(filter).length > 0) {
+            const query = this.createQueryBuilder("courses");
+            if (!filter.title) filter.title = ""; // Need something for 1st where (?)
+            query.where("title like :title", { title: "%" + filter.title + "%" });
+            if (filter.shortname) query.andWhere("shortname = :shortname", { shortname: filter.shortname });
+            if (filter.semester) query.andWhere("semester = :semester", { semester: filter.semester });
 
+            return query.getMany();
+		}
+		
+		// If no filter was supplied, return everything
+        return this.find();
+	}
+	
     async getCourseById(id: string): Promise<Course> {
         return this.findOne(id);
     }

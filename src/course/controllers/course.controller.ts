@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Body, ParseUUIDPipe, Patch, Delete } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, ParseUUIDPipe, Patch, Delete, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CourseService } from '../services/course.service';
 import { CourseDto } from '../../shared/dto/course.dto';
@@ -23,7 +23,7 @@ export class CourseController {
 	}
 	
 	@Get()
-	getCourses(@Body() filter?: CourseFilterDto): Promise<CourseDto[]> {
+	getCourses(@Query() filter?: CourseFilterDto): Promise<CourseDto[]> {
 		return this.courseService.getCourses(filter);
 	}
 
