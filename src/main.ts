@@ -9,6 +9,7 @@ async function bootstrap() {
   const serverConfig = config.get("server");
   const port = process.env.SERVER_PORT || serverConfig.port;
   const app = await NestFactory.create(AppModule);
+  app.enableCors();
   //app.setGlobalPrefix("mgmt/v1");
 
   const options = new DocumentBuilder()
