@@ -20,6 +20,7 @@ export class GroupController {
 	
 	@Post(":groupId/users/:userId")
 	addUserToGroup(
+		@Param("courseId") courseId: string,
 		@Param("groupId", ParseUUIDPipe) groupId: string,
 		@Param("userId", ParseUUIDPipe) userId: string,
 		@Body("password") password?: string
@@ -38,6 +39,7 @@ export class GroupController {
 
 	@Get(":groupId/users")
 	getUsersOfGroup(
+		@Param("courseId") courseId: string,
 		@Param("groupId", ParseUUIDPipe) groupId: string
 	): Promise<UserDto[]> {
 
@@ -46,6 +48,7 @@ export class GroupController {
 
 	@Patch(":groupId")
 	updateGroup(
+		@Param("courseId") courseId: string,
 		@Param("groupId", ParseUUIDPipe) groupId: string,
 		@Body() groupDto: GroupDto
 	): Promise<GroupDto> {
@@ -55,6 +58,7 @@ export class GroupController {
 
 	@Delete(":groupId")
 	deleteGroup(
+		@Param("courseId") courseId: string,
 		@Param("groupId", ParseUUIDPipe) groupId: string
 	): Promise<boolean> {
 
