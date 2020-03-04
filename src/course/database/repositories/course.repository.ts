@@ -13,13 +13,13 @@ export class CourseRepository extends Repository<Course> {
     }
 
     async getCourses(filter?: CourseFilterDto): Promise<Course[]> {
-        // Check if filter-object was supplied with properties
+		// Check if filter-object was supplied with properties
         if (filter && Object.keys(filter).length > 0) {
-            const query = this.createQueryBuilder("courses");
+            const query = this.createQueryBuilder("course");
             if (!filter.title) filter.title = ""; // Need something for 1st where (?)
-            query.where("title like :title", { title: "%" + filter.title + "%" });
-            if (filter.shortname) query.andWhere("shortname = :shortname", { shortname: filter.shortname });
-            if (filter.semester) query.andWhere("semester = :semester", { semester: filter.semester });
+            query.where("course.title ilike :title", { title: "%" + filter.title + "%" });
+            if (filter.shortname) query.andWhere("course.shortname = :shortname", { shortname: filter.shortname });
+            if (filter.semester) query.andWhere("course.semester = :semester", { semester: filter.semester });
 
             return query.getMany();
 		}
