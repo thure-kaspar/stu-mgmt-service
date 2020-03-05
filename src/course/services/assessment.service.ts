@@ -3,13 +3,11 @@ import { AssessmentDto } from "../../shared/dto/assessment.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Assessment } from "../../shared/entities/assessment.entity";
 import { AssessmentRepository } from "../database/repositories/assessment.repository";
-import * as fromDtoFactoy from "../../shared/dto-factory";
-import { Assignment } from "../../shared/entities/assignment.entity";
-import { AssignmentRepository } from "../database/repositories/assignment.repository";
 import { GroupRepository } from "../database/repositories/group.repository";
 import { Group } from "../../shared/entities/group.entity";
 import { AssessmentUserRelation } from "../../shared/entities/assessment-user-relation.entity";
 import { AssessmentUserRelationRepository } from "../database/repositories/assessment-user-relation.repository";
+import { DtoFactory } from "../../shared/dto-factory";
 
 @Injectable()
 export class AssessmentService {
@@ -42,7 +40,7 @@ export class AssessmentService {
 		// Create relation between assessment and users (in case they leave their group, they still get their points)
 		await this.assessmentUserRepository.createAssessmentUserRelations(createdAssessment.id, userIds);
 
-		const createdAssessmentDto = fromDtoFactoy.createAssessmentDto(createdAssessment);
+		const createdAssessmentDto = DtoFactory.createAssessmentDto(createdAssessment);
 		return createdAssessmentDto;
 	}
 
@@ -50,14 +48,14 @@ export class AssessmentService {
 		const assessments = await this.assessmentRepository.getAllAssessmentsForAssignment(assignmentId);
 		const assessmentDtos: AssessmentDto[] = [];
 		assessments.forEach(assessment => {
-			assessmentDtos.push(fromDtoFactoy.createAssessmentDto(assessment));
+			assessmentDtos.push(DtoFactory.createAssessmentDto(assessment));
 		});
 		return assessmentDtos;
 	}
 
 	async getAssessmentById(assessmentId: string): Promise<AssessmentDto> {
 		const assessment = await this.assessmentRepository.getAssessmentById(assessmentId);
-		return fromDtoFactoy.createAssessmentDto(assessment);
+		return DtoFactory.createAssessmentDto(assessment);
 	}
 
 	async updateAssessment(assessmentId: string, assessmentDto: AssessmentDto): Promise<AssessmentDto> {
@@ -65,7 +63,7 @@ export class AssessmentService {
 			throw new BadRequestException("AssessmentId refers to a different assessment.");
 		}
 		const assessment = await this.assessmentRepository.updateAssessment(assessmentId, assessmentDto);
-		return fromDtoFactoy.createAssessmentDto(assessment);
+		return DtoFactory.createAssessmentDto(assessment);
 	}
 
 	async deleteAssessment(assessmentId: string): Promise<boolean> {

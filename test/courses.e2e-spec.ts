@@ -267,7 +267,6 @@ describe('POST-REQUESTS for relations (db contains data) of CourseController (e2
 
 });
 
-// SKIP - TODO: Test fails because db is not dropped fast enough ?
 describe('PATCH-REQUESTS (Db contains data) of CourseController (e2e)', () => {
 	let app: INestApplication;
 

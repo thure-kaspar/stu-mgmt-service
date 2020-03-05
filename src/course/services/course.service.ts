@@ -7,10 +7,10 @@ import { User } from '../../shared/entities/user.entity';
 import { UserRepository } from '../../user/repositories/user.repository';
 import { CourseUserRelation } from '../../shared/entities/course-user-relation.entity';
 import { CourseUserRelationRepository } from '../database/repositories/course-user-relation.repository';
-import * as fromDtoFactory from "../../shared/dto-factory";
 import { UserDto } from "../../shared/dto/user.dto";
 import { UserRoles } from "../../shared/enums";
 import { CourseFilterDto } from '../../shared/dto/course-filter.dto';
+import { DtoFactory } from "../../shared/dto-factory";
 
 @Injectable()
 export class CourseService {
@@ -21,7 +21,7 @@ export class CourseService {
 
     async createCourse(courseDto: CourseDto): Promise<CourseDto> {
         const createdCourse = await this.courseRepository.createCourse(courseDto);
-        return fromDtoFactory.createCourseDto(createdCourse);
+        return DtoFactory.createCourseDto(createdCourse);
 	}
 	
     async addUser(courseId: string, userId: string): Promise<any> { // TODO: don't return any
@@ -31,19 +31,19 @@ export class CourseService {
     async getCourses(filter?: CourseFilterDto): Promise<CourseDto[]> {
 		const courses = await this.courseRepository.getCourses(filter);
         const courseDtos: CourseDto[] = [];
-        courses.forEach(course => courseDtos.push(fromDtoFactory.createCourseDto(course)));
+        courses.forEach(course => courseDtos.push(DtoFactory.createCourseDto(course)));
         return courseDtos;
     }
 
     async getCourseById(id: string): Promise<CourseDto> {
         const course = await this.courseRepository.getCourseById(id);
-        const courseDto = fromDtoFactory.createCourseDto(course);
+        const courseDto = DtoFactory.createCourseDto(course);
         return courseDto;
     }
 
     async getCourseByNameAndSemester(name: string, semester: string): Promise<CourseDto> {
         const course = await this.courseRepository.getCourseByNameAndSemester(name, semester);
-        const courseDto = fromDtoFactory.createCourseDto(course);
+        const courseDto = DtoFactory.createCourseDto(course);
         return courseDto;
     }
 
@@ -51,14 +51,14 @@ export class CourseService {
         const course = await this.courseRepository.getCourseWithUsers(courseId);
         const userDtos: UserDto[] = [];
         course.courseUserRelations.forEach(courseUserRelation => {
-            userDtos.push(fromDtoFactory.createUserDto(courseUserRelation.user));
+            userDtos.push(DtoFactory.createUserDto(courseUserRelation.user));
         });
         return userDtos;
     }
 
     async updateCourse(courseId: string, courseDto: CourseDto): Promise<CourseDto> {
         const course = await this.courseRepository.updateCourse(courseId, courseDto);
-        return fromDtoFactory.createCourseDto(course);
+        return DtoFactory.createCourseDto(course);
 	}
 	
 	async updateUserRole(courseId: string, userId: string, role: UserRoles): Promise<boolean> {

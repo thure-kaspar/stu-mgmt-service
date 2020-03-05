@@ -6,7 +6,7 @@ import { Course } from "../../shared/entities/course.entity";
 import { Group } from "../../shared/entities/group.entity";
 import { GroupDto } from "../../shared/dto/group.dto";
 import { UserDto } from "../../shared/dto/user.dto";
-import * as fromDtoFactory from "../../shared/dto-factory";
+import { DtoFactory } from "../../shared/dto-factory";
 
 @Injectable()
 export class GroupService {
@@ -16,7 +16,7 @@ export class GroupService {
 
 	async createGroup(courseId: string, groupDto: GroupDto): Promise<GroupDto> {
 		const createdGroup = await this.groupRepository.createGroup(courseId, groupDto);
-		const createdGroupDto = fromDtoFactory.createGroupDto(createdGroup);
+		const createdGroupDto = DtoFactory.createGroupDto(createdGroup);
 		return createdGroupDto;
 	}
 
@@ -52,7 +52,7 @@ export class GroupService {
 		const group = await this.groupRepository.getGroupWithUsers(groupId);
 		const userDtos = [];
 		group.userGroupRelations.forEach(userGroupRelation => {
-			userDtos.push(fromDtoFactory.createUserDto(userGroupRelation.user));
+			userDtos.push(DtoFactory.createUserDto(userGroupRelation.user));
 		});
 		return userDtos;
 	}
@@ -62,7 +62,7 @@ export class GroupService {
 			throw new BadRequestException("GroupId refers to a different group.");
 		}
 		const group = await this.groupRepository.updateGroup(groupId, groupDto);
-		return fromDtoFactory.createGroupDto(group);
+		return DtoFactory.createGroupDto(group);
 	}
 
 	async deleteGroup(groupId: string): Promise<boolean> {

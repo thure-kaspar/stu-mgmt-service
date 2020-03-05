@@ -79,7 +79,6 @@ describe('POST-REQUESTS of UserController (e2e)', () => {
 	
 });
 
-// SKIP - TODO: Test fails because db is not dropped fast enough ?
 describe('PATCH-REQUESTS (Db contains data) of GroupController (e2e)', () => {
 	let app: INestApplication;
 

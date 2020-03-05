@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserRepository } from '../repositories/user.repository';
 import { User } from '../../shared/entities/user.entity';
 import { UserDto } from '../../shared/dto/user.dto';
-import * as fromDtoFactory from "../../shared/dto-factory";
 import { CourseDto } from 'src/shared/dto/course.dto';
 import { GroupDto } from "../../shared/dto/group.dto";
 import { Group } from "../../shared/entities/group.entity";
@@ -11,6 +10,7 @@ import { GroupRepository } from "../../course/database/repositories/group.reposi
 import { Assessment } from '../../shared/entities/assessment.entity';
 import { AssessmentRepository } from '../../course/database/repositories/assessment.repository';
 import { AssessmentDto } from "../../shared/dto/assessment.dto";
+import { DtoFactory } from "../../shared/dto-factory";
 
 @Injectable()
 export class UserService {
@@ -21,27 +21,27 @@ export class UserService {
 
     async createUser(userDto: UserDto): Promise<UserDto> {
         const createdUser = await this.userRepository.createUser(userDto);
-        const createdUserDto = fromDtoFactory.createUserDto(createdUser);
+        const createdUserDto = DtoFactory.createUserDto(createdUser);
         return createdUserDto;
     }
 
     async getAllUsers(): Promise<UserDto[]> {
         const userDtos: UserDto[] = [];
         const users = await this.userRepository.getAllUsers();
-        users.forEach(user => userDtos.push(fromDtoFactory.createUserDto(user)));
+        users.forEach(user => userDtos.push(DtoFactory.createUserDto(user)));
         return userDtos;
     }
 
     async getUserById(id: string): Promise<UserDto> {
         const user = await this.userRepository.getUserById(id);
-        const userDto = fromDtoFactory.createUserDto(user);
+        const userDto = DtoFactory.createUserDto(user);
         return userDto;
     }
 
     async getCoursesOfUser(userId: string): Promise<CourseDto[]> {
         const courses = await this.userRepository.getCoursesOfUser(userId);
         const courseDtos: CourseDto[] = [];
-        courses.forEach(course => courseDtos.push(fromDtoFactory.createCourseDto(course)));
+        courses.forEach(course => courseDtos.push(DtoFactory.createCourseDto(course)));
         return courseDtos;
     }
 
@@ -58,7 +58,7 @@ export class UserService {
 		const currentGroups = await this.groupRepository.getCurrentGroupsOfUserForCourse(courseId, userId);
 		const currentGroupDtos: GroupDto[] = [];
 		currentGroups.forEach(group => {
-			currentGroupDtos.push(fromDtoFactory.createGroupDto(group));
+			currentGroupDtos.push(DtoFactory.createGroupDto(group));
 		});
 
 		// TODO: Define a proper format for return value or split in two methods
@@ -72,7 +72,7 @@ export class UserService {
 		assessments.forEach(assessment => {
 			// We only care about group-assessments here
 			if (assessment.groupId) {
-				assessmentDtos.push(fromDtoFactory.createAssessmentDto(assessment));
+				assessmentDtos.push(DtoFactory.createAssessmentDto(assessment));
 			}
 		});
 
@@ -84,7 +84,7 @@ export class UserService {
 			throw new BadRequestException("UserId refers to a different user.");
 		}
 		const user = await this.userRepository.updateUser(userId, userDto);
-		return fromDtoFactory.createUserDto(user);
+		return DtoFactory.createUserDto(user);
 	}
 	
 	async deleteUser(userId: string): Promise<boolean> {
