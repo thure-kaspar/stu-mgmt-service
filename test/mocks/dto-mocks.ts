@@ -87,8 +87,35 @@ export const AssignmentsMock: AssignmentDto[] = [
 		name: "Test_Assignment 02 (Java)",
 		maxPoints: 100,
 		type: AssignmentType.HOMEWORK,
-		state: AssignmentState.IN_PROGRESS,
+		state: AssignmentState.CLOSED,
 		collaborationType: CollaborationType.GROUP,
+	},
+	{
+		id: "993b3cd0-6207-11ea-bc55-0242ac130003",
+		courseId: CoursesMock[0].id,
+		name: "Test_Assignment 03 (Java)",
+		maxPoints: 100,
+		type: AssignmentType.HOMEWORK,
+		state: AssignmentState.IN_REVIEW,
+		collaborationType: CollaborationType.SINGLE,
+	},
+	{
+		id: "c2bc4aa4-6207-11ea-bc55-0242ac130003",
+		courseId: CoursesMock[0].id,
+		name: "Test_Assignment 04 (Java)",
+		maxPoints: 100,
+		type: AssignmentType.HOMEWORK,
+		state: AssignmentState.EVALUATED,
+		collaborationType: CollaborationType.GROUP_OR_SINGLE,
+	},
+	{
+		id: "8ffc9608-4c3d-4fca-b4fc-3768822d6c0d",
+		courseId: CoursesMock[0].id,
+		name: "Test_Assignment 05 (Java) Invisible",
+		maxPoints: 100,
+		type: AssignmentType.HOMEWORK,
+		state: AssignmentState.INVISIBLE,
+		collaborationType: CollaborationType.GROUP_OR_SINGLE,
 	}
 ]
 
