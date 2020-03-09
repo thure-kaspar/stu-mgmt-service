@@ -29,7 +29,21 @@ export abstract class DtoFactory {
             courseEntity.courseUserRelations.forEach(courseUserRelation => {
                 courseDto.users.push(this.createUserDto(courseUserRelation.user));
             });
-        }
+		}
+		
+		if (courseEntity.assignments) {
+			courseDto.assignments = [];
+			courseEntity.assignments.forEach(assignment => {
+				courseDto.assignments.push(this.createAssignmentDto(assignment));
+			});
+		}
+
+		if (courseEntity.groups) {
+			courseDto.groups = [];
+			courseEntity.groups.forEach(group => {
+				courseDto.groups.push(this.createGroupDto(group));
+			});
+		}
     
         return courseDto;
     }

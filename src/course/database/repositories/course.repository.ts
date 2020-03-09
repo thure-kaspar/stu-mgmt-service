@@ -29,7 +29,9 @@ export class CourseRepository extends Repository<Course> {
 	}
 	
     async getCourseById(id: string): Promise<Course> {
-        return this.findOne(id);
+        return this.findOne(id, {
+			relations: ["assignments"]
+		});
     }
 
     async getCourseByNameAndSemester(name: string, semester: string): Promise<Course> {
@@ -37,7 +39,9 @@ export class CourseRepository extends Repository<Course> {
             where: {
                 shortname: name,
                 semester: semester
-            }});
+			},
+			relations: ["assignments"]
+		});
     }
 
     async getCourseWithUsers(id: string): Promise<Course> {

@@ -1,5 +1,6 @@
 import { UserDto } from "./user.dto";
 import { GroupDto } from "./group.dto";
+import { AssignmentDto } from "./assignment.dto";
 
 export class CourseDto {
     id?: string; // Optional: If (unused) id is supplied for creation, it will be used
@@ -12,6 +13,6 @@ export class CourseDto {
 	allowGroups: boolean;
 	maxGroupSize: number;
     users?: UserDto[];
-    groups?: GroupDto[];
-    // assignments?: any[] // AssignmentDto[]
+	groups?: GroupDto[];
+	assignments?: AssignmentDto[];
 }
