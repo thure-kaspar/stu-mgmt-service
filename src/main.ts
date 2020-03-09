@@ -20,7 +20,8 @@ async function bootstrap() {
 	.addTag("assignments")
     .addTag("courses")
     .addTag("groups")
-    .addTag("users")
+	.addTag("users")
+	.addTag("test")
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api', app, document);
