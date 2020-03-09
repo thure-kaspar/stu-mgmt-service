@@ -14,12 +14,12 @@ export class UpdateService {
 	/**
 	 * Sends the given message using http (POST), if the affected course has configured a url for update events.
 	 */
-	send(message: UpdateMessage): void {
+	async send(message: UpdateMessage): Promise<void> {
 		// Check, if the course has configured a url for update messages
 		//const url = this.courseMap.get(message.courseId);
 		if (message.url) {
 			// Send message using http (POST)
-			this.http.post(message.url, message);
+			this.http.post(message.url, message).subscribe();
 		}
 	}
 

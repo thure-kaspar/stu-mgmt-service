@@ -11,7 +11,13 @@ export class NotificationsController {
 
 	@Post()
 	sendNotification(@Body() message: UpdateMessage) {
+		console.log("Send notification:", message);
 		this.updateService.send(message);
+	}
+
+	@Post("retrieve")
+	getNotification(@Body() message: UpdateMessage) {
+		console.log("Retrieved message:", message);
 	}
 	
 }
