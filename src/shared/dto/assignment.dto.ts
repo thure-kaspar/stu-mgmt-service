@@ -1,13 +1,14 @@
-import { AssignmentStates, AssignmentTypes } from "../enums";
+import { AssignmentState, AssignmentType, CollaborationType } from "../enums";
 
 export class AssignmentDto {
 	id?: string;
 	courseId: string;
 	name: string;
-	state: AssignmentStates;
+	state: AssignmentState;
 	startDate?: Date;
 	endDate?: Date;
-	type: AssignmentTypes;
+	type: AssignmentType;
+	collaborationType: CollaborationType;
 	maxPoints: number;
 	comment?: string;
 	link?: string;

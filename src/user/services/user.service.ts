@@ -76,7 +76,7 @@ export class UserService {
 			}
 		});
 
-		return assessments;
+		return assessmentDtos;
 	}
 
 	async updateUser(userId: string, userDto: UserDto): Promise<UserDto> {

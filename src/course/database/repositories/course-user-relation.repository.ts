@@ -1,12 +1,12 @@
 import { Repository, EntityRepository, EventSubscriber, EntitySubscriberInterface, InsertEvent, QueryFailedError } from "typeorm";
 import { CourseUserRelation } from "../../../shared/entities/course-user-relation.entity";
-import { UserRoles } from "../../../shared/enums";
+import { UserRole } from "../../../shared/enums";
 import { ConflictException } from "@nestjs/common";
 
 @EntityRepository(CourseUserRelation)
 export class CourseUserRelationRepository extends Repository<CourseUserRelation> {
 	
-	async addUserToCourse(courseId: string, userId: string, role: UserRoles): Promise<CourseUserRelation> {
+	async addUserToCourse(courseId: string, userId: string, role: UserRole): Promise<CourseUserRelation> {
 		const courseUserRelation = new CourseUserRelation();
 		courseUserRelation.courseId = courseId;
 		courseUserRelation.userId = userId;
@@ -22,7 +22,7 @@ export class CourseUserRelationRepository extends Repository<CourseUserRelation>
 		return courseUserRelation;
 	}
 
-	async updateUserRole(courseId: string, userId: string, role: UserRoles): Promise<boolean> {
+	async updateUserRole(courseId: string, userId: string, role: UserRole): Promise<boolean> {
 		const result = await this.update({ courseId, userId }, { role: role});
 		return result.affected == 1;
 	}

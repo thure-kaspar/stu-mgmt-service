@@ -8,7 +8,7 @@ import { UserRepository } from '../../user/repositories/user.repository';
 import { CourseUserRelation } from '../../shared/entities/course-user-relation.entity';
 import { CourseUserRelationRepository } from '../database/repositories/course-user-relation.repository';
 import { UserDto } from "../../shared/dto/user.dto";
-import { UserRoles } from "../../shared/enums";
+import { UserRole } from "../../shared/enums";
 import { CourseFilterDto } from '../../shared/dto/course-filter.dto';
 import { DtoFactory } from "../../shared/dto-factory";
 
@@ -25,7 +25,7 @@ export class CourseService {
 	}
 	
     async addUser(courseId: string, userId: string): Promise<any> { // TODO: don't return any
-        return this.courseUserRepository.addUserToCourse(courseId, userId, UserRoles.STUDENT); // TODO: don't hardcode role 
+        return this.courseUserRepository.addUserToCourse(courseId, userId, UserRole.STUDENT); // TODO: don't hardcode role 
     }
 
     async getCourses(filter?: CourseFilterDto): Promise<CourseDto[]> {
@@ -61,7 +61,7 @@ export class CourseService {
         return DtoFactory.createCourseDto(course);
 	}
 	
-	async updateUserRole(courseId: string, userId: string, role: UserRoles): Promise<boolean> {
+	async updateUserRole(courseId: string, userId: string, role: UserRole): Promise<boolean> {
 		return this.courseUserRepository.updateUserRole(courseId, userId, role);
 	}
 

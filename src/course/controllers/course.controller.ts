@@ -3,7 +3,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { CourseService } from '../services/course.service';
 import { CourseDto } from '../../shared/dto/course.dto';
 import { UserDto } from "../../shared/dto/user.dto";
-import { UserRoles } from '../../shared/enums';
+import { UserRole } from '../../shared/enums';
 import { CourseFilterDto } from '../../shared/dto/course-filter.dto';
 
 @ApiTags("courses") 
@@ -59,7 +59,7 @@ export class CourseController {
 	updateUserRole(
 		@Param("courseId") courseId: string,
 		@Param("userId", ParseUUIDPipe) userId: string,
-		@Body("role") role: UserRoles
+		@Body("role") role: UserRole
 	): Promise<boolean> {
 
 		return this.courseService.updateUserRole(courseId, userId, role);

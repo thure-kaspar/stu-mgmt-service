@@ -49,6 +49,7 @@ export class AssignmentRepository extends Repository<Assignment> {
 		assignment.maxPoints = assignmentDto.maxPoints;
 		assignment.comment = assignmentDto.comment;
 		assignment.link = assignmentDto.link;
+		assignment.collaborationType = assignmentDto.collaborationType;
 
 		return assignment.save();
 	}
@@ -68,6 +69,7 @@ export class AssignmentRepository extends Repository<Assignment> {
 		assignment.link = assignmentDto.link;
 		assignment.type = assignmentDto.type;
 		assignment.maxPoints = assignmentDto.maxPoints;
+		assignment.collaborationType = assignment.collaborationType;
 		return assignment;
 	}
 

@@ -2,7 +2,7 @@ import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, Unique, ManyToMany,
 import { CourseUserRelation } from "./course-user-relation.entity";
 import { UserGroupRelation } from "./user-group-relation.entity";
 import { AssessmentUserRelation } from "./assessment-user-relation.entity";
-import { UserRoles } from "../enums";
+import { UserRole } from "../enums";
 
 @Entity("users")
 @Unique(["email"])
@@ -13,8 +13,8 @@ export class User extends BaseEntity {
     @Column()
     email: string;
 
-    @Column()
-    role: UserRoles;
+    @Column({ type: "enum", enum: UserRole, default: UserRole.STUDENT })
+    role: UserRole;
     
     @OneToMany(type => CourseUserRelation, courseUserRelations => courseUserRelations.user)
 	courseUserRelations: CourseUserRelation[];

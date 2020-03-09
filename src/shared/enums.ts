@@ -1,4 +1,4 @@
-export enum AssignmentStates {
+export enum AssignmentState {
 	INVISIBLE = "INVISIBLE", // Assigment is not opened for submissions. Students can't see it.
 	CLOSED = "CLOSED", // Assignment is closed for submissions. Students can see it.
 	IN_PROGRESS = "IN_PROGRESS", // Assignment is open for submissions
@@ -6,7 +6,7 @@ export enum AssignmentStates {
 	EVALUATED = "EVALUATED" // Assignment has been evaluated.
 }
 
-export enum AssignmentTypes {
+export enum AssignmentType {
 	HOMEWORK = "HOMEWORK",
 	TESTAT = "TESTAT", // TODO: english name ? 
 	SEMINAR = "SEMINAR",
@@ -14,7 +14,13 @@ export enum AssignmentTypes {
 	OTHER = "OTHER"
 }
 
-export enum UserRoles {
+export enum CollaborationType {
+	GROUP = "GROUP",
+	SINGLE = "SINGLE",
+	GROUP_OR_SINGLE = "GROUP_OR_SINGLE"
+}
+
+export enum UserRole {
 	SYSTEM_ADMIN = "SYSTEM_ADMIN",
 	ADMIN_TOOL = "ADMIN_TOOL",
 	MGMT_ADMIN = "MGTM_ADMIN",

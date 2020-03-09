@@ -6,7 +6,7 @@ import { getConnection } from 'typeorm';
 import { DbMockService } from "./mocks/db-mock.service";
 import * as fromDtoMocks from "./mocks/dto-mocks";
 import { UserDto } from "../src/shared/dto/user.dto";
-import { UserRoles } from "../src/shared/enums";
+import { UserRole } from "../src/shared/enums";
 
 let dbMockService: DbMockService; // Should be initialized in every describe-block
 
@@ -106,7 +106,7 @@ describe('PATCH-REQUESTS (Db contains data) of GroupController (e2e)', () => {
 		Object.assign(changedUser, users[0]);
 
 		changedUser.email = "new@email.test";
-		changedUser.role = UserRoles.TUTOR;
+		changedUser.role = UserRole.TUTOR;
 
 		return request(app.getHttpServer())
 			.patch(`/users/${users[0].id}`)

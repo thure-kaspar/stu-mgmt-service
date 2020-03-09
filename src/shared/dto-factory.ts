@@ -88,7 +88,8 @@ export abstract class DtoFactory {
             comment: assignmentEntity.comment,
             link: assignmentEntity.link,
             type: assignmentEntity.type,
-            maxPoints: assignmentEntity.maxPoints
+			maxPoints: assignmentEntity.maxPoints,
+			collaborationType: assignmentEntity.collaborationType
         };
         return assignmentDto;
     }

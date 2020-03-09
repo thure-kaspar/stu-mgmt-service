@@ -1,7 +1,7 @@
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, JoinColumn, ManyToOne } from "typeorm";
 import { Course } from "./course.entity";
 import { Assessment } from "./assessment.entity";
-import { AssignmentStates, AssignmentTypes } from "../enums";
+import { AssignmentState, AssignmentType, CollaborationType } from "../enums";
 
 @Entity("assignments")
 export class Assignment extends BaseEntity {
@@ -11,8 +11,8 @@ export class Assignment extends BaseEntity {
 	@Column()
 	name: string;
 
-	@Column()
-	state: AssignmentStates;
+	@Column({ type: "enum", enum: AssignmentState, default: AssignmentState.CLOSED })
+	state: AssignmentState;
 
 	@Column({ nullable: true })
 	startDate: Date;
@@ -26,11 +26,14 @@ export class Assignment extends BaseEntity {
 	@Column({ nullable: true })
 	link: string;
 
-	@Column()
-	type: AssignmentTypes;
+	@Column({ type: "enum", enum: AssignmentType, default: AssignmentType.HOMEWORK })
+	type: AssignmentType;
 
 	@Column()
 	maxPoints: number;
+
+	@Column({ type: "enum", enum: CollaborationType, default: CollaborationType.GROUP_OR_SINGLE })
+	collaborationType: CollaborationType;
 
 	@ManyToOne(type => Course, course => course.assignments, { onDelete: "CASCADE" })
 	@JoinColumn()
