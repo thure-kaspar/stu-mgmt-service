@@ -45,12 +45,16 @@ export const UsersMock: UserDto[] = [
 	{
 		id: "a019ea22-5194-4b83-8d31-0de0dc9bca53",
 		email: "user.one@test.com",
+		username: "Max Mustermann",
+		rzName: "mmustermann",
 		role: UserRole.STUDENT
 	},
 	{
 		id: "40f59aad-7473-4455-a3ea-1214f19b2565",
 		email: "user.two@test.com",
-		role: UserRole.STUDENT
+		username: "Hans Peter",
+		rzName: "hpeter",
+		role: UserRole.STUDENT,
 	}
 ];
 
