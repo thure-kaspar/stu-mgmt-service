@@ -7,7 +7,7 @@ ssh -i ~/.ssh/id_rsa_student_mgmt_backend elscha@147.172.178.30 <<EOF
  git pull
  npm install -production
  rm ~/.pm2/logs/npm-error.log
- pm2 restart all --wait-ready # requires project intialized with: pm2 start npm -- run start:demo
+ pm2 restart 0 --wait-ready # requires project intialized with: pm2 start npm -- run start:demo
  cd ..
  sleep 30
  ./chk_logs_for_err.sh
