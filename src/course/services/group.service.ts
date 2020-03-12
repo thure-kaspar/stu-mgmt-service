@@ -45,7 +45,7 @@ export class GroupService {
 
 	async getGroupsOfCourse(courseId: string): Promise<GroupDto[]> {
 		const groups = await this.groupRepository.getGroupsOfCourse(courseId);
-		return groups;
+		return groups.map(group => DtoFactory.createGroupDto(group));
 	}
 
 	async getUsersOfGroup(groupId: string): Promise<UserDto[]> {
