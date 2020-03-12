@@ -46,11 +46,7 @@ export class AssessmentService {
 
 	async getAssessmentsForAssignment(assignmentId: string): Promise<AssessmentDto[]> {
 		const assessments = await this.assessmentRepository.getAllAssessmentsForAssignment(assignmentId);
-		const assessmentDtos: AssessmentDto[] = [];
-		assessments.forEach(assessment => {
-			assessmentDtos.push(DtoFactory.createAssessmentDto(assessment));
-		});
-		return assessmentDtos;
+		return assessments.map(assessment => DtoFactory.createAssessmentDto(assessment));
 	}
 
 	async getAssessmentById(assessmentId: string): Promise<AssessmentDto> {

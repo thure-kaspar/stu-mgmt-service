@@ -25,24 +25,15 @@ export abstract class DtoFactory {
     
         // Add relational data, if available
         if (courseEntity.courseUserRelations) {
-            courseDto.users = []; 
-            courseEntity.courseUserRelations.forEach(courseUserRelation => {
-                courseDto.users.push(this.createUserDto(courseUserRelation.user));
-            });
+            courseDto.users = courseEntity.courseUserRelations.map(courseUserRelation => this.createUserDto(courseUserRelation.user));
 		}
 		
 		if (courseEntity.assignments) {
-			courseDto.assignments = [];
-			courseEntity.assignments.forEach(assignment => {
-				courseDto.assignments.push(this.createAssignmentDto(assignment));
-			});
+			courseDto.assignments = courseEntity.assignments.map(assignment => this.createAssignmentDto(assignment));
 		}
 
 		if (courseEntity.groups) {
-			courseDto.groups = [];
-			courseEntity.groups.forEach(group => {
-				courseDto.groups.push(this.createGroupDto(group));
-			});
+			courseDto.groups = courseEntity.groups.map(group => this.createGroupDto(group));
 		}
     
         return courseDto;
@@ -57,10 +48,7 @@ export abstract class DtoFactory {
     
         // Add relational data, if available
         if (userEntity.courseUserRelations) {
-            userDto.courses = [];
-            userEntity.courseUserRelations.forEach(courseUserRelation => {
-                userDto.courses.push(this.createCourseDto(courseUserRelation.course));
-            });
+            userDto.courses = userEntity.courseUserRelations.map(courseUserRelation => this.createCourseDto(courseUserRelation.course));
         }
     
         return userDto;

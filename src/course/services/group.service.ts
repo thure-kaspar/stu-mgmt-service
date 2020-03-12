@@ -50,10 +50,7 @@ export class GroupService {
 
 	async getUsersOfGroup(groupId: string): Promise<UserDto[]> {
 		const group = await this.groupRepository.getGroupWithUsers(groupId);
-		const userDtos = [];
-		group.userGroupRelations.forEach(userGroupRelation => {
-			userDtos.push(DtoFactory.createUserDto(userGroupRelation.user));
-		});
+		const userDtos = group.userGroupRelations.map(userGroupRelation => DtoFactory.createUserDto(userGroupRelation.user));
 		return userDtos;
 	}
 
