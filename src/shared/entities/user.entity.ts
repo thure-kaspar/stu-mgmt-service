@@ -5,12 +5,11 @@ import { AssessmentUserRelation } from "./assessment-user-relation.entity";
 import { UserRole } from "../enums";
 
 @Entity("users")
-@Unique(["email"])
 export class User extends BaseEntity {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 
-    @Column()
+    @Column({ unique: true })
 	email: string;
 	
 	@Column()

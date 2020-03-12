@@ -3,7 +3,7 @@ import { Assessment } from "./assessment.entity";
 import { User } from "./user.entity";
 
 @Entity("assessment_user_relations")
-@Index(["assessmentId", "userId"], { unique: true })
+@Index("IDX_AssessmentId_UserId", ["assessmentId", "userId"], { unique: true })
 export class AssessmentUserRelation extends BaseEntity {
 
 	@OneToOne(type => Assessment, assessment => assessment.assessmentUserRelations)

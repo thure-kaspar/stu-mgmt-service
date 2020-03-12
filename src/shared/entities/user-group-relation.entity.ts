@@ -3,7 +3,7 @@ import { User } from "./user.entity";
 import { Group } from "./group.entity";
 
 @Entity("user_group_relations")
-@Index(["userId", "groupId"], { unique: true })
+@Index("IDX_UserId_GroupId", ["userId", "groupId"], { unique: true })
 export class UserGroupRelation extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
