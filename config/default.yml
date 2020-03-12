@@ -5,3 +5,6 @@ db:
   type: "postgres"
   port: 5432
   database: "StudentMgmtDb"
+
+logger:
+  requests: false

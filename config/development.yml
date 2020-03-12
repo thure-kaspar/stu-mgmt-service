@@ -3,3 +3,6 @@ db:
   username: "postgres"
   password: "admin"
   synchronize: true
+
+logger:
+  requests: true
