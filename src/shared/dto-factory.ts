@@ -42,7 +42,9 @@ export abstract class DtoFactory {
      static createUserDto(userEntity: User): UserDto {
         const userDto: UserDto = {
             id: userEntity.id,
-            email: userEntity.email,
+			email: userEntity.email,
+			username: userEntity.username,
+			rzName: userEntity.rzName,
             role: userEntity.role,
         }
     
