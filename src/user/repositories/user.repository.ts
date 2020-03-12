@@ -50,7 +50,9 @@ export class UserRepository extends Repository<User> {
     private createEntityFromDto(userDto: UserDto): User {
         const user = new User();
         user.email = userDto.email;
-        user.role = userDto.role;
+		user.role = userDto.role;
+		user.username = userDto.username;
+		user.rzName = userDto.rzName;
         return user;
     }
 }

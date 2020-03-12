@@ -1,4 +1,4 @@
-import { BaseEntity, PrimaryColumn, OneToOne, Entity, Index, JoinColumn } from "typeorm";
+import { BaseEntity, PrimaryColumn, OneToOne, Entity, Index, JoinColumn, ManyToMany } from "typeorm";
 import { Assessment } from "./assessment.entity";
 import { User } from "./user.entity";
 
@@ -12,7 +12,7 @@ export class AssessmentUserRelation extends BaseEntity {
 	@PrimaryColumn()
 	assessmentId: string;
 
-	@OneToOne(type => User, user => user.assessmentUserRelations, { onDelete: "CASCADE" })
+	@ManyToMany(type => User, user => user.assessmentUserRelations, { onDelete: "CASCADE" })
 	@JoinColumn()
 	user: User;
 
