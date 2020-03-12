@@ -4,28 +4,28 @@ import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { getConnection } from 'typeorm';
 import { DbMockService } from "./mocks/db-mock.service";
-import * as fromDtoMocks from "./mocks/dto-mocks";
 import { UserDto } from "../src/shared/dto/user.dto";
 import { UserRole } from "../src/shared/enums";
+import { CoursesMock } from "./mocks/courses.mock";
+import { GroupsMock } from "./mocks/groups.mock";
+import { UsersMock, USER_STUDENT_JAVA } from "./mocks/users.mock";
+import { AssignmentsMock } from "./mocks/assignments.mock";
+import { AssessmentsMock } from "./mocks/assessments.mock";
+import { createApplication } from "./mocks/application.mock";
 
+let app: INestApplication;
 let dbMockService: DbMockService; // Should be initialized in every describe-block
 
-const courses = fromDtoMocks.CoursesMock;
-const groups = fromDtoMocks.GroupsMock;
-const users = fromDtoMocks.UsersMock;
-const assignments = fromDtoMocks.AssignmentsMock;
-const assessments = fromDtoMocks.AssessmentsMock;
+const courses = CoursesMock;
+const groups = GroupsMock;
+const users = UsersMock;
+const assignments = AssignmentsMock;
+const assessments = AssessmentsMock;
 
 describe('GET-REQUESTS of UserController (e2e)', () => {
-	let app: INestApplication;
 	
 	beforeAll(async () => {
-		const moduleFixture: TestingModule = await Test.createTestingModule({
-			imports: [AppModule],
-		}).compile();
-
-		app = moduleFixture.createNestApplication();
-		await app.init();
+		app = await createApplication();
 
 		// Setup mocks
 		const dbMockService = new DbMockService(getConnection());
@@ -48,15 +48,9 @@ describe('GET-REQUESTS of UserController (e2e)', () => {
 });
 
 describe('POST-REQUESTS of UserController (e2e)', () => {
-	let app: INestApplication;
 	
 	beforeEach(async () => {
-		const moduleFixture: TestingModule = await Test.createTestingModule({
-			imports: [AppModule],
-		}).compile();
-
-		app = moduleFixture.createNestApplication();
-		await app.init();
+		app = await createApplication();
 
 		// Setup mocks
 		const dbMockService = new DbMockService(getConnection());
@@ -67,28 +61,22 @@ describe('POST-REQUESTS of UserController (e2e)', () => {
 		await getConnection().close(); // Close Db-Connection after all tests have been executed
 	});
 
-	it("(POST) /users Creates the given user and returns it (Part 1/2)", () => {
+	it("(POST) /users Creates the given user and returns it", () => {
 		return request(app.getHttpServer())
 			.post("/users")
-			.send(users[0])
+			.send(USER_STUDENT_JAVA)
 			.expect(201)
 			.expect(({ body }) => {
-				expect(body.email).toEqual(users[0].email);
+				expect(body.email).toEqual(USER_STUDENT_JAVA.email);
 			})
 	});
 	
 });
 
 describe('PATCH-REQUESTS (Db contains data) of GroupController (e2e)', () => {
-	let app: INestApplication;
 
 	beforeEach(async () => {
-		const moduleFixture: TestingModule = await Test.createTestingModule({
-			imports: [AppModule],
-		}).compile();
-
-		app = moduleFixture.createNestApplication();
-		await app.init();
+		app = await createApplication();
 
 		// Setup mocks - these tests require a filled db
 		dbMockService = new DbMockService(getConnection());
@@ -101,18 +89,19 @@ describe('PATCH-REQUESTS (Db contains data) of GroupController (e2e)', () => {
 	});
 
 	it("(PATCH) /users/{userId} Updates the user", () => {
+		const user = USER_STUDENT_JAVA;
 		// Create clone of original data and perform some changes
 		let changedUser = new UserDto();
-		Object.assign(changedUser, users[0]);
+		Object.assign(changedUser, user);
 
 		changedUser.email = "new@email.test";
 		changedUser.role = UserRole.TUTOR;
 
 		return request(app.getHttpServer())
-			.patch(`/users/${users[0].id}`)
+			.patch(`/users/${user.id}`)
 			.send(changedUser)
 			.expect(({ body }) => {
-				expect(body.id).toEqual(users[0].id) // Check if we retrieved the correct user
+				expect(body.id).toEqual(user.id) // Check if we retrieved the correct user
 				expect(body.email).toEqual(changedUser.email);
 				expect(body.role).toEqual(changedUser.role);
 			})
@@ -121,15 +110,9 @@ describe('PATCH-REQUESTS (Db contains data) of GroupController (e2e)', () => {
 });
 
 describe('DELETE-REQUESTS (Db contains data) of GroupController (e2e)', () => {
-	let app: INestApplication;
 
 	beforeEach(async () => {
-		const moduleFixture: TestingModule = await Test.createTestingModule({
-			imports: [AppModule],
-		}).compile();
-
-		app = moduleFixture.createNestApplication();
-		await app.init();
+		app = await createApplication();
 
 		// Setup mocks - these tests require a filled db
 		dbMockService = new DbMockService(getConnection());
@@ -143,7 +126,7 @@ describe('DELETE-REQUESTS (Db contains data) of GroupController (e2e)', () => {
 
 	it("(DELETE) /users/{userId} Deletes the user", () => {
 		return request(app.getHttpServer())
-			.delete(`/users/${users[0].id}`)
+			.delete(`/users/${USER_STUDENT_JAVA.id}`)
 			.expect(200) // TODO: 
 	});
 

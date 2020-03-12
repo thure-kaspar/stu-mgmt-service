@@ -16,7 +16,7 @@ describe('AppController (e2e)', () => {
 		await app.init();
 	});
 
-	afterAll(async () => {
+	afterEach(async () => {
 		await getConnection().close(); // Close Db-Connection after all tests have been executed
 	});
 

@@ -4,27 +4,30 @@ import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { getConnection } from 'typeorm';
 import { DbMockService } from "./mocks/db-mock.service";
-import * as fromDtoMocks from "./mocks/dto-mocks";
+import * as fromDtoMocks from "./mocks/relations.mock";
 import { GroupDto } from "../src/shared/dto/group.dto";
+import { CoursesMock, COURSE_JAVA_1920 } from "./mocks/courses.mock";
+import { GroupsMock, GROUP_1_JAVA } from "./mocks/groups.mock";
+import { UsersMock } from "./mocks/users.mock";
+import { AssignmentsMock } from "./mocks/assignments.mock";
+import { AssessmentsMock } from "./mocks/assessments.mock";
+import { createApplication } from "./mocks/application.mock";
 
+let app: INestApplication;
 let dbMockService: DbMockService; // Should be initialized in every describe-block
 
-const courses = fromDtoMocks.CoursesMock;
-const groups = fromDtoMocks.GroupsMock;
-const users = fromDtoMocks.UsersMock;
-const assignments = fromDtoMocks.AssignmentsMock;
-const assessments = fromDtoMocks.AssessmentsMock;
+const courses = CoursesMock;
+const groups = GroupsMock;
+const users = UsersMock;
+const assignments = AssignmentsMock;
+const assessments = AssessmentsMock;
+
+const course = COURSE_JAVA_1920; // The course that will be used for testing
 
 describe('GET-REQUESTS of GroupController (e2e)', () => {
-	let app: INestApplication;
-
+	
 	beforeAll(async () => {
-		const moduleFixture: TestingModule = await Test.createTestingModule({
-			imports: [AppModule],
-		}).compile();
-
-		app = moduleFixture.createNestApplication();
-		await app.init();
+		app = await createApplication();
 
 		// Setup mocks
 		const dbMockService = new DbMockService(getConnection());
@@ -37,10 +40,14 @@ describe('GET-REQUESTS of GroupController (e2e)', () => {
 	});
 
 	it("(GET) /groups/{groupId}/users Retrieves all members of the group", () => {
+		const group = GROUP_1_JAVA;
+		const memberCount = fromDtoMocks.UserGroupRelationsMock.filter(user => user.groupId === group.id).length;
+		console.assert(memberCount > 1, "The tested group should contains multiple users! Member count: ", memberCount);
+
 		return request(app.getHttpServer())
-			.get(`/courses/${courses[0].id}/groups/${groups[0].id}/users`)
+			.get(`/courses/${course.id}/groups/${group.id}/users`)
 			.expect(({ body }) => {
-				expect(body.length).toEqual(users.length);
+				expect(body.length).toEqual(memberCount);
 			});
 	});
 
@@ -50,12 +57,7 @@ describe('POST-REQUESTS for relations (Db contains data) of GroupController (e2e
 	let app: INestApplication;
 
 	beforeEach(async () => {
-		const moduleFixture: TestingModule = await Test.createTestingModule({
-			imports: [AppModule],
-		}).compile();
-
-		app = moduleFixture.createNestApplication();
-		await app.init();
+		app = await createApplication();
 
 		// Setup mocks - these tests require a filled db
 		dbMockService = new DbMockService(getConnection());
@@ -70,22 +72,28 @@ describe('POST-REQUESTS for relations (Db contains data) of GroupController (e2e
 	});
 
 	it("(POST) /groups/{groupId}/users/{userId} Correct password, joining is possible -> Adds the user to the group", () => {
+		const group = GROUP_1_JAVA;
+
 		return request(app.getHttpServer())
-			.post(`/courses/${courses[0].id}/groups/${groups[0].id}/users/${users[0].id}`)
-			.send({ password: groups[0].password })
+			.post(`/courses/${course.id}/groups/${group.id}/users/${users[0].id}`)
+			.send({ password: group.password })
 			.expect(201)
 	});
 
 	it ("(POST) /groups/{groupId}/users/{userId} Incorrect password -> 401 Unauthorized", () => {
+		const group = GROUP_1_JAVA;
+
 		return request(app.getHttpServer())
-		.post(`/courses/${courses[0].id}/groups/${groups[0].id}/users/${users[0].id}`)
+		.post(`/courses/${course.id}/groups/${group.id}/users/${users[0].id}`)
 		.send({ password: "wrong_password" })
 		.expect(401)
 	});
 
 	it ("(POST) /groups/{groupId}/users/{userId} Group is closed -> 409 Conflict", () => {
+		const group = GROUP_1_JAVA;
+
 		return request(app.getHttpServer())
-		.post(`/courses/${courses[0].id}/groups/${groups[1].id}/users/${users[0].id}`)
+		.post(`/courses/${course.id}/groups/${groups[1].id}/users/${users[0].id}`)
 		.send({ password: groups[1].password })
 		.expect(409)
 	});
@@ -96,12 +104,7 @@ describe('PATCH-REQUESTS (Db contains data) of GroupController (e2e)', () => {
 	let app: INestApplication;
 
 	beforeEach(async () => {
-		const moduleFixture: TestingModule = await Test.createTestingModule({
-			imports: [AppModule],
-		}).compile();
-
-		app = moduleFixture.createNestApplication();
-		await app.init();
+		app = await createApplication();
 
 		// Setup mocks - these tests require a filled db
 		dbMockService = new DbMockService(getConnection());
@@ -115,16 +118,18 @@ describe('PATCH-REQUESTS (Db contains data) of GroupController (e2e)', () => {
 	});
 
 	it("(PATCH) /groups/{groupId} Updates the group", () => {
+		const group = GROUP_1_JAVA;
+
 		// Create clone of original data and then perform some changes
 		let changedGroup = new GroupDto();
-		Object.assign(changedGroup, groups[0]);
+		Object.assign(changedGroup, group);
 
 		changedGroup.name = "new name";
-		changedGroup.isClosed = !groups[0].isClosed;
+		changedGroup.isClosed = !group.isClosed;
 		changedGroup.password = "new password";
 
 		return request(app.getHttpServer())
-			.patch(`/courses/${courses[0].id}/groups/${groups[0].id}`)
+			.patch(`/courses/${course.id}/groups/${group.id}`)
 			.send(changedGroup)
 			.expect(({ body }) => {
 				expect(body.name).toEqual(changedGroup.name)
@@ -139,12 +144,7 @@ describe('DELETE-REQUESTS (Db contains data) of GroupController (e2e)', () => {
 	let app: INestApplication;
 
 	beforeEach(async () => {
-		const moduleFixture: TestingModule = await Test.createTestingModule({
-			imports: [AppModule],
-		}).compile();
-
-		app = moduleFixture.createNestApplication();
-		await app.init();
+		app = await createApplication();
 
 		// Setup mocks - these tests require a filled db
 		dbMockService = new DbMockService(getConnection());
@@ -157,8 +157,10 @@ describe('DELETE-REQUESTS (Db contains data) of GroupController (e2e)', () => {
 	});
 
 	it("(DELETE) /groups/{groupId} Deletes the group", () => {
+		const group = GROUP_1_JAVA;
+
 		return request(app.getHttpServer())
-			.delete(`/courses/${courses[0].id}/groups/${groups[0].id}`)
+			.delete(`/courses/${course.id}/groups/${group.id}`)
 			.expect(200)
 	});
 
