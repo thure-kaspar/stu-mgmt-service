@@ -9,29 +9,45 @@ import { CourseFilterDto } from '../../shared/dto/course-filter.dto';
 @ApiTags("courses") 
 @Controller("courses")
 export class CourseController {
+
 	constructor(private courseService: CourseService) { }
 
+	/**
+	 * Creates a new course.
+	 */
 	@Post()
 	createCourse(@Body() courseDto: CourseDto): Promise<CourseDto> {
 		return this.courseService.createCourse(courseDto);
 	}
 
+	/**
+	 * Adds a user to the course.
+	 */
 	@Post(":courseId/users/:userId")
 	addUser(@Param("courseId") courseId: string,
 			@Param("userId", ParseUUIDPipe) userId: string): Promise<any> {
 		return this.courseService.addUser(courseId, userId);
 	}
 	
+	/**
+	 * Returns all courses that match the given filter.
+	 */
 	@Get()
 	getCourses(@Query() filter?: CourseFilterDto): Promise<CourseDto[]> {
 		return this.courseService.getCourses(filter);
 	}
 
+	/**
+	 * Returns the course.
+	 */
 	@Get(":courseId")
 	getCourseById(@Param("courseId") courseId: string): Promise<CourseDto> {
 		return this.courseService.getCourseById(courseId);
 	}
 
+	/**
+	 * Returns the course.
+	 */
 	@Get(":name/semester/:semester")
 	getCourseByNameAndSemester(
 		@Param("name") name: string,
@@ -41,11 +57,17 @@ export class CourseController {
 		return this.courseService.getCourseByNameAndSemester(name, semester);
 	}
 
+	/**
+	 * Returns a collection of users that a signed up for this course.
+	 */
 	@Get(":courseId/users")
 	getUsersOfCourse(@Param("courseId") courseId: string): Promise<UserDto[]> {
 		return this.courseService.getUsersOfCourse(courseId);
 	}
 
+	/**
+	 * Updates the course.
+	 */
 	@Patch(":courseId")
 	updateCourse(
 		@Param("courseId") courseId: string,
@@ -55,6 +77,9 @@ export class CourseController {
 		return this.courseService.updateCourse(courseId, courseDto);
 	}
 
+	/**
+	 * Assigns the given role to the user of this course.
+	 */
 	@Patch(":courseId/users/:userId/role")
 	updateUserRole(
 		@Param("courseId") courseId: string,
@@ -65,6 +90,9 @@ export class CourseController {
 		return this.courseService.updateUserRole(courseId, userId, role);
 	}
 
+	/**
+	 * Deletes the course.
+	 */
 	@Delete(":courseId")
 	deleteCourse(
 		@Param("courseId") courseId: string,
