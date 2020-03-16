@@ -1,4 +1,4 @@
-import { Repository, EntityRepository, FindOperator } from "typeorm";
+import { Repository, EntityRepository } from "typeorm";
 import { User } from "../../shared/entities/user.entity";
 import { UserDto } from "../../shared/dto/user.dto";
 import { Course } from "src/shared/entities/course.entity";
@@ -17,6 +17,13 @@ export class UserRepository extends Repository<User> {
 
 	async getUserById(id: string): Promise<User> {
 		return this.findOne(id, { relations: ["courseUserRelations", "courseUserRelations.course"] });
+	}
+
+	async getUserByEmail(email: string): Promise<User> {
+		return this.findOne({
+			where: email,
+			relations: ["courseUserRelations", "courseUserRelations.course"]
+		});
 	}
 
 	async getCoursesOfUser(userId: string): Promise<Course[]> {
@@ -43,8 +50,8 @@ export class UserRepository extends Repository<User> {
 	}
 
 	async deleteUser(userId: string): Promise<boolean> {
-		const deleteResult = await this.delete(userId);
-		return deleteResult.affected == 1;
+		const deleted = await this.remove(this.create({ id: userId }));
+		return deleted ? true : false;
 	}
 	
 	private createEntityFromDto(userDto: UserDto): User {

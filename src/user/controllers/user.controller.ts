@@ -27,6 +27,12 @@ export class UserController {
 		return this.userService.getUserById(userId);
 	}
 
+	@Get("email/:email")
+	getUserbyEmail(@Param("email") email: string): Promise<UserDto> {
+		return this.userService.getUserByEmail(email);
+	}
+
+
 	@Get(":userId/courses")
 	getCoursesOfUser(@Param("userId", ParseUUIDPipe) userId: string): Promise<CourseDto[]> {
 		return this.userService.getCoursesOfUser(userId);

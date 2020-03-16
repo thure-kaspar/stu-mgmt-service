@@ -26,16 +26,18 @@ export class UserService {
 	}
 
 	async getAllUsers(): Promise<UserDto[]> {
-		const userDtos: UserDto[] = [];
 		const users = await this.userRepository.getAllUsers();
-		users.forEach(user => userDtos.push(DtoFactory.createUserDto(user)));
-		return userDtos;
+		return users.map(user => DtoFactory.createUserDto(user));
 	}
 
 	async getUserById(id: string): Promise<UserDto> {
 		const user = await this.userRepository.getUserById(id);
-		const userDto = DtoFactory.createUserDto(user);
-		return userDto;
+		return DtoFactory.createUserDto(user);
+	}
+
+	async getUserByEmail(email: string): Promise<UserDto> {
+		const user = await this.userRepository.getUserByEmail(email);
+		return DtoFactory.createUserDto(user);
 	}
 
 	async getCoursesOfUser(userId: string): Promise<CourseDto[]> {
@@ -47,11 +49,6 @@ export class UserService {
 
 	/**
 	 * Returns a collection of all groups the user was/is part of in the given course.
-	 *
-	 * @param {string} userId
-	 * @param {string} courseId
-	 * @returns {Promise<any>}
-	 * @memberof UserService
 	 */
 	async getGroupsOfUserForCourse(userId: string, courseId: string): Promise<GroupDto[]> {
 		// Retrieve groups that user is currently a member of
