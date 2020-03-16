@@ -1,14 +1,12 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CourseDto } from 'src/shared/dto/course.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CourseRepository } from '../database/repositories/course.repository';
 import { Course } from '../../shared/entities/course.entity';
-import { User } from '../../shared/entities/user.entity';
-import { UserRepository } from '../../user/repositories/user.repository';
 import { CourseUserRelation } from '../../shared/entities/course-user-relation.entity';
 import { CourseUserRelationRepository } from '../database/repositories/course-user-relation.repository';
 import { UserDto } from "../../shared/dto/user.dto";
-import { UserRole } from "../../shared/enums";
+import { UserRole, CourseRole } from "../../shared/enums";
 import { CourseFilterDto } from '../../shared/dto/course-filter.dto';
 import { DtoFactory } from "../../shared/dto-factory";
 
@@ -16,7 +14,6 @@ import { DtoFactory } from "../../shared/dto-factory";
 export class CourseService {
 
     constructor(@InjectRepository(Course) private courseRepository: CourseRepository,
-                @InjectRepository(User) private userRepository: UserRepository,
 				@InjectRepository(CourseUserRelation) private courseUserRepository: CourseUserRelationRepository) { }
 
     async createCourse(courseDto: CourseDto): Promise<CourseDto> {
@@ -25,7 +22,7 @@ export class CourseService {
 	}
 	
     async addUser(courseId: string, userId: string): Promise<any> { // TODO: don't return any
-        return this.courseUserRepository.addUserToCourse(courseId, userId, UserRole.STUDENT); // TODO: don't hardcode role 
+        return this.courseUserRepository.addUserToCourse(courseId, userId, CourseRole.STUDENT); // TODO: don't hardcode role 
     }
 
     async getCourses(filter?: CourseFilterDto): Promise<CourseDto[]> {
@@ -54,7 +51,7 @@ export class CourseService {
         return DtoFactory.createCourseDto(course);
 	}
 	
-	async updateUserRole(courseId: string, userId: string, role: UserRole): Promise<boolean> {
+	async updateUserRole(courseId: string, userId: string, role: CourseRole): Promise<boolean> {
 		return this.courseUserRepository.updateUserRole(courseId, userId, role);
 	}
 

@@ -15,7 +15,6 @@ import { AssessmentRepository } from "./database/repositories/assessment.reposit
 import { AssessmentUserRelationRepository } from "./database/repositories/assessment-user-relation.repository";
 import { AssessmentController } from './controllers/assessment.controller';
 import { AssignmentController } from './controllers/assignment.controller';
-import { UpdateService } from "./database/subscribers/update.service";
 
 @Module({
   imports: [TypeOrmModule.forFeature([
@@ -25,11 +24,10 @@ import { UpdateService } from "./database/subscribers/update.service";
     GroupRepository, 
     AssignmentRepository, 
     AssessmentRepository,
-    AssessmentUserRelationRepository
-  ]),
-    HttpModule
+	AssessmentUserRelationRepository
+  	]),
   ],
   controllers: [AssessmentController, AssignmentController, CourseController, GroupController],
-  providers: [CourseService, GroupService, AssignmentService, AssessmentService, { provide: UpdateService, useClass: UpdateService }]
+  providers: [CourseService, GroupService, AssignmentService, AssessmentService]
 })
 export class CourseModule {}

@@ -48,7 +48,8 @@ export class DbMockService {
 	}
 
 	async createCourses(): Promise<void> {
-		const result = await this.con.getRepository(Course).insert(this.courses);
+		await this.con.getRepository(Course).insert(this.courses)
+			.catch(error => console.log(error));
 	}
 
 	async createUsers(): Promise<void> {

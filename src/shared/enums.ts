@@ -24,6 +24,10 @@ export enum UserRole {
 	SYSTEM_ADMIN = "SYSTEM_ADMIN",
 	ADMIN_TOOL = "ADMIN_TOOL",
 	MGMT_ADMIN = "MGTM_ADMIN",
+	USER = "USER"
+}
+
+export enum CourseRole {
 	LECTURER = "LECTURER",
 	TUTOR = "TUTOR",
 	STUDENT = "STUDENT"

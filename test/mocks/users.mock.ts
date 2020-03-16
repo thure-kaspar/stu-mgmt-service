@@ -6,7 +6,7 @@ export const USER_STUDENT_JAVA: UserDto = {
 	email: "max.mustermann@test.com",
 	username: "Max Mustermann",
 	rzName: "mmustermann",
-	role: UserRole.STUDENT
+	role: UserRole.USER,
 }
 
 export const USER_STUDENT_2_JAVA: UserDto = {
@@ -14,7 +14,7 @@ export const USER_STUDENT_2_JAVA: UserDto = {
 	email: "hans.peter@test.com",
 	username: "Hans Peter",
 	rzName: "hpeter",
-	role: UserRole.STUDENT,
+	role: UserRole.USER,
 }
 
 export const USER_STUDENT_3_JAVA_TUTOR: UserDto = {
@@ -22,7 +22,7 @@ export const USER_STUDENT_3_JAVA_TUTOR: UserDto = {
 	email: "john.doe@test.com",
 	username: "John Doe",
 	rzName: "jdoe",
-	role: UserRole.STUDENT,
+	role: UserRole.USER,
 }
 
 export const USER_MGMT_ADMIN_JAVA_LECTURER: UserDto = {
@@ -33,9 +33,18 @@ export const USER_MGMT_ADMIN_JAVA_LECTURER: UserDto = {
 	role: UserRole.MGMT_ADMIN,
 }
 
+export const USER_SYSTEM_ADMIN: UserDto = {
+	id: "d4b50fe8-f949-4317-bdde-d9ae61f53b96",
+	email: "system.admin@test.com",
+	username: "System Admin",
+	rzName: "sAdmin",
+	role: UserRole.SYSTEM_ADMIN,
+}
+
 export const UsersMock: UserDto[] = [
 	USER_STUDENT_JAVA, 
 	USER_STUDENT_2_JAVA,
 	USER_STUDENT_3_JAVA_TUTOR,
-	USER_MGMT_ADMIN_JAVA_LECTURER
+	USER_MGMT_ADMIN_JAVA_LECTURER,
+	USER_SYSTEM_ADMIN
 ];

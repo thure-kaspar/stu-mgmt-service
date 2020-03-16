@@ -18,7 +18,7 @@ export class User extends BaseEntity {
 	@Column()
 	rzName: string;
 
-    @Column({ type: "enum", enum: UserRole, default: UserRole.STUDENT })
+    @Column({ type: "enum", enum: UserRole, default: UserRole.USER })
     role: UserRole;
     
     @OneToMany(type => CourseUserRelation, courseUserRelations => courseUserRelations.user)

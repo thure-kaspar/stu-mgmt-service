@@ -95,7 +95,7 @@ describe('PATCH-REQUESTS (Db contains data) of GroupController (e2e)', () => {
 		Object.assign(changedUser, user);
 
 		changedUser.email = "new@email.test";
-		changedUser.role = UserRole.TUTOR;
+		changedUser.role = UserRole.MGMT_ADMIN;
 
 		return request(app.getHttpServer())
 			.patch(`/users/${user.id}`)

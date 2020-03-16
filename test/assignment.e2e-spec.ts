@@ -140,7 +140,7 @@ describe('DELETE-REQUESTS of AssignmentController (e2e)', () => {
 		await getConnection().close(); // Close Db-Connection after all tests have been executed
 	});
 
-	it("(DELETE) /courses/{courseId}/assignments/{assignmentId} Deletes the assignment", () => {
+	it.only("(DELETE) /courses/{courseId}/assignments/{assignmentId} Deletes the assignment", () => {
 		const assignment = ASSIGNMENT_JAVA_CLOSED;
 
 		return request(app.getHttpServer())
