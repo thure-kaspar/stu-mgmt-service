@@ -1,10 +1,10 @@
-import { Controller, Post, Body, Param, Get } from '@nestjs/common';
+import { Controller, Post, Body, Param, Get } from "@nestjs/common";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
 import { UpdateMessageDto } from "../../task/tasks/update.service";
 import { MESSAGES_ALL } from "../../../test/mocks/update-messages.mock";
 
 @ApiTags("test")
-@Controller('notifications')
+@Controller("notifications")
 export class NotificationsController {
 
 	constructor() { }

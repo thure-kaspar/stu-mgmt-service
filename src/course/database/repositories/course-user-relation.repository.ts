@@ -10,7 +10,7 @@ export class CourseUserRelationRepository extends Repository<CourseUserRelation>
 		const courseUserRelation = new CourseUserRelation();
 		courseUserRelation.courseId = courseId;
 		courseUserRelation.userId = userId;
-		courseUserRelation.role = role
+		courseUserRelation.role = role;
 
 		await courseUserRelation.save()
 			.catch((error) => {

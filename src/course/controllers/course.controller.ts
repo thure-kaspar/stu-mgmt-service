@@ -1,10 +1,10 @@
-import { Controller, Get, Param, Post, Body, ParseUUIDPipe, Patch, Delete, Query } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { CourseService } from '../services/course.service';
-import { CourseDto } from '../../shared/dto/course.dto';
+import { Controller, Get, Param, Post, Body, ParseUUIDPipe, Patch, Delete, Query } from "@nestjs/common";
+import { ApiTags } from "@nestjs/swagger";
+import { CourseService } from "../services/course.service";
+import { CourseDto } from "../../shared/dto/course.dto";
 import { UserDto } from "../../shared/dto/user.dto";
-import { CourseRole } from '../../shared/enums';
-import { CourseFilterDto } from '../../shared/dto/course-filter.dto';
+import { CourseRole } from "../../shared/enums";
+import { CourseFilterDto } from "../../shared/dto/course-filter.dto";
 
 @ApiTags("courses") 
 @Controller("courses")

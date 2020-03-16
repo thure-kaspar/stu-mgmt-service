@@ -127,7 +127,7 @@ export class GroupRepository extends Repository<Group> {
 	private createEntityFromDto(groupDto: GroupDto): Group {
 		const group = new Group();
 		group.id = groupDto.id;
-		group.courseId = groupDto.courseId
+		group.courseId = groupDto.courseId;
 		group.name = groupDto.name;
 		group.password = groupDto.password;
 		group.isClosed = groupDto.isClosed;

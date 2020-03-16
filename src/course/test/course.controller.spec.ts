@@ -1,7 +1,7 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { CourseController } from '../controllers/course.controller';
-import { CourseService } from '../services/course.service';
-import { GroupService } from '../services/group.service';
+import { Test, TestingModule } from "@nestjs/testing";
+import { CourseController } from "../controllers/course.controller";
+import { CourseService } from "../services/course.service";
+import { GroupService } from "../services/group.service";
 
 const mock_CourseService = () => ({
 
@@ -11,7 +11,7 @@ const mock_GroupService = () => ({
 
 });
 
-describe('Course Controller', () => {
+describe("Course Controller", () => {
 	let controller: CourseController;
 	let courseService: CourseService;
 	let groupService: GroupService;
@@ -30,7 +30,7 @@ describe('Course Controller', () => {
 		groupService = module.get<GroupService>(GroupService);
 	});
 
-	it('should be defined', () => {
+	it("should be defined", () => {
 		expect(controller).toBeDefined();
 	});
 });

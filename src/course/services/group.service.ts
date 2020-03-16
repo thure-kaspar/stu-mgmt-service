@@ -29,7 +29,7 @@ export class GroupService {
 	async addUserToGroup(groupId: string, userId: string, password?: string): Promise<any> {
 		const group = await this.groupRepository.getGroupWithUsers(groupId);
 
-		if (group.isClosed) throw new ConflictException("Group is closed.")
+		if (group.isClosed) throw new ConflictException("Group is closed.");
 		if (group.userGroupRelations.length >= group.course.maxGroupSize) throw new ConflictException("Group is full.");
 		if (group.password !== password) throw new UnauthorizedException("The given password was incorrect.");
 

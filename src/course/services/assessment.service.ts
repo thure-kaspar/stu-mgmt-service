@@ -15,7 +15,7 @@ export class AssessmentService {
 	constructor(@InjectRepository(Assessment) private assessmentRepository: AssessmentRepository,
 				@InjectRepository(AssessmentUserRelation) private assessmentUserRepository: AssessmentUserRelationRepository,
 				@InjectRepository(Group) private groupRepository: GroupRepository
-				) { }
+	) { }
 
 	async createAssessment(assignmentId: string, assessmentDto: AssessmentDto): Promise<AssessmentDto> {
 		// assignmentId from the path must be equal to the dto's assignmentId

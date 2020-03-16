@@ -5,7 +5,7 @@ import { UserRole, CourseRole } from "../enums";
 
 @Entity("course_user_relations")
 @Index("IDX_CourseId_UserId", ["courseId", "userId"], { unique: true }) // Unique index to prevent user from joining same course multiple times
- export class CourseUserRelation extends BaseEntity {
+export class CourseUserRelation extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
 
@@ -29,4 +29,4 @@ import { UserRole, CourseRole } from "../enums";
 	@CreateDateColumn()
 	joinedAt: Date;
 
- }
+}

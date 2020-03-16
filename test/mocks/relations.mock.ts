@@ -29,7 +29,7 @@ export const CourseUserRelationsMock = [
 		userId: USER_MGMT_ADMIN_JAVA_LECTURER.id,
 		role: CourseRole.LECTURER
 	}
-]
+];
 
 export const AssessmentUserRelationsMock = [
 	{
@@ -47,7 +47,7 @@ export const AssessmentUserRelationsMock = [
 		assessmentId: ASSESSMENT_JAVA_TESTAT_USER_1.id,
 		userId: USER_STUDENT_JAVA.id
 	}
-]
+];
 
 export const UserGroupRelationsMock = [
 	{
@@ -61,4 +61,4 @@ export const UserGroupRelationsMock = [
 		groupId: GROUP_1_JAVA.id
 	}
 
-]
+];

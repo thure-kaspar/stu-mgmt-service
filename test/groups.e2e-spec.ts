@@ -1,8 +1,6 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
-import { getConnection } from 'typeorm';
+import { INestApplication } from "@nestjs/common";
+import * as request from "supertest";
+import { getConnection } from "typeorm";
 import { DbMockService } from "./mocks/db-mock.service";
 import * as fromDtoMocks from "./mocks/relations.mock";
 import { GroupDto } from "../src/shared/dto/group.dto";
@@ -24,7 +22,7 @@ const assessments = AssessmentsMock;
 
 const course = COURSE_JAVA_1920; // The course that will be used for testing
 
-describe('GET-REQUESTS of GroupController (e2e)', () => {
+describe("GET-REQUESTS of GroupController (e2e)", () => {
 	
 	beforeAll(async () => {
 		app = await createApplication();
@@ -53,7 +51,7 @@ describe('GET-REQUESTS of GroupController (e2e)', () => {
 
 });
 
-describe('POST-REQUESTS for relations (Db contains data) of GroupController (e2e)', () => {
+describe("POST-REQUESTS for relations (Db contains data) of GroupController (e2e)", () => {
 	let app: INestApplication;
 
 	beforeEach(async () => {
@@ -77,30 +75,30 @@ describe('POST-REQUESTS for relations (Db contains data) of GroupController (e2e
 		return request(app.getHttpServer())
 			.post(`/courses/${course.id}/groups/${group.id}/users/${users[0].id}`)
 			.send({ password: group.password })
-			.expect(201)
+			.expect(201);
 	});
 
 	it ("(POST) /groups/{groupId}/users/{userId} Incorrect password -> 401 Unauthorized", () => {
 		const group = GROUP_1_JAVA;
 
 		return request(app.getHttpServer())
-		.post(`/courses/${course.id}/groups/${group.id}/users/${users[0].id}`)
-		.send({ password: "wrong_password" })
-		.expect(401)
+			.post(`/courses/${course.id}/groups/${group.id}/users/${users[0].id}`)
+			.send({ password: "wrong_password" })
+			.expect(401);
 	});
 
 	it ("(POST) /groups/{groupId}/users/{userId} Group is closed -> 409 Conflict", () => {
 		const group = GROUP_1_JAVA;
 
 		return request(app.getHttpServer())
-		.post(`/courses/${course.id}/groups/${groups[1].id}/users/${users[0].id}`)
-		.send({ password: groups[1].password })
-		.expect(409)
+			.post(`/courses/${course.id}/groups/${groups[1].id}/users/${users[0].id}`)
+			.send({ password: groups[1].password })
+			.expect(409);
 	});
 
 });
 
-describe('PATCH-REQUESTS (Db contains data) of GroupController (e2e)', () => {
+describe("PATCH-REQUESTS (Db contains data) of GroupController (e2e)", () => {
 	let app: INestApplication;
 
 	beforeEach(async () => {
@@ -121,7 +119,7 @@ describe('PATCH-REQUESTS (Db contains data) of GroupController (e2e)', () => {
 		const group = GROUP_1_JAVA;
 
 		// Create clone of original data and then perform some changes
-		let changedGroup = new GroupDto();
+		const changedGroup = new GroupDto();
 		Object.assign(changedGroup, group);
 
 		changedGroup.name = "new name";
@@ -132,15 +130,15 @@ describe('PATCH-REQUESTS (Db contains data) of GroupController (e2e)', () => {
 			.patch(`/courses/${course.id}/groups/${group.id}`)
 			.send(changedGroup)
 			.expect(({ body }) => {
-				expect(body.name).toEqual(changedGroup.name)
-				expect(body.isClosed).toEqual(changedGroup.isClosed)
+				expect(body.name).toEqual(changedGroup.name);
+				expect(body.isClosed).toEqual(changedGroup.isClosed);
 				// expect(body.password).toEqual(changedGroup.password) Can't check password, since it's not send to clients
 			});
 	});
 
 });
 
-describe('DELETE-REQUESTS (Db contains data) of GroupController (e2e)', () => {
+describe("DELETE-REQUESTS (Db contains data) of GroupController (e2e)", () => {
 	let app: INestApplication;
 
 	beforeEach(async () => {
@@ -161,7 +159,7 @@ describe('DELETE-REQUESTS (Db contains data) of GroupController (e2e)', () => {
 
 		return request(app.getHttpServer())
 			.delete(`/courses/${course.id}/groups/${group.id}`)
-			.expect(200)
+			.expect(200);
 	});
 
 });

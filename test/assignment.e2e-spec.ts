@@ -1,6 +1,6 @@
-import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
-import { getConnection } from 'typeorm';
+import { INestApplication } from "@nestjs/common";
+import * as request from "supertest";
+import { getConnection } from "typeorm";
 import { AssignmentDto } from "../src/shared/dto/assignment.dto";
 import { createApplication } from "./mocks/application.mock";
 import { ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP, ASSIGNMENT_JAVA_IN_REVIEW } from "./mocks/assignments.mock";
@@ -13,7 +13,7 @@ let dbMockService: DbMockService;
 
 const course = COURSE_JAVA_1920; // the course that will be used for testing
 
-describe('GET-REQUESTS of AssignmentController (e2e)', () => {
+describe("GET-REQUESTS of AssignmentController (e2e)", () => {
 
 	beforeAll(async () => {
 		app = await createApplication();
@@ -51,7 +51,7 @@ describe('GET-REQUESTS of AssignmentController (e2e)', () => {
 
 });
 
-describe('POST-REQUESTS of AssignmentController (e2e)', () => {
+describe("POST-REQUESTS of AssignmentController (e2e)", () => {
 
 	beforeEach(async () => {
 		app = await createApplication();
@@ -86,7 +86,7 @@ describe('POST-REQUESTS of AssignmentController (e2e)', () => {
 
 });
 
-describe('PATCH-REQUESTS of AssignmentController (e2e)', () => {
+describe("PATCH-REQUESTS of AssignmentController (e2e)", () => {
 
 	beforeEach(async () => {
 		app = await createApplication();
@@ -105,7 +105,7 @@ describe('PATCH-REQUESTS of AssignmentController (e2e)', () => {
 		const assignment = ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP;
 
 		// Create clone of original data and perform some changes
-		let changedAssignment = new AssignmentDto();
+		const changedAssignment = new AssignmentDto();
 		Object.assign(changedAssignment, assignment);
 
 		changedAssignment.name = "new name";
@@ -116,16 +116,16 @@ describe('PATCH-REQUESTS of AssignmentController (e2e)', () => {
 			.patch(`/courses/${course.id}/assignments/${assignment.id}`)
 			.send(changedAssignment)
 			.expect(({ body }) => {
-				expect(body.id).toEqual(assignment.id) // Check if we retrieved the correct assignment
+				expect(body.id).toEqual(assignment.id); // Check if we retrieved the correct assignment
 				expect(body.name).toEqual(changedAssignment.name);
 				expect(body.maxPoints).toEqual(changedAssignment.maxPoints);
 				expect(body.comment).toEqual(changedAssignment.comment);
-			})
+			});
 	});
 
 });
 
-describe('DELETE-REQUESTS of AssignmentController (e2e)', () => {
+describe("DELETE-REQUESTS of AssignmentController (e2e)", () => {
 
 	beforeEach(async () => {
 		app = await createApplication();
@@ -140,12 +140,12 @@ describe('DELETE-REQUESTS of AssignmentController (e2e)', () => {
 		await getConnection().close(); // Close Db-Connection after all tests have been executed
 	});
 
-	it.only("(DELETE) /courses/{courseId}/assignments/{assignmentId} Deletes the assignment", () => {
+	it("(DELETE) /courses/{courseId}/assignments/{assignmentId} Deletes the assignment", () => {
 		const assignment = ASSIGNMENT_JAVA_CLOSED;
 
 		return request(app.getHttpServer())
 			.delete(`/courses/${course.id}/assignments/${assignment.id}`)
-			.expect(200)
+			.expect(200);
 	});
 
 });

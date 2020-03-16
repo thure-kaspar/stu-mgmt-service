@@ -1,10 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
-import { getConnection } from 'typeorm';
+import { Test, TestingModule } from "@nestjs/testing";
+import { INestApplication } from "@nestjs/common";
+import * as request from "supertest";
+import { AppModule } from "./../src/app.module";
+import { getConnection } from "typeorm";
 
-describe('AppController (e2e)', () => {
+describe("AppController (e2e)", () => {
 	let app: INestApplication;
 
 	beforeEach(async () => {
@@ -20,11 +20,11 @@ describe('AppController (e2e)', () => {
 		await getConnection().close(); // Close Db-Connection after all tests have been executed
 	});
 
-	it('(GET) / returns Hello World!', () => {
+	it("(GET) / returns Hello World!", () => {
 		return request(app.getHttpServer())
-			.get('/')
+			.get("/")
 			.expect(200)
-			.expect('Hello World!');
+			.expect("Hello World!");
 	});
 	
 });

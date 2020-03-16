@@ -7,7 +7,7 @@ export const GROUP_1_JAVA: GroupDto = {
 	name: "Testgroup 1",
 	password: "password123",
 	isClosed: false
-}
+};
 
 export const GROUP_2_JAVA: GroupDto = {
 	id: "73b2afad-7198-4f99-86dc-a2c46c03db2c",
@@ -15,6 +15,6 @@ export const GROUP_2_JAVA: GroupDto = {
 	name: "Testgroup 2",
 	password: "password123",
 	isClosed: true
-}
+};
 
 export const GroupsMock: GroupDto[] = [GROUP_1_JAVA, GROUP_2_JAVA];

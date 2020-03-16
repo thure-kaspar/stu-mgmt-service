@@ -10,7 +10,7 @@ export const ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP: AssignmentDto = {
 	type: AssignmentType.HOMEWORK,
 	state: AssignmentState.IN_PROGRESS,
 	collaborationType: CollaborationType.GROUP
-}
+};
 
 export const ASSIGNMENT_JAVA_CLOSED: AssignmentDto = {
 	id: "74aa124c-0753-467f-8f52-48d1901282f8",
@@ -20,7 +20,7 @@ export const ASSIGNMENT_JAVA_CLOSED: AssignmentDto = {
 	type: AssignmentType.HOMEWORK,
 	state: AssignmentState.CLOSED,
 	collaborationType: CollaborationType.GROUP
-}
+};
 
 export const ASSIGNMENT_JAVA_IN_REVIEW: AssignmentDto = {
 	id: "993b3cd0-6207-11ea-bc55-0242ac130003",
@@ -30,7 +30,7 @@ export const ASSIGNMENT_JAVA_IN_REVIEW: AssignmentDto = {
 	type: AssignmentType.HOMEWORK,
 	state: AssignmentState.IN_REVIEW,
 	collaborationType: CollaborationType.SINGLE
-}
+};
 
 export const ASSIGNMENT_JAVA_EVALUATED: AssignmentDto = {
 	id: "c2bc4aa4-6207-11ea-bc55-0242ac130003",
@@ -40,7 +40,7 @@ export const ASSIGNMENT_JAVA_EVALUATED: AssignmentDto = {
 	type: AssignmentType.HOMEWORK,
 	state: AssignmentState.EVALUATED,
 	collaborationType: CollaborationType.GROUP_OR_SINGLE,
-}
+};
 
 export const ASSIGNMENT_JAVA_INVISIBLE: AssignmentDto = {
 	id: "8ffc9608-4c3d-4fca-b4fc-3768822d6c0d",
@@ -50,7 +50,7 @@ export const ASSIGNMENT_JAVA_INVISIBLE: AssignmentDto = {
 	type: AssignmentType.HOMEWORK,
 	state: AssignmentState.INVISIBLE,
 	collaborationType: CollaborationType.GROUP_OR_SINGLE,
-}
+};
 
 export const ASSIGNMENT_JAVA_TESTAT_IN_PROGRESS_SINGLE: AssignmentDto = {
 	id: "5b69db81-edbd-4f73-8928-1450036a75cb",
@@ -60,7 +60,7 @@ export const ASSIGNMENT_JAVA_TESTAT_IN_PROGRESS_SINGLE: AssignmentDto = {
 	type: AssignmentType.TESTAT,
 	state: AssignmentState.IN_PROGRESS,
 	collaborationType: CollaborationType.SINGLE,
-}
+};
 
 export const ASSIGNMENT_JAVA_TESTAT_EVALUATED_SINGLE: AssignmentDto = {
 	id: "75b799a1-a406-419b-a448-909aa3d34afa",
@@ -70,7 +70,7 @@ export const ASSIGNMENT_JAVA_TESTAT_EVALUATED_SINGLE: AssignmentDto = {
 	type: AssignmentType.TESTAT,
 	state: AssignmentState.EVALUATED,
 	collaborationType: CollaborationType.SINGLE,
-}
+};
 
 export const AssignmentsMock: AssignmentDto[] = [
 	ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP,

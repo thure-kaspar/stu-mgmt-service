@@ -1,8 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { CourseService } from '../services/course.service';
-import { CourseRepository } from '../database/repositories/course.repository';
-import { UserRepository } from '../../user/repositories/user.repository';
-import { CourseUserRelationRepository } from '../database/repositories/course-user-relation.repository';
+import { Test, TestingModule } from "@nestjs/testing";
+import { CourseService } from "../services/course.service";
+import { CourseRepository } from "../database/repositories/course.repository";
+import { UserRepository } from "../../user/repositories/user.repository";
+import { CourseUserRelationRepository } from "../database/repositories/course-user-relation.repository";
 
 const mock_CourseRepository = () => ({
 
@@ -16,7 +16,7 @@ const mock_CourseUserRepository = () => ({
 
 });
 
-describe('CourseService', () => {
+describe("CourseService", () => {
 	let service: CourseService;
 	let courseRepository: CourseRepository;
 	let userRepository: UserRepository;
@@ -38,7 +38,7 @@ describe('CourseService', () => {
 		courseUserRepository = module.get<CourseUserRelationRepository>(CourseUserRelationRepository);
 	});
 
-	it('should be defined', () => {
+	it("should be defined", () => {
 		expect(service).toBeDefined();
 	});
 });

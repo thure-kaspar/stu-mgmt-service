@@ -1,8 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
-import { getConnection } from 'typeorm';
+import { Test, TestingModule } from "@nestjs/testing";
+import { INestApplication } from "@nestjs/common";
+import * as request from "supertest";
+import { AppModule } from "./../src/app.module";
+import { getConnection } from "typeorm";
 import { DbMockService } from "./mocks/db-mock.service";
 import { UserDto } from "../src/shared/dto/user.dto";
 import { UserRole } from "../src/shared/enums";
@@ -22,7 +22,7 @@ const users = UsersMock;
 const assignments = AssignmentsMock;
 const assessments = AssessmentsMock;
 
-describe('GET-REQUESTS of UserController (e2e)', () => {
+describe("GET-REQUESTS of UserController (e2e)", () => {
 	
 	beforeAll(async () => {
 		app = await createApplication();
@@ -47,7 +47,7 @@ describe('GET-REQUESTS of UserController (e2e)', () => {
 
 });
 
-describe('POST-REQUESTS of UserController (e2e)', () => {
+describe("POST-REQUESTS of UserController (e2e)", () => {
 	
 	beforeEach(async () => {
 		app = await createApplication();
@@ -68,12 +68,12 @@ describe('POST-REQUESTS of UserController (e2e)', () => {
 			.expect(201)
 			.expect(({ body }) => {
 				expect(body.email).toEqual(USER_STUDENT_JAVA.email);
-			})
+			});
 	});
 	
 });
 
-describe('PATCH-REQUESTS (Db contains data) of GroupController (e2e)', () => {
+describe("PATCH-REQUESTS (Db contains data) of GroupController (e2e)", () => {
 
 	beforeEach(async () => {
 		app = await createApplication();
@@ -91,7 +91,7 @@ describe('PATCH-REQUESTS (Db contains data) of GroupController (e2e)', () => {
 	it("(PATCH) /users/{userId} Updates the user", () => {
 		const user = USER_STUDENT_JAVA;
 		// Create clone of original data and perform some changes
-		let changedUser = new UserDto();
+		const changedUser = new UserDto();
 		Object.assign(changedUser, user);
 
 		changedUser.email = "new@email.test";
@@ -101,15 +101,15 @@ describe('PATCH-REQUESTS (Db contains data) of GroupController (e2e)', () => {
 			.patch(`/users/${user.id}`)
 			.send(changedUser)
 			.expect(({ body }) => {
-				expect(body.id).toEqual(user.id) // Check if we retrieved the correct user
+				expect(body.id).toEqual(user.id); // Check if we retrieved the correct user
 				expect(body.email).toEqual(changedUser.email);
 				expect(body.role).toEqual(changedUser.role);
-			})
+			});
 	});
 
 });
 
-describe('DELETE-REQUESTS (Db contains data) of GroupController (e2e)', () => {
+describe("DELETE-REQUESTS (Db contains data) of GroupController (e2e)", () => {
 
 	beforeEach(async () => {
 		app = await createApplication();
@@ -127,7 +127,7 @@ describe('DELETE-REQUESTS (Db contains data) of GroupController (e2e)', () => {
 	it("(DELETE) /users/{userId} Deletes the user", () => {
 		return request(app.getHttpServer())
 			.delete(`/users/${USER_STUDENT_JAVA.id}`)
-			.expect(200) // TODO: 
+			.expect(200); // TODO: 
 	});
 
 });

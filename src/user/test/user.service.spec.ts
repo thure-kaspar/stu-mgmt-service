@@ -1,12 +1,12 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { UserService } from '../services/user.service';
-import { UserRepository } from '../repositories/user.repository';
+import { Test, TestingModule } from "@nestjs/testing";
+import { UserService } from "../services/user.service";
+import { UserRepository } from "../repositories/user.repository";
 
 const mock_UserRepository = () => ({
 
 });
 
-describe('UserService', () => {
+describe("UserService", () => {
 	let service: UserService;
 	let userRepository: UserRepository;
 
@@ -22,7 +22,7 @@ describe('UserService', () => {
 		userRepository = module.get<UserRepository>(UserRepository);
 	});
 
-	it('should be defined', () => {
+	it("should be defined", () => {
 		expect(service).toBeDefined();
 	});
 });

@@ -10,7 +10,7 @@ export const COURSE_JAVA_1920: CourseDto = {
 	link: "test.test",
 	allowGroups: true,
 	maxGroupSize: 3
-}
+};
 
 export const COURSE_JAVA_1819: CourseDto = {
 	id: "java-wise1819", 
@@ -22,7 +22,7 @@ export const COURSE_JAVA_1819: CourseDto = {
 	link: "test.test",
 	allowGroups: true,
 	maxGroupSize: 3
-}
+};
 
 export const COURSE_INFO_2_2020: CourseDto = {
 	id: "info2-sose2020", 
@@ -34,11 +34,11 @@ export const COURSE_INFO_2_2020: CourseDto = {
 	link: "test.test",
 	allowGroups: false,
 	maxGroupSize: 0 
-}
+};
 
 
 export const CoursesMock: CourseDto[] = [
 	COURSE_JAVA_1920,
 	COURSE_JAVA_1819,
 	COURSE_INFO_2_2020
-]
+];

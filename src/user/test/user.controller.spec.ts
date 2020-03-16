@@ -1,12 +1,12 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { UserController } from '../controllers/user.controller';
-import { UserService } from '../services/user.service';
+import { Test, TestingModule } from "@nestjs/testing";
+import { UserController } from "../controllers/user.controller";
+import { UserService } from "../services/user.service";
 
 const mock_UserService = () => ({
 
 });
 
-describe('User Controller', () => {
+describe("User Controller", () => {
 	let controller: UserController;
 	let userService: UserService;
 
@@ -20,7 +20,7 @@ describe('User Controller', () => {
 		userService = module.get<UserService>(UserService);
 	});
 
-	it('should be defined', () => {
+	it("should be defined", () => {
 		expect(controller).toBeDefined();
 	});
 });

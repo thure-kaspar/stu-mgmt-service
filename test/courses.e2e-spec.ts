@@ -1,9 +1,7 @@
-import { INestApplication } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
-import * as request from 'supertest';
-import { getConnection } from 'typeorm';
-import { CourseFilterDto } from '../src/shared/dto/course-filter.dto';
-import { AppModule } from './../src/app.module';
+import { INestApplication } from "@nestjs/common";
+import * as request from "supertest";
+import { getConnection } from "typeorm";
+import { CourseFilterDto } from "../src/shared/dto/course-filter.dto";
 import { CoursesMock, COURSE_JAVA_1920 } from "./mocks/courses.mock";
 import { DbMockService } from "./mocks/db-mock.service";
 import { GROUP_1_JAVA, GROUP_2_JAVA } from "./mocks/groups.mock";
@@ -15,7 +13,7 @@ let dbMockService: DbMockService; // Should be initialized in every describe-blo
 
 const course = COURSE_JAVA_1920; // the course that will be used for testing
 
-describe('GET-REQUESTS of CourseController (e2e)', () => {
+describe("GET-REQUESTS of CourseController (e2e)", () => {
 	
 
 	beforeAll(async () => {
@@ -46,10 +44,10 @@ describe('GET-REQUESTS of CourseController (e2e)', () => {
 		};
 
 		return request(app.getHttpServer())
-		.get(`/courses?shortname=${filter.shortname}&title=${filter.title}`)
-		.expect(({ body }) => {
-			expect(body.length).toEqual(2);
-		});
+			.get(`/courses?shortname=${filter.shortname}&title=${filter.title}`)
+			.expect(({ body }) => {
+				expect(body.length).toEqual(2);
+			});
 	});
 
 	it("(GET) /courses With filter -> Retrieves all iterations of the course", () => {
@@ -58,10 +56,10 @@ describe('GET-REQUESTS of CourseController (e2e)', () => {
 		};
 
 		return request(app.getHttpServer())
-		.get(`/courses?shortname=${filter.shortname}`)
-		.expect(({ body }) => {
-			expect(body.length).toEqual(2);
-		});
+			.get(`/courses?shortname=${filter.shortname}`)
+			.expect(({ body }) => {
+				expect(body.length).toEqual(2);
+			});
 	});
 
 	it("(GET) /courses/{courseId} Retrieves the course", () => {
@@ -74,10 +72,10 @@ describe('GET-REQUESTS of CourseController (e2e)', () => {
 
 	it("(GET) /courses/{name}/semester/{semester} Retrieves the course", () => {
 		return request(app.getHttpServer())
-		.get(`/courses/${course.shortname}/semester/${course.semester}`)
-		.expect(({ body }) => {
-			expect(body.id).toEqual(course.id); 
-		});
+			.get(`/courses/${course.shortname}/semester/${course.semester}`)
+			.expect(({ body }) => {
+				expect(body.id).toEqual(course.id); 
+			});
 	});
 
 	it("(GET) /courses/{courseId}/groups Retrieves all groups of a course", () => {
@@ -91,7 +89,7 @@ describe('GET-REQUESTS of CourseController (e2e)', () => {
 });
 
 // TODO: Tests should fail when referenced foreign key is invalid, i.e doesn't exist (use JoinColumn?)
-describe('POST-REQUESTS of CourseController (empty db) (e2e)', () => {
+describe("POST-REQUESTS of CourseController (empty db) (e2e)", () => {
 
 	beforeAll(async () => {
 		app = await createApplication();
@@ -109,7 +107,7 @@ describe('POST-REQUESTS of CourseController (empty db) (e2e)', () => {
 			.expect(201)
 			.expect(({ body }) => {
 				expect(body.shortname).toEqual(course.shortname); // Can't compare entire objects, because property "password" is not sent to clients
-			})
+			});
 	});
 
 	it("(POST) /courses Creates the given course returns it (Part 2/2)", () => {
@@ -119,12 +117,12 @@ describe('POST-REQUESTS of CourseController (empty db) (e2e)', () => {
 			.expect(201)
 			.expect(({ body }) => {
 				expect(body.shortname).toEqual(course.shortname); // Can't compare entire objects, because property "password" is not sent to clients
-			})
+			});
 	});
 
 });
 
-describe('POST-REQUESTS for relations (db contains data) of CourseController (e2e)', () => {
+describe("POST-REQUESTS for relations (db contains data) of CourseController (e2e)", () => {
 
 	beforeEach(async () => {
 		app = await createApplication();
@@ -145,7 +143,7 @@ describe('POST-REQUESTS for relations (db contains data) of CourseController (e2
 
 		return request(app.getHttpServer())
 			.post(`/courses/${course.id}/users/${user.id}`)
-			.expect(201)
+			.expect(201);
 	});
 
 	it("(POST) /courses/{courseId}/groups Creates the given group and returns it (Part 1/2)", () => {
@@ -158,7 +156,7 @@ describe('POST-REQUESTS for relations (db contains data) of CourseController (e2
 			.expect(({ body }) => {
 				expect(body.courseId).toEqual(group.courseId);
 				expect(body.name).toEqual(group.name);
-			})
+			});
 	});
 
 	it("(POST) /courses/{courseId}/groups Creates the given group and returns it (Part 2/2)", () => {
@@ -171,12 +169,12 @@ describe('POST-REQUESTS for relations (db contains data) of CourseController (e2
 			.expect(({ body }) => {
 				expect(body.courseId).toEqual(group.courseId);
 				expect(body.name).toEqual(group.name);
-			})
+			});
 	});
 
 });
 
-describe('PATCH-REQUESTS (Db contains data) of CourseController (e2e)', () => {
+describe("PATCH-REQUESTS (Db contains data) of CourseController (e2e)", () => {
 
 	beforeEach(async () => {
 		app = await createApplication();
@@ -193,7 +191,7 @@ describe('PATCH-REQUESTS (Db contains data) of CourseController (e2e)', () => {
 
 });
 
-describe('DELETE-REQUESTS (Db contains data) of CourseController (e2e)', () => {
+describe("DELETE-REQUESTS (Db contains data) of CourseController (e2e)", () => {
 
 	beforeEach(async () => {
 		app = await createApplication();
@@ -211,7 +209,7 @@ describe('DELETE-REQUESTS (Db contains data) of CourseController (e2e)', () => {
 	it("(DELETE) /courses/{courseId} Deletes the course", () => {
 		return request(app.getHttpServer())
 			.delete(`/courses/${course.id}`)
-			.expect(200)
+			.expect(200);
 	});
 
 });

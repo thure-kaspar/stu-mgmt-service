@@ -1,6 +1,6 @@
-import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
-import { getConnection } from 'typeorm';
+import { INestApplication } from "@nestjs/common";
+import * as request from "supertest";
+import { getConnection } from "typeorm";
 import { AssignmentDto } from "../src/shared/dto/assignment.dto";
 import { createApplication } from "./mocks/application.mock";
 import { ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP, ASSIGNMENT_JAVA_IN_REVIEW, ASSIGNMENT_JAVA_EVALUATED, ASSIGNMENT_JAVA_TESTAT_EVALUATED_SINGLE } from "./mocks/assignments.mock";
@@ -15,7 +15,7 @@ let dbMockService: DbMockService;
 
 const course = COURSE_JAVA_1920; // the course that will be used for testing
 
-describe('GET-REQUESTS of AssignmentController (e2e)', () => {
+describe("GET-REQUESTS of AssignmentController (e2e)", () => {
 
 	beforeAll(async () => {
 		app = await createApplication();
@@ -34,7 +34,7 @@ describe('GET-REQUESTS of AssignmentController (e2e)', () => {
 		const assignment = ASSIGNMENT_JAVA_EVALUATED;
 
 		return request(app.getHttpServer())
-		.get(`/courses/${course.id}/assignments/${assignment.id}/assessments`)
+			.get(`/courses/${course.id}/assignments/${assignment.id}/assessments`)
 			.expect(({ body }) => {
 				expect(body.length).toEqual(2);
 			});
@@ -45,18 +45,18 @@ describe('GET-REQUESTS of AssignmentController (e2e)', () => {
 		const assessment = ASSESSMENT_JAVA_EVALUATED_GROUP_1;
 
 		return request(app.getHttpServer())
-		.get(`/courses/${course.id}/assignments/${assignment.id}/assessments/${assessment.id}`)
-		.expect(({ body }) => {
-			const result = body as AssessmentDto;
-			expect(result.id).toEqual(assessment.id); 
-			expect(result.assignmentId).toEqual(assessment.assignmentId);
-			expect(result.groupId).toEqual(assessment.groupId);
-		});
+			.get(`/courses/${course.id}/assignments/${assignment.id}/assessments/${assessment.id}`)
+			.expect(({ body }) => {
+				const result = body as AssessmentDto;
+				expect(result.id).toEqual(assessment.id);
+				expect(result.assignmentId).toEqual(assessment.assignmentId);
+				expect(result.groupId).toEqual(assessment.groupId);
+			});
 	});
 
 });
 
-describe('POST-REQUESTS of AssignmentController (e2e)', () => {
+describe("POST-REQUESTS of AssignmentController (e2e)", () => {
 
 	beforeEach(async () => {
 		app = await createApplication();
@@ -114,7 +114,7 @@ describe('POST-REQUESTS of AssignmentController (e2e)', () => {
 
 });
 
-describe('PATCH-REQUESTS of AssignmentController (e2e)', () => {
+describe("PATCH-REQUESTS of AssignmentController (e2e)", () => {
 
 	beforeEach(async () => {
 		app = await createApplication();
@@ -133,7 +133,7 @@ describe('PATCH-REQUESTS of AssignmentController (e2e)', () => {
 		const assessment = ASSESSMENT_JAVA_EVALUATED_GROUP_1;
 
 		// Create clone of original data and perform some changes
-		let changedAssessment = new AssessmentDto();
+		const changedAssessment = new AssessmentDto();
 		Object.assign(changedAssessment, assessment);
 
 		changedAssessment.achievedPoints = 99;
@@ -143,15 +143,15 @@ describe('PATCH-REQUESTS of AssignmentController (e2e)', () => {
 			.patch(`/courses/${course.id}/assignments/${assessment.assignmentId}/assessments/${assessment.id}`)
 			.send(changedAssessment)
 			.expect(({ body }) => {
-				expect(body.id).toEqual(assessment.id) // Check if we retrieved the correct assessments
+				expect(body.id).toEqual(assessment.id); // Check if we retrieved the correct assessments
 				expect(body.achievedPoints).toEqual(changedAssessment.achievedPoints);
 				expect(body.comment).toEqual(changedAssessment.comment);
-			})
+			});
 	});
 
 });
 
-describe('DELETE-REQUESTS of AssignmentController (e2e)', () => {
+describe("DELETE-REQUESTS of AssignmentController (e2e)", () => {
 
 	beforeEach(async () => {
 		app = await createApplication();
@@ -172,7 +172,7 @@ describe('DELETE-REQUESTS of AssignmentController (e2e)', () => {
 
 		return request(app.getHttpServer())
 			.delete(`/courses/${course.id}/assignments/${assignment.id}/assessments/${assessment.id}`)
-			.expect(200)
+			.expect(200);
 	});
 
 });

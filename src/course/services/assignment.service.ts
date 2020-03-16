@@ -20,7 +20,7 @@ export class AssignmentService {
 		const assignments = await this.assignmentRepository.getAssignments(courseId);
 		const assignmentDtos: AssignmentDto[] = [];
 		assignments.forEach(assignment => {
-			assignmentDtos.push(DtoFactory.createAssignmentDto(assignment))
+			assignmentDtos.push(DtoFactory.createAssignmentDto(assignment));
 		});
 		return assignmentDtos;
 	}

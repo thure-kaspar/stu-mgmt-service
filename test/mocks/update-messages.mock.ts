@@ -39,7 +39,7 @@ export const MESSAGE_USER_GROUP_REL_INSERT: UpdateMessageDto = {
 	entityId: USER_STUDENT_JAVA.id,
 	entityId_relation: GROUP_1_JAVA.id,
 	date: new Date(2020, 3, 16, 10, 0, 0, 0)
-}
+};
 
 // Not necessary ?
 export const MESSAGE_USER_GROUP_REL_UPDATE: UpdateMessageDto = {
@@ -49,7 +49,7 @@ export const MESSAGE_USER_GROUP_REL_UPDATE: UpdateMessageDto = {
 	entityId: USER_STUDENT_JAVA.id,
 	entityId_relation: GROUP_1_JAVA.id,
 	date: new Date(2020, 3, 16, 10, 5, 0, 0)
-}
+};
 
 export const MESSAGE_USER_GROUP_REL_REMOVE: UpdateMessageDto = {
 	type: EventType.REMOVE,
@@ -58,7 +58,7 @@ export const MESSAGE_USER_GROUP_REL_REMOVE: UpdateMessageDto = {
 	entityId: USER_STUDENT_JAVA.id,
 	entityId_relation: GROUP_1_JAVA.id,
 	date: new Date(2020, 3, 16, 10, 10, 0, 0)
-}
+};
 //#endregion
 
 //#region COURSE_USER_RELATION
@@ -69,7 +69,7 @@ export const MESSAGE_COURSE_USER_REL_INSERT: UpdateMessageDto = {
 	entityId: COURSE_JAVA_1920.id,
 	entityId_relation: USER_STUDENT_JAVA.id,
 	date: new Date(2020, 3, 16, 10, 0, 0, 0)
-}
+};
 
 export const MESSAGE_COURSE_USER_REL_UPDATE: UpdateMessageDto = {
 	type: EventType.UPDATE,
@@ -78,7 +78,7 @@ export const MESSAGE_COURSE_USER_REL_UPDATE: UpdateMessageDto = {
 	entityId: COURSE_JAVA_1920.id,
 	entityId_relation: USER_STUDENT_JAVA.id,
 	date: new Date(2020, 3, 16, 10, 5, 0, 0)
-}
+};
 
 export const MESSAGE_COURSE_USER_REL_REMOVE: UpdateMessageDto = {
 	type: EventType.REMOVE,
@@ -87,7 +87,7 @@ export const MESSAGE_COURSE_USER_REL_REMOVE: UpdateMessageDto = {
 	entityId: COURSE_JAVA_1920.id,
 	entityId_relation: USER_STUDENT_JAVA.id,
 	date: new Date(2020, 3, 16, 10, 10, 0, 0)
-}
+};
 //#endregion
 
 //#region ASSIGNMENT
@@ -97,7 +97,7 @@ export const MESSAGE_ASSIGNMENT_INSERT: UpdateMessageDto = {
 	courseId: COURSE_JAVA_1920.id,
 	entityId: ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP.id,
 	date: new Date(2020, 3, 16, 10, 0, 0, 0)
-}
+};
 
 export const MESSAGE_ASSIGNMENT_UPDATE: UpdateMessageDto = {
 	type: EventType.UPDATE,
@@ -105,7 +105,7 @@ export const MESSAGE_ASSIGNMENT_UPDATE: UpdateMessageDto = {
 	courseId: COURSE_JAVA_1920.id,
 	entityId: ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP.id,
 	date: new Date(2020, 3, 16, 10, 5, 0, 0)
-}
+};
 
 export const MESSAGE_ASSIGNMENT_REMOVE: UpdateMessageDto = {
 	type: EventType.REMOVE,
@@ -113,7 +113,7 @@ export const MESSAGE_ASSIGNMENT_REMOVE: UpdateMessageDto = {
 	courseId: COURSE_JAVA_1920.id,
 	entityId: ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP.id,
 	date: new Date(2020, 3, 16, 10, 10, 0, 0)
-}
+};
 //#endregion
 
 //#region USER
@@ -123,7 +123,7 @@ export const MESSAGE_USER_INSERT: UpdateMessageDto = {
 	courseId: COURSE_JAVA_1920.id,
 	entityId: USER_STUDENT_JAVA.id,
 	date: new Date(2020, 3, 16, 10, 0, 0, 0)
-}
+};
 
 export const MESSAGE_USER_UPDATE: UpdateMessageDto = {
 	type: EventType.UPDATE,
@@ -131,7 +131,7 @@ export const MESSAGE_USER_UPDATE: UpdateMessageDto = {
 	courseId: COURSE_JAVA_1920.id,
 	entityId: USER_STUDENT_JAVA.id,
 	date: new Date(2020, 3, 16, 10, 5, 0, 0)
-}
+};
 
 export const MESSAGE_USER_REMOVE: UpdateMessageDto = {
 	type: EventType.REMOVE,
@@ -139,7 +139,7 @@ export const MESSAGE_USER_REMOVE: UpdateMessageDto = {
 	courseId: COURSE_JAVA_1920.id,
 	entityId: USER_STUDENT_JAVA.id,
 	date: new Date(2020, 3, 16, 10, 10, 0, 0)
-}
+};
 //#endregion
 
 export const MESSAGES_ALL: UpdateMessageDto[] = [
