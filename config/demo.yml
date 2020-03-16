@@ -4,3 +4,6 @@ db:
   password: "admin"
   synchronize: true
   dropSchema: true
+
+jwt:
+  secret: "jwt-dev-secret"
