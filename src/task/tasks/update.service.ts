@@ -41,7 +41,7 @@ export class UpdateService {
 	/**
 	 * Sends the given message using http (POST), if the affected course has configured a url for update events.
 	 */
-	@Cron(CronExpression.EVERY_10_SECONDS, { name: "UpdateMessageJob" })
+	//@Cron(CronExpression.EVERY_10_SECONDS, { name: "UpdateMessageJob" })
 	send(): void {
 		this.logger.log("Job running: send");
 	}
