@@ -1,37 +1,40 @@
 import { EventSubscriber, EntitySubscriberInterface, InsertEvent, UpdateEvent, RemoveEvent } from "typeorm";
 import { CourseUserRelation } from "../../../shared/entities/course-user-relation.entity";
-import { AffectedObject, EventType, UpdateMessageDto } from "../../../task/tasks/update.service";
-import { UpdateMessage } from "../../../task/database/entities/update-message.entity";
+import { AffectedObject, EventType, UpdateMessage, UpdateService } from "../../services/update.service";
 
 @EventSubscriber()
 export class CourseUserRelationSubscriber implements EntitySubscriberInterface<CourseUserRelation> {
 
-	constructor() { }
+	private updateService: UpdateService;
+
+	constructor() { 
+		this.updateService = new UpdateService();
+	}
 
 	listenTo() {
 		// Indicates that this subscriber only listens to CourseUserRelation events
 		return CourseUserRelation;
 	}
 
-	afterInsert(event: InsertEvent<CourseUserRelation>) {
-		event.manager.getRepository(UpdateMessage).insert(
+	afterInsert(event: InsertEvent<CourseUserRelation>): void {
+		this.updateService.send(
 			this.createMessage(EventType.INSERT, event.entity)
 		);
 	}
 
-	afterUpdate(event: UpdateEvent<CourseUserRelation>) {
-		event.manager.getRepository(UpdateMessage).insert(
+	afterUpdate(event: UpdateEvent<CourseUserRelation>): void {
+		this.updateService.send(
 			this.createMessage(EventType.UPDATE, event.entity)
 		);
 	}
 
-	afterRemove(event: RemoveEvent<CourseUserRelation>) {
-		event.manager.getRepository(UpdateMessage).insert(
+	afterRemove(event: RemoveEvent<CourseUserRelation>): void {
+		this.updateService.send(
 			this.createMessage(EventType.REMOVE, event.entity)
 		);
 	}
 
-	private createMessage(type: EventType, entity: CourseUserRelation): UpdateMessageDto {
+	private createMessage(type: EventType, entity: CourseUserRelation): UpdateMessage {
 		return {
 			type: type,
 			affectedObject: AffectedObject.COURSE_USER_RELATION,

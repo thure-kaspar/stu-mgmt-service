@@ -67,7 +67,7 @@ export abstract class DtoFactory {
 		return groupDto;
 	}
     
-	static createAssignmentDto(assignmentEntity: Assignment) {
+	static createAssignmentDto(assignmentEntity: Assignment): AssignmentDto {
 		const assignmentDto: AssignmentDto = {
 			id: assignmentEntity.id,
 			courseId: assignmentEntity.courseId,
@@ -84,7 +84,7 @@ export abstract class DtoFactory {
 		return assignmentDto;
 	}
     
-	static createAssessmentDto(assessmentEntity: Assessment) {
+	static createAssessmentDto(assessmentEntity: Assessment): AssessmentDto {
 		const assessmentDto: AssessmentDto = {
 			id: assessmentEntity.id,
 			assignmentId: assessmentEntity.assignmentId,

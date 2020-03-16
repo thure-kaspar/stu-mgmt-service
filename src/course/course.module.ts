@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { Module, HttpModule } from "@nestjs/common";
 import { CourseController } from "./controllers/course.controller";
 import { CourseService } from "./services/course.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
@@ -26,6 +26,7 @@ import { AssignmentController } from "./controllers/assignment.controller";
 		AssessmentRepository,
 		AssessmentUserRelationRepository
 	]),
+	HttpModule
 	],
 	controllers: [AssessmentController, AssignmentController, CourseController, GroupController],
 	providers: [CourseService, GroupService, AssignmentService, AssessmentService]

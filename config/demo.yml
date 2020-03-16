@@ -7,3 +7,6 @@ db:
 
 jwt:
   secret: "jwt-dev-secret"
+
+logger:
+  requests: false

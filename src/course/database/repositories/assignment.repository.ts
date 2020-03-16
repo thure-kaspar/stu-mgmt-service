@@ -31,15 +31,9 @@ export class AssignmentRepository extends Repository<Assignment> {
 
 	/**
 	 * Updates the assignment. 
-	 *
-	 * @param {string} assignmentId
-	 * @param {AssignmentDto} assignmentDto
-	 * @returns {Promise<Assignment>}
-	 * @memberof AssignmentRepository
 	 */
 	async updateAssignment(assignmentId: string, assignmentDto: AssignmentDto): Promise<Assignment> {
 		const assignment = await this.getAssignmentById(assignmentId);
-
 		// TODO: Define Patch-Object or create method
 		assignment.name = assignmentDto.name;
 		assignment.type = assignmentDto.type;
