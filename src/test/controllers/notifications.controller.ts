@@ -1,23 +1,18 @@
-import { Controller, Post, Body, Param } from '@nestjs/common';
-import { ApiTags } from "@nestjs/swagger";
-import { UpdateService } from "../services/update.service";
-import { UpdateMessage } from "../dto/update-message.dto";
+import { Controller, Post, Body, Param, Get } from '@nestjs/common';
+import { ApiTags, ApiOperation } from "@nestjs/swagger";
+import { UpdateMessageDto } from "../../task/tasks/update.service";
+import { MESSAGES_ALL } from "../../../test/mocks/update-messages.mock";
 
 @ApiTags("test")
 @Controller('notifications')
 export class NotificationsController {
 
-	constructor(private updateService: UpdateService) { }
+	constructor() { }
 
-	@Post()
-	sendNotification(@Body() message: UpdateMessage) {
-		console.log("Send notification:", message);
-		this.updateService.send(message);
-	}
-
-	@Post("retrieve")
-	getNotification(@Body() message: UpdateMessage) {
-		console.log("Retrieved message:", message);
+	@ApiOperation({ description: "Sends all possible UpdateMessages." })
+	@Get()
+	getNotification(): UpdateMessageDto[] {
+		return MESSAGES_ALL;
 	}
 	
 }

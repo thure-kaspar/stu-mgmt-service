@@ -1,4 +1,7 @@
-import { Injectable, HttpService } from "@nestjs/common";
+import { Injectable, HttpService, Logger } from "@nestjs/common";
+import { Cron, CronExpression, SchedulerRegistry } from "@nestjs/schedule";
+import { UpdateMessageRepository } from "../database/repositories/update-message.repository";
+import { InjectRepository } from "@nestjs/typeorm";
 
 export enum EventType {
 	INSERT = "INSERT",
@@ -14,16 +17,19 @@ export enum AffectedObject {
 	ASSIGNMENT = "ASSIGNMENT"
 }
 
-export class UpdateMessage {
+export class UpdateMessageDto {
 	type: EventType;
 	affectedObject: AffectedObject;
 	courseId: string;
 	entityId: string;
-	entityId_relation?: string; 
+	entityId_relation?: string;
+	date?: Date; 
 }
 
 @Injectable()
 export class UpdateService { 
+
+	private readonly logger = new Logger(UpdateService.name);
 
 	private courseMap = new Map<string, string>(); // TODO: Create data structure to save urls
 
@@ -35,15 +41,9 @@ export class UpdateService {
 	/**
 	 * Sends the given message using http (POST), if the affected course has configured a url for update events.
 	 */
-	send(message: UpdateMessage): void {
-		console.log("Send UpdateMessage triggered : )");
-		
-		// Check, if the course has configured a url for update messages
-		const url = this.courseMap.get(message.courseId);
-		if (url) {
-			// Send message using http (POST)
-			this.http.post(this.courseMap.get(message.courseId), message);
-		}
+	@Cron(CronExpression.EVERY_10_SECONDS, { name: "UpdateMessageJob" })
+	send(): void {
+		this.logger.log("Job running: send");
 	}
 
 }

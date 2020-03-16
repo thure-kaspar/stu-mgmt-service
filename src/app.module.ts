@@ -1,4 +1,5 @@
-import { Module, Provider } from '@nestjs/common';
+import { Module, Provider, HttpModule } from '@nestjs/common';
+import { ScheduleModule } from '@nestjs/schedule';
 import { APP_INTERCEPTOR } from "@nestjs/core";
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
@@ -8,6 +9,7 @@ import { UserModule } from './user/user.module';
 import { TestModule } from './test/test.module';
 import { RequestLogger } from "./utility/request.logger";
 import { typeOrmConfig } from './config/typeorm-config';
+import { TaskModule } from './task/task.module';
 import * as config from "config";
 
 const optionalProviders = (): Provider<any>[] => {
@@ -19,7 +21,14 @@ const optionalProviders = (): Provider<any>[] => {
 };
 
 @Module({
-  imports: [TypeOrmModule.forRoot(typeOrmConfig), CourseModule, UserModule, TestModule],
+  imports: [
+	  TypeOrmModule.forRoot(typeOrmConfig),
+	  ScheduleModule.forRoot(), 
+	  CourseModule, 
+	  UserModule, 
+	  TestModule, 
+	  TaskModule
+	],
   controllers: [AppController],
   providers: [AppService, ...optionalProviders()],
 })

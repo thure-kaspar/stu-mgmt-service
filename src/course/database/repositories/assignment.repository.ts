@@ -55,8 +55,8 @@ export class AssignmentRepository extends Repository<Assignment> {
 	}
 
 	async deleteAssignment(assignmentId: string): Promise<boolean> {
-		const deleteResult = await this.delete(assignmentId);
-		return deleteResult.affected == 1;
+		const deleted = await this.remove(this.create({ id: assignmentId }));
+		return deleted ? true : false;
 	}
 
 	private createEntityFromDto(assignmentDto: AssignmentDto): Assignment {

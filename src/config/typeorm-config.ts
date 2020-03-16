@@ -11,6 +11,7 @@ import { AssessmentUserRelation } from "../shared/entities/assessment-user-relat
 import { AssignmentSubscriber } from "../course/database/subscribers/assignment.subscriber";
 import { UserGroupRelationSubscriber } from "../course/database/subscribers/user-group.subscriber";
 import { CourseUserRelationSubscriber } from "../course/database/subscribers/course-user.subscriber";
+import { UpdateMessage } from "../task/database/entities/update-message.entity";
 
 const dbConfig = config.get("db");
 
@@ -24,6 +25,6 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   synchronize: process.env.TYPEORM_SYNC || dbConfig.synchronize,
   dropSchema: dbConfig.dropSchema || false,
   keepConnectionAlive: true, // prevents AlreadyHasActiveConnectionError, needed for testing // TODO: Check if it should be disabled in production
-  entities: [Course, User, Group, CourseUserRelation, UserGroupRelation, Assignment, Assessment, AssessmentUserRelation],
+  entities: [Course, User, Group, CourseUserRelation, UserGroupRelation, Assignment, Assessment, AssessmentUserRelation, UpdateMessage],
   subscribers: [CourseUserRelationSubscriber, UserGroupRelationSubscriber, AssignmentSubscriber],
 };
