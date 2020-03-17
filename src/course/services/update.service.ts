@@ -4,11 +4,12 @@ import { UpdateMessage } from "../../shared/dto/update-message.dto";
 @Injectable()
 export class UpdateService { 
 
-	private http: HttpService;
+	static instance: UpdateService;
+
 	private readonly logger = new Logger(UpdateService.name);
 
-	constructor() {
-		this.http = new HttpService();
+	constructor(private http: HttpService) {
+		UpdateService.instance = this;
 	}
 
 	/**

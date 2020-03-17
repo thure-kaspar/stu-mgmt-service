@@ -9,7 +9,7 @@ export class AssignmentSubscriber implements EntitySubscriberInterface<Assignmen
 	private updateService: UpdateService;
 
 	constructor() { 
-		this.updateService = new UpdateService();
+		this.updateService = UpdateService.instance;
 	}
 
 	listenTo() {

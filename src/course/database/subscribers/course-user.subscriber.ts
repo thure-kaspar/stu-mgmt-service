@@ -8,8 +8,8 @@ export class CourseUserRelationSubscriber implements EntitySubscriberInterface<C
 
 	private updateService: UpdateService;
 
-	constructor() { 
-		this.updateService = new UpdateService();
+	constructor() {
+		this.updateService = UpdateService.instance;
 	}
 
 	listenTo() {

@@ -8,8 +8,8 @@ export class UserGroupRelationSubscriber implements EntitySubscriberInterface<Us
 
 	private updateService: UpdateService;
 
-	constructor() { 
-		this.updateService = new UpdateService();
+	constructor() {
+		this.updateService = UpdateService.instance;
 	}
 
 	listenTo() {
@@ -17,21 +17,21 @@ export class UserGroupRelationSubscriber implements EntitySubscriberInterface<Us
 		return UserGroupRelation;
 	}
 
-	async afterInsert(event: InsertEvent<UserGroupRelation>) {
+	async afterInsert(event: InsertEvent<UserGroupRelation>): Promise<void> {
 		const reloadedEntity = await this.reloadEntityWithRequiredRelations(event.manager.getRepository(UserGroupRelation), event.entity); // Need to load group-relation in order to obtains courseId
 		this.updateService.send(
 			this.createMessage(EventType.INSERT, reloadedEntity)
 		);
 	}
 
-	async afterUpdate(event: UpdateEvent<UserGroupRelation>) {
+	async afterUpdate(event: UpdateEvent<UserGroupRelation>): Promise<void> {
 		const reloadedEntity = await this.reloadEntityWithRequiredRelations(event.manager.getRepository(UserGroupRelation), event.entity); // Need to load group-relation in order to obtains courseId
 		this.updateService.send(
 			this.createMessage(EventType.UPDATE, reloadedEntity)
 		);
 	}
 
-	async afterRemove(event: RemoveEvent<UserGroupRelation>) {
+	async afterRemove(event: RemoveEvent<UserGroupRelation>): Promise<void> {
 		const reloadedEntity = await this.reloadEntityWithRequiredRelations(event.manager.getRepository(UserGroupRelation), event.entity); // Need to load group-relation in order to obtains courseId
 		this.updateService.send(
 			this.createMessage(EventType.REMOVE, reloadedEntity)
