@@ -8,6 +8,7 @@ import { AssignmentDto } from "./dto/assignment.dto";
 import { Assignment } from "./entities/assignment.entity";
 import { Assessment } from "./entities/assessment.entity";
 import { AssessmentDto } from "./dto/assessment.dto";
+import { CourseRole } from "./enums";
 
 export abstract class DtoFactory {
 
@@ -39,7 +40,7 @@ export abstract class DtoFactory {
 		return courseDto;
 	}
     
-	static createUserDto(userEntity: User): UserDto {
+	static createUserDto(userEntity: User, courseRole?: CourseRole): UserDto {
 		const userDto: UserDto = {
 			id: userEntity.id,
 			email: userEntity.email,
@@ -47,6 +48,9 @@ export abstract class DtoFactory {
 			rzName: userEntity.rzName,
 			role: userEntity.role,
 		};
+ 
+		// If users of a course a loaded, assign course role (i.e Student)
+		if (courseRole) userDto.courseRole = courseRole;
     
 		// Add relational data, if available
 		if (userEntity.courseUserRelations) {

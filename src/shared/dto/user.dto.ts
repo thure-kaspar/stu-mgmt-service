@@ -1,5 +1,5 @@
 import { CourseDto } from "./course.dto";
-import { UserRole } from "../enums";
+import { UserRole, CourseRole } from "../enums";
 
 export class UserDto {
     id?: string;
@@ -7,5 +7,6 @@ export class UserDto {
 	username: string;
 	rzName: string;
     role: UserRole;
-    courses?: CourseDto[];
+	courses?: CourseDto[];
+	courseRole?: CourseRole;
 }

@@ -42,7 +42,7 @@ export class CourseService {
 
 	async getUsersOfCourse(courseId: string): Promise<UserDto[]> {
 		const course = await this.courseRepository.getCourseWithUsers(courseId);
-		const userDtos = course.courseUserRelations.map(courseUserRelation => DtoFactory.createUserDto(courseUserRelation.user));
+		const userDtos = course.courseUserRelations.map(courseUserRelation => DtoFactory.createUserDto(courseUserRelation.user, courseUserRelation.role));
 		return userDtos;
 	}
 

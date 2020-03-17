@@ -1,4 +1,4 @@
-import { Repository, EntityRepository, DeleteResult } from "typeorm";
+import { Repository, EntityRepository } from "typeorm";
 import { Course } from "../../../shared/entities/course.entity";
 import { CourseDto } from "../../../shared/dto/course.dto";
 import { CourseFilterDto } from "../../../shared/dto/course-filter.dto";
