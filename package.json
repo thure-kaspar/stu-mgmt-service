@@ -23,8 +23,8 @@
     "script:demodb": "env NODE_ENV=demo jest --runInBand --config ./scripts/jest-e2e.json"
   },
   "dependencies": {
-    "@nestjs/common": "^7.0.2",
-    "@nestjs/core": "^7.0.2",
+    "@nestjs/common": "^6.8.0",
+    "@nestjs/core": "^6.8.0",
     "@nestjs/jwt": "^7.0.0",
     "@nestjs/passport": "^7.0.0",
     "@nestjs/platform-express": "^7.0.2",

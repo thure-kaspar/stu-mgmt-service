@@ -1,5 +1,4 @@
 import { Module, Provider } from "@nestjs/common";
-import { ScheduleModule } from "@nestjs/schedule";
 import { APP_INTERCEPTOR } from "@nestjs/core";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { AppController } from "./app.controller";
@@ -23,7 +22,6 @@ const optionalProviders = (): Provider<any>[] => {
 @Module({
 	imports: [
 		TypeOrmModule.forRoot(typeOrmConfig),
-		ScheduleModule.forRoot(),
 		CourseModule,
 		UserModule,
 		TestModule,
