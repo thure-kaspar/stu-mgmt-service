@@ -1,4 +1,5 @@
-import { UpdateMessage, EventType, AffectedObject } from "../../src/course/services/update.service";
+
+import { UpdateMessage, EventType, AffectedObject } from "../../src/shared/dto/update-message.dto";
 import { COURSE_JAVA_1920 } from "./courses.mock";
 import { USER_STUDENT_JAVA } from "./users.mock";
 import { GROUP_1_JAVA } from "./groups.mock";

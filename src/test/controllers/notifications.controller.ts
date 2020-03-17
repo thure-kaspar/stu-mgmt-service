@@ -1,6 +1,6 @@
 import { Controller, Get } from "@nestjs/common";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
-import { UpdateMessage } from "../../course/services/update.service";
+import { UpdateMessage } from "../../shared/dto/update-message.dto";
 import { MESSAGES_ALL } from "../../../test/mocks/update-messages.mock";
 
 @ApiTags("test")

@@ -1,6 +1,7 @@
 import { EventSubscriber, EntitySubscriberInterface, InsertEvent, UpdateEvent, RemoveEvent } from "typeorm";
 import { CourseUserRelation } from "../../../shared/entities/course-user-relation.entity";
-import { AffectedObject, EventType, UpdateMessage, UpdateService } from "../../services/update.service";
+import { UpdateService } from "../../services/update.service";
+import { EventType, UpdateMessage, AffectedObject } from "../../../shared/dto/update-message.dto";
 
 @EventSubscriber()
 export class CourseUserRelationSubscriber implements EntitySubscriberInterface<CourseUserRelation> {

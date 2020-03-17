@@ -1,27 +1,5 @@
 import { Injectable, HttpService, Logger } from "@nestjs/common";
-
-export enum EventType {
-	INSERT = "INSERT",
-	UPDATE = "UPDATE",
-	REMOVE = "REMOVE"
-}
-
-export enum AffectedObject {
-	USER = "USER",
-	GROUP = "GROUP",
-	USER_GROUP_RELATION = "USER_GROUP_RELATION",
-	COURSE_USER_RELATION = "COURSE_USER_RELATION",
-	ASSIGNMENT = "ASSIGNMENT"
-}
-
-export class UpdateMessage {
-	type: EventType;
-	affectedObject: AffectedObject;
-	courseId: string;
-	entityId: string;
-	entityId_relation?: string;
-	date?: Date; 
-}
+import { UpdateMessage } from "../../shared/dto/update-message.dto";
 
 @Injectable()
 export class UpdateService { 

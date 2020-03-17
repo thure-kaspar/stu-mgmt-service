@@ -1,6 +1,7 @@
 import { EventSubscriber, EntitySubscriberInterface, InsertEvent, UpdateEvent, RemoveEvent } from "typeorm";
 import { Assignment } from "../../../shared/entities/assignment.entity";
-import { EventType, AffectedObject, UpdateService, UpdateMessage } from "../../services/update.service";
+import { UpdateService } from "../../services/update.service";
+import { EventType, UpdateMessage, AffectedObject } from "../../../shared/dto/update-message.dto";
 
 @EventSubscriber()
 export class AssignmentSubscriber implements EntitySubscriberInterface<Assignment> {
