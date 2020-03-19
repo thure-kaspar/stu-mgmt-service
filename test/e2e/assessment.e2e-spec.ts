@@ -72,10 +72,10 @@ describe("POST-REQUESTS of AssignmentController (e2e)", () => {
 		await getConnection().close(); // Close Db-Connection after all tests have been executed
 	});
 
-	// TODO: Verify that assessment-user-relation gets created
 	it("(POST) /courses/{courseId}/assignments/{assignmentId}/assessments Creates the given (group-)assessment and returns it", async () => {
 		// Setup
 		await dbMockService.createGroups();
+		await dbMockService.createUserGroupRelations();
 		await dbMockService.createAssignments();
 		const assignment = ASSIGNMENT_JAVA_EVALUATED;
 		const assessment = ASSESSMENT_JAVA_EVALUATED_GROUP_1;
@@ -93,7 +93,6 @@ describe("POST-REQUESTS of AssignmentController (e2e)", () => {
 			});
 	});
 
-	// TODO: Verify that assessment-user-relation gets created
 	it("(POST) /courses/{courseId}/assignments/{assignmentId}/assessments Creates the given (user-)assessment and returns it", async () => {
 		// Setup
 		await dbMockService.createAssignments();

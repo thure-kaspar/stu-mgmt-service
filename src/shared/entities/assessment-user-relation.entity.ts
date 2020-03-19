@@ -1,4 +1,4 @@
-import { BaseEntity, PrimaryColumn, OneToOne, Entity, Index, JoinColumn, ManyToMany } from "typeorm";
+import { BaseEntity, PrimaryColumn, Entity, Index, JoinColumn, ManyToMany, ManyToOne } from "typeorm";
 import { Assessment } from "./assessment.entity";
 import { User } from "./user.entity";
 
@@ -6,7 +6,8 @@ import { User } from "./user.entity";
 @Index("IDX_AssessmentId_UserId", ["assessmentId", "userId"], { unique: true })
 export class AssessmentUserRelation extends BaseEntity {
 
-	@OneToOne(type => Assessment, assessment => assessment.assessmentUserRelations)
+	@ManyToOne(type => Assessment, assessment => assessment.assessmentUserRelations)
+	@JoinColumn()
 	assessment: Assessment;
 	
 	@PrimaryColumn()

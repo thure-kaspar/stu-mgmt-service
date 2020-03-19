@@ -23,25 +23,22 @@ export class AssessmentService {
 			throw new BadRequestException("AssessmentDto refers to a different Assignment.");
 		}
 
-		const createdAssessment = await this.assessmentRepository.createAssessment(assessmentDto);
-		const userIds: string[] = [];
-
+		let userIds: string[];
 		// If assessment should apply to a group
 		if (assessmentDto.groupId) {
 			const group = await this.groupRepository.getGroupWithUsers(assessmentDto.groupId);
-			group.userGroupRelations.forEach(userGroupRelation => {
-				userIds.push(userGroupRelation.userId);
-			});
-		// If assessment should only apply to a specified user
+			userIds = group.userGroupRelations.map(x => x.userId);
+		// If assessment should apply to single user
 		} else if (assessmentDto.userId) {
-			userIds.push(assessmentDto.userId);
+			userIds = [assessmentDto.userId];
+		// If neither (group or user) has been specified
+		} else {
+			throw new BadRequestException("Assessment did not specify the evaluated group or user");
 		}
 
-		// Create relation between assessment and users (in case they leave their group, they still get their points)
-		await this.assessmentUserRepository.createAssessmentUserRelations(createdAssessment.id, userIds);
+		const createdAssessment = await this.assessmentRepository.createAssessment(assessmentDto, userIds);
 
-		const createdAssessmentDto = DtoFactory.createAssessmentDto(createdAssessment);
-		return createdAssessmentDto;
+		return DtoFactory.createAssessmentDto(createdAssessment);
 	}
 
 	async getAssessmentsForAssignment(assignmentId: string): Promise<AssessmentDto[]> {

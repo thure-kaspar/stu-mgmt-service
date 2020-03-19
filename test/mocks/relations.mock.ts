@@ -33,17 +33,14 @@ export const CourseUserRelationsMock = [
 
 export const AssessmentUserRelationsMock = [
 	{
-		id: 1,
 		assessmentId: ASSESSMENT_JAVA_EVALUATED_GROUP_1.id,
 		userId: USER_STUDENT_JAVA.id
 	},
 	{
-		id: 2,
 		assessmentId: ASSESSMENT_JAVA_EVALUATED_GROUP_1.id,
 		userId: USER_STUDENT_2_JAVA.id
 	},
 	{
-		id: 3,
 		assessmentId: ASSESSMENT_JAVA_TESTAT_USER_1.id,
 		userId: USER_STUDENT_JAVA.id
 	}

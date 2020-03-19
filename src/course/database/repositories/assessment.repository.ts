@@ -1,12 +1,22 @@
-import { Repository, EntityRepository, IsNull } from "typeorm";
+import { Repository, EntityRepository } from "typeorm";
 import { Assessment } from "../../../shared/entities/assessment.entity";
 import { AssessmentDto } from "../../../shared/dto/assessment.dto";
+import { AssessmentUserRelation } from "../../../shared/entities/assessment-user-relation.entity";
 
 @EntityRepository(Assessment)
 export class AssessmentRepository extends Repository<Assessment> {
 
-	async createAssessment(assessmentDto: AssessmentDto): Promise<Assessment> {
+	async createAssessment(assessmentDto: AssessmentDto, userIds: string[]): Promise<Assessment> {
 		const assessment = this.createEntityFromDto(assessmentDto);
+		assessment.assessmentUserRelations = [];
+
+		// Create AssessmentUserRelations (will be saved due to enabled cascade)
+		userIds.forEach(userId => {
+			const userRelation = new AssessmentUserRelation();
+			userRelation.userId = userId;
+			assessment.assessmentUserRelations.push(userRelation);
+		});
+		
 		return assessment.save();
 	}
 
@@ -80,6 +90,7 @@ export class AssessmentRepository extends Repository<Assessment> {
 		assessment.groupId = assessmentDto.groupId;
 		assessment.achievedPoints = assessmentDto.achievedPoints;
 		assessment.comment = assessmentDto.comment;
+		assessment.creatorId = assessmentDto.creatorId;
 		return assessment;
 	}
 
