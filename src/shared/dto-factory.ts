@@ -12,93 +12,103 @@ import { CourseRole } from "./enums";
 
 export abstract class DtoFactory {
 
-	static createCourseDto(courseEntity: Course): CourseDto {
+	static createCourseDto(course: Course): CourseDto {
 		const courseDto: CourseDto = {
-			id: courseEntity.id,
-			shortname: courseEntity.shortname,
-			semester: courseEntity.semester,
-			title: courseEntity.title,
-			isClosed: courseEntity.isClosed,
-			link: courseEntity.link,
-			allowGroups: courseEntity.allowGroups,
-			maxGroupSize: courseEntity.maxGroupSize
+			id: course.id,
+			shortname: course.shortname,
+			semester: course.semester,
+			title: course.title,
+			isClosed: course.isClosed,
+			link: course.link,
+			allowGroups: course.allowGroups,
+			maxGroupSize: course.maxGroupSize
 		};
     
 		// Add relational data, if available
-		if (courseEntity.courseUserRelations) {
-			courseDto.users = courseEntity.courseUserRelations.map(courseUserRelation => this.createUserDto(courseUserRelation.user));
+		if (course.courseUserRelations) {
+			courseDto.users = course.courseUserRelations.map(courseUserRelation => 
+				this.createUserDto(courseUserRelation.user, courseUserRelation.role));
 		}
 		
-		if (courseEntity.assignments) {
-			courseDto.assignments = courseEntity.assignments.map(assignment => this.createAssignmentDto(assignment));
+		if (course.assignments) {
+			courseDto.assignments = course.assignments.map(assignment => this.createAssignmentDto(assignment));
 		}
 
-		if (courseEntity.groups) {
-			courseDto.groups = courseEntity.groups.map(group => this.createGroupDto(group));
+		if (course.groups) {
+			courseDto.groups = course.groups.map(group => this.createGroupDto(group));
 		}
     
 		return courseDto;
 	}
     
-	static createUserDto(userEntity: User, courseRole?: CourseRole): UserDto {
+	static createUserDto(user: User, courseRole?: CourseRole): UserDto {
 		const userDto: UserDto = {
-			id: userEntity.id,
-			email: userEntity.email,
-			username: userEntity.username,
-			rzName: userEntity.rzName,
-			role: userEntity.role,
+			id: user.id,
+			email: user.email,
+			username: user.username,
+			rzName: user.rzName,
+			role: user.role,
 		};
  
 		// If users of a course a loaded, assign course role (i.e Student)
 		if (courseRole) userDto.courseRole = courseRole;
     
 		// Add relational data, if available
-		if (userEntity.courseUserRelations) {
-			userDto.courses = userEntity.courseUserRelations.map(courseUserRelation => this.createCourseDto(courseUserRelation.course));
+		if (user.courseUserRelations) {
+			userDto.courses = user.courseUserRelations.map(courseUserRelation => this.createCourseDto(courseUserRelation.course));
 		}
     
 		return userDto;
 	}
-    
-	static createGroupDto(groupEntity: Group): GroupDto {
+	
+	// TODO: Allow loading members
+	static createGroupDto(group: Group): GroupDto {
 		const groupDto: GroupDto = {
-			id: groupEntity.id,
-			courseId: groupEntity.courseId,
-			name: groupEntity.name,
-			isClosed:groupEntity.isClosed,
-			course: groupEntity.course
+			id: group.id,
+			courseId: group.courseId,
+			name: group.name,
+			isClosed:group.isClosed,
 		};
+
+		if (group.course) groupDto.course = this.createCourseDto(group.course);
+
 		return groupDto;
 	}
     
-	static createAssignmentDto(assignmentEntity: Assignment): AssignmentDto {
+	static createAssignmentDto(assignment: Assignment): AssignmentDto {
 		const assignmentDto: AssignmentDto = {
-			id: assignmentEntity.id,
-			courseId: assignmentEntity.courseId,
-			name: assignmentEntity.name,
-			state: assignmentEntity.state,
-			startDate: assignmentEntity.startDate,
-			endDate: assignmentEntity.endDate,
-			comment: assignmentEntity.comment,
-			link: assignmentEntity.link,
-			type: assignmentEntity.type,
-			maxPoints: assignmentEntity.maxPoints,
-			collaborationType: assignmentEntity.collaborationType
+			id: assignment.id,
+			courseId: assignment.courseId,
+			name: assignment.name,
+			state: assignment.state,
+			startDate: assignment.startDate,
+			endDate: assignment.endDate,
+			comment: assignment.comment,
+			link: assignment.link,
+			type: assignment.type,
+			maxPoints: assignment.maxPoints,
+			collaborationType: assignment.collaborationType
 		};
 		return assignmentDto;
 	}
     
-	static createAssessmentDto(assessmentEntity: Assessment): AssessmentDto {
+	static createAssessmentDto(assessment: Assessment): AssessmentDto {
 		const assessmentDto: AssessmentDto = {
-			id: assessmentEntity.id,
-			assignmentId: assessmentEntity.assignmentId,
-			groupId: assessmentEntity.groupId,
-			achievedPoints: assessmentEntity.achievedPoints,
-			comment: assessmentEntity.comment
+			id: assessment.id,
+			assignmentId: assessment.assignmentId,
+			groupId: assessment.groupId,
+			achievedPoints: assessment.achievedPoints,
+			comment: assessment.comment
 		};
-    
-		if (assessmentEntity.group) {
-			assessmentDto.group = this.createGroupDto(assessmentEntity.group);
+
+		// If assessment belongs to a single student
+		if (assessment.assessmentUserRelations?.length == 1) {
+			assessmentDto.userId = assessment.assessmentUserRelations[0].userId;
+		}
+	
+		// TODO: Fix: Group will contain current members, but we want members from assessmentUserRelations!
+		if (assessment.group) {
+			assessmentDto.group = this.createGroupDto(assessment.group);
 		}
     
 		return assessmentDto;

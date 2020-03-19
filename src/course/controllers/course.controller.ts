@@ -87,7 +87,7 @@ export class CourseController {
 		@Body("role") role: CourseRole
 	): Promise<boolean> {
 
-		return this.courseService.updateUserRole(courseId, userId, role);
+		return this.courseService.updateRole(courseId, userId, role);
 	}
 
 	/**
