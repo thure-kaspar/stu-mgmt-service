@@ -5,15 +5,12 @@ import { Assessment } from "../../shared/entities/assessment.entity";
 import { AssessmentRepository } from "../database/repositories/assessment.repository";
 import { GroupRepository } from "../database/repositories/group.repository";
 import { Group } from "../../shared/entities/group.entity";
-import { AssessmentUserRelation } from "../../shared/entities/assessment-user-relation.entity";
-import { AssessmentUserRelationRepository } from "../database/repositories/assessment-user-relation.repository";
 import { DtoFactory } from "../../shared/dto-factory";
 
 @Injectable()
 export class AssessmentService {
 
 	constructor(@InjectRepository(Assessment) private assessmentRepository: AssessmentRepository,
-				@InjectRepository(AssessmentUserRelation) private assessmentUserRepository: AssessmentUserRelationRepository,
 				@InjectRepository(Group) private groupRepository: GroupRepository
 	) { }
 
