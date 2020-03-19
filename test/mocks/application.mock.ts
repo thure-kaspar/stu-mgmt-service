@@ -15,3 +15,13 @@ export async function createApplication(): Promise<INestApplication> {
 	
 	return app;
 }
+
+/**
+ * Returns the imports that are required by all TestingModules.
+ */
+export function getImports(): any[] {
+	const imports = [
+
+	];
+	return imports;
+}

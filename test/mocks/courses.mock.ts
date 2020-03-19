@@ -36,7 +36,6 @@ export const COURSE_INFO_2_2020: CourseDto = {
 	maxGroupSize: 0 
 };
 
-
 export const CoursesMock: CourseDto[] = [
 	COURSE_JAVA_1920,
 	COURSE_JAVA_1819,

@@ -1,4 +1,4 @@
-import { UserRole, CourseRole } from "../../src/shared/enums";
+import { CourseRole } from "../../src/shared/enums";
 import { COURSE_JAVA_1920 } from "./courses.mock";
 import { USER_STUDENT_JAVA, USER_STUDENT_2_JAVA, USER_STUDENT_3_JAVA_TUTOR, USER_MGMT_ADMIN_JAVA_LECTURER } from "./users.mock";
 import { ASSESSMENT_JAVA_EVALUATED_GROUP_1, ASSESSMENT_JAVA_TESTAT_USER_1 } from "./assessments.mock";

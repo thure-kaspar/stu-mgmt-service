@@ -1,5 +1,8 @@
 import { UserDto } from "../../src/shared/dto/user.dto";
-import { UserRole } from "../../src/shared/enums";
+import { UserRole, CourseRole } from "../../src/shared/enums";
+import { User } from "../../src/shared/entities/user.entity";
+import { CourseUserRelationsMock } from "./relations.mock";
+import { CourseUserRelation } from "../../src/shared/entities/course-user-relation.entity";
 
 export const USER_STUDENT_JAVA: UserDto = {
 	id: "a019ea22-5194-4b83-8d31-0de0dc9bca53",
@@ -48,3 +51,31 @@ export const UsersMock: UserDto[] = [
 	USER_MGMT_ADMIN_JAVA_LECTURER,
 	USER_SYSTEM_ADMIN
 ];
+
+export function getUsersOfCourseMock(): User[] {
+	const participants: UserDto[] = [
+		USER_STUDENT_JAVA, 
+		USER_STUDENT_2_JAVA,
+		USER_STUDENT_3_JAVA_TUTOR,
+		USER_MGMT_ADMIN_JAVA_LECTURER
+	];
+
+	const users: User[] = [];
+
+	participants.forEach(p => {
+		const user = new User();
+		user.id = p.id;
+		user.email = p.email;
+		user.username = p.username;
+		user.rzName = p.rzName;
+		user.role = p.role;
+		user.courseUserRelations = [new CourseUserRelation()];
+		user.courseUserRelations[0].courseId = "java-wise1920";
+		user.courseUserRelations[0].userId = p.id;
+		user.courseUserRelations[0].role = CourseRole.STUDENT;
+
+		users.push(user);
+	});
+
+	return users;
+}
