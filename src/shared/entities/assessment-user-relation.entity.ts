@@ -6,7 +6,7 @@ import { User } from "./user.entity";
 @Index("IDX_AssessmentId_UserId", ["assessmentId", "userId"], { unique: true })
 export class AssessmentUserRelation extends BaseEntity {
 
-	@ManyToOne(type => Assessment, assessment => assessment.assessmentUserRelations)
+	@ManyToOne(type => Assessment, assessment => assessment.assessmentUserRelations, { onDelete: "CASCADE" })
 	@JoinColumn()
 	assessment: Assessment;
 	
