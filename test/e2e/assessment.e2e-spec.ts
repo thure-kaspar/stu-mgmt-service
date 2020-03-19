@@ -1,13 +1,12 @@
 import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
 import { getConnection } from "typeorm";
-import { AssignmentDto } from "../src/shared/dto/assignment.dto";
-import { createApplication } from "./mocks/application.mock";
-import { ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP, ASSIGNMENT_JAVA_IN_REVIEW, ASSIGNMENT_JAVA_EVALUATED, ASSIGNMENT_JAVA_TESTAT_EVALUATED_SINGLE } from "./mocks/assignments.mock";
-import { COURSE_JAVA_1920 } from "./mocks/courses.mock";
-import { DbMockService } from "./mocks/db-mock.service";
-import { ASSESSMENT_JAVA_EVALUATED_GROUP_1, ASSESSMENT_JAVA_TESTAT_USER_1 } from "./mocks/assessments.mock";
-import { AssessmentDto } from "../src/shared/dto/assessment.dto";
+import { AssessmentDto } from "../../src/shared/dto/assessment.dto";
+import { createApplication } from "../mocks/application.mock";
+import { ASSESSMENT_JAVA_EVALUATED_GROUP_1, ASSESSMENT_JAVA_TESTAT_USER_1 } from "../mocks/assessments.mock";
+import { ASSIGNMENT_JAVA_EVALUATED, ASSIGNMENT_JAVA_TESTAT_EVALUATED_SINGLE } from "../mocks/assignments.mock";
+import { COURSE_JAVA_1920 } from "../mocks/courses.mock";
+import { DbMockService } from "../mocks/db-mock.service";
 
 
 let app: INestApplication;

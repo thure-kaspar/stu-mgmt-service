@@ -1,17 +1,17 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
-import { AppModule } from "./../src/app.module";
+import { AppModule } from "../../src/app.module";
 import { getConnection } from "typeorm";
-import { DbMockService } from "./mocks/db-mock.service";
-import { UserDto } from "../src/shared/dto/user.dto";
-import { UserRole } from "../src/shared/enums";
-import { CoursesMock } from "./mocks/courses.mock";
-import { GroupsMock } from "./mocks/groups.mock";
-import { UsersMock, USER_STUDENT_JAVA } from "./mocks/users.mock";
-import { AssignmentsMock } from "./mocks/assignments.mock";
-import { AssessmentsMock } from "./mocks/assessments.mock";
-import { createApplication } from "./mocks/application.mock";
+import { DbMockService } from "../mocks/db-mock.service";
+import { UserDto } from "../../src/shared/dto/user.dto";
+import { UserRole } from "../../src/shared/enums";
+import { CoursesMock } from "../mocks/courses.mock";
+import { GroupsMock } from "../mocks/groups.mock";
+import { UsersMock, USER_STUDENT_JAVA } from "../mocks/users.mock";
+import { AssignmentsMock } from "../mocks/assignments.mock";
+import { AssessmentsMock } from "../mocks/assessments.mock";
+import { createApplication } from "../mocks/application.mock";
 
 let app: INestApplication;
 let dbMockService: DbMockService; // Should be initialized in every describe-block

@@ -1,15 +1,15 @@
 import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
 import { getConnection } from "typeorm";
-import { DbMockService } from "./mocks/db-mock.service";
-import * as fromDtoMocks from "./mocks/relations.mock";
-import { GroupDto } from "../src/shared/dto/group.dto";
-import { CoursesMock, COURSE_JAVA_1920 } from "./mocks/courses.mock";
-import { GroupsMock, GROUP_1_JAVA } from "./mocks/groups.mock";
-import { UsersMock } from "./mocks/users.mock";
-import { AssignmentsMock } from "./mocks/assignments.mock";
-import { AssessmentsMock } from "./mocks/assessments.mock";
-import { createApplication } from "./mocks/application.mock";
+import { DbMockService } from "../mocks/db-mock.service";
+import * as fromDtoMocks from "../mocks/relations.mock";
+import { GroupDto } from "../../src/shared/dto/group.dto";
+import { CoursesMock, COURSE_JAVA_1920 } from "../mocks/courses.mock";
+import { GroupsMock, GROUP_1_JAVA } from "../mocks/groups.mock";
+import { UsersMock } from "../mocks/users.mock";
+import { AssignmentsMock } from "../mocks/assignments.mock";
+import { AssessmentsMock } from "../mocks/assessments.mock";
+import { createApplication } from "../mocks/application.mock";
 
 let app: INestApplication;
 let dbMockService: DbMockService; // Should be initialized in every describe-block

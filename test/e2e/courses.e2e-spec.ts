@@ -1,12 +1,12 @@
 import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
 import { getConnection } from "typeorm";
-import { CourseFilterDto } from "../src/shared/dto/course-filter.dto";
-import { CoursesMock, COURSE_JAVA_1920 } from "./mocks/courses.mock";
-import { DbMockService } from "./mocks/db-mock.service";
-import { GROUP_1_JAVA, GROUP_2_JAVA } from "./mocks/groups.mock";
-import { USER_STUDENT_JAVA } from "./mocks/users.mock";
-import { createApplication } from "./mocks/application.mock";
+import { CourseFilterDto } from "../../src/shared/dto/course-filter.dto";
+import { CoursesMock, COURSE_JAVA_1920 } from "../mocks/courses.mock";
+import { DbMockService } from "../mocks/db-mock.service";
+import { GROUP_1_JAVA, GROUP_2_JAVA } from "../mocks/groups.mock";
+import { USER_STUDENT_JAVA } from "../mocks/users.mock";
+import { createApplication } from "../mocks/application.mock";
 
 let app: INestApplication;
 let dbMockService: DbMockService; // Should be initialized in every describe-block that requires data in db
