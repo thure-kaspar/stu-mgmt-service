@@ -2,6 +2,7 @@ import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToOne, ManyToMan
 import { Assignment } from "./assignment.entity";
 import { Group } from "./group.entity";
 import { AssessmentUserRelation } from "./assessment-user-relation.entity";
+import { User } from "./user.entity";
 
 @Entity("assessments")
 export class Assessment extends BaseEntity {
@@ -27,8 +28,14 @@ export class Assessment extends BaseEntity {
 	@Column({ nullable: true })
 	groupId: string;
 
+	@ManyToMany(type => User)
+	creator: User;
+
+	@Column({ nullable: false })
+	creatorId: string;
+
 	// We need to assign the points to users individually, in case they switch group
-	@OneToMany(type => AssessmentUserRelation, assessmentUserRelation => assessmentUserRelation.assessment)
+	@OneToMany(type => AssessmentUserRelation, assessmentUserRelation => assessmentUserRelation.assessment, { cascade: true })
 	assessmentUserRelations: AssessmentUserRelation[];
 
 }

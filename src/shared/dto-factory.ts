@@ -98,13 +98,17 @@ export abstract class DtoFactory {
 			assignmentId: assessment.assignmentId,
 			groupId: assessment.groupId,
 			achievedPoints: assessment.achievedPoints,
-			comment: assessment.comment
+			comment: assessment.comment,
+			creatorId: assessment.creatorId
 		};
 
 		// If assessment belongs to a single student
 		if (assessment.assessmentUserRelations?.length == 1) {
 			assessmentDto.userId = assessment.assessmentUserRelations[0].userId;
 		}
+
+		// If creator was loaded
+		if (assessment.creator) assessmentDto.creator = this.createUserDto(assessment.creator);
 	
 		// TODO: Fix: Group will contain current members, but we want members from assessmentUserRelations!
 		if (assessment.group) {
