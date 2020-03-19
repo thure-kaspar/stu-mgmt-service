@@ -1,8 +1,8 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { CourseService } from "../services/course.service";
-import { CourseRepository } from "../database/repositories/course.repository";
-import { UserRepository } from "../../user/repositories/user.repository";
-import { CourseUserRelationRepository } from "../database/repositories/course-user-relation.repository";
+import { CourseService } from "../../../src/course/services/course.service";
+import { CourseRepository } from "../../../src/course/database/repositories/course.repository";
+import { UserRepository } from "../../../src/user/repositories/user.repository";
+import { CourseUserRelationRepository } from "../../../src/course/database/repositories/course-user-relation.repository";
 
 const mock_CourseRepository = () => ({
 

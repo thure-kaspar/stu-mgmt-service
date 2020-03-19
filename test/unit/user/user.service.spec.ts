@@ -1,6 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { UserService } from "../services/user.service";
-import { UserRepository } from "../repositories/user.repository";
+import { UserService } from "../../../src/user/services/user.service";
+import { UserRepository } from "../../../src/user/repositories/user.repository";
 
 const mock_UserRepository = () => ({
 

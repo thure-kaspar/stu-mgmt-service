@@ -1,7 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { CourseController } from "../controllers/course.controller";
-import { CourseService } from "../services/course.service";
-import { GroupService } from "../services/group.service";
+import { CourseController } from "../../../src/course/controllers/course.controller";
+import { CourseService } from "../../../src/course/services/course.service";
+import { GroupService } from "../../../src/course/services/group.service";
 
 const mock_CourseService = () => ({
 
