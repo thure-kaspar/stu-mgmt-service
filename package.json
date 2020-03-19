@@ -19,7 +19,8 @@
     "test:watch": "jest --watch --config ./test/jest-unit.json",
     "test:cov": "jest --coverage --config ./test/jest-unit.json",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand --config ./test/jest-unit.json",
-    "test:e2e": "env NODE_ENV=demo jest --runInBand --config ./test/jest-e2e.json",
+	"test:e2e": "env NODE_ENV=demo jest --runInBand --config ./test/jest-e2e.json",
+	"test:e2ecov": "env NODE_ENV=demo jest --runInBand --config ./test/jest-e2e.json --coverage",
     "script:demodb": "env NODE_ENV=demo jest --runInBand --config ./scripts/jest-e2e.json"
   },
   "dependencies": {
