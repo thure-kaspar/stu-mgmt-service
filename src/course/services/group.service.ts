@@ -15,9 +15,13 @@ export class GroupService {
 				@InjectRepository(Course) private courseRepository: CourseRepository) { }
 
 	async createGroup(courseId: string, groupDto: GroupDto): Promise<GroupDto> {
-		const createdGroup = await this.groupRepository.createGroup(courseId, groupDto);
-		const createdGroupDto = DtoFactory.createGroupDto(createdGroup);
-		return createdGroupDto;
+		if (courseId !== groupDto.courseId) throw new BadRequestException("CourseId refers to a different course");
+
+		const course = await this.courseRepository.getCourseById(courseId);
+		if (!course.allowGroups) throw new BadRequestException("Creating groups is not allowed is this course.");
+		
+		const createdGroup = await this.groupRepository.createGroup(groupDto);
+		return DtoFactory.createGroupDto(createdGroup);
 	}
 
 	/**
@@ -31,7 +35,7 @@ export class GroupService {
 
 		if (group.isClosed) throw new ConflictException("Group is closed.");
 		if (group.userGroupRelations.length >= group.course.maxGroupSize) throw new ConflictException("Group is full.");
-		if (group.password !== password) throw new UnauthorizedException("The given password was incorrect.");
+		if (group.password && group.password !== password) throw new UnauthorizedException("The given password was incorrect.");
 
 		return this.groupRepository.addUserToGroup(groupId, userId);
 	}
@@ -39,7 +43,7 @@ export class GroupService {
 	/**
 	 * Adds the user to the group without checking any constraints. 
 	 */
-	async addUserToGroup_Force(groupId: string, userId: string, password?: string): Promise<any> {
+	async addUserToGroup_Force(groupId: string, userId: string): Promise<any> {
 		return this.groupRepository.addUserToGroup(groupId, userId);
 	}
 

@@ -10,26 +10,14 @@ export class GroupRepository extends Repository<Group> {
 
 	/**
 	 * Inserts the given group into the database.
-	 *
-	 * @param {string} courseId
-	 * @param {GroupDto} groupDto
-	 * @returns {Promise<Group>}
-	 * @memberof GroupRepository
 	 */
-	async createGroup(courseId: string, groupDto: GroupDto): Promise<Group> {
+	async createGroup(groupDto: GroupDto): Promise<Group> {
 		const group = this.createEntityFromDto(groupDto);
-		group.courseId = courseId;
-		await group.save();
-		return group;
+		return group.save();
 	}
 
 	/**
 	 * Adds the given user to the group.
-	 *
-	 * @param {string} groupId
-	 * @param {string} userId
-	 * @returns {Promise<any>}
-	 * @memberof GroupRepository
 	 */
 	async addUserToGroup(groupId: string, userId: string): Promise<any> {
 		const userGroupRelation = new UserGroupRelation();
@@ -48,10 +36,6 @@ export class GroupRepository extends Repository<Group> {
 
 	/**
 	 * Returns the group with its members.
-	 *
-	 * @param {string} groupId
-	 * @returns
-	 * @memberof GroupRepository
 	 */
 	async getGroupWithUsers(groupId: string) {
 		return this.findOne(groupId, {
@@ -76,11 +60,6 @@ export class GroupRepository extends Repository<Group> {
 
 	/**
 	 * Returns all groups that the user is currently a part of in the given course.
-	 *
-	 * @param {string} courseId
-	 * @param {string} userId
-	 * @returns {Promise<Group>}
-	 * @memberof GroupRepository
 	 */
 	async getCurrentGroupsOfUserForCourse(courseId: string, userId: string): Promise<Group[]> {
 		return this.find({
@@ -95,11 +74,6 @@ export class GroupRepository extends Repository<Group> {
 
 	/**
 	 * Updates the group. Does not update any included relations.
-	 *
-	 * @param {string} groupId
-	 * @param {GroupDto} groupDto
-	 * @returns {Promise<Group>}
-	 * @memberof GroupRepository
 	 */
 	async updateGroup(groupId: string, groupDto: GroupDto): Promise<Group> {
 		const group = await this.getGroupById(groupId);
@@ -114,10 +88,6 @@ export class GroupRepository extends Repository<Group> {
 
 	/**
 	 * Deletes the group from the database.
-	 *
-	 * @param {string} groupId
-	 * @returns {Promise<boolean>}
-	 * @memberof GroupRepository
 	 */
 	async deleteGroup(groupId: string): Promise<boolean> {
 		const deleteResult = await this.delete(groupId);
@@ -129,7 +99,7 @@ export class GroupRepository extends Repository<Group> {
 		group.id = groupDto.id;
 		group.courseId = groupDto.courseId;
 		group.name = groupDto.name;
-		group.password = groupDto.password;
+		group.password = groupDto.password?.length > 0 ? groupDto.password : null;
 		group.isClosed = groupDto.isClosed;
 		return group;
 	}
