@@ -21,12 +21,15 @@ export class CourseController {
 	}
 
 	/**
-	 * Adds a user to the course.
+	 * Adds a user to the course. 
+	 * If the course requires a password, the correct password needs to be included in the request body.
 	 */
 	@Post(":courseId/users/:userId")
 	addUser(@Param("courseId") courseId: string,
-			@Param("userId", ParseUUIDPipe) userId: string): Promise<any> {
-		return this.courseService.addUser(courseId, userId);
+			@Param("userId", ParseUUIDPipe) userId: string,
+			@Body("password") password?: string,
+	): Promise<any> {
+		return this.courseService.addUser(courseId, userId, password);
 	}
 	
 	/**

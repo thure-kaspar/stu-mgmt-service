@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, BadRequestException } from "@nestjs/common";
 import { CourseDto } from "src/shared/dto/course.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CourseRepository } from "../database/repositories/course.repository";
@@ -21,8 +21,20 @@ export class CourseService {
 		return DtoFactory.createCourseDto(createdCourse);
 	}
 	
-	async addUser(courseId: string, userId: string): Promise<any> { // TODO: don't return any
-		return this.courseUserRepository.createCourseUserRelation(courseId, userId, CourseRole.STUDENT); // TODO: don't hardcode role 
+	/**
+	 * Adds the user to the course. 
+	 * If the course requires a password, the given password must match the specified password.
+	 */
+	async addUser(courseId: string, userId: string, password?: string): Promise<any> { // TODO: don't return any
+		// Check if password is required + matches
+		const course = await this.courseRepository.getCourseById(courseId);
+		if (course.password) {
+			if (course.password !== password) {
+				throw new BadRequestException("The given password was incorrect.");
+			}
+		}
+
+		return this.courseUserRepository.createCourseUserRelation(courseId, userId, CourseRole.STUDENT); 
 	}
 
 	async getCourses(filter?: CourseFilterDto): Promise<CourseDto[]> {

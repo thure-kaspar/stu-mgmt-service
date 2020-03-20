@@ -2,7 +2,7 @@ import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
 import { getConnection } from "typeorm";
 import { CourseFilterDto } from "../../src/shared/dto/course-filter.dto";
-import { CoursesMock, COURSE_JAVA_1920 } from "../mocks/courses.mock";
+import { CoursesMock, COURSE_JAVA_1920, COURSE_INFO_2_2020 } from "../mocks/courses.mock";
 import { DbMockService } from "../mocks/db-mock.service";
 import { GROUP_1_JAVA, GROUP_2_JAVA } from "../mocks/groups.mock";
 import { USER_STUDENT_JAVA } from "../mocks/users.mock";
@@ -138,12 +138,32 @@ describe("POST-REQUESTS for relations (db contains data) of CourseController (e2
 		await getConnection().close(); // Close Db-Connection after all tests have been executed
 	});
 
-	it("(POST) /courses/{courseId}/users/{userId} Adds the user to the course", () => {
+	it("(POST) /courses/{courseId}/users/{userId} No password required -> Adds user to course", () => {
+		const courseNoPassword = COURSE_INFO_2_2020;
+		console.assert(courseNoPassword.password == null, "Course password should be undefined"); 
+		const user = USER_STUDENT_JAVA;
+
+		return request(app.getHttpServer())
+			.post(`/courses/${courseNoPassword.id}/users/${user.id}`)
+			.expect(201);
+	});
+
+	it("(POST) /courses/{courseId}/users/{userId} Correct password -> Adds user to course", () => {
 		const user = USER_STUDENT_JAVA;
 
 		return request(app.getHttpServer())
 			.post(`/courses/${course.id}/users/${user.id}`)
+			.send({ password: course.password }) // the correct password
 			.expect(201);
+	});
+
+	it("(POST) /courses/{courseId}/users/{userId} Incorrect password -> Throws BadRequestException", () => {
+		const user = USER_STUDENT_JAVA;
+
+		return request(app.getHttpServer())
+			.post(`/courses/${course.id}/users/${user.id}`)
+			.send({ password: "incorrect" }) // an incorrect password
+			.expect(400);
 	});
 
 	it("(POST) /courses/{courseId}/groups Creates the given group and returns it (Part 1/2)", () => {

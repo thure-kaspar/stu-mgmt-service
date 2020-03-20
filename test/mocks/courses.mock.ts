@@ -30,7 +30,7 @@ export const COURSE_INFO_2_2020: CourseDto = {
 	semester: "sose2020", 
 	title: "Informatik II: Algorithmen und Datenstrukturen", 
 	isClosed: true, 
-	password: "info2", 
+	password: null, // this course requires no password 
 	link: "test.test",
 	allowGroups: false,
 	maxGroupSize: 0 

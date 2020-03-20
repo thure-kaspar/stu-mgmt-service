@@ -19,7 +19,7 @@ const mock_CourseRepository = () => ({
 		DtoToEntityConverter.getCourse(COURSE_JAVA_1920),
 		DtoToEntityConverter.getCourse(COURSE_INFO_2_2020)
 	]),
-	getCourseById: jest.fn(),
+	getCourseById: jest.fn().mockResolvedValue(COURSE_JAVA_1920),
 	getCourseByNameAndSemester: jest.fn(),
 	getCourseWithUsers: jest.fn().mockResolvedValue([
 		DtoToEntityConverter.getUser(USER_STUDENT_JAVA),
@@ -82,14 +82,42 @@ describe("CourseService", () => {
 
 	describe("addUser", () => {
 
-		it("Calls repository for relation creation", async () => {
-			const courseId = courseDto.id;
+		it("Correct password -> Calls repository for relation creation", async () => {
+			console.assert(courseDto.password.length > 0, "Course should have a password");
 			const userId = "user_id";
 			const role = CourseRole.STUDENT;
 
+			await service.addUser(courseDto.id, userId, courseDto.password);
+
+			expect(courseUserRepository.createCourseUserRelation).toBeCalledWith(courseDto.id, userId, role);
+		});
+
+		it("No password required -> Calls repository for relation creation", async () => {
+			const courseNoPassword = copy(COURSE_INFO_2_2020);
+			// Mock should return course that doesn't require a password
+			courseRepository.getCourseById = jest.fn().mockResolvedValue(DtoToEntityConverter.getCourse(courseNoPassword));
+			const userId = "user_id";
+			const password = "incorrect";
+			const role = CourseRole.STUDENT;
+			console.assert(courseNoPassword.password == null, "Course password should be null");
+
 			await service.addUser(courseDto.id, userId);
 
-			expect(courseUserRepository.createCourseUserRelation).toBeCalledWith(courseId, userId, role);
+			expect(courseUserRepository.createCourseUserRelation).toBeCalledWith(courseDto.id, userId, role);
+		});
+
+		it("Incorrect password -> Throws Exception", async () => {
+			console.assert(courseDto.password.length > 0, "Course should have a password");
+			const userId = "user_id";
+			const password = "incorrect";
+
+			try {
+				await service.addUser(courseDto.id, userId, password);
+				expect(true).toEqual(false);
+			} catch(error) {
+				expect(error).toBeTruthy();
+				expect(error.status).toEqual(400);
+			}
 		});
 
 	});

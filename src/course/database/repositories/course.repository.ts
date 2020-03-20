@@ -7,7 +7,7 @@ import { CourseFilterDto } from "../../../shared/dto/course-filter.dto";
 export class CourseRepository extends Repository<Course> {
 
 	async createCourse(courseDto: CourseDto): Promise<Course> {
-		const course = this.createEntityFromDto(courseDto);
+		const course = this._createEntityFromDto(courseDto);
 		const createdCourse = await course.save();
 		return createdCourse;
 	}
@@ -62,7 +62,7 @@ export class CourseRepository extends Repository<Course> {
 		course.semester = courseDto.semester;
 		course.title = courseDto.title;
 		course.isClosed = courseDto.isClosed;
-		course.password = courseDto.password;
+		course.password = courseDto.password?.length > 0 ? courseDto.password : null; // Replace empty string with null
 		course.link = courseDto.link;
 		course.allowGroups = courseDto.allowGroups;
 		course.maxGroupSize = courseDto.maxGroupSize;
@@ -77,14 +77,18 @@ export class CourseRepository extends Repository<Course> {
 		return deleteResult.affected == 1;
 	}
 
-	private createEntityFromDto(courseDto: CourseDto): Course {
+	/**
+	 * Creates a Course entity from the given CourseDto.
+	 * Should only be called inside the CourseRepository.
+	 */
+	public _createEntityFromDto(courseDto: CourseDto): Course {
 		const course = new Course();
 		course.id = courseDto.id ?? courseDto.shortname + "-" + courseDto.semester; // If no id was supplied, <shortname-semester> will be the id
 		course.shortname = courseDto.shortname;
 		course.semester = courseDto.semester;
 		course.title = courseDto.title;
 		course.isClosed = courseDto.isClosed;
-		course.password = courseDto.password;
+		course.password = courseDto.password?.length > 0 ? courseDto.password : null; // Replace empty string with null
 		course.link = courseDto.link;
 		course.allowGroups = courseDto.allowGroups;
 		course.maxGroupSize = courseDto.maxGroupSize;
