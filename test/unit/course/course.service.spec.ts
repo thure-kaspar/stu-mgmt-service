@@ -7,7 +7,7 @@ import { CourseFilterDto } from "../../../src/shared/dto/course-filter.dto";
 import { CourseDto } from "../../../src/shared/dto/course.dto";
 import { CourseRole } from "../../../src/shared/enums";
 import { COURSE_JAVA_1920, COURSE_INFO_2_2020 } from "../../mocks/courses.mock";
-import { ObjectHelper } from "../../utils/object-helper";
+import { copy } from "../../utils/object-helper";
 import { DtoToEntityConverter } from "../../utils/dto-to-entity-converter";
 import { USER_STUDENT_JAVA, USER_STUDENT_2_JAVA } from "../../mocks/users.mock";
 import { CourseUserRelation } from "../../../src/shared/entities/course-user-relation.entity";
@@ -58,7 +58,7 @@ describe("CourseService", () => {
 		service = module.get<CourseService>(CourseService);
 		courseRepository = module.get<CourseRepository>(CourseRepository);
 		courseUserRepository = module.get<CourseUserRelationRepository>(CourseUserRelationRepository);
-		courseDto = ObjectHelper.deepCopy(COURSE_JAVA_1920);
+		courseDto = copy(COURSE_JAVA_1920);
 
 	});
 

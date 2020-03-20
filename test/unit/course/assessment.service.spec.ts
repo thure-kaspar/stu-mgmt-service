@@ -8,7 +8,7 @@ import { UserGroupRelation } from "../../../src/shared/entities/user-group-relat
 import { UserGroupRelationsMock } from "../../mocks/relations.mock";
 import { DtoFactory } from "../../../src/shared/dto-factory";
 import { AssessmentDto } from "../../../src/shared/dto/assessment.dto";
-import { ObjectHelper } from "../../utils/object-helper";
+import { copy } from "../../utils/object-helper";
 import { ASSESSMENT_JAVA_EVALUATED_GROUP_1, ASSESSMENT_JAVA_TESTAT_USER_1, ASSESSMENT_JAVA_EVALUATED_GROUP_2 } from "../../mocks/assessments.mock";
 import { Group } from "../../../src/shared/entities/group.entity";
 
@@ -62,7 +62,7 @@ describe("AssessmentService", () => {
 		service = module.get<AssessmentService>(AssessmentService);
 		assessmentRepository = module.get<AssessmentRepository>(AssessmentRepository);
 		groupRepository = module.get<GroupRepository>(GroupRepository);
-		assessmentDto = ObjectHelper.deepCopy(ASSESSMENT_JAVA_EVALUATED_GROUP_1);
+		assessmentDto = copy(ASSESSMENT_JAVA_EVALUATED_GROUP_1);
 	});
 
 	it("should be defined", () => {
@@ -86,7 +86,7 @@ describe("AssessmentService", () => {
 		});
 
 		it("Assessment for user -> Uses userId from Dto", async () => {
-			assessmentDto = ObjectHelper.deepCopy(ASSESSMENT_JAVA_TESTAT_USER_1); // Assessment for single user
+			assessmentDto = copy(ASSESSMENT_JAVA_TESTAT_USER_1); // Assessment for single user
 			const expectedUserIds = [assessmentDto.userId];
 
 			await service.createAssessment(assessmentDto.assignmentId, assessmentDto);

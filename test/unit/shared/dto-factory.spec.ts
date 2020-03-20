@@ -18,7 +18,7 @@ import { COURSE_INFO_2_2020, COURSE_JAVA_1920 } from "../../mocks/courses.mock";
 import { GROUP_1_JAVA, GROUP_2_JAVA } from "../../mocks/groups.mock";
 import { USER_STUDENT_2_JAVA, USER_STUDENT_JAVA } from "../../mocks/users.mock";
 import { DtoToEntityConverter } from "../../utils/dto-to-entity-converter";
-import { ObjectHelper } from "../../utils/object-helper";
+import { copy } from "../../utils/object-helper";
 
 describe("DtoFactory", () => {
 
@@ -29,7 +29,7 @@ describe("DtoFactory", () => {
 
 		beforeEach(() => {
 			course = DtoToEntityConverter.getCourse(COURSE_JAVA_1920);
-			expected = ObjectHelper.deepCopy(COURSE_JAVA_1920);
+			expected = copy(COURSE_JAVA_1920);
 
 			// Password is never included 
 			course.password = undefined;
@@ -89,7 +89,7 @@ describe("DtoFactory", () => {
 			const group2 = DtoToEntityConverter.getGroup(GROUP_2_JAVA);
 			course.groups = [group1, group2];
 
-			expected.groups = [ObjectHelper.deepCopy(GROUP_1_JAVA), ObjectHelper.deepCopy(GROUP_2_JAVA)];
+			expected.groups = [copy(GROUP_1_JAVA), copy(GROUP_2_JAVA)];
 			expected.groups[0].password = undefined;
 			expected.groups[1].password = undefined;
 
@@ -106,7 +106,7 @@ describe("DtoFactory", () => {
 
 		beforeEach(() => {
 			user = DtoToEntityConverter.getUser(USER_STUDENT_JAVA);
-			expected = ObjectHelper.deepCopy(USER_STUDENT_JAVA);
+			expected = copy(USER_STUDENT_JAVA);
 		});
 
 		it("No relations loaded -> Returns Dto", () => {
@@ -143,7 +143,7 @@ describe("DtoFactory", () => {
 			rel2.role = CourseRole.TUTOR;
 
 			user.courseUserRelations = [rel1, rel2];
-			expected.courses = [ObjectHelper.deepCopy(COURSE_JAVA_1920), ObjectHelper.deepCopy(COURSE_INFO_2_2020)];
+			expected.courses = [copy(COURSE_JAVA_1920), copy(COURSE_INFO_2_2020)];
 			expected.courses[0].password = undefined;
 			expected.courses[1].password = undefined;
 
@@ -161,7 +161,7 @@ describe("DtoFactory", () => {
 
 		beforeEach(() => {
 			group = DtoToEntityConverter.getGroup(GROUP_1_JAVA);
-			expected = ObjectHelper.deepCopy(GROUP_1_JAVA);
+			expected = copy(GROUP_1_JAVA);
 
 			// Password should be exluded 
 			expected.password = undefined;
@@ -195,7 +195,7 @@ describe("DtoFactory", () => {
 
 		beforeEach(() => {
 			assignment = DtoToEntityConverter.getAssignment(ASSIGNMENT_JAVA_CLOSED);
-			expected = ObjectHelper.deepCopy(ASSIGNMENT_JAVA_CLOSED);
+			expected = copy(ASSIGNMENT_JAVA_CLOSED);
 		});
 		
 		it("No relations loaded -> Returns Dto", () => {
@@ -212,7 +212,7 @@ describe("DtoFactory", () => {
 
 		it("No relations loaded + Assessment for group -> Returns Dto with groupId", () => {
 			assessment = DtoToEntityConverter.getAssessment(ASSESSMENT_JAVA_EVALUATED_GROUP_1);
-			expected = ObjectHelper.deepCopy(ASSESSMENT_JAVA_EVALUATED_GROUP_1);
+			expected = copy(ASSESSMENT_JAVA_EVALUATED_GROUP_1);
 
 			const result = DtoFactory.createAssessmentDto(assessment);
 
@@ -221,7 +221,7 @@ describe("DtoFactory", () => {
 		});
 
 		it("AssessmentUserRelation loaded + Assessment for single student -> Returns Dto with userId", () => {
-			expected = ObjectHelper.deepCopy(ASSESSMENT_JAVA_TESTAT_USER_1);
+			expected = copy(ASSESSMENT_JAVA_TESTAT_USER_1);
 			assessment = DtoToEntityConverter.getAssessment(ASSESSMENT_JAVA_TESTAT_USER_1);
 			const rel = new AssessmentUserRelation();
 			rel.assessmentId = assessment.id;
@@ -237,8 +237,8 @@ describe("DtoFactory", () => {
 		it("Group loaded -> Returns Dto with group", () => {
 			assessment = DtoToEntityConverter.getAssessment(ASSESSMENT_JAVA_EVALUATED_GROUP_1);
 			assessment.group = DtoToEntityConverter.getGroup(GROUP_1_JAVA);
-			expected = ObjectHelper.deepCopy(ASSESSMENT_JAVA_EVALUATED_GROUP_1);
-			expected.group = ObjectHelper.deepCopy(GROUP_1_JAVA);
+			expected = copy(ASSESSMENT_JAVA_EVALUATED_GROUP_1);
+			expected.group = copy(GROUP_1_JAVA);
 			expected.group.password = undefined;
 
 			const result = DtoFactory.createAssessmentDto(assessment);
