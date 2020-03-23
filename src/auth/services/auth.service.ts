@@ -22,7 +22,7 @@ export class AuthService {
 	 */
 	async login(authCredentials: AuthCredentialsDto): Promise<AuthTokenDto> {
 		// Check if credentials were valid
-		const isValid = this.authSystem.login(authCredentials);
+		const isValid = await this.authSystem.login(authCredentials);
 
 		if (!isValid) {
 			throw new UnauthorizedException("Invalid credentials");

@@ -11,17 +11,16 @@ export class AssignmentService {
 	constructor(@InjectRepository(Assignment) private assignmentRepository: AssignmentRepository) { }
 
 	async createAssignment(courseId: string, assignmentDto: AssignmentDto): Promise<AssignmentDto> {
-		const createdAssignment = await this.assignmentRepository.createAssignment(courseId, assignmentDto);
-		const createdAssignmentDto = DtoFactory.createAssignmentDto(createdAssignment);
-		return createdAssignmentDto;
+		if (courseId !== assignmentDto.courseId) {
+			throw new BadRequestException("CourseId refers to a different course");
+		}
+		const createdAssignment = await this.assignmentRepository.createAssignment(assignmentDto);
+		return DtoFactory.createAssignmentDto(createdAssignment);
 	}
 
-	async getAssignments(courseId: string,): Promise<AssignmentDto[]> {
+	async getAssignments(courseId: string): Promise<AssignmentDto[]> {
 		const assignments = await this.assignmentRepository.getAssignments(courseId);
-		const assignmentDtos: AssignmentDto[] = [];
-		assignments.forEach(assignment => {
-			assignmentDtos.push(DtoFactory.createAssignmentDto(assignment));
-		});
+		const assignmentDtos = assignments.map(a => DtoFactory.createAssignmentDto(a));
 		return assignmentDtos;
 	}
 
