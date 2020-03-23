@@ -18,6 +18,7 @@ async function bootstrap() {
 		.setVersion("1.0")
 		.addTag("assessments")
 		.addTag("assignments")
+		.addTag("authentication")
 		.addTag("courses")
 		.addTag("groups")
 		.addTag("users")
