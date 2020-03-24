@@ -21,7 +21,7 @@ export class UserRepository extends Repository<User> {
 
 	async getUserByEmail(email: string): Promise<User> {
 		return this.findOne({
-			where: email,
+			where: { email },
 			relations: ["courseUserRelations", "courseUserRelations.course"]
 		});
 	}
