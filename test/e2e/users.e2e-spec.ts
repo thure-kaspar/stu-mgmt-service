@@ -1,26 +1,19 @@
-import { Test, TestingModule } from "@nestjs/testing";
 import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
-import { AppModule } from "../../src/app.module";
 import { getConnection } from "typeorm";
 import { DbMockService } from "../mocks/db-mock.service";
 import { UserDto } from "../../src/shared/dto/user.dto";
 import { UserRole } from "../../src/shared/enums";
-import { CoursesMock } from "../mocks/courses.mock";
-import { GroupsMock } from "../mocks/groups.mock";
 import { UsersMock, USER_STUDENT_JAVA } from "../mocks/users.mock";
-import { AssignmentsMock } from "../mocks/assignments.mock";
-import { AssessmentsMock } from "../mocks/assessments.mock";
 import { createApplication } from "../mocks/application.mock";
+import { copy } from "../utils/object-helper";
+import { CourseDto } from "../../src/shared/dto/course.dto";
 
 let app: INestApplication;
 let dbMockService: DbMockService; // Should be initialized in every describe-block
 
-const courses = CoursesMock;
-const groups = GroupsMock;
 const users = UsersMock;
-const assignments = AssignmentsMock;
-const assessments = AssessmentsMock;
+const user = copy(USER_STUDENT_JAVA);
 
 describe("GET-REQUESTS of UserController (e2e)", () => {
 	
@@ -42,6 +35,41 @@ describe("GET-REQUESTS of UserController (e2e)", () => {
 			.get("/users")
 			.expect(({ body }) => {
 				expect(body.length).toEqual(users.length);
+			});
+	});
+
+	it("(GET) /users/{userId} Retrieves the user by id", () => {
+		return request(app.getHttpServer())
+			.get(`/users/${user.id}`)
+			.expect(({ body }) => {
+				const result = body as UserDto;
+				expect(result.id).toEqual(user.id);
+				expect(result.email).toEqual(user.email);
+				expect(result.role).toEqual(user.role);
+				expect(result.rzName).toEqual(user.rzName);
+				expect(result.username).toEqual(user.username);
+			});
+	});
+
+	it("(GET) /users/email/{email} Retrieves the user by email", () => {
+		return request(app.getHttpServer())
+			.get(`/users/email/${user.email}`)
+			.expect(({ body }) => {
+				const result = body as UserDto;
+				expect(result.id).toEqual(user.id);
+				expect(result.email).toEqual(user.email);
+				expect(result.role).toEqual(user.role);
+				expect(result.rzName).toEqual(user.rzName);
+				expect(result.username).toEqual(user.username);
+			});
+	});
+
+	it("(GET) /users/{userId}/courses Retrieves the courses of the user", () => {
+		return request(app.getHttpServer())
+			.get(`/users/${user.id}/courses`)
+			.expect(({ body }) => {
+				const result = body as CourseDto[];
+				expect(result[0].id).toBeTruthy();
 			});
 	});
 
