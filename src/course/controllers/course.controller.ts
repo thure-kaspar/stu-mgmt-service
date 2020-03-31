@@ -1,10 +1,10 @@
-import { Controller, Get, Param, Post, Body, ParseUUIDPipe, Patch, Delete, Query } from "@nestjs/common";
+import { Controller, Get, Param, Post, Body, ParseUUIDPipe, Patch, Delete, Query, ValidationPipe } from "@nestjs/common";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
 import { CourseService } from "../services/course.service";
 import { CourseDto } from "../../shared/dto/course.dto";
 import { UserDto } from "../../shared/dto/user.dto";
-import { CourseRole } from "../../shared/enums";
 import { CourseFilterDto } from "../../shared/dto/course-filter.dto";
+import { ChangeCourseRoleDto } from "../dto/change-course-role.dto";
 
 @ApiTags("courses") 
 @Controller("courses")
@@ -87,10 +87,10 @@ export class CourseController {
 	updateUserRole(
 		@Param("courseId") courseId: string,
 		@Param("userId", ParseUUIDPipe) userId: string,
-		@Body("role") role: CourseRole
+		@Body(ValidationPipe) dto: ChangeCourseRoleDto
 	): Promise<boolean> {
-
-		return this.courseService.updateRole(courseId, userId, role);
+		
+		return this.courseService.updateRole(courseId, userId, dto.role);
 	}
 
 	/**

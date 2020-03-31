@@ -23,8 +23,10 @@ export class CourseUserRelationRepository extends Repository<CourseUserRelation>
 	}
 
 	async updateRole(courseId: string, userId: string, role: CourseRole): Promise<boolean> {
-		const result = await this.update({ courseId, userId }, { role: role});
-		return result.affected == 1;
+		const relation = await this.findOne({ where: { courseId, userId } });
+		relation.role = role;
+		const updated = await relation.save();
+		return updated ? true : false;
 	}
 
 	async removeUser(courseId: string, userId: string): Promise<boolean> {
