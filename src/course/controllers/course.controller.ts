@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Post, Body, ParseUUIDPipe, Patch, Delete, Query } from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiTags, ApiOperation } from "@nestjs/swagger";
 import { CourseService } from "../services/course.service";
 import { CourseDto } from "../../shared/dto/course.dto";
 import { UserDto } from "../../shared/dto/user.dto";
@@ -102,6 +102,16 @@ export class CourseController {
 	): Promise<boolean> {
 
 		return this.courseService.deleteCourse(courseId);
+	}
+
+	@Delete(":courseId/users/:userId")
+	@ApiOperation({ description: "Removes the user from the course. Returns true, if removal was successful." })
+	removeUser(
+		@Param("courseId") courseId: string,
+		@Param("userId", ParseUUIDPipe) userId: string,
+	): Promise<boolean> {
+
+		return this.courseService.removeUser(courseId, userId);
 	}
 
 }

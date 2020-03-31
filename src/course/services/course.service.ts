@@ -71,4 +71,8 @@ export class CourseService {
 		return this.courseRepository.deleteCourse(courseId);
 	}
 
+	async removeUser(courseId: string, userId: string): Promise<boolean> {
+		return await this.courseUserRepository.removeUser(courseId, userId);
+	}
+
 }

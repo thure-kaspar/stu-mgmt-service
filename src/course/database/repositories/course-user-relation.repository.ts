@@ -26,4 +26,10 @@ export class CourseUserRelationRepository extends Repository<CourseUserRelation>
 		const result = await this.update({ courseId, userId }, { role: role});
 		return result.affected == 1;
 	}
+
+	async removeUser(courseId: string, userId: string): Promise<boolean> {
+		const relation = await this.findOne({ where: { courseId, userId } });
+		const result = await this.remove(relation);
+		return result ? true : false;
+	}
 }
