@@ -5,6 +5,7 @@ import { CourseDto } from "../../shared/dto/course.dto";
 import { UserDto } from "../../shared/dto/user.dto";
 import { CourseFilterDto } from "../../shared/dto/course-filter.dto";
 import { ChangeCourseRoleDto } from "../dto/change-course-role.dto";
+import { CourseConfigDto } from "../../shared/dto/course-config.dto";
 
 @ApiTags("courses") 
 @Controller("courses")
@@ -16,6 +17,7 @@ export class CourseController {
 	 * Creates a new course.
 	 */
 	@Post()
+	@ApiOperation({ description: "Creates a new course." })
 	createCourse(@Body() courseDto: CourseDto): Promise<CourseDto> {
 		return this.courseService.createCourse(courseDto);
 	}
@@ -25,6 +27,7 @@ export class CourseController {
 	 * If the course requires a password, the correct password needs to be included in the request body.
 	 */
 	@Post(":courseId/users/:userId")
+	@ApiOperation({ description: "Adds a user to the course. If the course requires a password, the correct password needs to be included in the request body." })
 	addUser(@Param("courseId") courseId: string,
 			@Param("userId", ParseUUIDPipe) userId: string,
 			@Body("password") password?: string,
@@ -36,6 +39,7 @@ export class CourseController {
 	 * Returns all courses that match the given filter.
 	 */
 	@Get()
+	@ApiOperation({ description: "Returns all courses that match the given filter." })
 	getCourses(@Query() filter?: CourseFilterDto): Promise<CourseDto[]> {
 		return this.courseService.getCourses(filter);
 	}
@@ -44,14 +48,25 @@ export class CourseController {
 	 * Returns the course.
 	 */
 	@Get(":courseId")
+	@ApiOperation({ description: "Returns the course." })
 	getCourseById(@Param("courseId") courseId: string): Promise<CourseDto> {
 		return this.courseService.getCourseById(courseId);
+	}
+
+	/**
+	 * Returns a CourseConfigDto containing the course itself and all properties that describe a course's configuration.
+	 */
+	@Get(":courseId/config")
+	@ApiOperation({ description: "Returns a CourseConfigDto containing the course itself and all properties that describe a course's configuration." })
+	getCourseConfig(@Param("courseId") courseId: string): Promise<CourseConfigDto> {
+		return this.courseService.getCourseConfig(courseId);
 	}
 
 	/**
 	 * Returns the course.
 	 */
 	@Get(":name/semester/:semester")
+	@ApiOperation({ description: "Returns the course." })
 	getCourseByNameAndSemester(
 		@Param("name") name: string,
 		@Param("semester") semester: string
@@ -61,9 +76,10 @@ export class CourseController {
 	}
 
 	/**
-	 * Returns a collection of users that a signed up for this course.
+	 * Returns a collection of users that are signed up for this course.
 	 */
 	@Get(":courseId/users")
+	@ApiOperation({ description: "Returns a collection of users that are signed up for this course." })
 	getUsersOfCourse(@Param("courseId") courseId: string): Promise<UserDto[]> {
 		return this.courseService.getUsersOfCourse(courseId);
 	}
@@ -72,6 +88,7 @@ export class CourseController {
 	 * Updates the course.
 	 */
 	@Patch(":courseId")
+	@ApiOperation({ description: "Updates the course." })
 	updateCourse(
 		@Param("courseId") courseId: string,
 		@Body() courseDto: CourseDto
@@ -84,6 +101,7 @@ export class CourseController {
 	 * Assigns the given role to the user of this course.
 	 */
 	@Patch(":courseId/users/:userId/role")
+	@ApiOperation({ description: "Assigns the given role to the user of this course." })
 	updateUserRole(
 		@Param("courseId") courseId: string,
 		@Param("userId", ParseUUIDPipe) userId: string,
@@ -97,6 +115,7 @@ export class CourseController {
 	 * Deletes the course.
 	 */
 	@Delete(":courseId")
+	@ApiOperation({ description: "Deletes the course." })
 	deleteCourse(
 		@Param("courseId") courseId: string,
 	): Promise<boolean> {
@@ -104,6 +123,9 @@ export class CourseController {
 		return this.courseService.deleteCourse(courseId);
 	}
 
+	/**
+	 * Removes the user from the course. Returns true, if removal was successful.
+	 */
 	@Delete(":courseId/users/:userId")
 	@ApiOperation({ description: "Removes the user from the course. Returns true, if removal was successful." })
 	removeUser(

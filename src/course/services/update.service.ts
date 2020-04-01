@@ -16,7 +16,7 @@ export class UpdateService {
 	 * Sends the UpdateMessage via http-post to the URL specified by the course.
 	 */
 	send(message: UpdateMessage): void {
-		this.logger.log("[diabled] Sending update to: <URL>");
+		this.logger.verbose("[disabled] Sending update to: <URL>");
 		//this.http.post("INSERT-URL-HERE", message).toPromise();
 	}
 

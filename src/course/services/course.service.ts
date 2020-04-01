@@ -9,6 +9,7 @@ import { UserDto } from "../../shared/dto/user.dto";
 import { CourseRole } from "../../shared/enums";
 import { CourseFilterDto } from "../../shared/dto/course-filter.dto";
 import { DtoFactory } from "../../shared/dto-factory";
+import { CourseConfigDto } from "../../shared/dto/course-config.dto";
 
 @Injectable()
 export class CourseService {
@@ -45,6 +46,25 @@ export class CourseService {
 	async getCourseById(id: string): Promise<CourseDto> {
 		const course = await this.courseRepository.getCourseById(id);
 		return DtoFactory.createCourseDto(course);
+	}
+
+	/**
+	 * Returns a CourseConfigDto containing all properties that describe a course's configuration.
+	 */
+	async getCourseConfig(id: string): Promise<CourseConfigDto> {
+		const course = await this.courseRepository.getCourseConfig(id);
+
+		// Extract lecturers (response only includes lecturers)
+		const lecturers = course.courseUserRelations.map(r => DtoFactory.createUserDto(r.user));
+		// Get rid of users (we don't want to include them in CourseDto)
+		course.courseUserRelations = undefined;
+
+		const config: CourseConfigDto = {
+			course: DtoFactory.createCourseDto(course),
+			lecturers: lecturers
+		};
+
+		return config;
 	}
 
 	async getCourseByNameAndSemester(name: string, semester: string): Promise<CourseDto> {

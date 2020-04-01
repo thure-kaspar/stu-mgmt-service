@@ -2,6 +2,7 @@ import { Repository, EntityRepository } from "typeorm";
 import { Course } from "../../../shared/entities/course.entity";
 import { CourseDto } from "../../../shared/dto/course.dto";
 import { CourseFilterDto } from "../../../shared/dto/course-filter.dto";
+import { CourseRole } from "../../../shared/enums";
 
 @EntityRepository(Course)
 export class CourseRepository extends Repository<Course> {
@@ -32,6 +33,18 @@ export class CourseRepository extends Repository<Course> {
 		return this.findOne(id, {
 			relations: ["assignments"]
 		});
+	}
+
+	/**
+	 * Returns the course with all relations and properties that make up its configuration
+	 * (i.e only includes users that are lecturers of this course).
+	 */
+	async getCourseConfig(id: string): Promise<Course> {
+		return this.createQueryBuilder("course")
+			.where("course.id = :id", { id })
+			.leftJoinAndSelect("course.courseUserRelations", "relation", "relation.role = :role", { role: CourseRole.LECTURER })
+			.innerJoinAndSelect("relation.user", "user")
+			.getOne();
 	}
 
 	async getCourseByNameAndSemester(name: string, semester: string): Promise<Course> {
