@@ -1,2 +1,9 @@
 db:
   synchronize: false
+
+smtp:
+  server: "smtp_server"
+  useSecureConnection: true
+  username: "user@example.com"
+  password: "example_password"
+  port: 465

@@ -10,6 +10,7 @@ import { RequestLogger } from "./utility/request.logger";
 import { typeOrmConfig } from "./config/typeorm-config";
 import { AuthModule } from "./auth/auth.module";
 import * as config from "config";
+import { MailingModule } from "./mailing/mailing.module";
 
 const optionalProviders = (): Provider<any>[] => {
 	const providers: Provider<any>[] = [];
@@ -25,7 +26,8 @@ const optionalProviders = (): Provider<any>[] => {
 		CourseModule,
 		UserModule,
 		TestModule,
-		AuthModule
+		AuthModule,
+		MailingModule
 	],
 	controllers: [AppController],
 	providers: [AppService, ...optionalProviders()],

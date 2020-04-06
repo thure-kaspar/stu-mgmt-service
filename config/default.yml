@@ -6,6 +6,13 @@ db:
   port: 5432
   database: "StudentMgmtDb"
 
+smtp:
+  server: "smtp_server"
+  useSecureConnection: true
+  username: "user@example.com"
+  password: "example_password"
+  port: 465
+
 jwt:
   expiresIn: 3600
 
