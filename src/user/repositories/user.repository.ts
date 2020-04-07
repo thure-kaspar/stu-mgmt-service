@@ -26,6 +26,13 @@ export class UserRepository extends Repository<User> {
 		});
 	}
 
+	async getUserByUsername(username: string): Promise<User> {
+		return this.findOne({
+			where: { username },
+			relations: ["courseUserRelations", "courseUserRelations.course"]
+		});
+	}
+
 	async getCoursesOfUser(userId: string): Promise<Course[]> {
 		const user = await this.findOne(userId, { relations: ["courseUserRelations", "courseUserRelations.course"] });
 		const courses = [];

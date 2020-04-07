@@ -1,27 +1,29 @@
-import { Injectable } from "@nestjs/common";
-import { AuthCredentialsDto } from "../dto/auth-credentials.dto";
-import { UserDto } from "../../shared/dto/user.dto";
-import { UserRepository } from "../../user/repositories/user.repository";
-import { InjectRepository } from "@nestjs/typeorm";
-import { DtoFactory } from "../../shared/dto-factory";
+import { Injectable, HttpService } from "@nestjs/common";
+import { AuthSystemCredentials } from "../dto/auth-credentials.dto";
+import * as config from "config";
+import { AuthInfo } from "../dto/auth-info.dto";
+
+const authSystemConfig = config.get("authSystem");
 
 @Injectable()
 export class AuthSystemService {
 
-	constructor(@InjectRepository(UserRepository) private userRepository: UserRepository) { }
+	private readonly authenticateCheck = authSystemConfig.url + "/authenticate/check";
 
-	/**
-	 * Send the given credentials to the authentication system.
-	 * Returns true, if the credentials were valid.
-	 */
-	async login(authCredentials: AuthCredentialsDto): Promise<boolean> {
-		// TODO: Implement -> Sparkyservice
-		return true;
-	}
+	constructor(private http: HttpService) { }
 
-	async getUser(email: string): Promise<UserDto> {
-		const user = await this.userRepository.getUserByEmail(email);
-		return DtoFactory.createUserDto(user);
+	async checkAuthentication(credentials: AuthSystemCredentials): Promise<AuthInfo> {
+		try {
+			// Call external auth system's /authenticate/check method with token in Authorization-Header
+			const response = await this.http.get<AuthInfo>(this.authenticateCheck, 
+				{ headers: { "Authorization": credentials.token } }).toPromise();
+
+			// Return AuthInfo, if user is authenticated
+			return response.data;
+		} catch(error) {
+			// Return null, if authentication failed
+			return null;
+		}
 	}
 
 }

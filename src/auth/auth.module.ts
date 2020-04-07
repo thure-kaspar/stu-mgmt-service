@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { Module, HttpModule } from "@nestjs/common";
 import { AuthController } from "./controllers/auth.controller";
 import { AuthService } from "./services/auth.service";
 import { JwtModule } from "@nestjs/jwt";
@@ -21,7 +21,8 @@ const jwtConfig = config.get("jwt");
 				expiresIn: jwtConfig.expiresIn
 			}
 		}),
-		TypeOrmModule.forFeature([UserRepository])
+		TypeOrmModule.forFeature([UserRepository]),
+		HttpModule
 	],
 	controllers: [AuthController],
 	providers: [AuthService, AuthSystemService, JwtStrategy, RoleGuard],

@@ -1,4 +1,4 @@
-import { IsString, MinLength, IsEmail } from "class-validator";
+import { IsString, MinLength, IsEmail, IsNotEmpty } from "class-validator";
 
 export class AuthCredentialsDto {
   @IsEmail()
@@ -7,4 +7,10 @@ export class AuthCredentialsDto {
   @IsString()
   @MinLength(1)
   password: string;
+}
+
+export class AuthSystemCredentials {
+	/** The token received from the Authentication System (Sparkyservice). */
+	@IsNotEmpty()
+	token: string;
 }
