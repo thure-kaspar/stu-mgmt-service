@@ -1,8 +1,10 @@
-import { AssignmentType } from "../../shared/enums"
+import { AssignmentType } from "../../shared/enums";
 import { Min, Max } from "class-validator";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export class AdmissionCriteriaDto {
+	id: number;
+
 	/** Rules that must be fulfilled in order to be admitted. */
 	@ApiProperty({ description: "Rules that must be fulfilled in order to be admitted." })
 	criteria: Rule[];

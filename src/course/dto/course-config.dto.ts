@@ -1,7 +1,7 @@
 import { UserDto } from "../../shared/dto/user.dto";
 import { GroupSettingsDto } from "./group-settings.dto";
 import { AssignmentTemplateDto } from "./assignment-template.dto";
-import { AdmissionCriteriaDto } from "./admission-criteria";
+import { AdmissionCriteriaDto } from "./admission-criteria.dto";
 
 /**
  * A dto that contains the configuration of a course.
@@ -11,6 +11,9 @@ export class CourseConfigDto {
 	admissionCriteria: AdmissionCriteriaDto;
 	assignmentTemplates: AssignmentTemplateDto[];
 	lecturers: UserDto[];
+
+	password?: string;
+	subscriptionUrl?: string;
 }
 
 

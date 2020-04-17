@@ -1,6 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
 
 export class GroupSettingsDto {
+	id?: number;
+
 	/** Determines, wether course allows group creation. */
 	@ApiProperty({ description: "Determines, wether course allows group creation."})
 	allowGroups: boolean;

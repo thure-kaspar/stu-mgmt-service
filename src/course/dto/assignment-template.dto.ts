@@ -2,6 +2,12 @@ import { ApiProperty } from "@nestjs/swagger";
 import { AssignmentType, CollaborationType } from "../../shared/enums";
 
 export class AssignmentTemplateDto {
+	id?: number;
+
+	/** The name of the template. */
+	@ApiProperty({ description: "The name of the template."})
+	name: string;
+
 	/** If utilized, titles will use the schema followed by the assignments's number. */
 	@ApiProperty({ description: "If utilized, titles will use the schema followed by the assignments's number."})
 	titleSchema: string;
