@@ -20,3 +20,4 @@ jwt:
 
 logger:
   requests: true
+  dbErrors: true

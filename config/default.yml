@@ -21,3 +21,4 @@ jwt:
 
 logger:
   requests: false
+  dbErrors: false

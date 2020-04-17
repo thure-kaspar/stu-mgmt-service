@@ -18,6 +18,7 @@ import { GroupSettings } from "../course/entities/group-settings.entity";
 import { AdmissionCritera } from "../course/entities/admission-criteria.entity";
 
 const dbConfig = config.get("db");
+const loggingConfig = config.get("logger");
 
 export const typeOrmConfig: TypeOrmModuleOptions = {
 	type: process.env.DB_TYPE || dbConfig.type,
@@ -33,4 +34,5 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
 		CourseConfig, AssignmentTemplate, GroupSettings, AdmissionCritera
 	],
 	subscribers: [CourseUserRelationSubscriber, UserGroupRelationSubscriber, AssignmentSubscriber],
+	logging: loggingConfig.dbErrors ? ["error"] : undefined
 };
