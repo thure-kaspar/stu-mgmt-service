@@ -1,4 +1,4 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToOne } from "typeorm";
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from "typeorm";
 import { CourseConfig } from "./course-config.entity";
 import { AdmissionCriteriaDto } from "../dto/admission-criteria.dto";
 
@@ -8,6 +8,7 @@ export class AdmissionCritera extends BaseEntity {
 	id: number;
 
 	@OneToOne(type => CourseConfig, courseConfig => courseConfig.admissionCriteria, { onDelete: "CASCADE" })
+	@JoinColumn()
 	courseConfig: CourseConfig;
 
 	@Column()

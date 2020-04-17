@@ -1,4 +1,4 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, ManyToOne, Column } from "typeorm";
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from "typeorm";
 import { CourseConfig } from "./course-config.entity";
 
 @Entity()
@@ -6,7 +6,8 @@ export class GroupSettings extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@ManyToOne(type => CourseConfig, courseConfig => courseConfig.groupSettings, { onDelete: "CASCADE" })
+	@OneToOne(type => CourseConfig, courseConfig => courseConfig.groupSettings, { onDelete: "CASCADE" })
+	@JoinColumn()
 	courseConfig: CourseConfig;
 
 	@Column()
@@ -15,7 +16,7 @@ export class GroupSettings extends BaseEntity {
 	@Column()
 	allowGroups: boolean;
 
-	@Column()
+	@Column({ nullable: true })
 	nameSchema: string;
 
 	@Column()

@@ -1,4 +1,4 @@
-import { BaseEntity, PrimaryGeneratedColumn, OneToOne, Column, OneToMany, Entity } from "typeorm";
+import { BaseEntity, PrimaryGeneratedColumn, OneToOne, Column, OneToMany, Entity, JoinColumn } from "typeorm";
 import { GroupSettings } from "./group-settings.entity";
 import { AdmissionCritera } from "./admission-criteria.entity";
 import { AssignmentTemplate } from "./assignment-template.entity";
@@ -10,6 +10,7 @@ export class CourseConfig extends BaseEntity {
 	id: number;
 
 	@OneToOne(type => Course, course => course.config, { onDelete: "CASCADE" })
+	@JoinColumn()
 	course: Course;
 
 	@Column()
@@ -21,18 +22,12 @@ export class CourseConfig extends BaseEntity {
 	@Column({ nullable: true })
 	subscriptionUrl: string;
 
-	@OneToOne(type => GroupSettings, groupSettings => groupSettings.courseConfig, { cascade: true })
+	@OneToOne(type => GroupSettings, groupSettings => groupSettings.courseConfig, { cascade: ["insert"] })
 	groupSettings: GroupSettings;
 
-	@Column()
-	groupSettingsId: number;
-
-	@OneToOne(type => AdmissionCritera, admissionCriteria => admissionCriteria.courseConfig, { cascade: true })
+	@OneToOne(type => AdmissionCritera, admissionCriteria => admissionCriteria.courseConfig, { cascade: ["insert"], nullable: true })
 	admissionCriteria: AdmissionCritera;
 
-	@Column()
-	admissionCriteriaId: number;
-
-	@OneToMany(type => AssignmentTemplate, assignmentTemplate => assignmentTemplate.courseConfig)
+	@OneToMany(type => AssignmentTemplate, assignmentTemplate => assignmentTemplate.courseConfig, { cascade: ["insert"] })
 	assignmentTemplates: AssignmentTemplate[];
 }

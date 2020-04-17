@@ -1,4 +1,4 @@
-import { BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, Entity } from "typeorm";
+import { BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, Entity, JoinColumn } from "typeorm";
 import { AssignmentType, CollaborationType } from "../../shared/enums";
 import { CourseConfig } from "./course-config.entity";
 
@@ -8,6 +8,7 @@ export class AssignmentTemplate extends BaseEntity {
 	id: number;
 
 	@ManyToOne(type => CourseConfig, courseConfig => courseConfig.assignmentTemplates, { onDelete: "CASCADE" })
+	@JoinColumn()
 	courseConfig: CourseConfig;
 
 	@Column()
