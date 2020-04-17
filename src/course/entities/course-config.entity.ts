@@ -1,9 +1,10 @@
-import { BaseEntity, PrimaryGeneratedColumn, OneToOne, Column, OneToMany } from "typeorm";
+import { BaseEntity, PrimaryGeneratedColumn, OneToOne, Column, OneToMany, Entity } from "typeorm";
 import { GroupSettings } from "./group-settings.entity";
 import { AdmissionCritera } from "./admission-criteria.entity";
 import { AssignmentTemplate } from "./assignment-template.entity";
 import { Course } from "../../shared/entities/course.entity";
 
+@Entity()
 export class CourseConfig extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id: number;

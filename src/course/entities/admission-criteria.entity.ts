@@ -1,6 +1,6 @@
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToOne } from "typeorm";
-import { AdmissionCriteriaDto } from "../dto/admission-criteria";
 import { CourseConfig } from "./course-config.entity";
+import { AdmissionCriteriaDto } from "../dto/admission-criteria.dto";
 
 @Entity()
 export class AdmissionCritera extends BaseEntity {

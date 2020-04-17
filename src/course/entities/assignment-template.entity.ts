@@ -1,7 +1,8 @@
-import { BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, Entity } from "typeorm";
 import { AssignmentType, CollaborationType } from "../../shared/enums";
 import { CourseConfig } from "./course-config.entity";
 
+@Entity()
 export class AssignmentTemplate extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
