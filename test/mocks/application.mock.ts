@@ -3,6 +3,7 @@ import { TestingModule, Test } from "@nestjs/testing";
 import { AppModule } from "../../src/app.module";
 import { NodemailerService } from "../../src/mailing/services/nodemailer.service";
 import { DisabledMailing } from "./mailing.mock";
+import { EntityNotFoundFilter } from "../../src/shared/entity-not-found.filter";
 
 /**
  * Creates and returns an initialized NestApplication for e2e-testing purposes.
@@ -15,6 +16,7 @@ export async function createApplication(): Promise<INestApplication> {
 		.compile();
 
 	const app = moduleFixture.createNestApplication();
+	app.useGlobalFilters(new EntityNotFoundFilter());
 	await app.init();
 
 	return app;
