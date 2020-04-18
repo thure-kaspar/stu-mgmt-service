@@ -7,28 +7,29 @@ import { CourseFilterDto } from "../../../src/shared/dto/course-filter.dto";
 import { CourseDto } from "../../../src/shared/dto/course.dto";
 import { CourseRole } from "../../../src/shared/enums";
 import { COURSE_JAVA_1920, COURSE_INFO_2_2020 } from "../../mocks/courses.mock";
-import { copy } from "../../utils/object-helper";
-import { DtoToEntityConverter } from "../../utils/dto-to-entity-converter";
+import { copy, convertToEntity } from "../../utils/object-helper";
 import { USER_STUDENT_JAVA, USER_STUDENT_2_JAVA } from "../../mocks/users.mock";
 import { CourseUserRelation } from "../../../src/shared/entities/course-user-relation.entity";
 import { User } from "../../../src/shared/entities/user.entity";
 import { COURSE_CONFIG_JAVA_1920 } from "../../mocks/course-config/course-config.mock";
+import { Course } from "../../../src/shared/entities/course.entity";
+import { CourseConfig } from "../../../src/course/entities/course-config.entity";
 
 const mock_CourseRepository = () => ({
-	createCourse: jest.fn(),
+	createCourse: jest.fn().mockResolvedValue(convertToEntity(Course, COURSE_JAVA_1920)),
 	getCourses: jest.fn().mockResolvedValue([
-		DtoToEntityConverter.getCourse(COURSE_JAVA_1920),
-		DtoToEntityConverter.getCourse(COURSE_INFO_2_2020)
+		convertToEntity(Course, COURSE_JAVA_1920),
+		convertToEntity(Course, COURSE_INFO_2_2020)
 	]),
 	getCourseById: jest.fn().mockResolvedValue(COURSE_JAVA_1920),
 	getCourseByNameAndSemester: jest.fn(),
 	getCourseWithUsers: jest.fn().mockResolvedValue([
-		DtoToEntityConverter.getUser(USER_STUDENT_JAVA),
-		DtoToEntityConverter.getUser(USER_STUDENT_2_JAVA)
+		convertToEntity(User, USER_STUDENT_JAVA),
+		convertToEntity(User, USER_STUDENT_2_JAVA)
 	]),
 	getCourseWithConfig: jest.fn().mockImplementation(() => {
-		const course = DtoToEntityConverter.getCourse(COURSE_JAVA_1920);
-		course.config = DtoToEntityConverter.getCourseConfig(COURSE_CONFIG_JAVA_1920);
+		const course = convertToEntity(Course, COURSE_JAVA_1920);
+		course.config = convertToEntity(CourseConfig, COURSE_CONFIG_JAVA_1920);
 		return course;
 	}),
 	updateCourse: jest.fn(),
@@ -76,8 +77,8 @@ describe("CourseService", () => {
 
 		beforeEach(() => { 
 			courseDto.config = copy(COURSE_CONFIG_JAVA_1920);
-		});
-
+		});		
+		
 		it("Calls repository for creation", async () => {
 			await service.createCourse(courseDto);
 			expect(courseRepository.createCourse).toHaveBeenCalledWith(courseDto);
@@ -148,8 +149,8 @@ describe("CourseService", () => {
 		it("No password required -> Calls repository for relation creation", async () => {	
 			// Mock should return course that doesn't require a password
 			courseRepository.getCourseWithConfig = jest.fn().mockImplementationOnce(() => {
-				const course = DtoToEntityConverter.getCourse(COURSE_JAVA_1920);
-				course.config = DtoToEntityConverter.getCourseConfig(COURSE_CONFIG_JAVA_1920);
+				const course = convertToEntity(Course, COURSE_JAVA_1920);
+				course.config = convertToEntity(CourseConfig, COURSE_CONFIG_JAVA_1920);
 				course.config.password = null;
 				return course;
 			});
@@ -241,13 +242,13 @@ describe("CourseService", () => {
 
 		it("Calls repository to load with users", async () => {
 			const id = courseDto.id;
-			const course = DtoToEntityConverter.getCourse(courseDto);
+			const course = convertToEntity(Course, courseDto);
 			// Mock user relations
 			const relation = new CourseUserRelation();
 			relation.user = new User();
 			relation.role = CourseRole.STUDENT;
 			course.courseUserRelations = [relation];
-			courseRepository.getCourseWithUsers = jest.fn().mockResolvedValue(course);
+			courseRepository.getCourseWithUsers = jest.fn().mockResolvedValueOnce(course);
 
 			await service.getUsersOfCourse(id);
 			expect(courseRepository.getCourseWithUsers).toHaveBeenCalledWith(id);

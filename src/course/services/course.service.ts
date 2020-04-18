@@ -10,7 +10,6 @@ import { CourseRole } from "../../shared/enums";
 import { CourseFilterDto } from "../../shared/dto/course-filter.dto";
 import { DtoFactory } from "../../shared/dto-factory";
 import { CourseClosedException } from "../exceptions/custom-exceptions";
-import { setTimeout } from "timers";
 
 @Injectable()
 export class CourseService {

@@ -1,3 +1,5 @@
+import { BaseEntity } from "typeorm";
+
 /**
  * Returns a deep copy of the given object.
  */
@@ -33,3 +35,22 @@ export function copy<T>(target: T): T {
 	// Means that object is atomic
 	return target;
 }
+
+/** Assigns all properties of the source to the target-object. */
+export function assignMatchingProperties(target: any, source: any): void {
+	Object.keys(source).forEach(key=> {
+		target[key] = source[key];
+	});
+}
+
+/**
+ * Creates an entity of the given type and assigns all properties of the given Dto to it.
+ * Will only work, if entity and dto share a similar structure. Will not perform any custom mapping between these objects.
+ * Nested objects will be assigned, but not instantiated as entities.
+ */
+export function convertToEntity<T extends BaseEntity>(target: (new () => T), dto: unknown): T {
+	const entity = new target();
+	assignMatchingProperties(entity, copy(dto));
+	return entity;
+}
+

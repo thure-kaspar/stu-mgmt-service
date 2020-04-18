@@ -5,22 +5,22 @@ import { GroupRepository } from "../../../src/course/database/repositories/group
 import { TestingModule, Test } from "@nestjs/testing";
 import { GroupDto } from "../../../src/shared/dto/group.dto";
 import { GROUP_1_JAVA, GROUP_2_JAVA } from "../../mocks/groups.mock";
-import { copy } from "../../utils/object-helper";
-import { DtoToEntityConverter } from "../../utils/dto-to-entity-converter";
-import { COURSE_JAVA_1920, COURSE_INFO_2_2020 } from "../../mocks/courses.mock";
+import { copy, convertToEntity } from "../../utils/object-helper";
+import { COURSE_JAVA_1920 } from "../../mocks/courses.mock";
 import { UserGroupRelation } from "../../../src/shared/entities/user-group-relation.entity";
 import { COURSE_CONFIG_JAVA_1920 } from "../../mocks/course-config/course-config.mock";
 import { Course } from "../../../src/shared/entities/course.entity";
 import { Group } from "../../../src/shared/entities/group.entity";
+import { CourseConfig } from "../../../src/course/entities/course-config.entity";
 
 function getGroupWithUsersMock_JoiningPossible(passwordRequired = true) {
-	const group = DtoToEntityConverter.getGroup(GROUP_1_JAVA);
+	const group = convertToEntity(Group, GROUP_1_JAVA);
 	const userRelation1 = new UserGroupRelation();
 	userRelation1.groupId = group.id;
 	userRelation1.userId = "user_id_1";
 	group.userGroupRelations = [userRelation1];
 	
-	const course = DtoToEntityConverter.getCourse(COURSE_JAVA_1920);
+	const course = convertToEntity(Course, COURSE_JAVA_1920);
 	group.course = course;
 
 	if(!passwordRequired) group.password = null;
@@ -29,8 +29,8 @@ function getGroupWithUsersMock_JoiningPossible(passwordRequired = true) {
 }
 
 function getGroupWithUsersMock_CapacityReached() {
-	const group = DtoToEntityConverter.getGroup(GROUP_1_JAVA);
-	const course = DtoToEntityConverter.getCourse(COURSE_JAVA_1920);
+	const group = convertToEntity(Group, GROUP_1_JAVA);
+	const course = convertToEntity(Course, COURSE_JAVA_1920);
 	group.course = course;
 
 	const userRelation1 = new UserGroupRelation();
@@ -44,26 +44,26 @@ function getGroupWithUsersMock_CapacityReached() {
 }
 
 function mock_getCourseWithConfigAndGroupSettings(): Course {
-	const course = DtoToEntityConverter.getCourse(copy(COURSE_JAVA_1920));
-	const config = DtoToEntityConverter.getCourseConfig(copy(COURSE_CONFIG_JAVA_1920));
+	const course = convertToEntity(Course, COURSE_JAVA_1920);
+	const config = convertToEntity(CourseConfig, COURSE_CONFIG_JAVA_1920);
 	course.config = config;
 	return course;
 }
 
 const mock_GroupRepository = () => ({
-	createGroup: jest.fn().mockResolvedValue(DtoToEntityConverter.getGroup(GROUP_1_JAVA)),
+	createGroup: jest.fn().mockResolvedValue(convertToEntity(Group, GROUP_1_JAVA)),
 	getGroupWithUsers: jest.fn().mockResolvedValue(getGroupWithUsersMock_JoiningPossible()),
 	addUserToGroup: jest.fn(),
 	getGroupsOfCourse: jest.fn().mockResolvedValue([
-		DtoToEntityConverter.getGroup(GROUP_1_JAVA),
-		DtoToEntityConverter.getGroup(GROUP_2_JAVA)
+		convertToEntity(Group, GROUP_1_JAVA),
+		convertToEntity(Group, GROUP_2_JAVA),
 	]),
 	updateGroup: jest.fn(),
 	deleteGroup: jest.fn(),
 });
 
 const mock_CourseRepository = () => ({
-	getCourseById: jest.fn().mockResolvedValue(DtoToEntityConverter.getCourse(COURSE_JAVA_1920)),
+	getCourseById: jest.fn().mockResolvedValue(convertToEntity(Course, COURSE_JAVA_1920)),
 	getCourseWithConfigAndGroupSettings: jest.fn().mockImplementation(() => { return mock_getCourseWithConfigAndGroupSettings(); })
 });
 
@@ -165,7 +165,7 @@ describe("GroupService", () => {
 		it("Group is closed -> Throws Exception", async () => {
 			const groupClosed = copy(GROUP_2_JAVA);
 			groupClosed.isClosed = true;
-			groupRepository.getGroupWithUsers = jest.fn().mockResolvedValueOnce(DtoToEntityConverter.getGroup(groupClosed));
+			groupRepository.getGroupWithUsers = jest.fn().mockResolvedValueOnce(convertToEntity(Group, groupClosed));
 			
 			try {
 				await service.addUserToGroup(groupDto.id, userId, groupDto.password);
