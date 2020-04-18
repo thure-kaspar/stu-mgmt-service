@@ -26,6 +26,11 @@ const mock_CourseRepository = () => ({
 		DtoToEntityConverter.getUser(USER_STUDENT_JAVA),
 		DtoToEntityConverter.getUser(USER_STUDENT_2_JAVA)
 	]),
+	getCourseWithConfig: jest.fn().mockImplementation(() => {
+		const course = DtoToEntityConverter.getCourse(COURSE_JAVA_1920);
+		course.config = DtoToEntityConverter.getCourseConfig(COURSE_CONFIG_JAVA_1920);
+		return course;
+	}),
 	updateCourse: jest.fn(),
 	updateUserRole: jest.fn(),
 	deleteCourse: jest.fn()
@@ -126,6 +131,10 @@ describe("CourseService", () => {
 
 	describe("addUser", () => {
 
+		beforeEach(() => {
+			courseDto.config = copy(COURSE_CONFIG_JAVA_1920);
+		});
+
 		it("Correct password -> Calls repository for relation creation", async () => {
 			console.assert(courseDto.config.password.length > 0, "Course should have a password");
 			const userId = "user_id";
@@ -136,14 +145,17 @@ describe("CourseService", () => {
 			expect(courseUserRepository.createCourseUserRelation).toBeCalledWith(courseDto.id, userId, role);
 		});
 
-		it("No password required -> Calls repository for relation creation", async () => {
-			const courseNoPassword = copy(COURSE_INFO_2_2020);
+		it("No password required -> Calls repository for relation creation", async () => {	
 			// Mock should return course that doesn't require a password
-			courseRepository.getCourseById = jest.fn().mockResolvedValue(DtoToEntityConverter.getCourse(courseNoPassword));
+			courseRepository.getCourseWithConfig = jest.fn().mockImplementationOnce(() => {
+				const course = DtoToEntityConverter.getCourse(COURSE_JAVA_1920);
+				course.config = DtoToEntityConverter.getCourseConfig(COURSE_CONFIG_JAVA_1920);
+				course.config.password = null;
+				return course;
+			});
 			const userId = "user_id";
 			const password = "incorrect";
 			const role = CourseRole.STUDENT;
-			console.assert(courseNoPassword.config.password == null, "Course password should be null");
 
 			await service.addUser(courseDto.id, userId);
 

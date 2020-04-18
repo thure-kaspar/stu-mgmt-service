@@ -7,6 +7,8 @@ import { DbMockService } from "../mocks/db-mock.service";
 import { GROUP_1_JAVA, GROUP_2_JAVA } from "../mocks/groups.mock";
 import { USER_STUDENT_JAVA } from "../mocks/users.mock";
 import { createApplication } from "../mocks/application.mock";
+import { copy } from "../utils/object-helper";
+import { COURSE_CONFIG_JAVA_1920 } from "../mocks/course-config/course-config.mock";
 
 let app: INestApplication;
 let dbMockService: DbMockService; // Should be initialized in every describe-block that requires data in db
@@ -15,7 +17,6 @@ const course = COURSE_JAVA_1920; // the course that will be used for testing
 
 describe("GET-REQUESTS of CourseController (e2e)", () => {
 	
-
 	beforeAll(async () => {
 		app = await createApplication();
 
@@ -88,35 +89,27 @@ describe("GET-REQUESTS of CourseController (e2e)", () => {
 
 });
 
-// TODO: Tests should fail when referenced foreign key is invalid, i.e doesn't exist (use JoinColumn?)
-describe("POST-REQUESTS of CourseController (empty db) (e2e)", () => {
+describe.only("POST-REQUESTS of CourseController (empty db) (e2e)", () => {
 
-	beforeAll(async () => {
+	beforeEach(async () => {
 		app = await createApplication();
 	});
 
-	afterAll(async () => {
+	afterEach(async () => {
 		await getConnection().dropDatabase(); // Drop database with all tables and data
 		await getConnection().close(); // Close Db-Connection after all tests have been executed
 	});
 
-	it("(POST) /courses Creates the given course and returns it (Part 1/2)", () => {
-		return request(app.getHttpServer())
-			.post("/courses")
-			.send(course)
-			.expect(201)
-			.expect(({ body }) => {
-				expect(body.shortname).toEqual(course.shortname); // Can't compare entire objects, because property "password" is not sent to clients
-			});
-	});
+	it("(POST) /courses Creates the given course and returns it", () => {
+		const courseToCreate = copy(course);
+		courseToCreate.config = COURSE_CONFIG_JAVA_1920;
 
-	it("(POST) /courses Creates the given course returns it (Part 2/2)", () => {
 		return request(app.getHttpServer())
 			.post("/courses")
-			.send(course)
+			.send(courseToCreate)
 			.expect(201)
 			.expect(({ body }) => {
-				expect(body.shortname).toEqual(course.shortname); // Can't compare entire objects, because property "password" is not sent to clients
+				expect(body.shortname).toEqual(course.shortname);
 			});
 	});
 
@@ -140,7 +133,7 @@ describe("POST-REQUESTS for relations (db contains data) of CourseController (e2
 
 	it("(POST) /courses/{courseId}/users/{userId} No password required -> Adds user to course", () => {
 		const courseNoPassword = COURSE_INFO_2_2020;
-		console.assert(courseNoPassword.password == null, "Course password should be undefined"); 
+		console.assert(courseNoPassword.config.password == null, "Course password should be undefined"); 
 		const user = USER_STUDENT_JAVA;
 
 		return request(app.getHttpServer())
@@ -153,7 +146,7 @@ describe("POST-REQUESTS for relations (db contains data) of CourseController (e2
 
 		return request(app.getHttpServer())
 			.post(`/courses/${course.id}/users/${user.id}`)
-			.send({ password: course.password }) // the correct password
+			// TODO: fix -> .send({ password: course.password }) // the correct password
 			.expect(201);
 	});
 

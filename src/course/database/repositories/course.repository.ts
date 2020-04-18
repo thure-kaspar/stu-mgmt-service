@@ -2,15 +2,17 @@ import { Repository, EntityRepository } from "typeorm";
 import { Course } from "../../../shared/entities/course.entity";
 import { CourseDto } from "../../../shared/dto/course.dto";
 import { CourseFilterDto } from "../../../shared/dto/course-filter.dto";
-import { CourseRole } from "../../../shared/enums";
+import { AdmissionCritera } from "../../entities/admission-criteria.entity";
 
 @EntityRepository(Course)
 export class CourseRepository extends Repository<Course> {
 
+	/**
+	 * Inserts a new course in the database. Includes the CourseConfig (with child-entities).
+	 */
 	async createCourse(courseDto: CourseDto): Promise<Course> {
-		const course = this._createEntityFromDto(courseDto);
-		const createdCourse = await course.save();
-		return createdCourse;
+		const course = this.createInsertableEntity(courseDto);
+		return course.save();
 	}
 
 	async getCourses(filter?: CourseFilterDto): Promise<Course[]> {
@@ -29,22 +31,11 @@ export class CourseRepository extends Repository<Course> {
 		return this.find();
 	}
 	
-	async getCourseById(id: string): Promise<Course> {
-		return this.findOne(id, {
-			relations: ["assignments"]
-		});
-	}
-
 	/**
-	 * Returns the course with all relations and properties that make up its configuration
-	 * (i.e only includes users that are lecturers of this course).
+	 * Retrieves the course with the specified id.
 	 */
-	async getCourseConfig(id: string): Promise<Course> {
-		return this.createQueryBuilder("course")
-			.where("course.id = :id", { id })
-			.leftJoinAndSelect("course.courseUserRelations", "relation", "relation.role = :role", { role: CourseRole.LECTURER })
-			.innerJoinAndSelect("relation.user", "user")
-			.getOne();
+	async getCourseById(id: string): Promise<Course> {
+		return this.findOne(id);
 	}
 
 	async getCourseByNameAndSemester(name: string, semester: string): Promise<Course> {
@@ -61,6 +52,20 @@ export class CourseRepository extends Repository<Course> {
 		return this.findOne(id, { relations: ["courseUserRelations", "courseUserRelations.user"] });
 	}
 
+	/**
+	 * Returns the course with its course config. The course config does not include relations.
+	 */
+	async getCourseWithConfig(id: string): Promise<Course> {
+		return this.findOneOrFail(id, { relations: ["config"] });
+	}
+
+	/**
+	 * Returns the course with its course config. The course config includes the group settings.
+	 */
+	async getCourseWithConfigAndGroupSettings(id: string): Promise<Course> {
+		return this.findOneOrFail(id, { relations: ["config", "config.groupSettings"] });
+	}
+
 	async getCourseWithGroups(courseId: string): Promise<Course> {
 		return this.findOne(courseId, {
 			relations: ["groups"]
@@ -75,10 +80,7 @@ export class CourseRepository extends Repository<Course> {
 		course.semester = courseDto.semester;
 		course.title = courseDto.title;
 		course.isClosed = courseDto.isClosed;
-		course.password = courseDto.password?.length > 0 ? courseDto.password : null; // Replace empty string with null
 		course.link = courseDto.link;
-		course.allowGroups = courseDto.allowGroups;
-		course.maxGroupSize = courseDto.maxGroupSize;
     
 		return course.save();
 	}
@@ -91,20 +93,18 @@ export class CourseRepository extends Repository<Course> {
 	}
 
 	/**
-	 * Creates a Course entity from the given CourseDto.
-	 * Should only be called inside the CourseRepository.
+	 * Creates a Course entity from the given CourseDto, which should be used for insertion in the database.
 	 */
-	public _createEntityFromDto(courseDto: CourseDto): Course {
-		const course = new Course();
-		course.id = courseDto.id ?? courseDto.shortname + "-" + courseDto.semester; // If no id was supplied, <shortname-semester> will be the id
-		course.shortname = courseDto.shortname;
-		course.semester = courseDto.semester;
-		course.title = courseDto.title;
-		course.isClosed = courseDto.isClosed;
-		course.password = courseDto.password?.length > 0 ? courseDto.password : null; // Replace empty string with null
-		course.link = courseDto.link;
-		course.allowGroups = courseDto.allowGroups;
-		course.maxGroupSize = courseDto.maxGroupSize;
+	public createInsertableEntity(courseDto: CourseDto): Course {
+		const course = this.create(courseDto);
+		if (!course.config) throw new Error("CourseConfig is missing.");
+		if (!course.config.groupSettings) throw new Error("GroupSettings are missing.");
+
+		if (courseDto.config.admissionCriteria?.criteria?.length > 0) {
+			course.config.admissionCriteria = new AdmissionCritera();
+			course.config.admissionCriteria.admissionCriteria = courseDto.config.admissionCriteria;
+		}
+
 		return course;
 	}
 
