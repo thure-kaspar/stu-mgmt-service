@@ -1,4 +1,4 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from "typeorm";
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, AfterInsert } from "typeorm";
 import { CourseConfig } from "./course-config.entity";
 import { AdmissionCriteriaDto } from "../dto/admission-criteria.dto";
 
@@ -16,4 +16,11 @@ export class AdmissionCritera extends BaseEntity {
 
 	@Column("json")
 	admissionCriteria: AdmissionCriteriaDto;
+
+	@AfterInsert()
+	async assignIdToDto(): Promise<void> {
+		this.admissionCriteria.id = this.id;
+		await this.save();
+	}
+
 }
