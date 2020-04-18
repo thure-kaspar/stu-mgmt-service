@@ -8,6 +8,8 @@ import { UserDto } from "../../src/shared/dto/user.dto";
 import { User } from "../../src/shared/entities/user.entity";
 import { AssessmentDto } from "../../src/shared/dto/assessment.dto";
 import { Assessment } from "../../src/shared/entities/assessment.entity";
+import { CourseConfigDto } from "../../src/course/dto/course-config.dto";
+import { CourseConfig } from "../../src/course/entities/course-config.entity";
 
 /**
  * Assigns all matching properties to the corresponding Entity.
@@ -23,6 +25,12 @@ export abstract class DtoToEntityConverter {
 
 	static getCourse(dto: CourseDto): Course {
 		const entity = new Course();
+		this.assignMatchingProperties(entity, dto);
+		return entity;
+	}
+
+	static getCourseConfig(dto: CourseConfigDto): CourseConfig {
+		const entity = new CourseConfig();
 		this.assignMatchingProperties(entity, dto);
 		return entity;
 	}
