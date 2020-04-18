@@ -43,7 +43,6 @@ export class AssignmentRepository extends Repository<Assignment> {
 		assignment.comment = assignmentDto.comment;
 		assignment.link = assignmentDto.link;
 		assignment.collaborationType = assignmentDto.collaborationType;
-
 		return assignment.save();
 	}
 
@@ -53,17 +52,7 @@ export class AssignmentRepository extends Repository<Assignment> {
 	}
 
 	private createEntityFromDto(assignmentDto: AssignmentDto): Assignment {
-		const assignment = new Assignment();
-		assignment.courseId = assignmentDto.courseId;
-		assignment.name = assignmentDto.name;
-		assignment.state = assignmentDto.state;
-		assignment.startDate = assignmentDto.startDate;
-		assignment.endDate = assignmentDto.endDate;
-		assignment.comment = assignmentDto.comment;
-		assignment.link = assignmentDto.link;
-		assignment.type = assignmentDto.type;
-		assignment.maxPoints = assignmentDto.maxPoints;
-		assignment.collaborationType = assignmentDto.collaborationType;
+		const assignment = this.create(assignmentDto);
 		return assignment;
 	}
 
