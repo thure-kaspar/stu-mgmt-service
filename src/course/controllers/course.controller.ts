@@ -5,7 +5,6 @@ import { CourseDto } from "../../shared/dto/course.dto";
 import { UserDto } from "../../shared/dto/user.dto";
 import { CourseFilterDto } from "../../shared/dto/course-filter.dto";
 import { ChangeCourseRoleDto } from "../dto/change-course-role.dto";
-import { CourseConfigDto } from "../../shared/dto/course-config.dto";
 
 @ApiTags("courses") 
 @Controller("courses")
@@ -53,14 +52,6 @@ export class CourseController {
 		return this.courseService.getCourseById(courseId);
 	}
 
-	/**
-	 * Returns a CourseConfigDto containing the course itself and all properties that describe a course's configuration.
-	 */
-	@Get(":courseId/config")
-	@ApiOperation({ description: "Returns a CourseConfigDto containing the course itself and all properties that describe a course's configuration." })
-	getCourseConfig(@Param("courseId") courseId: string): Promise<CourseConfigDto> {
-		return this.courseService.getCourseConfig(courseId);
-	}
 
 	/**
 	 * Returns the course.
