@@ -12,6 +12,7 @@ import { DtoToEntityConverter } from "../../utils/dto-to-entity-converter";
 import { USER_STUDENT_JAVA, USER_STUDENT_2_JAVA } from "../../mocks/users.mock";
 import { CourseUserRelation } from "../../../src/shared/entities/course-user-relation.entity";
 import { User } from "../../../src/shared/entities/user.entity";
+import { COURSE_CONFIG_JAVA_1920 } from "../../mocks/course-config/course-config.mock";
 
 const mock_CourseRepository = () => ({
 	createCourse: jest.fn(),
@@ -68,9 +69,52 @@ describe("CourseService", () => {
 
 	describe("createCourse", () => {
 
+		beforeEach(() => { 
+			courseDto.config = copy(COURSE_CONFIG_JAVA_1920);
+		});
+
 		it("Calls repository for creation", async () => {
 			await service.createCourse(courseDto);
 			expect(courseRepository.createCourse).toHaveBeenCalledWith(courseDto);
+		});
+
+		it("Dto contains id -> Assigns id", async () => {
+			courseDto.id = "my-id";
+			await service.createCourse(courseDto);
+			expect(courseRepository.createCourse).toHaveBeenCalledWith(courseDto);
+		});
+
+		it("Dto does not contain id -> Assigns shortname-semester as id", async () => {
+			courseDto.id = undefined;
+			const expected = copy(courseDto);
+			expected.id = expected.shortname + "-" + expected.semester;
+
+			await service.createCourse(courseDto);
+			expect(courseRepository.createCourse).toHaveBeenCalledWith(expected);
+		});
+
+		it("Dto contains password -> Assigns password", async () => {
+			courseDto.config.password = "hasAPassword";
+			await service.createCourse(courseDto);
+			expect(courseRepository.createCourse).toHaveBeenCalledWith(courseDto);
+		});
+
+		it("Dto contains password with empty string (\"\") -> Assigns null to password", async () => {
+			courseDto.config.password = ""; // Empty string should be converted to null
+			const expected = copy(courseDto);
+			expected.config.password = null;
+
+			await service.createCourse(courseDto);
+			expect(courseRepository.createCourse).toHaveBeenCalledWith(expected);
+		});
+
+		it("Dto contains no password (undefined) -> Assigns null to password", async () => {
+			courseDto.config.password = undefined; // Undefined should be converted to null
+			const expected = copy(courseDto);
+			expected.config.password = null;
+
+			await service.createCourse(courseDto);
+			expect(courseRepository.createCourse).toHaveBeenCalledWith(expected);
 		});
 
 		it("Returns Dto", async () => {
@@ -83,11 +127,11 @@ describe("CourseService", () => {
 	describe("addUser", () => {
 
 		it("Correct password -> Calls repository for relation creation", async () => {
-			console.assert(courseDto.password.length > 0, "Course should have a password");
+			console.assert(courseDto.config.password.length > 0, "Course should have a password");
 			const userId = "user_id";
 			const role = CourseRole.STUDENT;
 
-			await service.addUser(courseDto.id, userId, courseDto.password);
+			await service.addUser(courseDto.id, userId, courseDto.config.password);
 
 			expect(courseUserRepository.createCourseUserRelation).toBeCalledWith(courseDto.id, userId, role);
 		});
@@ -99,7 +143,7 @@ describe("CourseService", () => {
 			const userId = "user_id";
 			const password = "incorrect";
 			const role = CourseRole.STUDENT;
-			console.assert(courseNoPassword.password == null, "Course password should be null");
+			console.assert(courseNoPassword.config.password == null, "Course password should be null");
 
 			await service.addUser(courseDto.id, userId);
 
@@ -107,7 +151,7 @@ describe("CourseService", () => {
 		});
 
 		it("Incorrect password -> Throws Exception", async () => {
-			console.assert(courseDto.password.length > 0, "Course should have a password");
+			console.assert(courseDto.config.password.length > 0, "Course should have a password");
 			const userId = "user_id";
 			const password = "incorrect";
 
