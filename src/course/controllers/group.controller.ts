@@ -1,7 +1,7 @@
 import { Controller, Get, Param, ParseUUIDPipe, Post, Delete, Patch, Body } from "@nestjs/common";
 import { GroupService } from "../services/group.service";
 import { UserDto } from "../../shared/dto/user.dto";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiBody } from "@nestjs/swagger";
 import { GroupDto } from "../../shared/dto/group.dto";
 
 @ApiTags("groups")
@@ -10,6 +10,11 @@ export class GroupController {
 	constructor(private groupService: GroupService) { }
 
 	@Post()
+	@ApiOperation({
+		operationId: "createGroup",
+		summary: "Create group",
+		description: "Creates a new group, if course allows group creation."
+	})
 	createGroup(
 		@Param("courseId") courseId: string,
 		@Body() groupDto: GroupDto
@@ -19,6 +24,12 @@ export class GroupController {
 	}
 	
 	@Post(":groupId/users/:userId")
+	@ApiOperation({
+		operationId: "addUserToGroup",
+		summary: "Add user to group",
+		description: "Adds the user to the group, if constraints are fulfilled."
+	})
+	@ApiBody({ type: String })
 	addUserToGroup(
 		@Param("courseId") courseId: string,
 		@Param("groupId", ParseUUIDPipe) groupId: string,
@@ -30,6 +41,11 @@ export class GroupController {
 	}
 
 	@Get()
+	@ApiOperation({
+		operationId: "getGroupsOfCourse",
+		summary: "Get groups of course",
+		description: "Retrieves all groups that belong to the course."
+	})
 	getGroupsOfCourse(
 		@Param("courseId") courseId: string,
 	): Promise<GroupDto[]> {
@@ -38,6 +54,11 @@ export class GroupController {
 	}
 
 	@Get(":groupId/users")
+	@ApiOperation({
+		operationId: "getUsersOfGroup",
+		summary: "Get users of group",
+		description: "Retrieves all users that are members of the group."
+	})
 	getUsersOfGroup(
 		@Param("courseId") courseId: string,
 		@Param("groupId", ParseUUIDPipe) groupId: string
@@ -47,6 +68,11 @@ export class GroupController {
 	}
 
 	@Patch(":groupId")
+	@ApiOperation({
+		operationId: "updateGroup",
+		summary: "Update group",
+		description: "Updates the group"
+	})
 	updateGroup(
 		@Param("courseId") courseId: string,
 		@Param("groupId", ParseUUIDPipe) groupId: string,
@@ -57,6 +83,11 @@ export class GroupController {
 	}
 
 	@Delete(":groupId")
+	@ApiOperation({
+		operationId: "deleteGroup",
+		summary: "Delete group",
+		description: "Deletes the group."
+	})
 	deleteGroup(
 		@Param("courseId") courseId: string,
 		@Param("groupId", ParseUUIDPipe) groupId: string

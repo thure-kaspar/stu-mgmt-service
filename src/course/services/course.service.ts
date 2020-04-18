@@ -10,12 +10,13 @@ import { CourseRole } from "../../shared/enums";
 import { CourseFilterDto } from "../../shared/dto/course-filter.dto";
 import { DtoFactory } from "../../shared/dto-factory";
 import { CourseClosedException } from "../exceptions/custom-exceptions";
+import { setTimeout } from "timers";
 
 @Injectable()
 export class CourseService {
 
 	constructor(@InjectRepository(Course) private courseRepository: CourseRepository,
-				@InjectRepository(CourseUserRelation) private courseUserRepository: CourseUserRelationRepository) { }
+		@InjectRepository(CourseUserRelation) private courseUserRepository: CourseUserRelationRepository) { }
 
 	async createCourse(courseDto: CourseDto): Promise<CourseDto> {
 		if (!courseDto.config.groupSettings) {
@@ -28,7 +29,7 @@ export class CourseService {
 		const course = await this.courseRepository.createCourse(courseDto);
 		return DtoFactory.createCourseDto(course);
 	}
-	
+
 	/**
 	 * Adds the user to the course. 
 	 * If the course requires a password, the given password must match the specified password.
@@ -36,7 +37,7 @@ export class CourseService {
 	 */
 	async addUser(courseId: string, userId: string, password?: string): Promise<any> { // TODO: don't return any
 		const course = await this.courseRepository.getCourseWithConfig(courseId);
-		
+
 		if (course.isClosed) throw new CourseClosedException();
 
 		// Check if password is required + matches
@@ -45,7 +46,7 @@ export class CourseService {
 			throw new BadRequestException("The given password was incorrect.");
 		}
 
-		return this.courseUserRepository.createCourseUserRelation(courseId, userId, CourseRole.STUDENT); 
+		return this.courseUserRepository.createCourseUserRelation(courseId, userId, CourseRole.STUDENT);
 	}
 
 	async getCourses(filter?: CourseFilterDto): Promise<CourseDto[]> {
@@ -73,7 +74,7 @@ export class CourseService {
 		const course = await this.courseRepository.updateCourse(courseId, courseDto);
 		return DtoFactory.createCourseDto(course);
 	}
-	
+
 	async updateRole(courseId: string, userId: string, role: CourseRole): Promise<boolean> {
 		return this.courseUserRepository.updateRole(courseId, userId, role);
 	}

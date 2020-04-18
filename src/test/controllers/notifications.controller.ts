@@ -11,20 +11,32 @@ export class NotificationsController {
 	constructor(private http: HttpService) { }
 
 	@Post()
-	@ApiOperation({ description: "Sends the given UpdateMessage to the specified URL via HTTP-POST. Use (GET) /notifications for examples." })
+	@ApiOperation({
+		operationId: "sendNotification",
+		summary: "Send notication",
+		description: "Sends the given UpdateMessage to the specified URL via HTTP-POST. Use (GET) /notifications for examples."
+	})
 	sendNotification(@Body() testMessage: UpdateMessageTestDto): void {
 		console.log("Sending message to: " + testMessage.url);
 		this.http.post(testMessage.url, testMessage.message).toPromise();
 	} 
 
 	@Post("log")
-	@ApiOperation({summary: "Should not be called manually!" ,description: "Logs the received UpdateMessage send from (POST) /notifications, if it was send to this route (/notifications/log)." })
+	@ApiOperation({
+		operationId: "logReceivedMessage",
+		summary: "SHOULD NOT BE CALLED",
+		description: "Logs the received UpdateMessage send from (POST) /notifications, if it was send to this route (/notifications/log)."
+	})
 	logReceivedMessage(@Body() message: UpdateMessage): void {
 		console.log(message);
 	}
 
 	@Get()
-	@ApiOperation({ description: "Returns all possible UpdateMessages." })
+	@ApiOperation({
+		operationId: "getNotification",
+		summary: "Get UpdateMessage-Examples",
+		description: "Returns all possible UpdateMessages."
+	})
 	getNotification(): UpdateMessage[] {
 		console.log("getNotifactions() was called");
 		return MESSAGES_ALL;
