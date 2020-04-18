@@ -7,10 +7,10 @@ import { AdmissionCriteriaDto } from "./admission-criteria.dto";
  * A dto that contains the configuration of a course.
  */
 export class CourseConfigDto {
-	groupSettings: GroupSettingsDto;
-	admissionCriteria: AdmissionCriteriaDto;
-	assignmentTemplates: AssignmentTemplateDto[];
-	lecturers: UserDto[];
+	groupSettings?: GroupSettingsDto;
+	admissionCriteria?: AdmissionCriteriaDto;
+	assignmentTemplates?: AssignmentTemplateDto[];
+	lecturers?: UserDto[];
 
 	password?: string;
 	subscriptionUrl?: string;
