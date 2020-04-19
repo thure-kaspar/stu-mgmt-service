@@ -58,7 +58,7 @@ export function assignMatchingProperties(target: any, source: any): void {
  */
 export function convertToEntityNoRelations<T extends BaseEntity>(target: (new () => T), dto: unknown): T {
 	const entity = new target();
-	assignMatchingProperties(entity, copy(dto));
+	assignProperties(entity, copy(dto)); // TODO: Using wrong method while assignMatchingProperties doesn't work
 	return entity;
 }
 

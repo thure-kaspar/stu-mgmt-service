@@ -3,6 +3,9 @@ import { Course } from "../../../shared/entities/course.entity";
 import { CourseDto } from "../../../shared/dto/course.dto";
 import { CourseFilterDto } from "../../../shared/dto/course-filter.dto";
 import { AdmissionCritera } from "../../entities/admission-criteria.entity";
+import { CourseConfig } from "../../entities/course-config.entity";
+import { GroupSettings } from "../../entities/group-settings.entity";
+import { AssignmentTemplate } from "../../entities/assignment-template.entity";
 
 @EntityRepository(Course)
 export class CourseRepository extends Repository<Course> {
@@ -96,9 +99,29 @@ export class CourseRepository extends Repository<Course> {
 	 * Creates a Course entity from the given CourseDto, which should be used for insertion in the database.
 	 */
 	public createInsertableEntity(courseDto: CourseDto): Course {
-		const course = this.create(courseDto);
-		if (!course.config) throw new Error("CourseConfig is missing.");
-		if (!course.config.groupSettings) throw new Error("GroupSettings are missing.");
+		if (!courseDto.config) throw new Error("CourseConfig is missing.");
+		if (!courseDto.config.groupSettings) throw new Error("GroupSettings are missing.");
+
+		const course = new Course(); // TODO: Can't simply call this.create because admissionCriterias structure doesn't match. (Would remove the need for the code below)
+		course.id = courseDto.id;
+		course.shortname = courseDto.shortname;
+		course.semester = courseDto.semester;
+		course.title = courseDto.title;
+		course.link = courseDto.link;
+		course.isClosed = courseDto.isClosed;
+
+		course.config = new CourseConfig();
+		course.config.password = courseDto.config.password;
+		course.config.subscriptionUrl = courseDto.config.subscriptionUrl;
+	
+		course.config.groupSettings = new GroupSettings();
+		Object.assign(course.config.groupSettings, courseDto.config.groupSettings);
+
+		course.config.assignmentTemplates = courseDto.config.assignmentTemplates?.map((t, index) => {
+			const template = new AssignmentTemplate();
+			Object.assign(template, courseDto.config.assignmentTemplates[index]);
+			return template;
+		});
 
 		if (courseDto.config.admissionCriteria?.criteria?.length > 0) {
 			course.config.admissionCriteria = new AdmissionCritera();

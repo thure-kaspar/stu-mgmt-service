@@ -71,7 +71,6 @@ export abstract class DtoFactory {
 
 	static createGroupSettingsDto(settings: GroupSettings): GroupSettingsDto {
 		return {
-			id: settings.id,
 			allowGroups: settings.allowGroups,
 			nameSchema: settings.nameSchema,
 			sizeMin: settings.sizeMin,
@@ -82,7 +81,6 @@ export abstract class DtoFactory {
 
 	static createAdmissionCriteriaDto(criteria: AdmissionCritera): AdmissionCriteriaDto {
 		const criteriaDto: AdmissionCriteriaDto = criteria.admissionCriteria;
-		criteriaDto.id = criteria.id;
 		return criteriaDto;
 	}
 
