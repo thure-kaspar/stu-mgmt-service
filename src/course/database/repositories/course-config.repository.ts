@@ -1,6 +1,7 @@
 import { EntityRepository, Repository } from "typeorm";
 import { CourseConfig } from "../../entities/course-config.entity";
 import { CourseConfigDto } from "../../dto/course-config.dto";
+import { CourseConfigUpdateDto } from "../../dto/course-config-update.dto";
 
 @EntityRepository(CourseConfig)
 export class CourseConfigRepository extends Repository<CourseConfig> {
@@ -30,7 +31,7 @@ export class CourseConfigRepository extends Repository<CourseConfig> {
 	}
 
 	/** Partially updates the course config. Does not update related entites. */
-	async updateCourseConfig(courseId: string, partial: Partial<CourseConfigEdit>): Promise<CourseConfig> {
+	async updateCourseConfig(courseId: string, partial: Partial<CourseConfigUpdateDto>): Promise<CourseConfig> {
 		await this.update({ courseId }, partial);
 		return this.getByCourseId(courseId);
 	}

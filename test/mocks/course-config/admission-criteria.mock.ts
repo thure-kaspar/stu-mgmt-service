@@ -26,7 +26,6 @@ export const RULE_INDIVIDUAL_TESTAT_30_PERCENT: Rule = {
 };
 
 export const ADMISSION_CRITERIA_JAVA: AdmissionCriteriaDto = {
-	id: 1,
 	criteria: [
 		RULE_OVERALL_HOMEWORK_50_PERCENT,
 		RULE_INDIVIDUAL_HOMEWORK_30_PERCENT,
