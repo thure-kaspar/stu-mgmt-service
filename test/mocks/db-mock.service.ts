@@ -22,6 +22,7 @@ import { AdmissionCritera } from "../../src/course/entities/admission-criteria.e
 import { AssignmentTemplate } from "../../src/course/entities/assignment-template.entity";
 import { CourseConfig } from "../../src/course/entities/course-config.entity";
 import { COURSE_CONFIGS_MOCK } from "./course-config/course-config.mock";
+import { convertToEntityNoRelations } from "../utils/object-helper";
 
 //@Injectable() Not a "real" (injectable) service for now
 export class DbMockService {
@@ -65,21 +66,20 @@ export class DbMockService {
 
 	async createCourses(): Promise<void> {
 		const repo = this.con.getRepository(Course);
-		const courses = this.courses.map(c => repo.create(c));
+		const courses = this.courses.map(c => convertToEntityNoRelations(Course, c));
 
-		await repo.save(courses)
+		await repo.insert(courses)
 			.catch(error => console.log(error));
 	}
 
 	async createCourseConfig(): Promise<void> {
 		const repo = this.con.getRepository(CourseConfig);
-		const configs = repo.create(this.configs);
+		const configs: CourseConfig[] = [];
 
-		let id = 1;
-
-		configs.forEach(c => {
-			c.courseId = this.courses[id - 1].id;
-			id++;
+		this.configs.forEach((c, index) => {
+			const config = convertToEntityNoRelations(CourseConfig, c);
+			config.courseId = this.courses[index].id;
+			configs.push(config);
 		});
 
 		await repo.insert(configs)
@@ -99,10 +99,11 @@ export class DbMockService {
 
 	async createAdmissionCriteria(): Promise<void> {
 		const repo = this.con.getRepository(AdmissionCritera);
-		const crit = repo.create(this.admissionCriteria);
-		crit.courseConfigId = 1;
-		crit.admissionCriteria = this.admissionCriteria;
-		await repo.insert(crit)
+		const criteria = new AdmissionCritera();
+		criteria.admissionCriteria = this.admissionCriteria;
+		criteria.courseConfigId = this.configs[0].id;
+
+		await repo.insert(criteria)
 			.catch(error => console.error(error));
 	}
 
@@ -121,7 +122,8 @@ export class DbMockService {
 	}
 
 	async createGroups(): Promise<void> {
-		await this.con.getRepository(Group).insert(this.groups)
+		const groups = this.groups.map(g => convertToEntityNoRelations(Group, g));
+		await this.con.getRepository(Group).insert(groups)
 			.catch(error => console.error(error));
 	}
 
@@ -131,7 +133,8 @@ export class DbMockService {
 	}
 
 	async createAssessments(): Promise<void> {
-		await this.con.getRepository(Assessment).insert(this.assessments)
+		const assessments = this.assessments.map(a => convertToEntityNoRelations(Assessment, a));
+		await this.con.getRepository(Assessment).insert(assessments)
 			.catch(error => console.error(error));
 	}
 

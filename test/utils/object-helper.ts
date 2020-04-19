@@ -1,4 +1,5 @@
 import { BaseEntity } from "typeorm";
+import { CourseConfig } from "../../src/course/entities/course-config.entity";
 
 /**
  * Returns a deep copy of the given object.
@@ -37,10 +38,28 @@ export function copy<T>(target: T): T {
 }
 
 /** Assigns all properties of the source to the target-object. */
-export function assignMatchingProperties(target: any, source: any): void {
+export function assignProperties(target: any, source: any): void {
 	Object.keys(source).forEach(key=> {
 		target[key] = source[key];
 	});
+}
+
+/** Assigns only matching properties of the source to the target-object. Does not include nested. */
+export function assignMatchingProperties(target: any, source: any): void {
+	Object.keys(source).forEach(key=> {
+		if (key in target) target[key] = source[key]; // TODO: Figure out a way to implement this so it works with entities
+	});
+}
+
+/**
+ * Creates an entity of the given type and assigns matching properties.
+ * Will only work, if entity and dto share a similar structure. Will not perform any custom mapping between these objects.
+ * Does not include nested objects such as relations.
+ */
+export function convertToEntityNoRelations<T extends BaseEntity>(target: (new () => T), dto: unknown): T {
+	const entity = new target();
+	assignMatchingProperties(entity, copy(dto));
+	return entity;
 }
 
 /**
@@ -50,7 +69,7 @@ export function assignMatchingProperties(target: any, source: any): void {
  */
 export function convertToEntity<T extends BaseEntity>(target: (new () => T), dto: unknown): T {
 	const entity = new target();
-	assignMatchingProperties(entity, copy(dto));
+	assignProperties(entity, copy(dto));
 	return entity;
 }
 
