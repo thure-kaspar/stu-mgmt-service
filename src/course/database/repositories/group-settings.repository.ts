@@ -24,9 +24,9 @@ export class GroupSettingsRepository extends Repository<GroupSettings> {
 	}
 
 	/** Partially updates the group settings and returns them. */
-	async updateGroupSettings(id: number, partial: Partial<GroupSettings>): Promise<GroupSettings> {
-		await this.update(id, partial);
-		return this.getById(id);
+	async updateGroupSettings(courseId: string, partial: Partial<GroupSettings>): Promise<GroupSettings> {
+		await this.update({ courseConfig: { courseId } }, partial);
+		return this.getByCourseId(courseId);
 	}
 
 }

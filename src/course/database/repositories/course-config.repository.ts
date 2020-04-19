@@ -7,7 +7,7 @@ export class CourseConfigRepository extends Repository<CourseConfig> {
 
 	/** Inserts the course config into the database. */
 	createCourseConfig(courseId: string, configDto: CourseConfigDto): Promise<CourseConfig> {
-		const config = this.create(configDto);
+		const config = new CourseConfig();
 		
 		if (config.admissionCriteria) {
 			config.admissionCriteria.admissionCriteria = configDto.admissionCriteria;
@@ -30,9 +30,9 @@ export class CourseConfigRepository extends Repository<CourseConfig> {
 	}
 
 	/** Partially updates the course config. Does not update related entites. */
-	async updateCourseConfig(id: number, partial: Partial<CourseConfigDto>): Promise<CourseConfig> {
-		await this.update(id, partial);
-		return this.getById(id);
+	async updateCourseConfig(courseId: string, partial: Partial<CourseConfigEdit>): Promise<CourseConfig> {
+		await this.update({ courseId }, partial);
+		return this.getByCourseId(courseId);
 	}
 
 	/** Removes the course config from the database. Returns true, if removal was successful. */
