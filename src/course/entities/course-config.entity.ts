@@ -3,6 +3,7 @@ import { GroupSettings } from "./group-settings.entity";
 import { AdmissionCritera } from "./admission-criteria.entity";
 import { AssignmentTemplate } from "./assignment-template.entity";
 import { Course } from "../../shared/entities/course.entity";
+import { CourseConfigDto } from "../dto/course-config.dto";
 
 @Entity()
 export class CourseConfig extends BaseEntity {
@@ -30,4 +31,26 @@ export class CourseConfig extends BaseEntity {
 
 	@OneToMany(type => AssignmentTemplate, assignmentTemplate => assignmentTemplate.courseConfig, { cascade: ["insert"] })
 	assignmentTemplates: AssignmentTemplate[];
+
+	/**
+	 * Returns the Dto-representation of this entity.
+	 * @param [excludePriviliged=false] If true, excludes password and subscription url.
+	 */
+	toDto(excludePriviliged = false): CourseConfigDto {
+		const configDto: CourseConfigDto = { };
+		if (this.admissionCriteria) 
+			configDto.admissionCriteria = this.admissionCriteria.toDto();
+
+		if (this.groupSettings)
+			configDto.groupSettings = this.groupSettings.toDto();
+
+		if (this.assignmentTemplates)
+			configDto.assignmentTemplates = this.assignmentTemplates.map(t => t.toDto());
+		
+		if (excludePriviliged) {
+			configDto.password = this.password;
+			configDto.subscriptionUrl = this.subscriptionUrl;
+		}
+		return configDto;
+	}
 }

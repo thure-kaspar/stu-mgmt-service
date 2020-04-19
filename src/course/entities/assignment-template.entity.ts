@@ -1,6 +1,7 @@
 import { BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, Entity, JoinColumn } from "typeorm";
 import { AssignmentType, CollaborationType } from "../../shared/enums";
 import { CourseConfig } from "./course-config.entity";
+import { AssignmentTemplateDto } from "../dto/assignment-template.dto";
 
 @Entity()
 export class AssignmentTemplate extends BaseEntity {
@@ -28,4 +29,15 @@ export class AssignmentTemplate extends BaseEntity {
 
 	@Column({ nullable: true })
 	points?: number;
+
+	toDto(): AssignmentTemplateDto {
+		return {
+			id: this.id,
+			name: this.name,
+			collaboration: this.collaboration,
+			type: this.type,
+			titleSchema: this.titleSchema,
+			points: this.points
+		};
+	}
 }

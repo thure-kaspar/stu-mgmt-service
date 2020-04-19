@@ -1,5 +1,6 @@
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from "typeorm";
 import { CourseConfig } from "./course-config.entity";
+import { GroupSettingsDto } from "../dto/group-settings.dto";
 
 @Entity()
 export class GroupSettings extends BaseEntity {
@@ -27,4 +28,15 @@ export class GroupSettings extends BaseEntity {
 
 	@Column()
 	selfmanaged: boolean;
+
+	toDto(): GroupSettingsDto {
+		return {
+			allowGroups: this.allowGroups,
+			nameSchema: this.nameSchema,
+			sizeMin: this.sizeMin,
+			sizeMax: this.sizeMax,
+			selfmanaged: this.selfmanaged
+		};
+	}
+
 }
