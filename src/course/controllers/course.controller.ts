@@ -18,8 +18,8 @@ export class CourseController {
 	@Post()
 	@ApiOperation({
 		operationId: "createCourse",
-		summary: "",
-		description: ""
+		summary: "Create course",
+		description: "Creates a new course."
 	})
 	createCourse(@Body() courseDto: CourseDto): Promise<CourseDto> {
 		return this.courseService.createCourse(courseDto);
