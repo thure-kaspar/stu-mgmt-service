@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional, PartialType } from "@nestjs/swagger";
 import { Min } from "class-validator";
 
 export class GroupSettingsDto {
@@ -24,3 +24,6 @@ export class GroupSettingsDto {
 	@ApiProperty({ description: "Indicates, wether the group is managed by its members."})
 	selfmanaged: boolean;
 }
+
+/** Version of GroupSettingsDto that only contains editable properties. */
+export class GroupSettingsUpdateDto extends PartialType(GroupSettingsDto) { }

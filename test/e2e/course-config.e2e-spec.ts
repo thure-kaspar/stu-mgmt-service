@@ -12,10 +12,9 @@ import { AdmissionCriteriaDto } from "../../src/course/dto/admission-criteria.dt
 import { AssignmentTemplateDto } from "../../src/course/dto/assignment-template.dto";
 import { copy } from "../utils/object-helper";
 import { ADMISSION_CRITERIA_JAVA, RULE_OVERALL_HOMEWORK_50_PERCENT } from "../mocks/course-config/admission-criteria.mock";
-import { CourseConfigUpdateDto } from "../../src/course/dto/course-config-update.dto";
+import { CourseConfigUpdateDto } from "../../src/course/dto/course-config.dto";
 import { GROUP_SETTINGS_GROUPS_ALLOWED_MIN2_MAX3_SELF } from "../mocks/course-config/group-settings.mock";
-import { GroupSettingsUpdateDto } from "../../src/course/dto/group-settings-update.dto";
-import { CourseConfigRepository } from "../../src/course/database/repositories/course-config.repository";
+import { GroupSettingsUpdateDto } from "../../src/course/dto/group-settings.dto";
 
 let app: INestApplication;
 let dbMockService: DbMockService;

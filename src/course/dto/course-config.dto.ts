@@ -1,6 +1,7 @@
 import { GroupSettingsDto } from "./group-settings.dto";
 import { AssignmentTemplateDto } from "./assignment-template.dto";
 import { AdmissionCriteriaDto } from "./admission-criteria.dto";
+import { PartialType, OmitType } from "@nestjs/swagger";
 
 /**
  * A dto that contains the configuration of a course.
@@ -16,4 +17,12 @@ export class CourseConfigDto {
 	subscriptionUrl?: string;
 }
 
+/** Version of CourseConfigDto that only contains editable properties. */
+export class CourseConfigUpdateDto extends PartialType(
+	OmitType(CourseConfigDto, [
+		"id",
+		"groupSettings", 
+		"admissionCriteria", 
+		"assignmentTemplates"
+	])) { }
 

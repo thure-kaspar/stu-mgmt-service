@@ -5,8 +5,8 @@ import { GroupSettingsDto } from "../dto/group-settings.dto";
 import { AdmissionCriteriaDto } from "../dto/admission-criteria.dto";
 import { AssignmentTemplateDto } from "../dto/assignment-template.dto";
 import { CourseConfigService } from "../services/course-config.service";
-import { CourseConfigUpdateDto } from "../dto/course-config-update.dto";
-import { GroupSettingsUpdateDto } from "../dto/group-settings-update.dto";
+import { CourseConfigUpdateDto } from "../dto/course-config.dto";
+import { GroupSettingsUpdateDto } from "../dto/group-settings.dto";
 
 @ApiTags("course-config")
 @Controller("courses/:courseId/config")
