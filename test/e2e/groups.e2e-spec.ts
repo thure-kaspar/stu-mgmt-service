@@ -60,8 +60,11 @@ describe("POST-REQUESTS for relations (Db contains data) of GroupController (e2e
 		// Setup mocks - these tests require a filled db
 		dbMockService = new DbMockService(getConnection());
 		await dbMockService.createCourses();
+		await dbMockService.createCourseConfig();
+		await dbMockService.createGroupSettings();
 		await dbMockService.createUsers();
 		await dbMockService.createGroups();
+		await dbMockService.createCourseUserRelations();
 	});
 
 	afterEach(async () => {
@@ -78,7 +81,7 @@ describe("POST-REQUESTS for relations (Db contains data) of GroupController (e2e
 			.expect(201);
 	});
 
-	it ("(POST) /groups/{groupId}/users/{userId} Incorrect password -> 401 Unauthorized", () => {
+	it("(POST) /groups/{groupId}/users/{userId} Incorrect password -> 401 Unauthorized", () => {
 		const group = GROUP_1_JAVA;
 
 		return request(app.getHttpServer())
@@ -87,7 +90,7 @@ describe("POST-REQUESTS for relations (Db contains data) of GroupController (e2e
 			.expect(401);
 	});
 
-	it ("(POST) /groups/{groupId}/users/{userId} Group is closed -> 409 Conflict", () => {
+	it("(POST) /groups/{groupId}/users/{userId} Group is closed -> 409 Conflict", () => {
 		const group = GROUP_1_JAVA;
 
 		return request(app.getHttpServer())

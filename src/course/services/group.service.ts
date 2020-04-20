@@ -40,7 +40,7 @@ export class GroupService {
 		const group = await this.groupRepository.getGroupForAddUserToGroup(groupId, userId);
 		const sizeMax = group.course.config.groupSettings.sizeMax;
 		const sizeCurrent  = group.userGroupRelations.length;
-		console.log(JSON.stringify(group, null, 4));
+		
 		if (group.isClosed) throw new ConflictException("Group is closed.");
 		if (sizeCurrent >= sizeMax) throw new ConflictException("Group is full.");
 		if (group.password && group.password !== password) throw new UnauthorizedException("The given password was incorrect.");

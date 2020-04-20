@@ -8,7 +8,7 @@ import { GROUP_1_JAVA, GROUP_2_JAVA } from "../mocks/groups.mock";
 import { USER_STUDENT_JAVA } from "../mocks/users.mock";
 import { createApplication } from "../mocks/application.mock";
 import { copy } from "../utils/object-helper";
-import { COURSE_CONFIG_JAVA_1920 } from "../mocks/course-config/course-config.mock";
+import { COURSE_CONFIG_JAVA_1920, COURSE_CONFIG_COURSE_INFO_2_2020 } from "../mocks/course-config/course-config.mock";
 
 let app: INestApplication;
 let dbMockService: DbMockService; // Should be initialized in every describe-block that requires data in db
@@ -89,7 +89,7 @@ describe("GET-REQUESTS of CourseController (e2e)", () => {
 
 });
 
-describe.only("POST-REQUESTS of CourseController (empty db) (e2e)", () => {
+describe("POST-REQUESTS of CourseController (empty db) (e2e)", () => {
 
 	beforeEach(async () => {
 		app = await createApplication();
@@ -123,6 +123,9 @@ describe("POST-REQUESTS for relations (db contains data) of CourseController (e2
 		// Setup mocks - all of these tests require (at least) existing courses and users
 		dbMockService = new DbMockService(getConnection());
 		await dbMockService.createCourses();
+		await dbMockService.createCourseConfig();
+		await dbMockService.createAdmissionCriteria();
+		await dbMockService.createGroupSettings();
 		await dbMockService.createUsers();
 	});
 
@@ -133,7 +136,7 @@ describe("POST-REQUESTS for relations (db contains data) of CourseController (e2
 
 	it("(POST) /courses/{courseId}/users/{userId} No password required -> Adds user to course", () => {
 		const courseNoPassword = COURSE_INFO_2_2020;
-		console.assert(courseNoPassword.config.password == null, "Course password should be undefined"); 
+		console.assert(COURSE_CONFIG_COURSE_INFO_2_2020.password == undefined, "Course password should be undefined"); 
 		const user = USER_STUDENT_JAVA;
 
 		return request(app.getHttpServer())
@@ -146,7 +149,7 @@ describe("POST-REQUESTS for relations (db contains data) of CourseController (e2
 
 		return request(app.getHttpServer())
 			.post(`/courses/${course.id}/users/${user.id}`)
-			// TODO: fix -> .send({ password: course.password }) // the correct password
+			.send({ password: COURSE_CONFIG_JAVA_1920.password }) // the correct password
 			.expect(201);
 	});
 

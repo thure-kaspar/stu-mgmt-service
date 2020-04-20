@@ -23,7 +23,7 @@ export const COURSE_INFO_2_2020: CourseDto = {
 	shortname: "info2", 
 	semester: "sose2020", 
 	title: "Informatik II: Algorithmen und Datenstrukturen", 
-	isClosed: true, 
+	isClosed: false, 
 	link: "test.test",
 };
 
