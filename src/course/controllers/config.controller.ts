@@ -14,6 +14,7 @@ export class CourseConfigController {
 
 	constructor(private configService: CourseConfigService) { }
 
+	//#region POST
 	@Post()
 	@ApiOperation({
 		operationId: "createCourseConfig",
@@ -27,7 +28,7 @@ export class CourseConfigController {
 		return this.configService.createCourseConfig(courseId, config);
 	}
 
-	@Post("admission-criteria")
+	@Post(":configId/admission-criteria")
 	@ApiOperation({
 		operationId: "createAdmissionCriteria",
 		summary: "Create admission criteria",
@@ -41,7 +42,7 @@ export class CourseConfigController {
 		return this.configService.createAdmissionCriteria(configId, admissionCriteria);
 	}
 
-	@Post("assignment-templates")
+	@Post(":configId/assignment-templates")
 	@ApiOperation({
 		operationId: "createAssignmentTemplate",
 		summary: "Create assignment template",
@@ -54,7 +55,9 @@ export class CourseConfigController {
 	): Promise<AssignmentTemplateDto> {
 		return this.configService.createAssignmentTemplate(configId, template);
 	}
+	//#endregion
 
+	//#region GET
 	@Get()
 	@ApiOperation({
 		operationId: "getCourseConfig",
@@ -94,7 +97,9 @@ export class CourseConfigController {
 	getAssignmentTemplates(@Param("courseId") courseId: string): Promise<AssignmentTemplateDto[]> {
 		return this.configService.getAssignmentTemplates(courseId);
 	}
-
+	//#endregion
+	
+	//#region PATCH
 	@Patch()
 	@ApiOperation({
 		operationId: "updateCourseConfig",
@@ -133,14 +138,16 @@ export class CourseConfigController {
 	): Promise<AdmissionCriteriaDto> {
 		return this.configService.updateAdmissionCriteria(courseId, criteria);
 	}
+	//#endregion
 
+	//#region DELETE
 	@Delete()
 	@ApiOperation({
 		operationId: "removeCourseConfig",
 		summary: "Remove course config",
 		description: "Removes the complete configuration of a course. Includes group settings, admission criteria and templates."
 	})
-	deleteCourseConfig(@Param("courseId") courseId: string): Promise<boolean> {
+	deleteCourseConfig(@Param("courseId") courseId: string): Promise<void> {
 		return this.configService.removeCourseConfig(courseId);
 	}
 
@@ -150,7 +157,7 @@ export class CourseConfigController {
 		summary: "Remove admssion criteria",
 		description: "Removes the admission criteria of a course."
 	})
-	deleteAdmissionCriteria(@Param("courseId") courseId: string): Promise<boolean> {
+	deleteAdmissionCriteria(@Param("courseId") courseId: string): Promise<void> {
 		return this.configService.removeAdmissionCriteria(courseId);
 	}
 
@@ -163,7 +170,8 @@ export class CourseConfigController {
 	deleteAssignmentTemplate(
 		@Param("courseId") courseId: string,
 		@Param("id") id: number
-	): Promise<boolean> {
+	): Promise<void> {
 		return this.configService.removeAssignmentTemplateFromCourse(courseId, id);
-	} 
+	}
+	//#endregion
 }

@@ -9,7 +9,6 @@ export const COURSE_CONFIG_JAVA_1920: CourseConfigDto = {
 	groupSettings: GROUP_SETTINGS_GROUPS_ALLOWED_MIN2_MAX3_SELF,
 	assignmentTemplates: ASSIGNMENT_TEMPLATES_MOCK,
 	admissionCriteria: ADMISSION_CRITERIA_JAVA,
-	lecturers: [USER_MGMT_ADMIN_JAVA_LECTURER],
 	password: "password",
 	subscriptionUrl: "http://example-url.com/api/update"
 };
@@ -19,7 +18,6 @@ export const COURSE_CONFIG_COURSE_JAVA_1819: CourseConfigDto = {
 	groupSettings: GROUP_SETTINGS_NO_GROUPS,
 	assignmentTemplates: ASSIGNMENT_TEMPLATES_MOCK,
 	admissionCriteria: ADMISSION_CRITERIA_JAVA,
-	lecturers: [USER_MGMT_ADMIN_JAVA_LECTURER],
 	password: "password",
 	subscriptionUrl: "http://example-url.com/api/update"
 };
@@ -29,7 +27,6 @@ export const COURSE_CONFIG_COURSE_INFO_2_2020: CourseConfigDto = {
 	groupSettings: GROUP_SETTINGS_NO_GROUPS,
 	assignmentTemplates: ASSIGNMENT_TEMPLATES_MOCK,
 	admissionCriteria: ADMISSION_CRITERIA_JAVA,
-	lecturers: [USER_MGMT_ADMIN_JAVA_LECTURER]
 };
 
 export const COURSE_CONFIGS_MOCK: CourseConfigDto[] = [

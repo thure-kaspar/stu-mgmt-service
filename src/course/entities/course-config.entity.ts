@@ -37,7 +37,12 @@ export class CourseConfig extends BaseEntity {
 	 * @param [excludePriviliged=false] If true, excludes password and subscription url.
 	 */
 	toDto(excludePriviliged = false): CourseConfigDto {
-		const configDto: CourseConfigDto = { };
+		const configDto: CourseConfigDto = {
+			id: this.id,
+			password: excludePriviliged ? undefined : this.password,
+			subscriptionUrl: excludePriviliged ? undefined : this.subscriptionUrl
+		};
+
 		if (this.admissionCriteria) 
 			configDto.admissionCriteria = this.admissionCriteria.toDto();
 
@@ -47,10 +52,6 @@ export class CourseConfig extends BaseEntity {
 		if (this.assignmentTemplates)
 			configDto.assignmentTemplates = this.assignmentTemplates.map(t => t.toDto());
 		
-		if (excludePriviliged) {
-			configDto.password = this.password;
-			configDto.subscriptionUrl = this.subscriptionUrl;
-		}
 		return configDto;
 	}
 }

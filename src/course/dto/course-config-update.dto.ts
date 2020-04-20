@@ -7,6 +7,5 @@ export class CourseConfigUpdateDto extends PartialType(
 		"id",
 		"groupSettings", 
 		"admissionCriteria", 
-		"assignmentTemplates",
-		"lecturers"
+		"assignmentTemplates"
 	])) { }

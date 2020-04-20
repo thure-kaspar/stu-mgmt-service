@@ -96,26 +96,28 @@ export class CourseConfigService {
 		
 	/**
 	 * Removes the complete course configuration.
-	 * @returns true, if removal was successful.
+	 * @throws Error, if deletion failed or had no effect.
 	 */
-	async removeCourseConfig(courseId: string): Promise<boolean> {
-		return this.configRepo.removeCourseConfig(courseId);
+	async removeCourseConfig(courseId: string): Promise<void> {
+		const deleted = await this.configRepo.removeCourseConfig(courseId);
+		if (!deleted) throw new Error("Delete had no effect.");
 	}
 	
 	/**
 	 * Removes the admission criteria for a course.
-	 * @returns true, if removal was successful.
+	 * @throws Error, if deletion failed or had no effect.
 	 */
-	async removeAdmissionCriteria(courseId: string): Promise<boolean> {
-		return this.admissionCriteriaRepo.removeAdmissionCriteria(courseId);
+	async removeAdmissionCriteria(courseId: string): Promise<void> {
+		const deleted = await this.admissionCriteriaRepo.removeAdmissionCriteria(courseId);
+		if (!deleted) throw new Error("Delete had no effect.");
 	}
 
 	/**
 	 * Removes the assignment template from a course.
 	 * @param id Id of the assignment template
-	 * @returns true, if removal was successful.
+	 * @throws Error, if deletion failed or had no effect.
 	 */
-	async removeAssignmentTemplateFromCourse(courseId: string, id: number): Promise<boolean> { 
+	async removeAssignmentTemplateFromCourse(courseId: string, id: number): Promise<void> { 
 		throw new NotImplementedException(); // TODO: Implement template course relation
 	}
 
