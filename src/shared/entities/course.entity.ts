@@ -1,7 +1,8 @@
-import { BaseEntity, Entity, Column, OneToMany, PrimaryColumn, Index } from "typeorm";
+import { BaseEntity, Entity, Column, OneToMany, PrimaryColumn, Index, OneToOne } from "typeorm";
 import { CourseUserRelation } from "./course-user-relation.entity";
 import { Group } from "./group.entity";
 import { Assignment } from "./assignment.entity";
+import { CourseConfig } from "../../course/entities/course-config.entity";
 
 @Entity("courses")
 @Index("IDX_Shortname_Semester", ["shortname", "semester"], { unique: true })
@@ -22,16 +23,7 @@ export class Course extends BaseEntity {
     isClosed: boolean;
 
     @Column({ nullable: true })
-    password?: string;
-
-    @Column({ nullable: true })
 	link?: string;
-	
-	@Column()
-	allowGroups: boolean;
-
-	@Column()
-	maxGroupSize: number;
 
     @OneToMany(type => CourseUserRelation, courseUserRelations => courseUserRelations.course)
 	courseUserRelations: CourseUserRelation[];
@@ -40,5 +32,8 @@ export class Course extends BaseEntity {
     groups: Group[];
     
     @OneToMany(type => Assignment, assignment => assignment.course)
-    assignments: Assignment[];
+	assignments: Assignment[];
+	
+	@OneToOne(type => CourseConfig, config => config.course, { cascade: ["insert"] })
+	config: CourseConfig;
 }

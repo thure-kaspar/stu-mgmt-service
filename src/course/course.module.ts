@@ -16,6 +16,12 @@ import { AssessmentUserRelationRepository } from "./database/repositories/assess
 import { AssessmentController } from "./controllers/assessment.controller";
 import { AssignmentController } from "./controllers/assignment.controller";
 import { UpdateService } from "./services/update.service";
+import { CourseConfigController } from "./controllers/config.controller";
+import { CourseConfigService } from "./services/course-config.service";
+import { CourseConfigRepository } from "./database/repositories/course-config.repository";
+import { GroupSettingsRepository } from "./database/repositories/group-settings.repository";
+import { AdmissionCriteraRepository } from "./database/repositories/admission-criteria.repository";
+import { AssignmentTemplateRepository } from "./database/repositories/assignment-template.repository";
 
 @Module({
 	imports: [TypeOrmModule.forFeature([
@@ -25,11 +31,15 @@ import { UpdateService } from "./services/update.service";
 		GroupRepository,
 		AssignmentRepository,
 		AssessmentRepository,
-		AssessmentUserRelationRepository
+		AssessmentUserRelationRepository,
+		CourseConfigRepository,
+		GroupSettingsRepository,
+		AdmissionCriteraRepository,
+		AssignmentTemplateRepository
 	]),
 	HttpModule
 	],
-	controllers: [AssessmentController, AssignmentController, CourseController, GroupController],
-	providers: [CourseService, GroupService, AssignmentService, AssessmentService, UpdateService]
+	controllers: [AssessmentController, AssignmentController, CourseController, GroupController, CourseConfigController],
+	providers: [CourseService, GroupService, AssignmentService, AssessmentService, UpdateService, CourseConfigService]
 })
 export class CourseModule { }

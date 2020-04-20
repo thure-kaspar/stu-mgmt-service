@@ -4,11 +4,13 @@ import { AppModule } from "./app.module";
 import * as config from "config";
 import { DbMockService } from "../test/mocks/db-mock.service";
 import { getConnection } from "typeorm";
+import { EntityNotFoundFilter } from "./shared/entity-not-found.filter";
 
-async function bootstrap() {
+async function bootstrap(): Promise<void> {
 	const serverConfig = config.get("server");
 	const port = process.env.SERVER_PORT || serverConfig.port;
 	const app = await NestFactory.create(AppModule);
+	app.useGlobalFilters(new EntityNotFoundFilter());
 	app.enableCors();
 	//app.setGlobalPrefix("mgmt/v1");
 
@@ -20,6 +22,7 @@ async function bootstrap() {
 		.addTag("assignments")
 		.addTag("authentication")
 		.addTag("courses")
+		.addTag("course-config")
 		.addTag("groups")
 		.addTag("users")
 		.addTag("test")

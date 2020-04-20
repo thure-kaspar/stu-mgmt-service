@@ -5,19 +5,25 @@ import { GroupRepository } from "../../../src/course/database/repositories/group
 import { TestingModule, Test } from "@nestjs/testing";
 import { GroupDto } from "../../../src/shared/dto/group.dto";
 import { GROUP_1_JAVA, GROUP_2_JAVA } from "../../mocks/groups.mock";
-import { copy } from "../../utils/object-helper";
-import { DtoToEntityConverter } from "../../utils/dto-to-entity-converter";
-import { COURSE_JAVA_1920, COURSE_INFO_2_2020 } from "../../mocks/courses.mock";
+import { copy, convertToEntity, convertToEntityNoRelations } from "../../utils/object-helper";
+import { COURSE_JAVA_1920 } from "../../mocks/courses.mock";
 import { UserGroupRelation } from "../../../src/shared/entities/user-group-relation.entity";
+import { COURSE_CONFIG_JAVA_1920 } from "../../mocks/course-config/course-config.mock";
+import { Course } from "../../../src/shared/entities/course.entity";
+import { Group } from "../../../src/shared/entities/group.entity";
+import { CourseConfig } from "../../../src/course/entities/course-config.entity";
+import { GroupSettings } from "../../../src/course/entities/group-settings.entity";
+import { GROUP_SETTINGS_GROUPS_ALLOWED_MIN2_MAX3_SELF } from "../../mocks/course-config/group-settings.mock";
+import { CourseUserRelation } from "../../../src/shared/entities/course-user-relation.entity";
 
 function getGroupWithUsersMock_JoiningPossible(passwordRequired = true) {
-	const group = DtoToEntityConverter.getGroup(GROUP_1_JAVA);
+	const group = convertToEntity(Group, GROUP_1_JAVA);
 	const userRelation1 = new UserGroupRelation();
 	userRelation1.groupId = group.id;
 	userRelation1.userId = "user_id_1";
 	group.userGroupRelations = [userRelation1];
 	
-	const course = DtoToEntityConverter.getCourse(COURSE_JAVA_1920);
+	const course = convertToEntity(Course, COURSE_JAVA_1920);
 	group.course = course;
 
 	if(!passwordRequired) group.password = null;
@@ -26,8 +32,8 @@ function getGroupWithUsersMock_JoiningPossible(passwordRequired = true) {
 }
 
 function getGroupWithUsersMock_CapacityReached() {
-	const group = DtoToEntityConverter.getGroup(GROUP_1_JAVA);
-	const course = DtoToEntityConverter.getCourse(COURSE_JAVA_1920);
+	const group = convertToEntity(Group, GROUP_1_JAVA);
+	const course = convertToEntity(Course, COURSE_JAVA_1920);
 	group.course = course;
 
 	const userRelation1 = new UserGroupRelation();
@@ -35,25 +41,53 @@ function getGroupWithUsersMock_CapacityReached() {
 	userRelation1.userId = "user_id_1";
 	group.userGroupRelations = [userRelation1];
 	
-	group.course.maxGroupSize = 1; // Groups has reached its capacity
+	//group.course.maxGroupSize = 1; // Groups has reached its capacity
 
 	return group;
 }
 
+function mock_getCourseWithConfigAndGroupSettings(): Course {
+	const course = convertToEntity(Course, COURSE_JAVA_1920);
+	const config = convertToEntity(CourseConfig, COURSE_CONFIG_JAVA_1920);
+	course.config = config;
+	return course;
+}
+
+function mock_getGroupForAddUserToGroup(groupClosed: boolean, capacityReached: boolean, password: string): Group {
+	const group = convertToEntityNoRelations(Group, GROUP_1_JAVA);
+	group.isClosed = groupClosed;
+	group.password = password;
+	group.userGroupRelations = []; // default: empty group
+	group.course = convertToEntityNoRelations(Course, COURSE_JAVA_1920);
+	group.course.courseUserRelations = [convertToEntityNoRelations(CourseUserRelation, { courseId: group.courseId, userId: "some_id" })];
+	group.course.config = convertToEntityNoRelations(CourseConfig, COURSE_CONFIG_JAVA_1920);
+	group.course.config.groupSettings = convertToEntityNoRelations(GroupSettings, GROUP_SETTINGS_GROUPS_ALLOWED_MIN2_MAX3_SELF);
+
+	if (capacityReached) {
+		const capacity = group.course.config.groupSettings.sizeMax;
+		for (let index = 0; index < capacity; index++) {
+			group.userGroupRelations.push(convertToEntityNoRelations(UserGroupRelation, { groupId: group.id, userId: "user_id" + index }));
+		}
+	}
+	return group;
+}
+
 const mock_GroupRepository = () => ({
-	createGroup: jest.fn().mockResolvedValue(DtoToEntityConverter.getGroup(GROUP_1_JAVA)),
+	createGroup: jest.fn().mockResolvedValue(convertToEntity(Group, GROUP_1_JAVA)),
 	getGroupWithUsers: jest.fn().mockResolvedValue(getGroupWithUsersMock_JoiningPossible()),
 	addUserToGroup: jest.fn(),
 	getGroupsOfCourse: jest.fn().mockResolvedValue([
-		DtoToEntityConverter.getGroup(GROUP_1_JAVA),
-		DtoToEntityConverter.getGroup(GROUP_2_JAVA)
+		convertToEntity(Group, GROUP_1_JAVA),
+		convertToEntity(Group, GROUP_2_JAVA),
 	]),
+	getGroupForAddUserToGroup: jest.fn().mockResolvedValue(mock_getGroupForAddUserToGroup(false, false, GROUP_1_JAVA.password)),
 	updateGroup: jest.fn(),
 	deleteGroup: jest.fn(),
 });
 
 const mock_CourseRepository = () => ({
-	getCourseById: jest.fn().mockResolvedValue(DtoToEntityConverter.getCourse(COURSE_JAVA_1920))
+	getCourseById: jest.fn().mockResolvedValue(convertToEntity(Course, COURSE_JAVA_1920)),
+	getCourseWithConfigAndGroupSettings: jest.fn().mockImplementation(() => { return mock_getCourseWithConfigAndGroupSettings(); })
 });
 
 describe("GroupService", () => {
@@ -99,16 +133,18 @@ describe("GroupService", () => {
 		});
 
 		it("No groups allowed -> Throws Exception", async () => {
-			const courseNoGroups = copy(COURSE_INFO_2_2020);
-			courseRepository.getCourseById = jest.fn().mockResolvedValue(DtoToEntityConverter.getCourse(courseNoGroups));
-			console.assert(courseNoGroups.allowGroups == false, "Course should not allow groups");
+			courseRepository.getCourseWithConfigAndGroupSettings = jest.fn().mockImplementationOnce(() => {
+				const course = mock_getCourseWithConfigAndGroupSettings();
+				course.config.groupSettings.allowGroups = false;
+				return course;
+			});
 
 			try {
-				await service.createGroup(courseNoGroups.id, groupDto);
+				await service.createGroup(groupDto.courseId, groupDto);
 				expect(true).toEqual(false);
 			} catch(error) {
 				expect(error).toBeTruthy();
-				expect(error.status).toEqual(400);
+				expect(error.status).toEqual(403);
 			}
 		});
 
@@ -126,6 +162,7 @@ describe("GroupService", () => {
 	
 	});
 
+	// TODO: Implement mock for new repository method
 	describe("addUserToGroup", () => {
 
 		const userId = "user_id";
@@ -135,26 +172,25 @@ describe("GroupService", () => {
 
 			await service.addUserToGroup(groupDto.id, userId, groupDto.password);
 
-			expect(groupRepository.getGroupWithUsers).toHaveBeenCalledWith(groupDto.id); // Called to check if joining is possible
+			expect(groupRepository.getGroupForAddUserToGroup).toHaveBeenCalledWith(groupDto.id, userId); // Called to check if joining is possible
 			expect(groupRepository.addUserToGroup).toHaveBeenCalledWith(groupDto.id, userId);
 		});
 
 		it("Joining possible + No password required -> Adds user to group", async () => {
-			const groupNoPassword = copy(GROUP_2_JAVA);
-			groupNoPassword.password = null;
-			groupNoPassword.isClosed = false;
-			groupRepository.getGroupWithUsers = jest.fn().mockResolvedValue(getGroupWithUsersMock_JoiningPossible(false)); // No password required
+			groupRepository.getGroupForAddUserToGroup = jest.fn().mockResolvedValueOnce(
+				mock_getGroupForAddUserToGroup(false, false, null) // Joining possible, No password required
+			);
 
-			await service.addUserToGroup(groupDto.id, userId).catch(error => console.log(error));
+			await service.addUserToGroup(groupDto.id, userId);
 
-			expect(groupRepository.getGroupWithUsers).toHaveBeenCalledWith(groupDto.id); // Called to check if joining is possible
+			expect(groupRepository.getGroupForAddUserToGroup).toHaveBeenCalledWith(groupDto.id, userId); // Called to check if joining is possible
 			expect(groupRepository.addUserToGroup).toHaveBeenCalledWith(groupDto.id, userId);
 		});
 	
 		it("Group is closed -> Throws Exception", async () => {
-			const groupClosed = copy(GROUP_2_JAVA);
-			groupClosed.isClosed = true;
-			groupRepository.getGroupWithUsers = jest.fn().mockResolvedValue(DtoToEntityConverter.getGroup(groupClosed));
+			groupRepository.getGroupForAddUserToGroup = jest.fn().mockResolvedValueOnce(
+				mock_getGroupForAddUserToGroup(true, false, groupDto.password) // Group closed
+			);
 			
 			try {
 				await service.addUserToGroup(groupDto.id, userId, groupDto.password);
@@ -166,7 +202,9 @@ describe("GroupService", () => {
 		});
 
 		it("Group has reached its max. capacity -> Throws Exception", async () => {
-			groupRepository.getGroupWithUsers = jest.fn().mockResolvedValue(getGroupWithUsersMock_CapacityReached());
+			groupRepository.getGroupForAddUserToGroup = jest.fn().mockResolvedValueOnce(
+				mock_getGroupForAddUserToGroup(false, true, groupDto.password) // Group closed
+			);
 
 			try {
 				await service.addUserToGroup(groupDto.id, userId, groupDto.password);

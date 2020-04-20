@@ -12,8 +12,13 @@ import { AssignmentSubscriber } from "../course/database/subscribers/assignment.
 import { UserGroupRelationSubscriber } from "../course/database/subscribers/user-group.subscriber";
 import { CourseUserRelationSubscriber } from "../course/database/subscribers/course-user.subscriber";
 import { MailTemplate } from "../mailing/entities/mail-template.entity";
+import { CourseConfig } from "../course/entities/course-config.entity";
+import { AssignmentTemplate } from "../course/entities/assignment-template.entity";
+import { GroupSettings } from "../course/entities/group-settings.entity";
+import { AdmissionCritera } from "../course/entities/admission-criteria.entity";
 
 const dbConfig = config.get("db");
+const loggingConfig = config.get("logger");
 
 export const typeOrmConfig: TypeOrmModuleOptions = {
 	type: process.env.DB_TYPE || dbConfig.type,
@@ -25,6 +30,9 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
 	synchronize: process.env.TYPEORM_SYNC || dbConfig.synchronize,
 	dropSchema: dbConfig.dropSchema || false,
 	keepConnectionAlive: true, // prevents AlreadyHasActiveConnectionError, needed for testing // TODO: Check if it should be disabled in production
-	entities: [Course, User, Group, CourseUserRelation, UserGroupRelation, Assignment, Assessment, AssessmentUserRelation, MailTemplate],
+	entities: [Course, User, Group, CourseUserRelation, UserGroupRelation, Assignment, Assessment, AssessmentUserRelation, MailTemplate,
+		CourseConfig, AssignmentTemplate, GroupSettings, AdmissionCritera
+	],
 	subscribers: [CourseUserRelationSubscriber, UserGroupRelationSubscriber, AssignmentSubscriber],
+	logging: loggingConfig.dbErrors ? ["error"] : undefined
 };

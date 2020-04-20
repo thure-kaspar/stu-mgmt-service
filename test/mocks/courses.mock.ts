@@ -6,10 +6,7 @@ export const COURSE_JAVA_1920: CourseDto = {
 	semester: "wise1920", 
 	title: "Programmierpraktikum I: Java", 
 	isClosed: false, 
-	password: "java", 
 	link: "test.test",
-	allowGroups: true,
-	maxGroupSize: 3
 };
 
 export const COURSE_JAVA_1819: CourseDto = {
@@ -18,10 +15,7 @@ export const COURSE_JAVA_1819: CourseDto = {
 	semester: "wise1819", 
 	title: "Programmierpraktikum I: Java", 
 	isClosed: true, 
-	password: "java", 
 	link: "test.test",
-	allowGroups: true,
-	maxGroupSize: 3
 };
 
 export const COURSE_INFO_2_2020: CourseDto = {
@@ -29,11 +23,8 @@ export const COURSE_INFO_2_2020: CourseDto = {
 	shortname: "info2", 
 	semester: "sose2020", 
 	title: "Informatik II: Algorithmen und Datenstrukturen", 
-	isClosed: true, 
-	password: null, // this course requires no password 
+	isClosed: false, 
 	link: "test.test",
-	allowGroups: false,
-	maxGroupSize: 0 
 };
 
 export const CoursesMock: CourseDto[] = [

@@ -30,17 +30,32 @@ export class GroupRepository extends Repository<Group> {
 			});
 	}
 
-	async getGroupById(groupId: string): Promise<Group> {
-		return this.findOne(groupId);
+	async getGroupById(groupId: string, ...relations: string[]): Promise<Group> {
+		return this.findOneOrFail(groupId, { relations });
 	}
 
 	/**
 	 * Returns the group with its members.
 	 */
-	async getGroupWithUsers(groupId: string) {
-		return this.findOne(groupId, {
+	async getGroupWithUsers(groupId: string): Promise<Group> {
+		return this.findOneOrFail(groupId, {
 			relations: ["course", "userGroupRelations", "userGroupRelations.user"]
 		});
+	}
+
+	// TODO: Decide, wether query should be split up
+	/**
+	 * Returns the group including all data that needed by "addUserToGroup".
+	 */
+	async getGroupForAddUserToGroup(groupId: string, userId: string): Promise<Group> {
+		return this.createQueryBuilder("group")
+			.where("group.id = :groupId", { groupId }) // Load group
+			.leftJoinAndSelect("group.userGroupRelations", "userGroupRelations") // Load userGroupRelations
+			.leftJoinAndSelect("group.course", "course") // Load course
+			.leftJoinAndSelect("course.config", "config") // Load course config
+			.innerJoinAndSelect("config.groupSettings", "groupSettings") // Load group settings (of course config)
+			.innerJoinAndSelect("course.courseUserRelations", "relation", "relation.userId = :userId", { userId }) // Load specific course-user
+			.getOne();
 	}
 
 	/**
@@ -50,7 +65,7 @@ export class GroupRepository extends Repository<Group> {
 	 * @returns
 	 * @memberof GroupRepository
 	 */
-	async getGroupsOfCourse(courseId: string) {
+	async getGroupsOfCourse(courseId: string): Promise<Group[]> {
 		return this.find({
 			where: {
 				courseId: courseId

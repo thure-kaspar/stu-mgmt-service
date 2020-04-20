@@ -1,5 +1,5 @@
 import { Controller, Post, Param, Body, Get, ParseUUIDPipe, Patch, Delete } from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiTags, ApiOperation } from "@nestjs/swagger";
 import { AssignmentService } from "../services/assignment.service";
 import { AssignmentDto } from "../../shared/dto/assignment.dto";
 
@@ -9,6 +9,11 @@ export class AssignmentController {
 	constructor(private assignmentService: AssignmentService) { }
 
 	@Post()
+	@ApiOperation({
+		operationId: "createAssignment",
+		summary: "Create assignment",
+		description: "Creates a new assignment."
+	})
 	createAssignment(
 		@Param("courseId") courseId: string,
 		@Body() assignmentDto: AssignmentDto
@@ -18,6 +23,11 @@ export class AssignmentController {
 	}
 
 	@Get()
+	@ApiOperation({
+		operationId: "getAssignmentsOfCourse",
+		summary: "Get assignments of course",
+		description: "Retrieves all assignments of the course."
+	})
 	getAssignmentsOfCourse(
 		@Param("courseId") courseId: string,
 	): Promise<AssignmentDto[]> {
@@ -26,6 +36,11 @@ export class AssignmentController {
 	}
 
 	@Get(":assignmentId")
+	@ApiOperation({
+		operationId: "getAssignmentById",
+		summary: "Get assignment",
+		description: "Retrieves the assignment."
+	})
 	getAssignmentById(
 		@Param("courseId") courseId: string,
 		@Param("assignmentId", ParseUUIDPipe) assignmentId: string 
@@ -35,6 +50,11 @@ export class AssignmentController {
 	}
 
 	@Patch(":assignmentId")
+	@ApiOperation({
+		operationId: "updateAssignment",
+		summary: "Update assignment",
+		description: "Updates the assignment."
+	})
 	updateAssignment(
 		@Param("courseId") courseId: string,
 		@Param("assignmentId", ParseUUIDPipe) assignmentId: string,
@@ -45,6 +65,11 @@ export class AssignmentController {
 	}
 
 	@Delete(":assignmentId")
+	@ApiOperation({
+		operationId: "deleteAssignment",
+		summary: "Delete assignment",
+		description: "Deletes the assignment. Returns true, if removal was successful."
+	})
 	deleteAssignment(
 		@Param("courseId") courseId: string,
 		@Param("assignmentId", ParseUUIDPipe) assignmentId: string

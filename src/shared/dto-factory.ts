@@ -9,6 +9,14 @@ import { Assignment } from "./entities/assignment.entity";
 import { Assessment } from "./entities/assessment.entity";
 import { AssessmentDto } from "./dto/assessment.dto";
 import { CourseRole } from "./enums";
+import { CourseConfig } from "../course/entities/course-config.entity";
+import { CourseConfigDto } from "../course/dto/course-config.dto";
+import { GroupSettings } from "../course/entities/group-settings.entity";
+import { GroupSettingsDto } from "../course/dto/group-settings.dto";
+import { AdmissionCritera } from "../course/entities/admission-criteria.entity";
+import { AdmissionCriteriaDto } from "../course/dto/admission-criteria.dto";
+import { AssignmentTemplate } from "../course/entities/assignment-template.entity";
+import { AssignmentTemplateDto } from "../course/dto/assignment-template.dto";
 
 export abstract class DtoFactory {
 
@@ -19,11 +27,9 @@ export abstract class DtoFactory {
 			semester: course.semester,
 			title: course.title,
 			isClosed: course.isClosed,
-			link: course.link,
-			allowGroups: course.allowGroups,
-			maxGroupSize: course.maxGroupSize
+			link: course.link
 		};
-    
+		
 		// Add relational data, if available
 		if (course.courseUserRelations) {
 			courseDto.users = course.courseUserRelations.map(courseUserRelation => 
@@ -37,8 +43,56 @@ export abstract class DtoFactory {
 		if (course.groups) {
 			courseDto.groups = course.groups.map(group => this.createGroupDto(group));
 		}
+
+		if (course.config) {
+			courseDto.config = this.createCourseConfigDto(course.config);
+		}
     
 		return courseDto;
+	}
+
+	static createCourseConfigDto(config: CourseConfig, includePriviliged = false): CourseConfigDto {
+		const configDto: CourseConfigDto = { };
+		if (config.admissionCriteria) 
+			configDto.admissionCriteria = this.createAdmissionCriteriaDto(config.admissionCriteria);
+
+		if (config.groupSettings)
+			configDto.groupSettings = this.createGroupSettingsDto(config.groupSettings);
+
+		if (config.assignmentTemplates)
+			configDto.assignmentTemplates = config.assignmentTemplates.map(t => this.createAssignmentTemplateDto(t));
+		
+		if (includePriviliged) {
+			configDto.password = config.password;
+			configDto.subscriptionUrl = config.subscriptionUrl;
+		}
+		return configDto;
+	}
+
+	static createGroupSettingsDto(settings: GroupSettings): GroupSettingsDto {
+		return {
+			allowGroups: settings.allowGroups,
+			nameSchema: settings.nameSchema,
+			sizeMin: settings.sizeMin,
+			sizeMax: settings.sizeMax,
+			selfmanaged: settings.selfmanaged
+		};
+	}
+
+	static createAdmissionCriteriaDto(criteria: AdmissionCritera): AdmissionCriteriaDto {
+		const criteriaDto: AdmissionCriteriaDto = criteria.admissionCriteria;
+		return criteriaDto;
+	}
+
+	static createAssignmentTemplateDto(template: AssignmentTemplate): AssignmentTemplateDto {
+		return {
+			id: template.id,
+			name: template.name,
+			collaboration: template.collaboration,
+			type: template.type,
+			titleSchema: template.titleSchema,
+			points: template.points
+		};
 	}
     
 	static createUserDto(user: User, courseRole?: CourseRole): UserDto {

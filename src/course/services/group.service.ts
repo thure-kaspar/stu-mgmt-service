@@ -7,6 +7,7 @@ import { Group } from "../../shared/entities/group.entity";
 import { GroupDto } from "../../shared/dto/group.dto";
 import { UserDto } from "../../shared/dto/user.dto";
 import { DtoFactory } from "../../shared/dto-factory";
+import { CourseClosedException, GroupsForbiddenException } from "../exceptions/custom-exceptions";
 
 @Injectable()
 export class GroupService {
@@ -14,16 +15,21 @@ export class GroupService {
 	constructor(@InjectRepository(Group) private groupRepository: GroupRepository,
 				@InjectRepository(Course) private courseRepository: CourseRepository) { }
 
+	/**
+	 * Creates a group, if the course allows groups.
+	 */
 	async createGroup(courseId: string, groupDto: GroupDto): Promise<GroupDto> {
 		if (courseId !== groupDto.courseId) throw new BadRequestException("CourseId refers to a different course");
 
-		const course = await this.courseRepository.getCourseById(courseId);
-		if (!course.allowGroups) throw new BadRequestException("Creating groups is not allowed is this course.");
+		// Check if group creation is allowed
+		const course = await this.courseRepository.getCourseWithConfigAndGroupSettings(courseId);
+		if (course.isClosed) throw new CourseClosedException();
+		if (!course.config.groupSettings.allowGroups) throw new GroupsForbiddenException();
 		
 		const createdGroup = await this.groupRepository.createGroup(groupDto);
 		return DtoFactory.createGroupDto(createdGroup);
 	}
-
+	
 	/**
 	 * Adds the user to the group, if the following conditions are fulfilled:
 	 *   - Group is not closed
@@ -31,10 +37,12 @@ export class GroupService {
 	 *   - Given password matches the group's password
 	 */
 	async addUserToGroup(groupId: string, userId: string, password?: string): Promise<any> {
-		const group = await this.groupRepository.getGroupWithUsers(groupId);
-
+		const group = await this.groupRepository.getGroupForAddUserToGroup(groupId, userId);
+		const sizeMax = group.course.config.groupSettings.sizeMax;
+		const sizeCurrent  = group.userGroupRelations.length;
+		
 		if (group.isClosed) throw new ConflictException("Group is closed.");
-		if (group.userGroupRelations.length >= group.course.maxGroupSize) throw new ConflictException("Group is full.");
+		if (sizeCurrent >= sizeMax) throw new ConflictException("Group is full.");
 		if (group.password && group.password !== password) throw new UnauthorizedException("The given password was incorrect.");
 
 		return this.groupRepository.addUserToGroup(groupId, userId);

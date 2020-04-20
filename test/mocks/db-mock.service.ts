@@ -1,5 +1,5 @@
 // import { Injectable } from "@nestjs/common";
-import { getConnection, Connection, EntityManager, BaseEntity } from "typeorm";
+import { Connection, EntityManager } from "typeorm";
 import { User } from "../../src/shared/entities/user.entity";
 import { Group } from "../../src/shared/entities/group.entity";
 import { Course } from "../../src/shared/entities/course.entity";
@@ -14,6 +14,15 @@ import { AssessmentsMock } from "./assessments.mock";
 import { AssignmentsMock } from "./assignments.mock";
 import { UsersMock } from "./users.mock";
 import { GroupsMock } from "./groups.mock";
+import { ASSIGNMENT_TEMPLATES_MOCK } from "./course-config/assignment-templates.mock";
+import { GROUP_SETTINGS_MOCK } from "./course-config/group-settings.mock";
+import { ADMISSION_CRITERIA_JAVA } from "./course-config/admission-criteria.mock";
+import { GroupSettings } from "../../src/course/entities/group-settings.entity";
+import { AdmissionCritera } from "../../src/course/entities/admission-criteria.entity";
+import { AssignmentTemplate } from "../../src/course/entities/assignment-template.entity";
+import { CourseConfig } from "../../src/course/entities/course-config.entity";
+import { COURSE_CONFIGS_MOCK } from "./course-config/course-config.mock";
+import { convertToEntityNoRelations } from "../utils/object-helper";
 
 //@Injectable() Not a "real" (injectable) service for now
 export class DbMockService {
@@ -27,6 +36,10 @@ export class DbMockService {
 	courseUserRelations = CourseUserRelationsMock;
 	userGroupRelations = UserGroupRelationsMock;
 	assessmentUserRelations = AssessmentUserRelationsMock;
+	assignmentTemplates = ASSIGNMENT_TEMPLATES_MOCK;
+	groupSettings = GROUP_SETTINGS_MOCK;
+	admissionCriteria = ADMISSION_CRITERIA_JAVA;
+	configs = COURSE_CONFIGS_MOCK;
 	
 	constructor(connection: Connection) { 
 		this.con = connection.manager;
@@ -38,6 +51,10 @@ export class DbMockService {
 	 */
 	async createAll(): Promise<void> {
 		await this.createCourses();
+		await this.createCourseConfig();
+		await this.createAssignmentTemplates();
+		await this.createAdmissionCriteria();
+		await this.createGroupSettings();
 		await this.createUsers();
 		await this.createGroups();
 		await this.createAssignments();
@@ -48,8 +65,55 @@ export class DbMockService {
 	}
 
 	async createCourses(): Promise<void> {
-		await this.con.getRepository(Course).insert(this.courses)
+		const repo = this.con.getRepository(Course);
+		const courses = this.courses.map(c => convertToEntityNoRelations(Course, c));
+
+		await repo.insert(courses)
 			.catch(error => console.log(error));
+	}
+
+	async createCourseConfig(): Promise<void> {
+		const repo = this.con.getRepository(CourseConfig);
+		const configs: CourseConfig[] = [];
+
+		this.configs.forEach((c, index) => {
+			const config = convertToEntityNoRelations(CourseConfig, c);
+			config.courseId = this.courses[index].id;
+			configs.push(config);
+		});
+
+		await repo.insert(configs)
+			.catch(error => console.log(error));
+	}
+
+	async createGroupSettings(): Promise<void> {
+		const repo = this.con.getRepository(GroupSettings);
+		const settings = repo.create(this.groupSettings);
+
+		let configId = 1;
+		settings.forEach(s => s.courseConfigId = configId++);
+
+		await repo.insert(settings)
+			.catch(error => console.error(error));
+	}
+
+	async createAdmissionCriteria(): Promise<void> {
+		const repo = this.con.getRepository(AdmissionCritera);
+		const criteria = new AdmissionCritera();
+		criteria.admissionCriteria = this.admissionCriteria;
+		criteria.courseConfigId = this.configs[0].id;
+
+		await repo.insert(criteria)
+			.catch(error => console.error(error));
+	}
+
+	async createAssignmentTemplates(): Promise<void> {
+		const repo = this.con.getRepository(AssignmentTemplate);
+		const templates = this.assignmentTemplates.map(t => repo.create(t));
+		templates.forEach(t => t.courseConfigId = 1);
+
+		await this.con.getRepository(AssignmentTemplate).insert(templates)
+			.catch(error => console.error(error));
 	}
 
 	async createUsers(): Promise<void> {
@@ -58,7 +122,8 @@ export class DbMockService {
 	}
 
 	async createGroups(): Promise<void> {
-		await this.con.getRepository(Group).insert(this.groups)
+		const groups = this.groups.map(g => convertToEntityNoRelations(Group, g));
+		await this.con.getRepository(Group).insert(groups)
 			.catch(error => console.error(error));
 	}
 
@@ -68,7 +133,8 @@ export class DbMockService {
 	}
 
 	async createAssessments(): Promise<void> {
-		await this.con.getRepository(Assessment).insert(this.assessments)
+		const assessments = this.assessments.map(a => convertToEntityNoRelations(Assessment, a));
+		await this.con.getRepository(Assessment).insert(assessments)
 			.catch(error => console.error(error));
 	}
 

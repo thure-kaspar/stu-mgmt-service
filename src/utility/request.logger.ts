@@ -22,6 +22,11 @@ export class RequestLogger implements NestInterceptor {
 		this.logger.verbose({ originalUrl, method, params, query, body });
 
 		// Handle (exectute) the request and log its response 
-		return next.handle().pipe(tap(data => this.logger.verbose({ statusCode, data })));
+		const startTime = Date.now();
+		return next.handle().pipe(tap(data => this.logger.verbose({
+			time: (Date.now() - startTime) + "ms",
+			statusCode, 
+			data 
+		})));
 	}
 }

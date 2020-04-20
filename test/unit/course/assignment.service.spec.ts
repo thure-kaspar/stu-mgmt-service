@@ -3,18 +3,18 @@ import { AssignmentService } from "../../../src/course/services/assignment.servi
 import { DtoFactory } from "../../../src/shared/dto-factory";
 import { AssignmentRepository } from "../../../src/course/database/repositories/assignment.repository";
 import { AssignmentDto } from "../../../src/shared/dto/assignment.dto";
-import { copy } from "../../utils/object-helper";
+import { copy, convertToEntity } from "../../utils/object-helper";
 import { ASSIGNMENT_JAVA_EVALUATED, ASSIGNMENT_JAVA_IN_REVIEW } from "../../mocks/assignments.mock";
-import { DtoToEntityConverter } from "../../utils/dto-to-entity-converter";
+import { Assignment } from "../../../src/shared/entities/assignment.entity";
 
 const mock_AssignmentRepository = () => ({
-	createAssignment: jest.fn().mockResolvedValue(DtoToEntityConverter.getAssignment(ASSIGNMENT_JAVA_EVALUATED)),
+	createAssignment: jest.fn().mockResolvedValue(convertToEntity(Assignment, ASSIGNMENT_JAVA_EVALUATED)),
 	getAssignments: jest.fn().mockResolvedValue([
-		DtoToEntityConverter.getAssignment(ASSIGNMENT_JAVA_EVALUATED),
-		DtoToEntityConverter.getAssignment(ASSIGNMENT_JAVA_IN_REVIEW)
+		convertToEntity(Assignment, ASSIGNMENT_JAVA_EVALUATED),
+		convertToEntity(Assignment, ASSIGNMENT_JAVA_IN_REVIEW)
 	]),
-	getAssignmentById: jest.fn().mockResolvedValue(DtoToEntityConverter.getAssignment(ASSIGNMENT_JAVA_EVALUATED)),
-	updateAssignment: jest.fn().mockResolvedValue(DtoToEntityConverter.getAssignment(ASSIGNMENT_JAVA_EVALUATED)),
+	getAssignmentById: jest.fn().mockResolvedValue(convertToEntity(Assignment, ASSIGNMENT_JAVA_EVALUATED)),
+	updateAssignment: jest.fn().mockResolvedValue(convertToEntity(Assignment, ASSIGNMENT_JAVA_EVALUATED)),
 	deleteAssignment: jest.fn().mockResolvedValue(true)
 });
 

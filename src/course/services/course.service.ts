@@ -9,33 +9,43 @@ import { UserDto } from "../../shared/dto/user.dto";
 import { CourseRole } from "../../shared/enums";
 import { CourseFilterDto } from "../../shared/dto/course-filter.dto";
 import { DtoFactory } from "../../shared/dto-factory";
-import { CourseConfigDto } from "../../shared/dto/course-config.dto";
+import { CourseClosedException } from "../exceptions/custom-exceptions";
 
 @Injectable()
 export class CourseService {
 
 	constructor(@InjectRepository(Course) private courseRepository: CourseRepository,
-				@InjectRepository(CourseUserRelation) private courseUserRepository: CourseUserRelationRepository) { }
+		@InjectRepository(CourseUserRelation) private courseUserRepository: CourseUserRelationRepository) { }
 
 	async createCourse(courseDto: CourseDto): Promise<CourseDto> {
-		const createdCourse = await this.courseRepository.createCourse(courseDto);
-		return DtoFactory.createCourseDto(createdCourse);
+		if (!courseDto.config.groupSettings) {
+			throw new BadRequestException("Group settings are missing.");
+		}
+
+		courseDto.id = courseDto.id ?? courseDto.shortname + "-" + courseDto.semester; // If no id was supplied, <shortname-semester> will be the id
+		courseDto.config.password = courseDto.config.password?.length > 0 ? courseDto.config.password : null; // Replace empty string with null
+
+		const course = await this.courseRepository.createCourse(courseDto);
+		return DtoFactory.createCourseDto(course);
 	}
-	
+
 	/**
 	 * Adds the user to the course. 
 	 * If the course requires a password, the given password must match the specified password.
+	 * Throws exception, if course is closed or password does not match.
 	 */
 	async addUser(courseId: string, userId: string, password?: string): Promise<any> { // TODO: don't return any
+		const course = await this.courseRepository.getCourseWithConfig(courseId);
+
+		if (course.isClosed) throw new CourseClosedException();
+
 		// Check if password is required + matches
-		const course = await this.courseRepository.getCourseById(courseId);
-		if (course.password) {
-			if (course.password !== password) {
-				throw new BadRequestException("The given password was incorrect.");
-			}
+		const requiredPassword = course.config.password;
+		if (requiredPassword && requiredPassword !== password) {
+			throw new BadRequestException("The given password was incorrect.");
 		}
 
-		return this.courseUserRepository.createCourseUserRelation(courseId, userId, CourseRole.STUDENT); 
+		return this.courseUserRepository.createCourseUserRelation(courseId, userId, CourseRole.STUDENT);
 	}
 
 	async getCourses(filter?: CourseFilterDto): Promise<CourseDto[]> {
@@ -46,25 +56,6 @@ export class CourseService {
 	async getCourseById(id: string): Promise<CourseDto> {
 		const course = await this.courseRepository.getCourseById(id);
 		return DtoFactory.createCourseDto(course);
-	}
-
-	/**
-	 * Returns a CourseConfigDto containing all properties that describe a course's configuration.
-	 */
-	async getCourseConfig(id: string): Promise<CourseConfigDto> {
-		const course = await this.courseRepository.getCourseConfig(id);
-
-		// Extract lecturers (response only includes lecturers)
-		const lecturers = course.courseUserRelations.map(r => DtoFactory.createUserDto(r.user));
-		// Get rid of users (we don't want to include them in CourseDto)
-		course.courseUserRelations = undefined;
-
-		const config: CourseConfigDto = {
-			course: DtoFactory.createCourseDto(course),
-			lecturers: lecturers
-		};
-
-		return config;
 	}
 
 	async getCourseByNameAndSemester(name: string, semester: string): Promise<CourseDto> {
@@ -82,7 +73,7 @@ export class CourseService {
 		const course = await this.courseRepository.updateCourse(courseId, courseDto);
 		return DtoFactory.createCourseDto(course);
 	}
-	
+
 	async updateRole(courseId: string, userId: string, role: CourseRole): Promise<boolean> {
 		return this.courseUserRepository.updateRole(courseId, userId, role);
 	}

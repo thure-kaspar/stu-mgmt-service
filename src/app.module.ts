@@ -7,7 +7,7 @@ import { CourseModule } from "./course/course.module";
 import { UserModule } from "./user/user.module";
 import { TestModule } from "./test/test.module";
 import { RequestLogger } from "./utility/request.logger";
-import { typeOrmConfig } from "./config/typeorm-config";
+import { typeOrmConfig } from "./.config/typeorm-config";
 import { AuthModule } from "./auth/auth.module";
 import * as config from "config";
 import { MailingModule } from "./mailing/mailing.module";
