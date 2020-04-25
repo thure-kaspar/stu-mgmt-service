@@ -12,7 +12,7 @@ export class GroupDto {
 	courseId: string;
 	
 	/** The course that this group belongs to. */
-	@ApiPropertyOptional({ description: "The course that this group belongs to." })
+	//@ApiPropertyOptional({ description: "The course that this group belongs to.", type: () => CourseDto })
 	course?: CourseDto;
 
 	/** Name of the group. */
@@ -28,7 +28,7 @@ export class GroupDto {
 	isClosed?: boolean;
 	
 	/** The members of this group. */
-	@ApiPropertyOptional({ description: "The members of this group." })
+	//@ApiPropertyOptional({ description: "The members of this group.", type: UserDto, isArray: true })
     users?: UserDto[];
 
 }

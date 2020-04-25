@@ -2,14 +2,9 @@ import { AssignmentType } from "../../shared/enums";
 import { Min, Max } from "class-validator";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
-export class AdmissionCriteriaDto {
-	/** Rules that must be fulfilled in order to be admitted. */
-	@ApiProperty({ description: "Rules that must be fulfilled in order to be admitted." })
-	criteria: Rule[];
-
-	/** Rules that must be fulfilled in order to be admitted. */
-	@ApiPropertyOptional({ description: "Assignments that should be excluded from the rules."})
-	exludedAssigmentIds?: string[]
+export enum RuleScope {
+	OVERALL = "OVERALL",
+	INDIVIDUAL = "INDIVIDUAL"
 }
 
 export class Rule {
@@ -28,7 +23,14 @@ export class Rule {
 	requiredPercent: number;
 }
 
-export enum RuleScope {
-	OVERALL = "OVERALL",
-	INDIVIDUAL = "INDIVIDUAL"
+export class AdmissionCriteriaDto {
+	/** Rules that must be fulfilled in order to be admitted. */
+	//@ApiProperty({ description: "Rules that must be fulfilled in order to be admitted.", type: Rule, isArray: true })
+	criteria: Rule[];
+
+	/** Rules that must be fulfilled in order to be admitted. */
+	@ApiPropertyOptional({ description: "Assignments that should be excluded from the rules."})
+	exludedAssigmentIds?: string[]
 }
+
+

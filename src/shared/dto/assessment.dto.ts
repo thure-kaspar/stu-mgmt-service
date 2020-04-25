@@ -24,7 +24,7 @@ export class AssessmentDto {
 	groupId?: string;
 
 	/** The group, whose submission was evaluated by this assessment. */
-	@ApiPropertyOptional({ description: "The group, whose submission was evaluated by this assessment."})
+	//@ApiPropertyOptional({ description: "The group, whose submission was evaluated by this assessment.", type: GroupDto })
 	group?: GroupDto;
 
 	/** If a single user is being evaluated, contains the identifier of the user. */
@@ -36,6 +36,6 @@ export class AssessmentDto {
 	creatorId: string;
 
 	/** The creator of this assessment. */
-	@ApiPropertyOptional({ description: "The creator of this assessment."})
+	//@ApiPropertyOptional({ description: "The creator of this assessment.", type: () => UserDto })
 	creator?: UserDto;
 }

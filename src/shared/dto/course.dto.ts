@@ -30,18 +30,18 @@ export class CourseDto {
 	link?: string;
 
 	/** The participants of this course. Includes students, tutors and lecturers. */
-	@ApiPropertyOptional({ description: "The participants of this course. Includes students, tutors and lecturers." })
+	//@ApiPropertyOptional({ description: "The participants of this course. Includes students, tutors and lecturers.", type: () => UserDto, isArray: true })
 	users?: UserDto[];
 
 	/** The groups of this course. */
-	@ApiPropertyOptional({ description: "The groups of this course." })
+	//@ApiPropertyOptional({ description: "The groups of this course.", type: () => GroupDto, isArray: true })
 	groups?: GroupDto[];
 
 	/** The assignments of this course. */
-	@ApiPropertyOptional({ description: "The assignments of this course." })
+	//@ApiPropertyOptional({ description: "The assignments of this course.", type: AssignmentDto, isArray: true })
 	assignments?: AssignmentDto[];
 
 	/** The configuration of this course. */
-	@ApiPropertyOptional({ description: "The configuration of this course." })
+	//@ApiPropertyOptional({ description: "The configuration of this course.", type: CourseConfigDto })
 	config?: CourseConfigDto;
 }

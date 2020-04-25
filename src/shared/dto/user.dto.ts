@@ -16,7 +16,7 @@ export class UserDto {
 	role: UserRole;
 	
 	/** Courses that the user has signed up for. */
-	@ApiPropertyOptional({ description: "Courses that the user has signed up for." })
+	//@ApiPropertyOptional({ description: "Courses that the user has signed up for.", type: () => CourseDto })
 	courses?: CourseDto[];
 
 	/** If loaded within the context of a course: The role of the user in this course, i.e student. */
