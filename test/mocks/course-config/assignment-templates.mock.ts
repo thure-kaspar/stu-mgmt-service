@@ -7,7 +7,8 @@ export const ASSIGNMENT_TEMPLATE_GROUP_HW: AssignmentTemplateDto = {
 	titleSchema: "Hausaufgabe",
 	type: AssignmentType.HOMEWORK,
 	collaboration: CollaborationType.GROUP,
-	points: 100
+	points: 100,
+	bonusPoints: 10
 };
 
 export const ASSIGNMENT_TEMPLATE_TESTAT: AssignmentTemplateDto = {
@@ -16,7 +17,8 @@ export const ASSIGNMENT_TEMPLATE_TESTAT: AssignmentTemplateDto = {
 	titleSchema: "Testat",
 	type: AssignmentType.TESTAT,
 	collaboration: CollaborationType.SINGLE,
-	points: 100
+	points: 100,
+	bonusPoints: null
 };
 
 export const ASSIGNMENT_TEMPLATE_PROJECT: AssignmentTemplateDto = {
@@ -25,7 +27,8 @@ export const ASSIGNMENT_TEMPLATE_PROJECT: AssignmentTemplateDto = {
 	titleSchema: "Projekt",
 	type: AssignmentType.PROJECT,
 	collaboration: CollaborationType.GROUP,
-	points: 100
+	points: null,
+	bonusPoints: null
 };
 
 export const ASSIGNMENT_TEMPLATES_MOCK: AssignmentTemplateDto[] = [

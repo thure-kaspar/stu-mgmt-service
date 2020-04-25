@@ -30,6 +30,9 @@ export class AssignmentTemplate extends BaseEntity {
 	@Column({ nullable: true })
 	points?: number;
 
+	@Column({ nullable: true })
+	bonusPoints?: number;
+
 	toDto(): AssignmentTemplateDto {
 		return {
 			id: this.id,
@@ -37,7 +40,8 @@ export class AssignmentTemplate extends BaseEntity {
 			collaboration: this.collaboration,
 			type: this.type,
 			titleSchema: this.titleSchema,
-			points: this.points
+			points: this.points,
+			bonusPoints: this.bonusPoints,
 		};
 	}
 }

@@ -34,9 +34,13 @@ export class AssignmentDto {
 	@ApiProperty({ description: "Determines, wether students can submit their solutions in groups, alone or both." })
 	collaborationType: CollaborationType;
 
-	/** The maximum amount of points that can be reached by a participant. */
-	@ApiProperty({ description: "The maximum amount of points that can be reached by a participant." })
-	maxPoints: number;
+	/** The amount of points that can be reached by a participant (exluding bonus points). */
+	@ApiProperty({ description: "The amount of points that can be reached by a participant (exluding bonus points)." })
+	points: number;
+
+	/** The amount of additional bonus points, which should be exluded from the admission criteria. */
+	@ApiPropertyOptional({ description: "The amount of additional bonus points, which should be exluded from the admission criteria." })
+	bonusPoints?: number;
 
 	/** Additional information or description of this assignment. */
 	@ApiPropertyOptional({ description: "Additional information or description of this assignment." })

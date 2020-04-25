@@ -29,21 +29,12 @@ export class AssignmentRepository extends Repository<Assignment> {
 	}
 
 	/**
-	 * Updates the assignment. 
+	 * Updates the assignment partially. 
 	 */
-	async updateAssignment(assignmentId: string, assignmentDto: AssignmentDto): Promise<Assignment> {
+	async updateAssignment(assignmentId: string, update: Partial<Assignment>): Promise<Assignment> {
 		const assignment = await this.getAssignmentById(assignmentId);
-		// TODO: Define Patch-Object or create method
-		assignment.name = assignmentDto.name;
-		assignment.type = assignmentDto.type;
-		assignment.state = assignmentDto.state;
-		assignment.startDate = assignmentDto.startDate;
-		assignment.endDate = assignmentDto.endDate;
-		assignment.maxPoints = assignmentDto.maxPoints;
-		assignment.comment = assignmentDto.comment;
-		assignment.link = assignmentDto.link;
-		assignment.collaborationType = assignmentDto.collaborationType;
-		return assignment.save();
+		const updated = {...assignment, ...update};
+		return this.save(updated);
 	}
 
 	async deleteAssignment(assignmentId: string): Promise<boolean> {

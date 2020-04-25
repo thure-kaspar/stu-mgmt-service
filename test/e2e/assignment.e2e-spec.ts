@@ -80,7 +80,7 @@ describe("POST-REQUESTS of AssignmentController (e2e)", () => {
 				expect(result.courseId).toEqual(assignment.courseId);
 				expect(result.name).toEqual(assignment.name);
 				expect(result.type).toEqual(assignment.type);
-				expect(result.maxPoints).toEqual(assignment.maxPoints);
+				expect(result.points).toEqual(assignment.points);
 			});
 	});
 
@@ -101,7 +101,7 @@ describe("PATCH-REQUESTS of AssignmentController (e2e)", () => {
 		await getConnection().close(); // Close Db-Connection after all tests have been executed
 	});
 
-	it("(PATCH) /courses/{courseId}/assignments/{assignmentId} Updates the assignment)", () => {
+	it("(PATCH) /courses/{courseId}/assignments/{assignmentId} Updates the assignment", () => {
 		const assignment = ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP;
 
 		// Create clone of original data and perform some changes
@@ -109,7 +109,7 @@ describe("PATCH-REQUESTS of AssignmentController (e2e)", () => {
 		Object.assign(changedAssignment, assignment);
 
 		changedAssignment.name = "new name";
-		changedAssignment.maxPoints = 1000;
+		changedAssignment.points = 1000;
 		changedAssignment.comment = "new comment";
 
 		return request(app.getHttpServer())
@@ -118,7 +118,7 @@ describe("PATCH-REQUESTS of AssignmentController (e2e)", () => {
 			.expect(({ body }) => {
 				expect(body.id).toEqual(assignment.id); // Check if we retrieved the correct assignment
 				expect(body.name).toEqual(changedAssignment.name);
-				expect(body.maxPoints).toEqual(changedAssignment.maxPoints);
+				expect(body.points).toEqual(changedAssignment.points);
 				expect(body.comment).toEqual(changedAssignment.comment);
 			});
 	});

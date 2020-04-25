@@ -21,7 +21,11 @@ export class AssignmentTemplateDto {
 	@ApiProperty({ description: "The preferred collaboration type." })
 	collaboration: CollaborationType;
 
-	/** Max. amounts of points that can be achieved in the assignments. */
-	@ApiProperty({ description: "Max. amounts of points that can be achieved in the assignments." })
+	/** The amount of points that can be reached by a participant (exluding bonus points). */
+	@ApiProperty({ description: "The amount of points that can be reached by a participant (exluding bonus points)." })
 	points: number;
+
+	/** The amount of additional bonus points, which should be exluded from the admission criteria. */
+	@ApiPropertyOptional({ description: "The amount of additional bonus points, which should be exluded from the admission criteria." })
+	bonusPoints?: number;
 }

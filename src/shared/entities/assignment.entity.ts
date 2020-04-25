@@ -30,7 +30,10 @@ export class Assignment extends BaseEntity {
 	type: AssignmentType;
 
 	@Column()
-	maxPoints: number;
+	points: number;
+
+	@Column({ nullable: true })
+	bonusPoints?: number;
 
 	@Column({ type: "enum", enum: CollaborationType, default: CollaborationType.GROUP_OR_SINGLE })
 	collaborationType: CollaborationType;

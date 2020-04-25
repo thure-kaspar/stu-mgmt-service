@@ -140,7 +140,8 @@ export abstract class DtoFactory {
 			comment: assignment.comment,
 			link: assignment.link,
 			type: assignment.type,
-			maxPoints: assignment.maxPoints,
+			points: assignment.points,
+			bonusPoints: assignment.bonusPoints,
 			collaborationType: assignment.collaborationType
 		};
 		return assignmentDto;
