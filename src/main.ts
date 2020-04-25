@@ -16,7 +16,7 @@ async function bootstrap(): Promise<void> {
 
 	const options = new DocumentBuilder()
 		.setTitle("Student-Management-System-API")
-		.setDescription("The Student-Management-Sytem-API description.")
+		.setDescription("The Student-Management-Sytem-API. <a href='http://localhost:3000/api-json'>JSON</a>") // TODO: Replace hard-coded link
 		.setVersion("1.0")
 		.addTag("assessments")
 		.addTag("assignments")
