@@ -2,7 +2,7 @@ import { Controller, Get, HttpService, Post, Body } from "@nestjs/common";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
 import { UpdateMessage } from "../../shared/dto/update-message.dto";
 import { MESSAGES_ALL } from "../../../test/mocks/update-messages.mock";
-import { UpdateMessageTestDto } from "../UpdateMessageTestDto";
+import { UpdateMessageTestDto } from "../update-test-message.dto";
 
 @ApiTags("test")
 @Controller("notifications")
