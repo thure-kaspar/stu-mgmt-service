@@ -16,16 +16,16 @@ export class AssignmentTemplate extends BaseEntity {
 	courseConfigId: number;
 
 	@Column()
-	name: string;
+	templateName: string;
 
 	@Column({ nullable: true })
-	titleSchema?: string;
+	name?: string;
 
-	@Column({ type: "enum", enum: AssignmentType, default: AssignmentType.HOMEWORK })
-	type: AssignmentType;
+	@Column({ type: "enum", enum: AssignmentType, default: AssignmentType.HOMEWORK, nullable: true })
+	type?: AssignmentType;
 
-	@Column({ type: "enum", enum: CollaborationType, default: CollaborationType.GROUP_OR_SINGLE })
-	collaboration: CollaborationType;
+	@Column({ type: "enum", enum: CollaborationType, default: CollaborationType.GROUP_OR_SINGLE, nullable: true })
+	collaboration?: CollaborationType;
 
 	@Column({ nullable: true })
 	points?: number;
@@ -36,10 +36,10 @@ export class AssignmentTemplate extends BaseEntity {
 	toDto(): AssignmentTemplateDto {
 		return {
 			id: this.id,
-			name: this.name,
+			templateName: this.templateName,
 			collaboration: this.collaboration,
 			type: this.type,
-			titleSchema: this.titleSchema,
+			name: this.name,
 			points: this.points,
 			bonusPoints: this.bonusPoints,
 		};

@@ -87,10 +87,10 @@ export abstract class DtoFactory {
 	static createAssignmentTemplateDto(template: AssignmentTemplate): AssignmentTemplateDto {
 		return {
 			id: template.id,
-			name: template.name,
+			templateName: template.templateName,
 			collaboration: template.collaboration,
 			type: template.type,
-			titleSchema: template.titleSchema,
+			name: template.name,
 			points: template.points
 		};
 	}
