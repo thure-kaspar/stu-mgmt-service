@@ -8,7 +8,8 @@ export const ASSIGNMENT_TEMPLATE_GROUP_HW: AssignmentTemplateDto = {
 	type: AssignmentType.HOMEWORK,
 	collaboration: CollaborationType.GROUP,
 	points: 100,
-	bonusPoints: 10
+	bonusPoints: 10,
+	timespanDays: 7
 };
 
 export const ASSIGNMENT_TEMPLATE_TESTAT: AssignmentTemplateDto = {
@@ -28,7 +29,8 @@ export const ASSIGNMENT_TEMPLATE_PROJECT: AssignmentTemplateDto = {
 	type: AssignmentType.PROJECT,
 	collaboration: CollaborationType.GROUP,
 	points: null,
-	bonusPoints: null
+	bonusPoints: null,
+	timespanDays: 90
 };
 
 export const ASSIGNMENT_TEMPLATES_MOCK: AssignmentTemplateDto[] = [

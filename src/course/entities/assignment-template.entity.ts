@@ -33,6 +33,9 @@ export class AssignmentTemplate extends BaseEntity {
 	@Column({ nullable: true })
 	bonusPoints?: number;
 
+	@Column({ nullable: true })
+	timespanDays?: number;
+
 	toDto(): AssignmentTemplateDto {
 		return {
 			id: this.id,
@@ -42,6 +45,7 @@ export class AssignmentTemplate extends BaseEntity {
 			name: this.name,
 			points: this.points,
 			bonusPoints: this.bonusPoints,
+			timespanDays: this.timespanDays
 		};
 	}
 }
