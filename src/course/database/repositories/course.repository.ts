@@ -122,9 +122,6 @@ export class CourseRepository extends Repository<Course> {
 	 * Creates a Course entity from the given CourseDto, which should be used for insertion in the database.
 	 */
 	public createInsertableEntity(courseDto: CourseDto): Course {
-		if (!courseDto.config) throw new Error("CourseConfig is missing.");
-		if (!courseDto.config.groupSettings) throw new Error("GroupSettings are missing.");
-
 		const course = new Course(); // TODO: Can't simply call this.create because admissionCriterias structure doesn't match. (Would remove the need for the code below)
 		course.id = courseDto.id;
 		course.shortname = courseDto.shortname;
@@ -134,15 +131,15 @@ export class CourseRepository extends Repository<Course> {
 		course.isClosed = courseDto.isClosed;
 
 		course.config = new CourseConfig();
-		course.config.password = courseDto.config.password;
+		course.config.password = courseDto.config.password?.length > 0 ? courseDto.config.password : null; // Replace empty string with null
 		course.config.subscriptionUrl = courseDto.config.subscriptionUrl;
 	
 		course.config.groupSettings = new GroupSettings();
 		Object.assign(course.config.groupSettings, courseDto.config.groupSettings);
 
-		course.config.assignmentTemplates = courseDto.config.assignmentTemplates?.map((t, index) => {
+		course.config.assignmentTemplates = courseDto.config.assignmentTemplates?.map(t => {
 			const template = new AssignmentTemplate();
-			Object.assign(template, courseDto.config.assignmentTemplates[index]);
+			Object.assign(template, t);
 			return template;
 		});
 
