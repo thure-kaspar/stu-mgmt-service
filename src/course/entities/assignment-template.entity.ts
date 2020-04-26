@@ -1,5 +1,5 @@
 import { BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, Entity, JoinColumn } from "typeorm";
-import { AssignmentType, CollaborationType } from "../../shared/enums";
+import { AssignmentType, CollaborationType, AssignmentState } from "../../shared/enums";
 import { CourseConfig } from "./course-config.entity";
 import { AssignmentTemplateDto } from "../dto/assignment-template.dto";
 
@@ -21,6 +21,9 @@ export class AssignmentTemplate extends BaseEntity {
 	@Column({ nullable: true })
 	name?: string;
 
+	@Column({ type: "enum", enum: AssignmentState, default: AssignmentState.IN_PROGRESS, nullable: true })
+	state?: AssignmentState;
+
 	@Column({ type: "enum", enum: AssignmentType, default: AssignmentType.HOMEWORK, nullable: true })
 	type?: AssignmentType;
 
@@ -40,6 +43,7 @@ export class AssignmentTemplate extends BaseEntity {
 		return {
 			id: this.id,
 			templateName: this.templateName,
+			state: this.state,
 			collaboration: this.collaboration,
 			type: this.type,
 			name: this.name,
