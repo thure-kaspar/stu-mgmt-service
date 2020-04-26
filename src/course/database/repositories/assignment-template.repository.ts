@@ -8,7 +8,7 @@ export class AssignmentTemplateRepository extends Repository<AssignmentTemplate>
 	/** Inserts a assignment template into the database and returns it. */
 	createAssignmentTemplate(configId: number, templateDto: AssignmentTemplateDto): Promise<AssignmentTemplate> { 
 		const template = this.create(templateDto);
-		template.courseConfigId = configId; // TODO: Templates should not be owned by courses to enable reuse
+		template.courseConfigId = configId;
 		return template.save();
 	}
 
@@ -19,9 +19,10 @@ export class AssignmentTemplateRepository extends Repository<AssignmentTemplate>
 
 	/** Retrieves all templates of a course. */
 	getTemplatesByCourseId(courseId: string): Promise<AssignmentTemplate[]> {
-		return this.find({
-			where: { courseId } // TODO: Templates should not be owned by courses to enable reuse
-		});
+		return this.createQueryBuilder("template")
+			.innerJoin("template.courseConfig", "c")
+			.where("c.courseId = :courseId", { courseId })
+			.getMany();
 	}
 
 	/** Partially updates the template and returns it. */
