@@ -36,7 +36,7 @@ export class Assignment extends BaseEntity {
 	bonusPoints?: number;
 
 	@Column({ type: "enum", enum: CollaborationType, default: CollaborationType.GROUP_OR_SINGLE })
-	collaborationType: CollaborationType;
+	collaboration: CollaborationType;
 
 	@ManyToOne(type => Course, course => course.assignments, { onDelete: "CASCADE" })
 	@JoinColumn()

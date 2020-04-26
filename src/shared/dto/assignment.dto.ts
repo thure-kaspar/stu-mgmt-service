@@ -32,7 +32,7 @@ export class AssignmentDto {
 
 	/** Determines, wether students can submit their solutions in groups, alone or both. */
 	@ApiProperty({ description: "Determines, wether students can submit their solutions in groups, alone or both." })
-	collaborationType: CollaborationType;
+	collaboration: CollaborationType;
 
 	/** The amount of points that can be reached by a participant (exluding bonus points). */
 	@ApiProperty({ description: "The amount of points that can be reached by a participant (exluding bonus points)." })

@@ -9,7 +9,7 @@ export const ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP: AssignmentDto = {
 	points: 100,
 	type: AssignmentType.HOMEWORK,
 	state: AssignmentState.IN_PROGRESS,
-	collaborationType: CollaborationType.GROUP
+	collaboration: CollaborationType.GROUP
 };
 
 export const ASSIGNMENT_JAVA_CLOSED: AssignmentDto = {
@@ -19,7 +19,7 @@ export const ASSIGNMENT_JAVA_CLOSED: AssignmentDto = {
 	points: 100,
 	type: AssignmentType.HOMEWORK,
 	state: AssignmentState.CLOSED,
-	collaborationType: CollaborationType.GROUP
+	collaboration: CollaborationType.GROUP
 };
 
 export const ASSIGNMENT_JAVA_IN_REVIEW: AssignmentDto = {
@@ -29,7 +29,7 @@ export const ASSIGNMENT_JAVA_IN_REVIEW: AssignmentDto = {
 	points: 100,
 	type: AssignmentType.HOMEWORK,
 	state: AssignmentState.IN_REVIEW,
-	collaborationType: CollaborationType.SINGLE
+	collaboration: CollaborationType.SINGLE
 };
 
 export const ASSIGNMENT_JAVA_EVALUATED: AssignmentDto = {
@@ -39,7 +39,7 @@ export const ASSIGNMENT_JAVA_EVALUATED: AssignmentDto = {
 	points: 100,
 	type: AssignmentType.HOMEWORK,
 	state: AssignmentState.EVALUATED,
-	collaborationType: CollaborationType.GROUP_OR_SINGLE,
+	collaboration: CollaborationType.GROUP_OR_SINGLE,
 };
 
 export const ASSIGNMENT_JAVA_INVISIBLE: AssignmentDto = {
@@ -49,7 +49,7 @@ export const ASSIGNMENT_JAVA_INVISIBLE: AssignmentDto = {
 	points: 100,
 	type: AssignmentType.HOMEWORK,
 	state: AssignmentState.INVISIBLE,
-	collaborationType: CollaborationType.GROUP_OR_SINGLE,
+	collaboration: CollaborationType.GROUP_OR_SINGLE,
 };
 
 export const ASSIGNMENT_JAVA_TESTAT_IN_PROGRESS_SINGLE: AssignmentDto = {
@@ -59,7 +59,7 @@ export const ASSIGNMENT_JAVA_TESTAT_IN_PROGRESS_SINGLE: AssignmentDto = {
 	points: 100,
 	type: AssignmentType.TESTAT,
 	state: AssignmentState.IN_PROGRESS,
-	collaborationType: CollaborationType.SINGLE,
+	collaboration: CollaborationType.SINGLE,
 };
 
 export const ASSIGNMENT_JAVA_TESTAT_EVALUATED_SINGLE: AssignmentDto = {
@@ -69,7 +69,7 @@ export const ASSIGNMENT_JAVA_TESTAT_EVALUATED_SINGLE: AssignmentDto = {
 	points: 100,
 	type: AssignmentType.TESTAT,
 	state: AssignmentState.EVALUATED,
-	collaborationType: CollaborationType.SINGLE,
+	collaboration: CollaborationType.SINGLE,
 };
 
 export const AssignmentsMock: AssignmentDto[] = [
