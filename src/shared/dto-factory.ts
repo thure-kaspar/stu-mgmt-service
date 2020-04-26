@@ -31,7 +31,7 @@ export abstract class DtoFactory {
 		};
 		
 		// Add relational data, if available
-		if (course.courseUserRelations) {
+		if (course.courseUserRelations && course.courseUserRelations[0].user) {
 			courseDto.users = course.courseUserRelations.map(courseUserRelation => 
 				this.createUserDto(courseUserRelation.user, courseUserRelation.role));
 		}

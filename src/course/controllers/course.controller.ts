@@ -5,6 +5,7 @@ import { CourseDto } from "../../shared/dto/course.dto";
 import { UserDto } from "../../shared/dto/user.dto";
 import { CourseFilterDto } from "../../shared/dto/course-filter.dto";
 import { ChangeCourseRoleDto } from "../dto/change-course-role.dto";
+import { CourseCreateDto } from "../dto/course-create.dto";
 
 @ApiTags("courses") 
 @Controller("courses")
@@ -21,7 +22,7 @@ export class CourseController {
 		summary: "Create course",
 		description: "Creates a new course."
 	})
-	createCourse(@Body() courseDto: CourseDto): Promise<CourseDto> {
+	createCourse(@Body() courseDto: CourseCreateDto): Promise<CourseDto> {
 		return this.courseService.createCourse(courseDto);
 	}
 

@@ -1,7 +1,7 @@
 import { BaseEntity, Entity, Column, CreateDateColumn, ManyToOne, PrimaryGeneratedColumn,  JoinColumn, Index } from "typeorm";
 import { User } from "./user.entity";
 import { Course } from "./course.entity";
-import { UserRole, CourseRole } from "../enums";
+import { CourseRole } from "../enums";
 
 @Entity("course_user_relations")
 @Index("IDX_CourseId_UserId", ["courseId", "userId"], { unique: true }) // Unique index to prevent user from joining same course multiple times

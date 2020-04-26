@@ -10,6 +10,7 @@ import { CourseRole } from "../../shared/enums";
 import { CourseFilterDto } from "../../shared/dto/course-filter.dto";
 import { DtoFactory } from "../../shared/dto-factory";
 import { CourseClosedException } from "../exceptions/custom-exceptions";
+import { CourseCreateDto } from "../dto/course-create.dto";
 
 @Injectable()
 export class CourseService {
@@ -17,13 +18,18 @@ export class CourseService {
 	constructor(@InjectRepository(Course) private courseRepository: CourseRepository,
 		@InjectRepository(CourseUserRelation) private courseUserRepository: CourseUserRelationRepository) { }
 
-	async createCourse(courseDto: CourseDto): Promise<CourseDto> {
+	async createCourse(courseDto: CourseCreateDto): Promise<CourseDto> {
 		if (!courseDto.config.groupSettings) {
 			throw new BadRequestException("Group settings are missing.");
 		}
 
-		courseDto.id = courseDto.id ?? courseDto.shortname + "-" + courseDto.semester; // If no id was supplied, <shortname-semester> will be the id
-		courseDto.config.password = courseDto.config.password?.length > 0 ? courseDto.config.password : null; // Replace empty string with null
+		// If no id was supplied, <shortname-semester> will be the id
+		if (!courseDto.id || courseDto.id === "")  {
+			courseDto.id = courseDto.shortname + "-" + courseDto.semester; 
+		}
+
+		// Replace empty string with null
+		courseDto.config.password = courseDto.config.password?.length > 0 ? courseDto.config.password : null; 
 
 		const course = await this.courseRepository.createCourse(courseDto);
 		return DtoFactory.createCourseDto(course);

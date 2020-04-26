@@ -25,7 +25,7 @@ export class Course extends BaseEntity {
     @Column({ nullable: true })
 	link?: string;
 
-    @OneToMany(type => CourseUserRelation, courseUserRelations => courseUserRelations.course)
+    @OneToMany(type => CourseUserRelation, courseUserRelations => courseUserRelations.course, { cascade: ["insert"] })
 	courseUserRelations: CourseUserRelation[];
 	
 	@OneToMany(type => Group, group => group.course)

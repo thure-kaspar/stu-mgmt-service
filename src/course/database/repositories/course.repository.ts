@@ -6,15 +6,38 @@ import { AdmissionCritera } from "../../entities/admission-criteria.entity";
 import { CourseConfig } from "../../entities/course-config.entity";
 import { GroupSettings } from "../../entities/group-settings.entity";
 import { AssignmentTemplate } from "../../entities/assignment-template.entity";
+import { CourseCreateDto } from "../../dto/course-create.dto";
+import { CourseUserRelation } from "../../../shared/entities/course-user-relation.entity";
+import { CourseRole } from "../../../shared/enums";
+import { User } from "../../../shared/entities/user.entity";
 
 @EntityRepository(Course)
 export class CourseRepository extends Repository<Course> {
 
 	/**
 	 * Inserts a new course in the database. Includes the CourseConfig (with child-entities).
+	 * If lecturers are included in the Dto, the CourseUserRelations will also be created.
 	 */
-	async createCourse(courseDto: CourseDto): Promise<Course> {
+	async createCourse(courseDto: CourseCreateDto): Promise<Course> {
 		const course = this.createInsertableEntity(courseDto);
+		
+		if (courseDto.lecturers?.length > 0) {
+			const userRepo = this.manager.getRepository(User);
+			const lecturers = await userRepo.find({
+				// username: username for each lecturer
+				where: courseDto.lecturers.map(username => ({ username: username }))
+			});
+
+			const courseUserRelations = lecturers.map(lecturer => {
+				const relation = new CourseUserRelation();
+				relation.userId = lecturer.id;
+				relation.role = CourseRole.LECTURER;
+				return relation;
+			});
+
+			course.courseUserRelations = courseUserRelations;
+		}
+
 		return course.save();
 	}
 
