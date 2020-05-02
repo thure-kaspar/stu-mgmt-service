@@ -13,8 +13,7 @@ smtp:
   port: 465
 
 authSystem:
-  url: "http://147.172.178.30:8080/api/v0"
-
+  url: "http://147.172.178.30:8080/api/v0/authenticate/check"
 
 jwt:
   secret: "jwt-dev-secret"
