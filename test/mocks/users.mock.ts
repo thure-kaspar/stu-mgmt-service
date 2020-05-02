@@ -44,12 +44,30 @@ export const USER_SYSTEM_ADMIN: UserDto = {
 	role: UserRole.SYSTEM_ADMIN,
 };
 
+export const USER_FROM_AUTH_SYSTEM: UserDto = {
+	id: "abc6e1c0-6db0-4c35-8d97-07cc7173c34c",
+	email: "user@sparky-system.test",
+	username: "user",
+	rzName: "authUser",
+	role: UserRole.USER
+};
+
+export const USER_KLING_AUTH_SYSTEM: UserDto = {
+	id: "6478e13c-aa9c-4483-82e0-96bdca865472",
+	email: "kling@email.test",
+	username: "kling001",
+	rzName: "kling",
+	role: UserRole.SYSTEM_ADMIN
+};
+
 export const UsersMock: UserDto[] = [
 	USER_STUDENT_JAVA, 
 	USER_STUDENT_2_JAVA,
 	USER_STUDENT_3_JAVA_TUTOR,
 	USER_MGMT_ADMIN_JAVA_LECTURER,
-	USER_SYSTEM_ADMIN
+	USER_SYSTEM_ADMIN,
+	USER_FROM_AUTH_SYSTEM,
+	USER_KLING_AUTH_SYSTEM
 ];
 
 export function getUsersOfCourseMock(): User[] {
