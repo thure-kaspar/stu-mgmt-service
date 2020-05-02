@@ -18,11 +18,11 @@ async function bootstrap(): Promise<void> {
 		.setTitle("Student-Management-System-API")
 		.setDescription("The Student-Management-Sytem-API. <a href='http://localhost:3000/api-json'>JSON</a>") // TODO: Replace hard-coded link
 		.setVersion("1.0")
-		.addTag("assessments")
-		.addTag("assignments")
 		.addTag("authentication")
 		.addTag("courses")
 		.addTag("course-config")
+		.addTag("assignments")
+		.addTag("assessments")
 		.addTag("groups")
 		.addTag("users")
 		.addTag("test")
