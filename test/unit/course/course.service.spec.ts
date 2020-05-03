@@ -105,24 +105,6 @@ describe("CourseService", () => {
 			expect(courseRepository.createCourse).toHaveBeenCalledWith(courseDto);
 		});
 
-		it("Dto contains password with empty string (\"\") -> Assigns null to password", async () => {
-			courseDto.config.password = ""; // Empty string should be converted to null
-			const expected = copy(courseDto);
-			expected.config.password = null;
-
-			await service.createCourse(courseDto);
-			expect(courseRepository.createCourse).toHaveBeenCalledWith(expected);
-		});
-
-		it("Dto contains no password (undefined) -> Assigns null to password", async () => {
-			courseDto.config.password = undefined; // Undefined should be converted to null
-			const expected = copy(courseDto);
-			expected.config.password = null;
-
-			await service.createCourse(courseDto);
-			expect(courseRepository.createCourse).toHaveBeenCalledWith(expected);
-		});
-
 		it("Returns Dto", async () => {
 			await service.createCourse(courseDto);
 			expect(DtoFactory.createCourseDto).toHaveBeenCalled();
