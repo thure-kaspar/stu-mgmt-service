@@ -21,7 +21,8 @@ export const ASSIGNMENT_TEMPLATE_TESTAT: AssignmentTemplateDto = {
 	type: AssignmentType.TESTAT,
 	collaboration: CollaborationType.SINGLE,
 	points: 100,
-	bonusPoints: null
+	bonusPoints: null,
+	timespanDays: null
 };
 
 export const ASSIGNMENT_TEMPLATE_PROJECT: AssignmentTemplateDto = {
