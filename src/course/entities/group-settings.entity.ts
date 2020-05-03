@@ -1,6 +1,6 @@
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from "typeorm";
 import { CourseConfig } from "./course-config.entity";
-import { GroupSettingsDto } from "../dto/group-settings.dto";
+import { GroupSettingsDto } from "../dto/course-config/group-settings.dto";
 
 @Entity()
 export class GroupSettings extends BaseEntity {

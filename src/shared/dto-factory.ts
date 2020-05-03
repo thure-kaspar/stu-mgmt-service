@@ -1,22 +1,22 @@
-import { Course } from "./entities/course.entity";
-import { CourseDto } from "./dto/course.dto";
+import { Course } from "../course/entities/course.entity";
+import { CourseDto } from "../course/dto/course/course.dto";
 import { UserDto } from "./dto/user.dto";
 import { User } from "./entities/user.entity";
-import { GroupDto } from "./dto/group.dto";
-import { Group } from "./entities/group.entity";
-import { AssignmentDto } from "./dto/assignment.dto";
-import { Assignment } from "./entities/assignment.entity";
-import { Assessment } from "./entities/assessment.entity";
-import { AssessmentDto } from "./dto/assessment.dto";
+import { GroupDto } from "../course/dto/group/group.dto";
+import { Group } from "../course/entities/group.entity";
+import { AssignmentDto } from "../course/dto/assignment/assignment.dto";
+import { Assignment } from "../course/entities/assignment.entity";
+import { Assessment } from "../course/entities/assessment.entity";
+import { AssessmentDto } from "../course/dto/assessment/assessment.dto";
 import { CourseRole } from "./enums";
 import { CourseConfig } from "../course/entities/course-config.entity";
-import { CourseConfigDto } from "../course/dto/course-config.dto";
+import { CourseConfigDto } from "../course/dto/course-config/course-config.dto";
 import { GroupSettings } from "../course/entities/group-settings.entity";
-import { GroupSettingsDto } from "../course/dto/group-settings.dto";
+import { GroupSettingsDto } from "../course/dto/course-config/group-settings.dto";
 import { AdmissionCritera } from "../course/entities/admission-criteria.entity";
-import { AdmissionCriteriaDto } from "../course/dto/admission-criteria.dto";
+import { AdmissionCriteriaDto } from "../course/dto/course-config/admission-criteria.dto";
 import { AssignmentTemplate } from "../course/entities/assignment-template.entity";
-import { AssignmentTemplateDto } from "../course/dto/assignment-template.dto";
+import { AssignmentTemplateDto } from "../course/dto/course-config/assignment-template.dto";
 
 export abstract class DtoFactory {
 
@@ -156,6 +156,10 @@ export abstract class DtoFactory {
 			comment: assessment.comment,
 			creatorId: assessment.creatorId
 		};
+
+		if (assessment.partialAssessments) {
+			assessmentDto.partialAssessments = assessment.partialAssessments.map(p => p.toDto());
+		}
 
 		// If assessment belongs to a single student
 		if (assessment.assessmentUserRelations?.length == 1) {

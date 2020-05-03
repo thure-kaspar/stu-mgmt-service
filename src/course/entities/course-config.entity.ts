@@ -2,8 +2,8 @@ import { BaseEntity, PrimaryGeneratedColumn, OneToOne, Column, OneToMany, Entity
 import { GroupSettings } from "./group-settings.entity";
 import { AdmissionCritera } from "./admission-criteria.entity";
 import { AssignmentTemplate } from "./assignment-template.entity";
-import { Course } from "../../shared/entities/course.entity";
-import { CourseConfigDto } from "../dto/course-config.dto";
+import { Course } from "./course.entity";
+import { CourseConfigDto } from "../dto/course-config/course-config.dto";
 
 @Entity()
 export class CourseConfig extends BaseEntity {

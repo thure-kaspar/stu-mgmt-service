@@ -1,4 +1,4 @@
-import { AssignmentTemplateDto } from "../../../src/course/dto/assignment-template.dto";
+import { AssignmentTemplateDto } from "../../../src/course/dto/course-config/assignment-template.dto";
 import { CollaborationType, AssignmentType, AssignmentState } from "../../../src/shared/enums";
 
 export const ASSIGNMENT_TEMPLATE_GROUP_HW: AssignmentTemplateDto = {

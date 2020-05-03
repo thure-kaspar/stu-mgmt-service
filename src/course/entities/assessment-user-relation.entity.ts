@@ -1,6 +1,6 @@
 import { BaseEntity, PrimaryColumn, Entity, Index, JoinColumn, ManyToMany, ManyToOne } from "typeorm";
 import { Assessment } from "./assessment.entity";
-import { User } from "./user.entity";
+import { User } from "../../shared/entities/user.entity";
 
 @Entity("assessment_user_relations")
 @Index("IDX_AssessmentId_UserId", ["assessmentId", "userId"], { unique: true })

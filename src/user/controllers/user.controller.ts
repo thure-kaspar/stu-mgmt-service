@@ -2,9 +2,9 @@ import { Controller, Post, Body, Get, Param, ParseUUIDPipe, Delete, Patch } from
 import { UserService } from "../services/user.service";
 import { UserDto } from "../../shared/dto/user.dto";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
-import { CourseDto } from "src/shared/dto/course.dto";
-import { AssessmentDto } from "../../shared/dto/assessment.dto";
-import { GroupDto } from "../../shared/dto/group.dto";
+import { CourseDto } from "src/course/dto/course/course.dto";
+import { AssessmentDto } from "../../course/dto/assessment/assessment.dto";
+import { GroupDto } from "../../course/dto/group/group.dto";
 
 @ApiTags("users")
 @Controller("users")

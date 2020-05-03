@@ -7,7 +7,7 @@ import { UserRole } from "../../src/shared/enums";
 import { UsersMock, USER_STUDENT_JAVA } from "../mocks/users.mock";
 import { createApplication } from "../mocks/application.mock";
 import { copy } from "../utils/object-helper";
-import { CourseDto } from "../../src/shared/dto/course.dto";
+import { CourseDto } from "../../src/course/dto/course/course.dto";
 
 let app: INestApplication;
 let dbMockService: DbMockService; // Should be initialized in every describe-block

@@ -1,4 +1,4 @@
-import { AdmissionCriteriaDto, Rule, RuleScope } from "../../../src/course/dto/admission-criteria.dto";
+import { AdmissionCriteriaDto, Rule, RuleScope } from "../../../src/course/dto/course-config/admission-criteria.dto";
 import { AssignmentType } from "../../../src/shared/enums";
 
 export const RULE_OVERALL_HOMEWORK_50_PERCENT: Rule = {

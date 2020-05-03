@@ -1,4 +1,4 @@
-import { AssignmentDto } from "../../src/shared/dto/assignment.dto";
+import { AssignmentDto } from "../../src/course/dto/assignment/assignment.dto";
 import { AssignmentType, CollaborationType, AssignmentState } from "../../src/shared/enums";
 import { COURSE_JAVA_1920 } from "./courses.mock";
 

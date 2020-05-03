@@ -1,9 +1,9 @@
 import { CourseRepository } from "../../../src/course/database/repositories/course.repository";
 import { TestingModule, Test } from "@nestjs/testing";
-import { CourseDto } from "../../../src/shared/dto/course.dto";
+import { CourseDto } from "../../../src/course/dto/course/course.dto";
 import { copy, convertToEntity } from "../../utils/object-helper";
 import { COURSE_JAVA_1920 } from "../../mocks/courses.mock";
-import { Course } from "../../../src/shared/entities/course.entity";
+import { Course } from "../../../src/course/entities/course.entity";
 
 describe("CourseRepository", () => {
 

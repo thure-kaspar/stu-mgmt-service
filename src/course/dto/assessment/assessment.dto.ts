@@ -1,7 +1,7 @@
-import { GroupDto } from "../../../shared/dto/group.dto";
+import { GroupDto } from "../group/group.dto";
 import { UserDto } from "../../../shared/dto/user.dto";
 import { ApiPropertyOptional, ApiProperty } from "@nestjs/swagger";
-import { PartialAssessmentDto } from "../partial-assessment.dto";
+import { PartialAssessmentDto } from "./partial-assessment.dto";
 
 export class AssessmentDto {
 	/** Unique identifier of this assessment. */

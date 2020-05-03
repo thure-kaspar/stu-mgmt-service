@@ -1,13 +1,13 @@
 import { Repository, EntityRepository } from "typeorm";
-import { Course } from "../../../shared/entities/course.entity";
-import { CourseDto } from "../../../shared/dto/course.dto";
-import { CourseFilterDto } from "../../../shared/dto/course-filter.dto";
+import { Course } from "../../entities/course.entity";
+import { CourseDto } from "../../dto/course/course.dto";
+import { CourseFilterDto } from "../../dto/course/course-filter.dto";
 import { AdmissionCritera } from "../../entities/admission-criteria.entity";
 import { CourseConfig } from "../../entities/course-config.entity";
 import { GroupSettings } from "../../entities/group-settings.entity";
 import { AssignmentTemplate } from "../../entities/assignment-template.entity";
-import { CourseCreateDto } from "../../dto/course-create.dto";
-import { CourseUserRelation } from "../../../shared/entities/course-user-relation.entity";
+import { CourseCreateDto } from "../../dto/course/course-create.dto";
+import { CourseUserRelation } from "../../entities/course-user-relation.entity";
 import { CourseRole } from "../../../shared/enums";
 import { User } from "../../../shared/entities/user.entity";
 

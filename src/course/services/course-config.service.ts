@@ -1,13 +1,13 @@
 import { Injectable, NotImplementedException } from "@nestjs/common";
-import { CourseConfigDto, CourseConfigUpdateDto } from "../dto/course-config.dto";
+import { CourseConfigDto, CourseConfigUpdateDto } from "../dto/course-config/course-config.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CourseConfig } from "../entities/course-config.entity";
 import { GroupSettings } from "../entities/group-settings.entity";
 import { AdmissionCritera } from "../entities/admission-criteria.entity";
-import { AdmissionCriteriaDto } from "../dto/admission-criteria.dto";
-import { GroupSettingsDto, GroupSettingsUpdateDto } from "../dto/group-settings.dto";
+import { AdmissionCriteriaDto } from "../dto/course-config/admission-criteria.dto";
+import { GroupSettingsDto, GroupSettingsUpdateDto } from "../dto/course-config/group-settings.dto";
 import { AssignmentTemplate } from "../entities/assignment-template.entity";
-import { AssignmentTemplateDto } from "../dto/assignment-template.dto";
+import { AssignmentTemplateDto } from "../dto/course-config/assignment-template.dto";
 import { CourseConfigRepository } from "../database/repositories/course-config.repository";
 import { GroupSettingsRepository } from "../database/repositories/group-settings.repository";
 import { AssignmentTemplateRepository } from "../database/repositories/assignment-template.repository";

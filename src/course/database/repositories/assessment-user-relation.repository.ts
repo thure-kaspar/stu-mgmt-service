@@ -1,5 +1,5 @@
 import { Repository, EntityRepository } from "typeorm";
-import { AssessmentUserRelation } from "../../../shared/entities/assessment-user-relation.entity";
+import { AssessmentUserRelation } from "../../entities/assessment-user-relation.entity";
 
 @EntityRepository(AssessmentUserRelation)
 export class AssessmentUserRelationRepository extends Repository<AssessmentUserRelation> {

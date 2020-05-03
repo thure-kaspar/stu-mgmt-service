@@ -1,7 +1,7 @@
 import { Controller, Post, Param, Body, Get, ParseUUIDPipe, Patch, Delete } from "@nestjs/common";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
 import { AssignmentService } from "../services/assignment.service";
-import { AssignmentDto } from "../../shared/dto/assignment.dto";
+import { AssignmentDto } from "../dto/assignment/assignment.dto";
 
 @ApiTags("assignments")
 @Controller("courses/:courseId/assignments")

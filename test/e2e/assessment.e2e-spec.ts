@@ -1,7 +1,7 @@
 import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
 import { getConnection } from "typeorm";
-import { AssessmentDto } from "../../src/shared/dto/assessment.dto";
+import { AssessmentDto } from "../../src/course/dto/assessment/assessment.dto";
 import { createApplication } from "../mocks/application.mock";
 import { ASSESSMENT_JAVA_EVALUATED_GROUP_1, ASSESSMENT_JAVA_TESTAT_USER_1 } from "../mocks/assessments.mock";
 import { ASSIGNMENT_JAVA_EVALUATED, ASSIGNMENT_JAVA_TESTAT_EVALUATED_SINGLE } from "../mocks/assignments.mock";

@@ -1,7 +1,7 @@
 import { EntityRepository, Repository } from "typeorm";
 import { CourseConfig } from "../../entities/course-config.entity";
-import { CourseConfigDto } from "../../dto/course-config.dto";
-import { CourseConfigUpdateDto } from "../../dto/course-config.dto";
+import { CourseConfigDto } from "../../dto/course-config/course-config.dto";
+import { CourseConfigUpdateDto } from "../../dto/course-config/course-config.dto";
 import { GroupSettings } from "../../entities/group-settings.entity";
 import { AssignmentTemplate } from "../../entities/assignment-template.entity";
 import { AdmissionCritera } from "../../entities/admission-criteria.entity";

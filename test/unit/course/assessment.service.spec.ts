@@ -3,14 +3,14 @@ import { TestingModule, Test } from "@nestjs/testing";
 import { AssessmentRepository } from "../../../src/course/database/repositories/assessment.repository";
 import { GroupRepository } from "../../../src/course/database/repositories/group.repository";
 import { GROUP_1_JAVA } from "../../mocks/groups.mock";
-import { UserGroupRelation } from "../../../src/shared/entities/user-group-relation.entity";
+import { UserGroupRelation } from "../../../src/course/entities/user-group-relation.entity";
 import { UserGroupRelationsMock } from "../../mocks/relations.mock";
 import { DtoFactory } from "../../../src/shared/dto-factory";
-import { AssessmentDto } from "../../../src/shared/dto/assessment.dto";
+import { AssessmentDto } from "../../../src/course/dto/assessment/assessment.dto";
 import { copy, convertToEntity } from "../../utils/object-helper";
 import { ASSESSMENT_JAVA_EVALUATED_GROUP_1, ASSESSMENT_JAVA_TESTAT_USER_1, ASSESSMENT_JAVA_EVALUATED_GROUP_2 } from "../../mocks/assessments.mock";
-import { Group } from "../../../src/shared/entities/group.entity";
-import { Assessment } from "../../../src/shared/entities/assessment.entity";
+import { Group } from "../../../src/course/entities/group.entity";
+import { Assessment } from "../../../src/course/entities/assessment.entity";
 
 const mock_AssessmentRepository = () => ({
 	createAssessment: jest.fn().mockResolvedValue(convertToEntity(Assessment, ASSESSMENT_JAVA_EVALUATED_GROUP_1)),

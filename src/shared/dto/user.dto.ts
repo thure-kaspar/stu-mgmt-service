@@ -1,4 +1,4 @@
-import { CourseDto } from "./course.dto";
+import { CourseDto } from "../../course/dto/course/course.dto";
 import { UserRole, CourseRole } from "../enums";
 import { ApiPropertyOptional, ApiProperty } from "@nestjs/swagger";
 

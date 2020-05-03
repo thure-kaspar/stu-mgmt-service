@@ -1,7 +1,7 @@
 import { BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, Entity, JoinColumn } from "typeorm";
 import { AssignmentType, CollaborationType, AssignmentState } from "../../shared/enums";
 import { CourseConfig } from "./course-config.entity";
-import { AssignmentTemplateDto } from "../dto/assignment-template.dto";
+import { AssignmentTemplateDto } from "../dto/course-config/assignment-template.dto";
 
 @Entity()
 export class AssignmentTemplate extends BaseEntity {

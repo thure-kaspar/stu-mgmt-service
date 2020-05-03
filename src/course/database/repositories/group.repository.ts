@@ -1,7 +1,7 @@
 import { Repository, EntityRepository } from "typeorm";
-import { Group } from "../../../shared/entities/group.entity";
-import { GroupDto } from "../../../shared/dto/group.dto";
-import { UserGroupRelation } from "../../../shared/entities/user-group-relation.entity";
+import { Group } from "../../entities/group.entity";
+import { GroupDto } from "../../dto/group/group.dto";
+import { UserGroupRelation } from "../../entities/user-group-relation.entity";
 import { ConflictException } from "@nestjs/common";
 
 @EntityRepository(Group)

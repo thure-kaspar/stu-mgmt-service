@@ -1,5 +1,5 @@
 import { BaseEntity, Entity, PrimaryGeneratedColumn, ManyToOne, Column, OneToOne, CreateDateColumn, Index, JoinColumn } from "typeorm";
-import { User } from "./user.entity";
+import { User } from "../../shared/entities/user.entity";
 import { Group } from "./group.entity";
 
 @Entity("user_group_relations")

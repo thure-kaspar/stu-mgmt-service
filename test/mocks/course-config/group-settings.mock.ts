@@ -1,4 +1,4 @@
-import { GroupSettingsDto } from "../../../src/course/dto/group-settings.dto";
+import { GroupSettingsDto } from "../../../src/course/dto/course-config/group-settings.dto";
 
 export const GROUP_SETTINGS_GROUPS_ALLOWED_MIN2_MAX3_SELF: GroupSettingsDto = {
 	allowGroups: true,

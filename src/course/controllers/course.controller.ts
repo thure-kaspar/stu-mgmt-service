@@ -1,11 +1,11 @@
 import { Controller, Get, Param, Post, Body, ParseUUIDPipe, Patch, Delete, Query, ValidationPipe } from "@nestjs/common";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
 import { CourseService } from "../services/course.service";
-import { CourseDto } from "../../shared/dto/course.dto";
+import { CourseDto } from "../dto/course/course.dto";
 import { UserDto } from "../../shared/dto/user.dto";
-import { CourseFilterDto } from "../../shared/dto/course-filter.dto";
+import { CourseFilterDto } from "../dto/course/course-filter.dto";
 import { ChangeCourseRoleDto } from "../dto/change-course-role.dto";
-import { CourseCreateDto } from "../dto/course-create.dto";
+import { CourseCreateDto } from "../dto/course/course-create.dto";
 
 @ApiTags("courses") 
 @Controller("courses")

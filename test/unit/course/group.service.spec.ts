@@ -3,18 +3,18 @@ import { CourseRepository } from "../../../src/course/database/repositories/cour
 import { DtoFactory } from "../../../src/shared/dto-factory";
 import { GroupRepository } from "../../../src/course/database/repositories/group.repository";
 import { TestingModule, Test } from "@nestjs/testing";
-import { GroupDto } from "../../../src/shared/dto/group.dto";
+import { GroupDto } from "../../../src/course/dto/group/group.dto";
 import { GROUP_1_JAVA, GROUP_2_JAVA } from "../../mocks/groups.mock";
 import { copy, convertToEntity, convertToEntityNoRelations } from "../../utils/object-helper";
 import { COURSE_JAVA_1920 } from "../../mocks/courses.mock";
-import { UserGroupRelation } from "../../../src/shared/entities/user-group-relation.entity";
+import { UserGroupRelation } from "../../../src/course/entities/user-group-relation.entity";
 import { COURSE_CONFIG_JAVA_1920 } from "../../mocks/course-config/course-config.mock";
-import { Course } from "../../../src/shared/entities/course.entity";
-import { Group } from "../../../src/shared/entities/group.entity";
+import { Course } from "../../../src/course/entities/course.entity";
+import { Group } from "../../../src/course/entities/group.entity";
 import { CourseConfig } from "../../../src/course/entities/course-config.entity";
 import { GroupSettings } from "../../../src/course/entities/group-settings.entity";
 import { GROUP_SETTINGS_GROUPS_ALLOWED_MIN2_MAX3_SELF } from "../../mocks/course-config/group-settings.mock";
-import { CourseUserRelation } from "../../../src/shared/entities/course-user-relation.entity";
+import { CourseUserRelation } from "../../../src/course/entities/course-user-relation.entity";
 
 function getGroupWithUsersMock_JoiningPossible(passwordRequired = true) {
 	const group = convertToEntity(Group, GROUP_1_JAVA);

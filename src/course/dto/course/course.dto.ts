@@ -1,8 +1,8 @@
-import { UserDto } from "./user.dto";
-import { GroupDto } from "./group.dto";
-import { AssignmentDto } from "./assignment.dto";
-import { CourseConfigDto } from "../../course/dto/course-config.dto";
+import { UserDto } from "../../../shared/dto/user.dto";
+import { CourseConfigDto } from "../course-config/course-config.dto";
 import { ApiPropertyOptional, ApiProperty } from "@nestjs/swagger";
+import { GroupDto } from "../group/group.dto";
+import { AssignmentDto } from "../assignment/assignment.dto";
 
 export class CourseDto {
 	/** Unique identifier of this course. */

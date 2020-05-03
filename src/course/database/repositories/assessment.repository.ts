@@ -1,8 +1,8 @@
 import { Repository, EntityRepository } from "typeorm";
-import { Assessment } from "../../../shared/entities/assessment.entity";
+import { Assessment } from "../../entities/assessment.entity";
 import { AssessmentDto } from "../../dto/assessment/assessment.dto";
-import { AssessmentUserRelation } from "../../../shared/entities/assessment-user-relation.entity";
-import { PartialAssessmentDto } from "../../dto/partial-assessment.dto";
+import { AssessmentUserRelation } from "../../entities/assessment-user-relation.entity";
+import { PartialAssessmentDto } from "../../dto/assessment/partial-assessment.dto";
 import { PartialAssessment } from "../../entities/partial-assessment.entity";
 
 @EntityRepository(Assessment)

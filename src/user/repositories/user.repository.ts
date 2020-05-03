@@ -1,7 +1,7 @@
 import { Repository, EntityRepository } from "typeorm";
 import { User } from "../../shared/entities/user.entity";
 import { UserDto } from "../../shared/dto/user.dto";
-import { Course } from "src/shared/entities/course.entity";
+import { Course } from "src/course/entities/course.entity";
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {

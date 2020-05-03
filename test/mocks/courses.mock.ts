@@ -1,4 +1,4 @@
-import { CourseDto } from "../../src/shared/dto/course.dto";
+import { CourseDto } from "../../src/course/dto/course/course.dto";
 
 export const COURSE_JAVA_1920: CourseDto = {
 	id: "java-wise1920", 

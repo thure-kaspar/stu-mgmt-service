@@ -1,8 +1,7 @@
 import { UserDto } from "../../src/shared/dto/user.dto";
 import { UserRole, CourseRole } from "../../src/shared/enums";
 import { User } from "../../src/shared/entities/user.entity";
-import { CourseUserRelationsMock } from "./relations.mock";
-import { CourseUserRelation } from "../../src/shared/entities/course-user-relation.entity";
+import { CourseUserRelation } from "../../src/course/entities/course-user-relation.entity";
 
 export const USER_STUDENT_JAVA: UserDto = {
 	id: "a019ea22-5194-4b83-8d31-0de0dc9bca53",

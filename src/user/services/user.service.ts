@@ -3,13 +3,13 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { UserRepository } from "../repositories/user.repository";
 import { User } from "../../shared/entities/user.entity";
 import { UserDto } from "../../shared/dto/user.dto";
-import { CourseDto } from "src/shared/dto/course.dto";
-import { GroupDto } from "../../shared/dto/group.dto";
-import { Group } from "../../shared/entities/group.entity";
+import { CourseDto } from "src/course/dto/course/course.dto";
+import { GroupDto } from "../../course/dto/group/group.dto";
+import { Group } from "../../course/entities/group.entity";
 import { GroupRepository } from "../../course/database/repositories/group.repository";
-import { Assessment } from "../../shared/entities/assessment.entity";
+import { Assessment } from "../../course/entities/assessment.entity";
 import { AssessmentRepository } from "../../course/database/repositories/assessment.repository";
-import { AssessmentDto } from "../../shared/dto/assessment.dto";
+import { AssessmentDto } from "../../course/dto/assessment/assessment.dto";
 import { DtoFactory } from "../../shared/dto-factory";
 
 @Injectable()

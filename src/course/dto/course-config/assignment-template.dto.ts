@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional, OmitType, PartialType } from "@nestjs/swagger";
-import { AssignmentDto } from "../../shared/dto/assignment.dto";
+import { AssignmentDto } from "../assignment/assignment.dto";
 
 export class AssignmentTemplateDto extends PartialType(OmitType(AssignmentDto, ["id", "courseId"])) {
 	@ApiPropertyOptional({ description: "Unique identifier of this template." })

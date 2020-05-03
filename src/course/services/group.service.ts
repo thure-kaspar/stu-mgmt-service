@@ -2,13 +2,13 @@ import { Injectable, BadRequestException, ConflictException, UnauthorizedExcepti
 import { InjectRepository } from "@nestjs/typeorm";
 import { GroupRepository } from "../database/repositories/group.repository";
 import { CourseRepository } from "../database/repositories/course.repository";
-import { Course } from "../../shared/entities/course.entity";
-import { Group } from "../../shared/entities/group.entity";
-import { GroupDto } from "../../shared/dto/group.dto";
+import { Course } from "../entities/course.entity";
+import { Group } from "../entities/group.entity";
+import { GroupDto } from "../dto/group/group.dto";
 import { UserDto } from "../../shared/dto/user.dto";
 import { DtoFactory } from "../../shared/dto-factory";
 import { CourseClosedException, GroupsForbiddenException } from "../exceptions/custom-exceptions";
-import { GroupCreateBulkDto } from "../dto/group-create-bulk.dto";
+import { GroupCreateBulkDto } from "../dto/group/group-create-bulk.dto";
 
 @Injectable()
 export class GroupService {

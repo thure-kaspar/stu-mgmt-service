@@ -1,20 +1,20 @@
 import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
-import { CourseDto } from "../../src/shared/dto/course.dto";
+import { CourseDto } from "../../src/course/dto/course/course.dto";
 import { COURSE_JAVA_1920 } from "../mocks/courses.mock";
 import { DbMockService } from "../mocks/db-mock.service";
 import { getConnection } from "typeorm";
-import { CourseConfigDto } from "../../src/course/dto/course-config.dto";
+import { CourseConfigDto } from "../../src/course/dto/course-config/course-config.dto";
 import { COURSE_CONFIG_JAVA_1920 } from "../mocks/course-config/course-config.mock";
 import { createApplication } from "../mocks/application.mock";
-import { GroupSettingsDto } from "../../src/course/dto/group-settings.dto";
-import { AdmissionCriteriaDto } from "../../src/course/dto/admission-criteria.dto";
-import { AssignmentTemplateDto } from "../../src/course/dto/assignment-template.dto";
+import { GroupSettingsDto } from "../../src/course/dto/course-config/group-settings.dto";
+import { AdmissionCriteriaDto } from "../../src/course/dto/course-config/admission-criteria.dto";
+import { AssignmentTemplateDto } from "../../src/course/dto/course-config/assignment-template.dto";
 import { copy } from "../utils/object-helper";
 import { ADMISSION_CRITERIA_JAVA, RULE_OVERALL_HOMEWORK_50_PERCENT } from "../mocks/course-config/admission-criteria.mock";
-import { CourseConfigUpdateDto } from "../../src/course/dto/course-config.dto";
+import { CourseConfigUpdateDto } from "../../src/course/dto/course-config/course-config.dto";
 import { GROUP_SETTINGS_GROUPS_ALLOWED_MIN2_MAX3_SELF } from "../mocks/course-config/group-settings.mock";
-import { GroupSettingsUpdateDto } from "../../src/course/dto/group-settings.dto";
+import { GroupSettingsUpdateDto } from "../../src/course/dto/course-config/group-settings.dto";
 
 let app: INestApplication;
 let dbMockService: DbMockService;

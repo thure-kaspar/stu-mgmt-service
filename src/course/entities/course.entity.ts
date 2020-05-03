@@ -2,7 +2,7 @@ import { BaseEntity, Entity, Column, OneToMany, PrimaryColumn, Index, OneToOne }
 import { CourseUserRelation } from "./course-user-relation.entity";
 import { Group } from "./group.entity";
 import { Assignment } from "./assignment.entity";
-import { CourseConfig } from "../../course/entities/course-config.entity";
+import { CourseConfig } from "./course-config.entity";
 
 @Entity("courses")
 @Index("IDX_Shortname_Semester", ["shortname", "semester"], { unique: true })

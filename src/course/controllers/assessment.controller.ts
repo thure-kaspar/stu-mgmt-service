@@ -2,7 +2,7 @@ import { Controller, Post, Param, Body, ParseUUIDPipe, Get, Patch, Delete } from
 import { AssessmentService } from "../services/assessment.service";
 import { AssessmentDto } from "../dto/assessment/assessment.dto";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
-import { PartialAssessmentDto } from "../dto/partial-assessment.dto";
+import { PartialAssessmentDto } from "../dto/assessment/partial-assessment.dto";
 
 @ApiTags("assessments")
 @Controller("courses/:courseId/assignments/:assignmentId/assessments")

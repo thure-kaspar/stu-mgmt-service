@@ -1,6 +1,6 @@
 import { BaseEntity, Entity, PrimaryGeneratedColumn, ManyToOne, Column, JoinColumn } from "typeorm";
-import { Assessment } from "../../shared/entities/assessment.entity";
-import { PartialAssessmentDto } from "../dto/partial-assessment.dto";
+import { Assessment } from "./assessment.entity";
+import { PartialAssessmentDto } from "../dto/assessment/partial-assessment.dto";
 
 @Entity()
 export class PartialAssessment extends BaseEntity {

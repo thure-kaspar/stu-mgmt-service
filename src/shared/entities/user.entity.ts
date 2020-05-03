@@ -1,7 +1,7 @@
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
-import { CourseUserRelation } from "./course-user-relation.entity";
-import { UserGroupRelation } from "./user-group-relation.entity";
-import { AssessmentUserRelation } from "./assessment-user-relation.entity";
+import { CourseUserRelation } from "../../course/entities/course-user-relation.entity";
+import { UserGroupRelation } from "../../course/entities/user-group-relation.entity";
+import { AssessmentUserRelation } from "../../course/entities/assessment-user-relation.entity";
 import { UserRole } from "../enums";
 
 @Entity("users")

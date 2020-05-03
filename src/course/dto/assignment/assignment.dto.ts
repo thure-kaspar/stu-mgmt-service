@@ -1,4 +1,4 @@
-import { AssignmentState, AssignmentType, CollaborationType } from "../enums";
+import { AssignmentState, AssignmentType, CollaborationType } from "../../../shared/enums";
 import { ApiPropertyOptional, ApiProperty } from "@nestjs/swagger";
 
 export class AssignmentDto {

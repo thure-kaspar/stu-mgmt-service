@@ -1,4 +1,4 @@
-import { AssessmentDto } from "../../src/shared/dto/assessment.dto";
+import { AssessmentDto } from "../../src/course/dto/assessment/assessment.dto";
 import { GROUP_1_JAVA, GROUP_2_JAVA } from "./groups.mock";
 import { ASSIGNMENT_JAVA_EVALUATED, ASSIGNMENT_JAVA_TESTAT_EVALUATED_SINGLE } from "./assignments.mock";
 import { USER_STUDENT_JAVA, USER_STUDENT_3_JAVA_TUTOR } from "./users.mock";

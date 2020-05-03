@@ -1,4 +1,4 @@
-import { GroupDto } from "../../src/shared/dto/group.dto";
+import { GroupDto } from "../../src/course/dto/group/group.dto";
 import { COURSE_JAVA_1920 } from "./courses.mock";
 
 export const GROUP_1_JAVA: GroupDto = {

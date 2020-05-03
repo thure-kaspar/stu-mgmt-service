@@ -1,6 +1,6 @@
 import { ConflictException } from "@nestjs/common";
 import { EntityRepository, Repository } from "typeorm";
-import { CourseUserRelation } from "../../../shared/entities/course-user-relation.entity";
+import { CourseUserRelation } from "../../entities/course-user-relation.entity";
 import { CourseRole } from "../../../shared/enums";
 
 @EntityRepository(CourseUserRelation)

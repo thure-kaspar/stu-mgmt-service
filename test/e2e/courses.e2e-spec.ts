@@ -1,7 +1,7 @@
 import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
 import { getConnection } from "typeorm";
-import { CourseFilterDto } from "../../src/shared/dto/course-filter.dto";
+import { CourseFilterDto } from "../../src/course/dto/course/course-filter.dto";
 import { CoursesMock, COURSE_JAVA_1920, COURSE_INFO_2_2020 } from "../mocks/courses.mock";
 import { DbMockService } from "../mocks/db-mock.service";
 import { GROUP_1_JAVA, GROUP_2_JAVA } from "../mocks/groups.mock";

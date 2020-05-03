@@ -1,5 +1,5 @@
-import { CourseDto } from "./course.dto";
-import { UserDto } from "./user.dto";
+import { CourseDto } from "../course/course.dto";
+import { UserDto } from "../../../shared/dto/user.dto";
 import { ApiPropertyOptional, ApiProperty } from "@nestjs/swagger";
 
 export class GroupDto {

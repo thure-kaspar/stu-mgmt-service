@@ -3,16 +3,16 @@ import { CourseUserRelationRepository } from "../../../src/course/database/repos
 import { CourseRepository } from "../../../src/course/database/repositories/course.repository";
 import { CourseService } from "../../../src/course/services/course.service";
 import { DtoFactory } from "../../../src/shared/dto-factory";
-import { CourseFilterDto } from "../../../src/shared/dto/course-filter.dto";
-import { CourseDto } from "../../../src/shared/dto/course.dto";
+import { CourseFilterDto } from "../../../src/course/dto/course/course-filter.dto";
+import { CourseDto } from "../../../src/course/dto/course/course.dto";
 import { CourseRole } from "../../../src/shared/enums";
 import { COURSE_JAVA_1920, COURSE_INFO_2_2020 } from "../../mocks/courses.mock";
 import { copy, convertToEntity } from "../../utils/object-helper";
 import { USER_STUDENT_JAVA, USER_STUDENT_2_JAVA } from "../../mocks/users.mock";
-import { CourseUserRelation } from "../../../src/shared/entities/course-user-relation.entity";
+import { CourseUserRelation } from "../../../src/course/entities/course-user-relation.entity";
 import { User } from "../../../src/shared/entities/user.entity";
 import { COURSE_CONFIG_JAVA_1920 } from "../../mocks/course-config/course-config.mock";
-import { Course } from "../../../src/shared/entities/course.entity";
+import { Course } from "../../../src/course/entities/course.entity";
 import { CourseConfig } from "../../../src/course/entities/course-config.entity";
 
 const mock_CourseRepository = () => ({

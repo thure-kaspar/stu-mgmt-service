@@ -2,8 +2,8 @@ import { Controller, Get, Param, ParseUUIDPipe, Post, Delete, Patch, Body } from
 import { GroupService } from "../services/group.service";
 import { UserDto } from "../../shared/dto/user.dto";
 import { ApiTags, ApiOperation, ApiBody } from "@nestjs/swagger";
-import { GroupDto } from "../../shared/dto/group.dto";
-import { GroupCreateBulkDto } from "../dto/group-create-bulk.dto";
+import { GroupDto } from "../dto/group/group.dto";
+import { GroupCreateBulkDto } from "../dto/group/group-create-bulk.dto";
 
 @ApiTags("groups")
 @Controller("courses/:courseId/groups")
