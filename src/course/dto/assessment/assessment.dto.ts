@@ -1,6 +1,6 @@
 import { GroupDto } from "../group/group.dto";
 import { UserDto } from "../../../shared/dto/user.dto";
-import { ApiPropertyOptional, ApiProperty } from "@nestjs/swagger";
+import { ApiPropertyOptional, ApiProperty, OmitType } from "@nestjs/swagger";
 import { PartialAssessmentDto } from "./partial-assessment.dto";
 
 export class AssessmentDto {
@@ -42,3 +42,6 @@ export class AssessmentDto {
 
 	partialAssessments?: PartialAssessmentDto[];
 }
+
+/** Version of AssessmentDto containing only properties that can used for creation. */
+export class AssessmentCreateDto extends OmitType(AssessmentDto, ["group", "creator", "id"]) { }

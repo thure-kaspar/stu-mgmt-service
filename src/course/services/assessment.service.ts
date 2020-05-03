@@ -1,5 +1,5 @@
 import { Injectable, BadRequestException } from "@nestjs/common";
-import { AssessmentDto } from "../dto/assessment/assessment.dto";
+import { AssessmentDto, AssessmentCreateDto } from "../dto/assessment/assessment.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Assessment } from "../entities/assessment.entity";
 import { AssessmentRepository } from "../database/repositories/assessment.repository";
@@ -15,7 +15,7 @@ export class AssessmentService {
 				@InjectRepository(Group) private groupRepository: GroupRepository
 	) { }
 
-	async createAssessment(assignmentId: string, assessmentDto: AssessmentDto): Promise<AssessmentDto> {
+	async createAssessment(assignmentId: string, assessmentDto: AssessmentCreateDto): Promise<AssessmentDto> {
 		// assignmentId from the path must be equal to the dto's assignmentId
 		if (assignmentId !== assessmentDto.assignmentId) {
 			throw new BadRequestException("AssessmentDto refers to a different Assignment.");

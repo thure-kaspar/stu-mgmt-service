@@ -1,6 +1,6 @@
 import { Controller, Post, Param, Body, ParseUUIDPipe, Get, Patch, Delete } from "@nestjs/common";
 import { AssessmentService } from "../services/assessment.service";
-import { AssessmentDto } from "../dto/assessment/assessment.dto";
+import { AssessmentDto, AssessmentCreateDto } from "../dto/assessment/assessment.dto";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
 import { PartialAssessmentDto } from "../dto/assessment/partial-assessment.dto";
 
@@ -19,10 +19,10 @@ export class AssessmentController {
 	createAssessment(
 		@Param("courseId") courseId: string,
 		@Param("assignmentId", ParseUUIDPipe) assignmentId: string,
-		@Body() assessmentDto: AssessmentDto
+		@Body() assessment: AssessmentCreateDto
 	): Promise<AssessmentDto> {
 
-		return this.assessmentService.createAssessment(assignmentId, assessmentDto);
+		return this.assessmentService.createAssessment(assignmentId, assessment);
 	}
 
 	@Post(":assessmentId")
