@@ -8,6 +8,7 @@ import { GroupDto } from "../../shared/dto/group.dto";
 import { UserDto } from "../../shared/dto/user.dto";
 import { DtoFactory } from "../../shared/dto-factory";
 import { CourseClosedException, GroupsForbiddenException } from "../exceptions/custom-exceptions";
+import { GroupCreateBulkDto } from "../dto/group-create-bulk.dto";
 
 @Injectable()
 export class GroupService {
@@ -28,6 +29,29 @@ export class GroupService {
 		
 		const createdGroup = await this.groupRepository.createGroup(groupDto);
 		return DtoFactory.createGroupDto(createdGroup);
+	}
+
+	/**
+	 * Creates multiple groups at once, using the given names or naming schema and count.
+	 */
+	async createMultipleGroups(courseId: string, groupCreateBulk: GroupCreateBulkDto): Promise<GroupDto[]> {
+		const { names, nameSchema, count } = groupCreateBulk;
+		let groups: GroupDto[] = [];
+
+		if (names?.length > 0) {
+			// Create groups using given names
+			groups = names.map(name => ({ courseId, isClosed: false, name }));
+		} else if (nameSchema && count) {
+			// Create group with schema and count
+			for (let i = 1; i <= count; i++) {
+				groups.push({ courseId, isClosed: false, name: nameSchema + i });
+			}
+		} else {
+			throw new BadRequestException("GroupCreateBulkDto was invalid.");
+		}
+
+		const createdGroups = await this.groupRepository.createMultipleGroups(groups);
+		return createdGroups.map(g => DtoFactory.createGroupDto(g));
 	}
 	
 	/**

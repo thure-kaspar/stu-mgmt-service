@@ -1,7 +1,6 @@
-import { Repository, EntityRepository, QueryBuilder } from "typeorm";
+import { Repository, EntityRepository } from "typeorm";
 import { Group } from "../../../shared/entities/group.entity";
 import { GroupDto } from "../../../shared/dto/group.dto";
-import { Course } from "../../../shared/entities/course.entity";
 import { UserGroupRelation } from "../../../shared/entities/user-group-relation.entity";
 import { ConflictException } from "@nestjs/common";
 
@@ -14,6 +13,14 @@ export class GroupRepository extends Repository<Group> {
 	async createGroup(groupDto: GroupDto): Promise<Group> {
 		const group = this.createEntityFromDto(groupDto);
 		return group.save();
+	}
+
+	/**
+	 * Inserts the given groups into the database.
+	 */
+	async createMultipleGroups(groupDtos: GroupDto[]): Promise<Group[]> {
+		const groups = groupDtos.map(g => this.createEntityFromDto(g));
+		return this.save(groups);
 	}
 
 	/**
@@ -111,7 +118,6 @@ export class GroupRepository extends Repository<Group> {
 
 	private createEntityFromDto(groupDto: GroupDto): Group {
 		const group = new Group();
-		group.id = groupDto.id;
 		group.courseId = groupDto.courseId;
 		group.name = groupDto.name;
 		group.password = groupDto.password?.length > 0 ? groupDto.password : null;

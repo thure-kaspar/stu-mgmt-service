@@ -1,4 +1,4 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, OneToMany, Column, OneToOne, CreateDateColumn, JoinColumn, ManyToOne } from "typeorm";
+import { BaseEntity, Entity, PrimaryGeneratedColumn, OneToMany, Column, CreateDateColumn, JoinColumn, ManyToOne } from "typeorm";
 import { UserGroupRelation } from "./user-group-relation.entity";
 import { Course } from "./course.entity";
 import { Assessment } from "./assessment.entity";
@@ -11,7 +11,7 @@ export class Group extends BaseEntity {
     @Column()
 	name: string;
 
-	@Column()
+	@Column({ nullable: true })
 	password: string;
 
 	@Column()

@@ -3,6 +3,7 @@ import { GroupService } from "../services/group.service";
 import { UserDto } from "../../shared/dto/user.dto";
 import { ApiTags, ApiOperation, ApiBody } from "@nestjs/swagger";
 import { GroupDto } from "../../shared/dto/group.dto";
+import { GroupCreateBulkDto } from "../dto/group-create-bulk.dto";
 
 @ApiTags("groups")
 @Controller("courses/:courseId/groups")
@@ -21,6 +22,20 @@ export class GroupController {
 	): Promise<GroupDto> {
 
 		return this.groupService.createGroup(courseId, groupDto);
+	}
+
+	@Post("bulk")
+	@ApiOperation({
+		operationId: "createMultipleGroups",
+		summary: "Create multiple groups",
+		description: "Creates multiple groups with the given names or naming schema and count."
+	})
+	createMultipleGroups(
+		@Param("courseId") courseId: string,
+		@Body() groupCreateBulk: GroupCreateBulkDto 
+	): Promise<GroupDto[]> {
+
+		return this.groupService.createMultipleGroups(courseId, groupCreateBulk);
 	}
 	
 	@Post(":groupId/users/:userId")
