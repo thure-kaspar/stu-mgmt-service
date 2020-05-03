@@ -1,11 +1,12 @@
 import { Injectable, BadRequestException } from "@nestjs/common";
-import { AssessmentDto } from "../../shared/dto/assessment.dto";
+import { AssessmentDto } from "../dto/assessment/assessment.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Assessment } from "../../shared/entities/assessment.entity";
 import { AssessmentRepository } from "../database/repositories/assessment.repository";
 import { GroupRepository } from "../database/repositories/group.repository";
 import { Group } from "../../shared/entities/group.entity";
 import { DtoFactory } from "../../shared/dto-factory";
+import { PartialAssessmentDto } from "../dto/partial-assessment.dto";
 
 @Injectable()
 export class AssessmentService {
@@ -36,6 +37,15 @@ export class AssessmentService {
 		const createdAssessment = await this.assessmentRepository.createAssessment(assessmentDto, userIds);
 
 		return DtoFactory.createAssessmentDto(createdAssessment);
+	}
+
+	async addPartialAssessment(assessmentId: string, partial: PartialAssessmentDto): Promise<PartialAssessmentDto> {
+		if (assessmentId != partial.assessmentId) {
+			throw new BadRequestException("Partial assessment refers to a different assessment.");
+		}
+
+		const partialAssessment = await this.assessmentRepository.addPartialAssessment(partial);
+		return partialAssessment.toDto();
 	}
 
 	async getAssessmentsForAssignment(assignmentId: string): Promise<AssessmentDto[]> {

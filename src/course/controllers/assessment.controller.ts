@@ -1,7 +1,8 @@
 import { Controller, Post, Param, Body, ParseUUIDPipe, Get, Patch, Delete } from "@nestjs/common";
 import { AssessmentService } from "../services/assessment.service";
-import { AssessmentDto } from "../../shared/dto/assessment.dto";
+import { AssessmentDto } from "../dto/assessment/assessment.dto";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
+import { PartialAssessmentDto } from "../dto/partial-assessment.dto";
 
 @ApiTags("assessments")
 @Controller("courses/:courseId/assignments/:assignmentId/assessments")
@@ -21,9 +22,25 @@ export class AssessmentController {
 		@Body() assessmentDto: AssessmentDto
 	): Promise<AssessmentDto> {
 
-		// TODO: Check if user is allowed to submit assessments for this course
 		return this.assessmentService.createAssessment(assignmentId, assessmentDto);
 	}
+
+	@Post(":assessmentId")
+	@ApiOperation({
+		operationId: "addPartialAssessment",
+		summary: "Add partial assessment",
+		description: "Adds a partial assessment for an exisiting assessment. Alternatively, partial assessments can be created together with the assessment."
+	})
+	addPartialAssessment(
+		@Param("courseId") courseId: string,
+		@Param("assessmentId") assessmentId: string,
+		@Body() partial: PartialAssessmentDto
+	): Promise<PartialAssessmentDto> {
+
+		return this.assessmentService.addPartialAssessment(assessmentId, partial);
+	}
+
+
 
 	@Get()
 	@ApiOperation({

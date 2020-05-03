@@ -16,6 +16,7 @@ import { CourseConfig } from "../course/entities/course-config.entity";
 import { AssignmentTemplate } from "../course/entities/assignment-template.entity";
 import { GroupSettings } from "../course/entities/group-settings.entity";
 import { AdmissionCritera } from "../course/entities/admission-criteria.entity";
+import { PartialAssessment } from "../course/entities/partial-assessment.entity";
 
 const dbConfig = config.get("db");
 const loggingConfig = config.get("logger");
@@ -31,7 +32,7 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
 	dropSchema: dbConfig.dropSchema || false,
 	keepConnectionAlive: true, // prevents AlreadyHasActiveConnectionError, needed for testing // TODO: Check if it should be disabled in production
 	entities: [Course, User, Group, CourseUserRelation, UserGroupRelation, Assignment, Assessment, AssessmentUserRelation, MailTemplate,
-		CourseConfig, AssignmentTemplate, GroupSettings, AdmissionCritera
+		CourseConfig, AssignmentTemplate, GroupSettings, AdmissionCritera, PartialAssessment
 	],
 	subscribers: [CourseUserRelationSubscriber, UserGroupRelationSubscriber, AssignmentSubscriber],
 	logging: loggingConfig.dbErrors ? ["error"] : undefined

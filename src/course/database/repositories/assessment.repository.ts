@@ -1,7 +1,9 @@
 import { Repository, EntityRepository } from "typeorm";
 import { Assessment } from "../../../shared/entities/assessment.entity";
-import { AssessmentDto } from "../../../shared/dto/assessment.dto";
+import { AssessmentDto } from "../../dto/assessment/assessment.dto";
 import { AssessmentUserRelation } from "../../../shared/entities/assessment-user-relation.entity";
+import { PartialAssessmentDto } from "../../dto/partial-assessment.dto";
+import { PartialAssessment } from "../../entities/partial-assessment.entity";
 
 @EntityRepository(Assessment)
 export class AssessmentRepository extends Repository<Assessment> {
@@ -20,8 +22,15 @@ export class AssessmentRepository extends Repository<Assessment> {
 		return assessment.save();
 	}
 
+	async addPartialAssessment(partialAssessmentDto: PartialAssessmentDto): Promise<PartialAssessment> {
+		const partial = this.manager.getRepository(PartialAssessment).create(partialAssessmentDto);
+		return partial.save();
+	}
+
 	async getAssessmentById(assessmentId: string): Promise<Assessment> {
-		return this.findOne(assessmentId);
+		return this.findOneOrFail(assessmentId, {
+			relations: ["partialAssessments"]
+		});
 	}
 
 	async getAllAssessmentsForAssignment(assignmentId: string): Promise<Assessment[]> {
@@ -85,12 +94,8 @@ export class AssessmentRepository extends Repository<Assessment> {
 	}
 
 	private createEntityFromDto(assessmentDto: AssessmentDto): Assessment {
-		const assessment = new Assessment();
-		assessment.assignmentId = assessmentDto.assignmentId;
-		assessment.groupId = assessmentDto.groupId;
-		assessment.achievedPoints = assessmentDto.achievedPoints;
-		assessment.comment = assessmentDto.comment;
-		assessment.creatorId = assessmentDto.creatorId;
+		const assessment = this.create(assessmentDto);
+		assessment.partialAssessments?.forEach(p => p.assessmentId = null); // Id can't be known prior to insert -> prevent insert with wrong id
 		return assessment;
 	}
 
