@@ -1,6 +1,6 @@
 import { AssessmentDto } from "../../src/course/dto/assessment/assessment.dto";
 import { GROUP_1_JAVA, GROUP_2_JAVA } from "./groups.mock";
-import { ASSIGNMENT_JAVA_EVALUATED, ASSIGNMENT_JAVA_TESTAT_EVALUATED_SINGLE } from "./assignments.mock";
+import { ASSIGNMENT_JAVA_EVALUATED, ASSIGNMENT_JAVA_TESTAT_EVALUATED_SINGLE, ASSIGNMENT_JAVA_IN_REVIEW } from "./assignments.mock";
 import { USER_STUDENT_JAVA, USER_STUDENT_3_JAVA_TUTOR } from "./users.mock";
 
 export const ASSESSMENT_JAVA_EVALUATED_GROUP_1: AssessmentDto = {
@@ -30,8 +30,18 @@ export const ASSESSMENT_JAVA_TESTAT_USER_1: AssessmentDto = {
 	creatorId: USER_STUDENT_3_JAVA_TUTOR.id,
 };
 
+export const ASSESSMENT_JAVA_IN_REVIEW: AssessmentDto = {
+	id: "680dd44a-93b0-4d1c-a947-9b50a4bbb68e",
+	assignmentId: ASSIGNMENT_JAVA_IN_REVIEW.id,
+	achievedPoints: 50,
+	comment: "ASSESSMENT_JAVA_IN_REVIEW",
+	userId: USER_STUDENT_JAVA.id,
+	creatorId: USER_STUDENT_3_JAVA_TUTOR.id,
+};
+
 export const AssessmentsMock: AssessmentDto[] = [
 	ASSESSMENT_JAVA_EVALUATED_GROUP_1,
 	ASSESSMENT_JAVA_EVALUATED_GROUP_2,
-	ASSESSMENT_JAVA_TESTAT_USER_1
+	ASSESSMENT_JAVA_TESTAT_USER_1,
+	ASSESSMENT_JAVA_IN_REVIEW
 ];

@@ -22,7 +22,9 @@ import { AdmissionCritera } from "../../src/course/entities/admission-criteria.e
 import { AssignmentTemplate } from "../../src/course/entities/assignment-template.entity";
 import { CourseConfig } from "../../src/course/entities/course-config.entity";
 import { COURSE_CONFIGS_MOCK } from "./course-config/course-config.mock";
-import { convertToEntityNoRelations } from "../utils/object-helper";
+import { convertToEntityNoRelations, convertToEntity } from "../utils/object-helper";
+import { PARTIAL_ASSESSMENT_MOCK } from "./partial-assessments.mock";
+import { PartialAssessment } from "../../src/course/entities/partial-assessment.entity";
 
 //@Injectable() Not a "real" (injectable) service for now
 export class DbMockService {
@@ -33,6 +35,7 @@ export class DbMockService {
 	users = UsersMock;
 	assignments = AssignmentsMock;
 	assessments = AssessmentsMock;
+	partialAssessments = PARTIAL_ASSESSMENT_MOCK;
 	courseUserRelations = CourseUserRelationsMock;
 	userGroupRelations = UserGroupRelationsMock;
 	assessmentUserRelations = AssessmentUserRelationsMock;
@@ -59,6 +62,7 @@ export class DbMockService {
 		await this.createGroups();
 		await this.createAssignments();
 		await this.createAssessments();
+		await this.createPartialAssessments();
 		await this.createCourseUserRelations();
 		await this.createUserGroupRelations();
 		await this.createAssessmentUserRelations();
@@ -135,6 +139,13 @@ export class DbMockService {
 	async createAssessments(): Promise<void> {
 		const assessments = this.assessments.map(a => convertToEntityNoRelations(Assessment, a));
 		await this.con.getRepository(Assessment).insert(assessments)
+			.catch(error => console.error(error));
+	}
+
+	async createPartialAssessments(): Promise<void> {
+		const repo = this.con.getRepository(PartialAssessment);
+		const partials = this.partialAssessments.map(p => repo.create(p));
+		await repo.insert(partials)
 			.catch(error => console.error(error));
 	}
 
