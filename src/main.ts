@@ -15,6 +15,7 @@ async function bootstrap(): Promise<void> {
 	//app.setGlobalPrefix("mgmt/v1");
 
 	const options = new DocumentBuilder()
+		.addBearerAuth()
 		.setTitle("Student-Management-System-API")
 		.setDescription("The Student-Management-Sytem-API. <a href='http://localhost:3000/api-json'>JSON</a>") // TODO: Replace hard-coded link
 		.setVersion("1.0")
