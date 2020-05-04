@@ -15,6 +15,9 @@ import { CourseConfig } from "../../../src/course/entities/course-config.entity"
 import { GroupSettings } from "../../../src/course/entities/group-settings.entity";
 import { GROUP_SETTINGS_GROUPS_ALLOWED_MIN2_MAX3_SELF } from "../../mocks/course-config/group-settings.mock";
 import { CourseUserRelation } from "../../../src/course/entities/course-user-relation.entity";
+import { EventBus } from "@nestjs/cqrs";
+import { UserJoinedGroupEvent } from "../../../src/course/events/user-joined-group.event";
+import { UserLeftGroupEvent } from "../../../src/course/events/user-left-group.event";
 
 function getGroupWithUsersMock_JoiningPossible(passwordRequired = true) {
 	const group = convertToEntity(Group, GROUP_1_JAVA);
@@ -75,13 +78,14 @@ function mock_getGroupForAddUserToGroup(groupClosed: boolean, capacityReached: b
 const mock_GroupRepository = () => ({
 	createGroup: jest.fn().mockResolvedValue(convertToEntity(Group, GROUP_1_JAVA)),
 	getGroupWithUsers: jest.fn().mockResolvedValue(getGroupWithUsersMock_JoiningPossible()),
-	addUserToGroup: jest.fn(),
+	addUserToGroup: jest.fn().mockResolvedValue(true),
 	getGroupsOfCourse: jest.fn().mockResolvedValue([
 		convertToEntity(Group, GROUP_1_JAVA),
 		convertToEntity(Group, GROUP_2_JAVA),
 	]),
 	getGroupForAddUserToGroup: jest.fn().mockResolvedValue(mock_getGroupForAddUserToGroup(false, false, GROUP_1_JAVA.password)),
 	updateGroup: jest.fn(),
+	removeUser: jest.fn().mockResolvedValue(true),
 	deleteGroup: jest.fn(),
 });
 
@@ -90,11 +94,16 @@ const mock_CourseRepository = () => ({
 	getCourseWithConfigAndGroupSettings: jest.fn().mockImplementation(() => { return mock_getCourseWithConfigAndGroupSettings(); })
 });
 
+const mock_EventBus = () => ({
+	publish: jest.fn()
+});
+
 describe("GroupService", () => {
 
 	let service: GroupService;
 	let groupRepository: GroupRepository;
 	let courseRepository: CourseRepository;
+	let eventBus: EventBus;
 	let groupDto: GroupDto;
 	let courseId: string;
 
@@ -103,7 +112,8 @@ describe("GroupService", () => {
 			providers: [
 				GroupService,
 				{ provide: GroupRepository, useFactory: mock_GroupRepository },
-				{ provide: CourseRepository, useFactory: mock_CourseRepository }
+				{ provide: CourseRepository, useFactory: mock_CourseRepository },
+				{ provide: EventBus, useFactory: mock_EventBus }
 			],
 		}).compile();
 		
@@ -112,6 +122,7 @@ describe("GroupService", () => {
 		service = module.get<GroupService>(GroupService);
 		groupRepository = module.get<GroupRepository>(GroupRepository);
 		courseRepository = module.get<CourseRepository>(CourseRepository);
+		eventBus = module.get(EventBus);
 		groupDto = copy(GROUP_1_JAVA);
 		courseId = copy(GROUP_1_JAVA).courseId;
 	});
@@ -162,7 +173,6 @@ describe("GroupService", () => {
 	
 	});
 
-	// TODO: Implement mock for new repository method
 	describe("addUserToGroup", () => {
 
 		const userId = "user_id";
@@ -185,6 +195,12 @@ describe("GroupService", () => {
 
 			expect(groupRepository.getGroupForAddUserToGroup).toHaveBeenCalledWith(groupDto.id, userId); // Called to check if joining is possible
 			expect(groupRepository.addUserToGroup).toHaveBeenCalledWith(groupDto.id, userId);
+		});
+
+		it("Joining possible -> Triggers UserJoinedGroupEvent", async () => {
+			console.assert(groupDto.password.length > 0, "Group should be password protected");
+			await service.addUserToGroup(groupDto.id, userId, groupDto.password);
+			expect(eventBus.publish).toHaveBeenCalledWith(new UserJoinedGroupEvent(groupDto.id, userId));
 		});
 	
 		it("Group is closed -> Throws Exception", async () => {
@@ -293,6 +309,34 @@ describe("GroupService", () => {
 				expect(error.status).toEqual(400);
 			}
 			
+		});
+	
+	});
+
+	describe("removeUser", () => {
+	
+		const userId = "user_id_1";
+		const reason = "Reason for leaving the group";
+
+		it("Success -> Removes user from group", async () => {
+			await service.removeUser(groupDto.id, userId, reason);
+			expect(groupRepository.removeUser).toHaveBeenCalledWith(groupDto.id, userId);
+			// No errors thrown
+		});
+
+		it("Success -> Triggers UserLeftGroupEvent", async () => {
+			await service.removeUser(groupDto.id, userId, reason);
+			expect(eventBus.publish).toHaveBeenCalledWith(new UserLeftGroupEvent(groupDto.id, userId, reason));
+		});
+
+		it("Removal failed -> Throws Error", async () => {
+			groupRepository.removeUser = jest.fn().mockResolvedValueOnce(false);
+			try {
+				await service.removeUser(groupDto.id, userId, reason);
+				expect(true).toEqual(false);
+			} catch(error) {
+				expect(error).toBeTruthy();
+			}
 		});
 	
 	});
