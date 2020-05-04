@@ -19,11 +19,11 @@ export class AssignmentRepository extends Repository<Assignment> {
 	}
 
 	async getAssignmentById(assignmentId: string): Promise<Assignment> {
-		return this.findOne(assignmentId);
+		return this.findOneOrFail(assignmentId);
 	}
 
 	async getAssignmentById_WithAssessments(assignmentId: string): Promise<Assignment> {
-		return this.findOne(assignmentId, {
+		return this.findOneOrFail(assignmentId, {
 			relations: ["assessments"]
 		});
 	}

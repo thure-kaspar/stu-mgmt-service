@@ -61,11 +61,11 @@ export class CourseRepository extends Repository<Course> {
 	 * Retrieves the course with the specified id.
 	 */
 	async getCourseById(id: string): Promise<Course> {
-		return this.findOne(id);
+		return this.findOneOrFail(id);
 	}
 
 	async getCourseByNameAndSemester(name: string, semester: string): Promise<Course> {
-		return this.findOne({
+		return this.findOneOrFail({
 			where: {
 				shortname: name,
 				semester: semester
@@ -75,7 +75,7 @@ export class CourseRepository extends Repository<Course> {
 	}
 
 	async getCourseWithUsers(id: string): Promise<Course> {
-		return this.findOne(id, { relations: ["courseUserRelations", "courseUserRelations.user"] });
+		return this.findOneOrFail(id, { relations: ["courseUserRelations", "courseUserRelations.user"] });
 	}
 
 	/**
@@ -93,7 +93,7 @@ export class CourseRepository extends Repository<Course> {
 	}
 
 	async getCourseWithGroups(courseId: string): Promise<Course> {
-		return this.findOne(courseId, {
+		return this.findOneOrFail(courseId, {
 			relations: ["groups"]
 		});
 	}

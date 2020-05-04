@@ -16,25 +16,25 @@ export class UserRepository extends Repository<User> {
 	}
 
 	async getUserById(id: string): Promise<User> {
-		return this.findOne(id, { relations: ["courseUserRelations", "courseUserRelations.course"] });
+		return this.findOneOrFail(id, { relations: ["courseUserRelations", "courseUserRelations.course"] });
 	}
 
 	async getUserByEmail(email: string): Promise<User> {
-		return this.findOne({
+		return this.findOneOrFail({
 			where: { email },
 			relations: ["courseUserRelations", "courseUserRelations.course"]
 		});
 	}
 
 	async getUserByUsername(username: string): Promise<User> {
-		return this.findOne({
+		return this.findOneOrFail({
 			where: { username },
 			relations: ["courseUserRelations", "courseUserRelations.course"]
 		});
 	}
 
 	async getCoursesOfUser(userId: string): Promise<Course[]> {
-		const user = await this.findOne(userId, { relations: ["courseUserRelations", "courseUserRelations.course"] });
+		const user = await this.findOneOrFail(userId, { relations: ["courseUserRelations", "courseUserRelations.course"] });
 		const courses = [];
 
 		if (user.courseUserRelations) {

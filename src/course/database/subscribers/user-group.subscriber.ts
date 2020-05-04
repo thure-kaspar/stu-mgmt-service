@@ -42,7 +42,7 @@ export class UserGroupRelationSubscriber implements EntitySubscriberInterface<Us
 	 * Queries and loads the entity again in order to load necessary relations.
 	 */
 	private async reloadEntityWithRequiredRelations(repository: Repository<UserGroupRelation>, entity: UserGroupRelation): Promise<UserGroupRelation> {
-		return repository.findOne(entity.id, {
+		return repository.findOneOrFail(entity.id, {
 			relations: ["group"]
 		});
 	} 
