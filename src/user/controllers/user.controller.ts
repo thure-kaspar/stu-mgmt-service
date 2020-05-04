@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param, ParseUUIDPipe, Delete, Patch } from "@nestjs/common";
+import { Controller, Post, Body, Get, Param, Delete, Patch } from "@nestjs/common";
 import { UserService } from "../services/user.service";
 import { UserDto } from "../../shared/dto/user.dto";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
@@ -58,7 +58,7 @@ export class UserController {
 		summary: "Get courses of user",
 		description: "Retrieves all courses that the user is a member of."
 	})
-	getCoursesOfUser(@Param("userId", ParseUUIDPipe) userId: string): Promise<CourseDto[]> {
+	getCoursesOfUser(@Param("userId") userId: string): Promise<CourseDto[]> {
 		return this.userService.getCoursesOfUser(userId);
 	}
 
@@ -69,7 +69,7 @@ export class UserController {
 		description: "Retrieves all groups that the user is a member of in a course."
 	})
 	getGroupsOfUserForCourse(
-		@Param("userId", ParseUUIDPipe) userId: string,
+		@Param("userId") userId: string,
 		@Param("courseId") courseId: string,
 	): Promise<GroupDto[]> {
 
@@ -83,7 +83,7 @@ export class UserController {
 		description: ""
 	})
 	getAssessmentsWithGroupsOfUserForCourse(
-		@Param("userId", ParseUUIDPipe) userId: string,
+		@Param("userId") userId: string,
 		@Param("courseId") courseId: string,
 	): Promise<AssessmentDto[]> {
 
@@ -97,7 +97,7 @@ export class UserController {
 		description: "Updates the user"
 	})
 	updateUser(
-		@Param("userId", ParseUUIDPipe) userId: string,
+		@Param("userId") userId: string,
 		@Body() userDto: UserDto
 	): Promise<UserDto> {
 		return this.userService.updateUser(userId, userDto);
@@ -109,7 +109,7 @@ export class UserController {
 		summary: "Delete user",
 		description: "Deletes the user. Returns true, if removes was successful."
 	})
-	deleteUser(@Param("userId", ParseUUIDPipe) userId: string): Promise<boolean> {
+	deleteUser(@Param("userId") userId: string): Promise<boolean> {
 		return this.userService.deleteUser(userId);
 	}
 }

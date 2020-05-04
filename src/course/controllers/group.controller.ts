@@ -1,4 +1,4 @@
-import { Controller, Get, Param, ParseUUIDPipe, Post, Delete, Patch, Body } from "@nestjs/common";
+import { Controller, Get, Param, Post, Delete, Patch, Body } from "@nestjs/common";
 import { GroupService } from "../services/group.service";
 import { UserDto } from "../../shared/dto/user.dto";
 import { ApiTags, ApiOperation, ApiBody } from "@nestjs/swagger";
@@ -47,8 +47,8 @@ export class GroupController {
 	@ApiBody({ type: String })
 	addUserToGroup(
 		@Param("courseId") courseId: string,
-		@Param("groupId", ParseUUIDPipe) groupId: string,
-		@Param("userId", ParseUUIDPipe) userId: string,
+		@Param("groupId") groupId: string,
+		@Param("userId") userId: string,
 		@Body("password") password?: string
 	): Promise<any> {
 
@@ -76,7 +76,7 @@ export class GroupController {
 	})
 	getUsersOfGroup(
 		@Param("courseId") courseId: string,
-		@Param("groupId", ParseUUIDPipe) groupId: string
+		@Param("groupId") groupId: string
 	): Promise<UserDto[]> {
 
 		return this.groupService.getUsersOfGroup(groupId);
@@ -90,7 +90,7 @@ export class GroupController {
 	})
 	updateGroup(
 		@Param("courseId") courseId: string,
-		@Param("groupId", ParseUUIDPipe) groupId: string,
+		@Param("groupId") groupId: string,
 		@Body() groupDto: GroupDto
 	): Promise<GroupDto> {
 
@@ -105,8 +105,8 @@ export class GroupController {
 	})
 	removeUser(
 		@Param("courseId") courseId: string,
-		@Param("groupId", ParseUUIDPipe) groupId: string,
-		@Param("userId", ParseUUIDPipe) userId: string,
+		@Param("groupId") groupId: string,
+		@Param("userId") userId: string,
 		@Body("reason") reason?: string
 	): Promise<void> {
 
@@ -121,7 +121,7 @@ export class GroupController {
 	})
 	deleteGroup(
 		@Param("courseId") courseId: string,
-		@Param("groupId", ParseUUIDPipe) groupId: string
+		@Param("groupId") groupId: string
 	): Promise<boolean> {
 
 		return this.groupService.deleteGroup(groupId);

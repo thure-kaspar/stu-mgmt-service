@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Body, ParseUUIDPipe, Patch, Delete, Query, ValidationPipe } from "@nestjs/common";
+import { Controller, Get, Param, Post, Body, Patch, Delete, Query, ValidationPipe } from "@nestjs/common";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
 import { CourseService } from "../services/course.service";
 import { CourseDto } from "../dto/course/course.dto";
@@ -37,7 +37,7 @@ export class CourseController {
 		description: "Adds a user to the course. If the course requires a password, the correct password needs to be included in the request body."
 	})
 	addUser(@Param("courseId") courseId: string,
-			@Param("userId", ParseUUIDPipe) userId: string,
+			@Param("userId") userId: string,
 			@Body("password") password?: string,
 	): Promise<any> {
 		return this.courseService.addUser(courseId, userId, password);
@@ -128,7 +128,7 @@ export class CourseController {
 	})
 	updateUserRole(
 		@Param("courseId") courseId: string,
-		@Param("userId", ParseUUIDPipe) userId: string,
+		@Param("userId") userId: string,
 		@Body(ValidationPipe) dto: ChangeCourseRoleDto
 	): Promise<boolean> {
 		
@@ -162,7 +162,7 @@ export class CourseController {
 	})
 	removeUser(
 		@Param("courseId") courseId: string,
-		@Param("userId", ParseUUIDPipe) userId: string,
+		@Param("userId") userId: string,
 	): Promise<boolean> {
 
 		return this.courseService.removeUser(courseId, userId);

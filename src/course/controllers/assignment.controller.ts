@@ -1,4 +1,4 @@
-import { Controller, Post, Param, Body, Get, ParseUUIDPipe, Patch, Delete } from "@nestjs/common";
+import { Controller, Post, Param, Body, Get, Patch, Delete } from "@nestjs/common";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
 import { AssignmentService } from "../services/assignment.service";
 import { AssignmentDto } from "../dto/assignment/assignment.dto";
@@ -43,7 +43,7 @@ export class AssignmentController {
 	})
 	getAssignmentById(
 		@Param("courseId") courseId: string,
-		@Param("assignmentId", ParseUUIDPipe) assignmentId: string 
+		@Param("assignmentId") assignmentId: string 
 	): Promise<AssignmentDto> {
 
 		return this.assignmentService.getAssignmentById(assignmentId);
@@ -57,7 +57,7 @@ export class AssignmentController {
 	})
 	updateAssignment(
 		@Param("courseId") courseId: string,
-		@Param("assignmentId", ParseUUIDPipe) assignmentId: string,
+		@Param("assignmentId") assignmentId: string,
 		@Body() assignmentDto: AssignmentDto
 	): Promise<AssignmentDto> {
 
@@ -72,7 +72,7 @@ export class AssignmentController {
 	})
 	deleteAssignment(
 		@Param("courseId") courseId: string,
-		@Param("assignmentId", ParseUUIDPipe) assignmentId: string
+		@Param("assignmentId") assignmentId: string
 	): Promise<boolean> {
 
 		return this.assignmentService.deleteAssignment(assignmentId);
