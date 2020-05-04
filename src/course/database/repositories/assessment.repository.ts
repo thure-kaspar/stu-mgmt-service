@@ -29,7 +29,7 @@ export class AssessmentRepository extends Repository<Assessment> {
 
 	async getAssessmentById(assessmentId: string): Promise<Assessment> {
 		return this.findOneOrFail(assessmentId, {
-			relations: ["partialAssessments"]
+			relations: ["partialAssessments", "assessmentUserRelations", "assessmentUserRelations.user"]
 		});
 	}
 
@@ -72,14 +72,9 @@ export class AssessmentRepository extends Repository<Assessment> {
 
 	/**
 	 * Updates the assessment.
-	 *
-	 * @param {string} assessmentId
-	 * @param {AssessmentDto} assessmentDto
-	 * @returns {Promise<Assessment>}
-	 * @memberof AssessmentRepository
 	 */
 	async updateAssessment(assessmentId: string, assessmentDto: AssessmentDto): Promise<Assessment> {
-		const assessment = await this.getAssessmentById(assessmentId);
+		const assessment = await this.findOneOrFail(assessmentId);
 
 		// TODO: Define Patch-Object or create method
 		assessment.achievedPoints = assessmentDto.achievedPoints;

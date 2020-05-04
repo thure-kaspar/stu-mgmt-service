@@ -3,18 +3,19 @@ import * as request from "supertest";
 import { getConnection } from "typeorm";
 import { AssessmentDto } from "../../src/course/dto/assessment/assessment.dto";
 import { createApplication } from "../mocks/application.mock";
-import { ASSESSMENT_JAVA_EVALUATED_GROUP_1, ASSESSMENT_JAVA_TESTAT_USER_1 } from "../mocks/assessments.mock";
-import { ASSIGNMENT_JAVA_EVALUATED, ASSIGNMENT_JAVA_TESTAT_EVALUATED_SINGLE } from "../mocks/assignments.mock";
+import { ASSESSMENT_JAVA_EVALUATED_GROUP_1, ASSESSMENT_JAVA_TESTAT_USER_1, ASSESSMENT_JAVA_IN_REVIEW } from "../mocks/assessments.mock";
+import { ASSIGNMENT_JAVA_EVALUATED, ASSIGNMENT_JAVA_TESTAT_EVALUATED_SINGLE, ASSIGNMENT_JAVA_IN_REVIEW } from "../mocks/assignments.mock";
 import { COURSE_JAVA_1920 } from "../mocks/courses.mock";
 import { DbMockService } from "../mocks/db-mock.service";
-
+import { copy } from "../utils/object-helper";
+import { PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW, PARTIAL_ASSESSMENT_2_JAVA_IN_REVIEW } from "../mocks/partial-assessments.mock";
 
 let app: INestApplication;
 let dbMockService: DbMockService;
 
 const course = COURSE_JAVA_1920; // the course that will be used for testing
 
-describe("GET-REQUESTS of AssignmentController (e2e)", () => {
+describe("GET-REQUESTS of AssessmentController (e2e)", () => {
 
 	beforeAll(async () => {
 		app = await createApplication();
@@ -53,9 +54,38 @@ describe("GET-REQUESTS of AssignmentController (e2e)", () => {
 			});
 	});
 
+	it("(GET) /courses/{courseId}/assignments/{assignmentId}/assessments/{assessmentId} Retrieves the (group) assessment", () => {
+		const assignment = ASSIGNMENT_JAVA_EVALUATED;
+		const assessment = ASSESSMENT_JAVA_EVALUATED_GROUP_1;
+
+		return request(app.getHttpServer())
+			.get(`/courses/${course.id}/assignments/${assignment.id}/assessments/${assessment.id}`)
+			.expect(({ body }) => {
+				const result = body as AssessmentDto;
+				expect(result.id).toEqual(assessment.id);
+				expect(result.assignmentId).toEqual(assessment.assignmentId);
+				expect(result.groupId).toEqual(assessment.groupId);
+			});
+	});
+
+	it("(GET) /courses/{courseId}/assignments/{assignmentId}/assessments/{assessmentId} Assessment with partial assessments -> Retrieves partials", () => {
+		const assignment = copy(ASSIGNMENT_JAVA_IN_REVIEW);
+		const assessment = copy(ASSESSMENT_JAVA_IN_REVIEW);
+		assessment.partialAssessments = [PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW, PARTIAL_ASSESSMENT_2_JAVA_IN_REVIEW];
+		const expected = copy(assessment);
+		expected.userId = undefined;
+
+		return request(app.getHttpServer())
+			.get(`/courses/${course.id}/assignments/${assignment.id}/assessments/${assessment.id}`)
+			.expect(({ body }) => {
+				const result = body as AssessmentDto;
+				expect(result).toEqual(expected);
+			});
+	});
+
 });
 
-describe("POST-REQUESTS of AssignmentController (e2e)", () => {
+describe("POST-REQUESTS of AssessmentController (e2e)", () => {
 
 	beforeEach(async () => {
 		app = await createApplication();
@@ -64,7 +94,10 @@ describe("POST-REQUESTS of AssignmentController (e2e)", () => {
 		dbMockService = new DbMockService(getConnection());
 		await dbMockService.createCourses();
 		await dbMockService.createUsers();
+		await dbMockService.createGroups();
 		await dbMockService.createCourseUserRelations();
+		await dbMockService.createUserGroupRelations();
+		await dbMockService.createAssignments();
 	});
 
 	afterEach(async () => {
@@ -72,13 +105,11 @@ describe("POST-REQUESTS of AssignmentController (e2e)", () => {
 		await getConnection().close(); // Close Db-Connection after all tests have been executed
 	});
 
-	it("(POST) /courses/{courseId}/assignments/{assignmentId}/assessments Creates the given (group-)assessment and returns it", async () => {
-		// Setup
-		await dbMockService.createGroups();
-		await dbMockService.createUserGroupRelations();
-		await dbMockService.createAssignments();
-		const assignment = ASSIGNMENT_JAVA_EVALUATED;
-		const assessment = ASSESSMENT_JAVA_EVALUATED_GROUP_1;
+	it("(POST) /courses/{courseId}/assignments/{assignmentId}/assessments Creates the given (group-)assessment and returns it", () => {
+		const assignment = copy(ASSIGNMENT_JAVA_EVALUATED);
+		const assessment = copy(ASSESSMENT_JAVA_EVALUATED_GROUP_1);
+
+		const expected = copy(assessment);
 
 		return request(app.getHttpServer())
 			.post(`/courses/${assignment.courseId}/assignments/${assessment.assignmentId}/assessments`)
@@ -86,33 +117,63 @@ describe("POST-REQUESTS of AssignmentController (e2e)", () => {
 			.expect(201)
 			.expect(({ body }) => {
 				const result = body as AssessmentDto;
-				expect(result.assignmentId).toEqual(assessment.assignmentId);
-				expect(result.groupId).toEqual(assessment.groupId);
-				expect(result.achievedPoints).toEqual(assessment.achievedPoints);
-				expect(result.comment).toEqual(assessment.comment);
+				expect(result).toEqual(expected);
 			});
 	});
 
-	it("(POST) /courses/{courseId}/assignments/{assignmentId}/assessments Creates the given (user-)assessment and returns it", async () => {
-		// Setup
-		await dbMockService.createAssignments();
-		const assignment = ASSIGNMENT_JAVA_TESTAT_EVALUATED_SINGLE;
-		const assessment = ASSESSMENT_JAVA_TESTAT_USER_1;
+	it("(POST) /courses/{courseId}/assignments/{assignmentId}/assessments Creates the given (user-)assessment and returns it", () => {
+		const assignment = copy(ASSIGNMENT_JAVA_TESTAT_EVALUATED_SINGLE);
+		const assessment = copy(ASSESSMENT_JAVA_TESTAT_USER_1);
+
+		const expected = copy(assessment);
 
 		return request(app.getHttpServer())
 			.post(`/courses/${assignment.courseId}/assignments/${assessment.assignmentId}/assessments`)
 			.send(assessment)
 			.expect(201)
 			.expect(({ body }) => {
-				expect(body.assignmentId).toEqual(assessment.assignmentId);
-				expect(body.achievedPoints).toEqual(assessment.achievedPoints);
-				expect(body.comment).toEqual(assessment.comment);
+				const result = body as AssessmentDto;
+				expect(result).toEqual(expected);
+			});
+	});
+
+	it("(POST) /courses/{courseId}/assignments/{assignmentId}/assessments Assessment with partial assessments -> Creates partial assessments", () => {
+		const assignment = copy(ASSIGNMENT_JAVA_IN_REVIEW);
+		const assessment = copy(ASSESSMENT_JAVA_IN_REVIEW);
+		assessment.partialAssessments = [PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW, PARTIAL_ASSESSMENT_2_JAVA_IN_REVIEW];
+		const expected = copy(assessment);
+
+		return request(app.getHttpServer())
+			.post(`/courses/${assignment.courseId}/assignments/${assessment.assignmentId}/assessments`)
+			.send(assessment)
+			.expect(201)
+			.expect(({ body }) => {
+				const result = body as AssessmentDto;
+				expect(result).toEqual(expected);
+			});
+	});
+
+	it("(POST) /courses/{courseId}/assignments/{assignmentId}/assessments/{assessmentId} Adds partial assignment", async () => {
+		await dbMockService.createAssessments();
+		const assignment = copy(ASSIGNMENT_JAVA_IN_REVIEW);
+		const assessment = copy(ASSESSMENT_JAVA_IN_REVIEW);
+		const partialAssessment = copy(PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW);
+		console.assert(partialAssessment.assessmentId === assessment.id);		
+		const expected = copy(partialAssessment);
+
+		return request(app.getHttpServer())
+			.post(`/courses/${assignment.courseId}/assignments/${assessment.assignmentId}/assessments/${assessment.id}`)
+			.send(partialAssessment)
+			.expect(201)
+			.expect(({ body }) => {
+				const result = body as AssessmentDto;
+				expect(result).toEqual(expected);
 			});
 	});
 
 });
 
-describe("PATCH-REQUESTS of AssignmentController (e2e)", () => {
+describe("PATCH-REQUESTS of AssessmentController (e2e)", () => {
 
 	beforeEach(async () => {
 		app = await createApplication();
@@ -127,13 +188,11 @@ describe("PATCH-REQUESTS of AssignmentController (e2e)", () => {
 		await getConnection().close(); // Close Db-Connection after all tests have been executed
 	});
 
-	it("(PATCH) /courses/{courseId}/assignments/{assignmentId}/assessments/{assessmentId} Updates the assessment)", () => {
+	it("(PATCH) /courses/{courseId}/assignments/{assignmentId}/assessments/{assessmentId} Updates the assessment", () => {
 		const assessment = ASSESSMENT_JAVA_EVALUATED_GROUP_1;
 
 		// Create clone of original data and perform some changes
-		const changedAssessment = new AssessmentDto();
-		Object.assign(changedAssessment, assessment);
-
+		const changedAssessment = copy(assessment);
 		changedAssessment.achievedPoints = 99;
 		changedAssessment.comment = "new comment";
 
@@ -149,7 +208,7 @@ describe("PATCH-REQUESTS of AssignmentController (e2e)", () => {
 
 });
 
-describe("DELETE-REQUESTS of AssignmentController (e2e)", () => {
+describe("DELETE-REQUESTS of AssessmentController (e2e)", () => {
 
 	beforeEach(async () => {
 		app = await createApplication();

@@ -1,4 +1,4 @@
-import { BaseEntity, PrimaryColumn, Entity, Index, JoinColumn, ManyToMany, ManyToOne } from "typeorm";
+import { BaseEntity, PrimaryColumn, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
 import { Assessment } from "./assessment.entity";
 import { User } from "../../shared/entities/user.entity";
 
@@ -13,7 +13,7 @@ export class AssessmentUserRelation extends BaseEntity {
 	@PrimaryColumn()
 	assessmentId: string;
 
-	@ManyToMany(type => User, user => user.assessmentUserRelations, { onDelete: "CASCADE" })
+	@ManyToOne(type => User, user => user.assessmentUserRelations, { onDelete: "CASCADE" })
 	@JoinColumn()
 	user: User;
 

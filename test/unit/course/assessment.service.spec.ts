@@ -11,9 +11,16 @@ import { copy, convertToEntity } from "../../utils/object-helper";
 import { ASSESSMENT_JAVA_EVALUATED_GROUP_1, ASSESSMENT_JAVA_TESTAT_USER_1, ASSESSMENT_JAVA_EVALUATED_GROUP_2 } from "../../mocks/assessments.mock";
 import { Group } from "../../../src/course/entities/group.entity";
 import { Assessment } from "../../../src/course/entities/assessment.entity";
+import { AssignmentRepository } from "../../../src/course/database/repositories/assignment.repository";
+import { Assignment } from "../../../src/course/entities/assignment.entity";
+import { ASSIGNMENT_JAVA_IN_REVIEW, ASSIGNMENT_JAVA_CLOSED } from "../../mocks/assignments.mock";
+import { PartialAssessmentDto } from "../../../src/course/dto/assessment/partial-assessment.dto";
+import { PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW } from "../../mocks/partial-assessments.mock";
+import { PartialAssessment } from "../../../src/course/entities/partial-assessment.entity";
 
 const mock_AssessmentRepository = () => ({
 	createAssessment: jest.fn().mockResolvedValue(convertToEntity(Assessment, ASSESSMENT_JAVA_EVALUATED_GROUP_1)),
+	addPartialAssessment: jest.fn().mockResolvedValue(convertToEntity(PartialAssessment, PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW)),
 	getAllAssessmentsForAssignment: jest.fn().mockResolvedValue([
 		convertToEntity(Assessment, ASSESSMENT_JAVA_EVALUATED_GROUP_1),
 		convertToEntity(Assessment, ASSESSMENT_JAVA_EVALUATED_GROUP_2),
@@ -21,6 +28,10 @@ const mock_AssessmentRepository = () => ({
 	getAssessmentById: jest.fn().mockResolvedValue(convertToEntity(Assessment, ASSESSMENT_JAVA_EVALUATED_GROUP_1)),
 	updateAssessment: jest.fn().mockResolvedValue(convertToEntity(Assessment, ASSESSMENT_JAVA_EVALUATED_GROUP_1)),
 	deleteAssessment: jest.fn().mockResolvedValue(true),
+});
+
+const mock_AssignmentRepository = () => ({
+	getAssignmentById: jest.fn().mockResolvedValue(convertToEntity(Assignment, ASSIGNMENT_JAVA_IN_REVIEW))
 });
 
 function getGroupMock(): Group {
@@ -45,6 +56,7 @@ describe("AssessmentService", () => {
 
 	let service: AssessmentService;
 	let assessmentRepository: AssessmentRepository;
+	let assignmentRepository: AssignmentRepository;
 	let groupRepository: GroupRepository;
 	let assessmentDto: AssessmentDto;
 
@@ -53,6 +65,7 @@ describe("AssessmentService", () => {
 			providers: [
 				AssessmentService,
 				{ provide: AssessmentRepository, useFactory: mock_AssessmentRepository },
+				{ provide: AssignmentRepository, useFactory: mock_AssignmentRepository },
 				{ provide: GroupRepository, useFactory: mock_GroupRepository }
 			],
 		}).compile();
@@ -61,6 +74,7 @@ describe("AssessmentService", () => {
 
 		service = module.get<AssessmentService>(AssessmentService);
 		assessmentRepository = module.get<AssessmentRepository>(AssessmentRepository);
+		assignmentRepository = module.get(AssignmentRepository);
 		groupRepository = module.get<GroupRepository>(GroupRepository);
 		assessmentDto = copy(ASSESSMENT_JAVA_EVALUATED_GROUP_1);
 	});
@@ -110,6 +124,53 @@ describe("AssessmentService", () => {
 
 			try {
 				await service.createAssessment(assessmentDto.assignmentId, assessmentDto);
+				expect(true).toEqual(false);
+			} catch(error) {
+				expect(error).toBeTruthy();
+				expect(error.status).toEqual(400);
+			}
+		});
+	
+	});
+
+	describe("addPartialAssessment", () => {
+	
+		let partialAssessment: PartialAssessmentDto;
+
+		beforeEach(() => {
+			partialAssessment = PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW;
+		});
+
+		it("Assignment is IN_REVIEW -> Creates partial assessment", async () => {
+			const assignmentId = "assignment_id_1";
+			const expected = copy(partialAssessment);
+			
+			const result = await service.addPartialAssessment(assignmentId, partialAssessment.assessmentId, partialAssessment);
+
+			expect(assignmentRepository.getAssignmentById).toHaveBeenCalledWith(assignmentId);
+			expect(result).toEqual(expected);
+		});
+
+		it("Assignment not IN_REVIEW -> Throws Exception", async () => {
+			const assignmentNotInReview = copy(ASSIGNMENT_JAVA_CLOSED);
+			assignmentRepository.getAssignmentById = jest.fn().mockResolvedValueOnce(convertToEntity(Assignment, assignmentNotInReview));
+
+			try {
+				await service.addPartialAssessment(assignmentNotInReview.id, partialAssessment.assessmentId, partialAssessment);
+				expect(true).toEqual(false);
+			} catch(error) {
+				expect(error).toBeTruthy();
+				expect(error.status).toEqual(400);
+			}
+		});
+
+		it("Partial assessment refers to different assessment -> Throws exception", async () => {
+			const assignmentId = "assignment_id_1";
+			const different_assessment_Id = "different_assessment_id";
+			console.assert(partialAssessment.assessmentId !== different_assessment_Id);
+
+			try {
+				await service.addPartialAssessment(assignmentId, different_assessment_Id, partialAssessment);
 				expect(true).toEqual(false);
 			} catch(error) {
 				expect(error).toBeTruthy();

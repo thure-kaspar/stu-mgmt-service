@@ -7,11 +7,15 @@ import { GroupRepository } from "../database/repositories/group.repository";
 import { Group } from "../entities/group.entity";
 import { DtoFactory } from "../../shared/dto-factory";
 import { PartialAssessmentDto } from "../dto/assessment/partial-assessment.dto";
+import { AssignmentRepository } from "../database/repositories/assignment.repository";
+import { Assignment } from "../entities/assignment.entity";
+import { AssignmentState } from "../../shared/enums";
 
 @Injectable()
 export class AssessmentService {
 
 	constructor(@InjectRepository(Assessment) private assessmentRepository: AssessmentRepository,
+				@InjectRepository(Assignment) private assignmentRepository: AssignmentRepository,
 				@InjectRepository(Group) private groupRepository: GroupRepository
 	) { }
 
@@ -35,13 +39,17 @@ export class AssessmentService {
 		}
 
 		const createdAssessment = await this.assessmentRepository.createAssessment(assessmentDto, userIds);
-
 		return DtoFactory.createAssessmentDto(createdAssessment);
 	}
 
-	async addPartialAssessment(assessmentId: string, partial: PartialAssessmentDto): Promise<PartialAssessmentDto> {
+	async addPartialAssessment(assignmentId: string, assessmentId: string, partial: PartialAssessmentDto): Promise<PartialAssessmentDto> {
 		if (assessmentId != partial.assessmentId) {
 			throw new BadRequestException("Partial assessment refers to a different assessment.");
+		}
+
+		const assignment = await this.assignmentRepository.getAssignmentById(assignmentId);
+		if (assignment.state !== AssignmentState.IN_REVIEW) {
+			throw new BadRequestException("Assignment is not in the required state (IN_REVIEW).");
 		}
 
 		const partialAssessment = await this.assessmentRepository.addPartialAssessment(partial);
