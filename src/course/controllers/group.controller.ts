@@ -97,6 +97,22 @@ export class GroupController {
 		return this.groupService.updateGroup(groupId, groupDto);
 	}
 
+	@Delete(":groupId/users/:userId")
+	@ApiOperation({
+		operationId: "removeUser",
+		summary: "Remove user",
+		description: "Removes the user from the group."
+	})
+	removeUser(
+		@Param("courseId") courseId: string,
+		@Param("groupId", ParseUUIDPipe) groupId: string,
+		@Param("userId", ParseUUIDPipe) userId: string,
+		@Body("reason") reason?: string
+	): Promise<void> {
+
+		return this.groupService.removeUser(groupId, userId, reason);
+	}
+
 	@Delete(":groupId")
 	@ApiOperation({
 		operationId: "deleteGroup",

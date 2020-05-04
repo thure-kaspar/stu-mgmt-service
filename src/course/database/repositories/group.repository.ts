@@ -3,6 +3,7 @@ import { Group } from "../../entities/group.entity";
 import { GroupDto } from "../../dto/group/group.dto";
 import { UserGroupRelation } from "../../entities/user-group-relation.entity";
 import { ConflictException } from "@nestjs/common";
+import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
 
 @EntityRepository(Group)
 export class GroupRepository extends Repository<Group> {
@@ -26,15 +27,16 @@ export class GroupRepository extends Repository<Group> {
 	/**
 	 * Adds the given user to the group.
 	 */
-	async addUserToGroup(groupId: string, userId: string): Promise<any> {
+	async addUserToGroup(groupId: string, userId: string): Promise<boolean> {
 		const userGroupRelation = new UserGroupRelation();
 		userGroupRelation.groupId = groupId;
 		userGroupRelation.userId = userId;
-		const savedUserGroupRelation = await userGroupRelation.save()
+		await userGroupRelation.save()
 			.catch((error) => {
 				if (error.code === "23505")
 					throw new ConflictException("This user is already a member of this group.");
 			});
+		return userGroupRelation ? true : false;
 	}
 
 	async getGroupById(groupId: string, ...relations: string[]): Promise<Group> {
@@ -52,17 +54,21 @@ export class GroupRepository extends Repository<Group> {
 
 	// TODO: Decide, wether query should be split up
 	/**
-	 * Returns the group including all data that needed by "addUserToGroup".
+	 * Returns the group including all data that needed by "addUserToGroup" (i.e group members and course settings).
+	 * Throws error, if user is not a member of the group's course.
 	 */
 	async getGroupForAddUserToGroup(groupId: string, userId: string): Promise<Group> {
-		return this.createQueryBuilder("group")
+		const group = await this.createQueryBuilder("group")
 			.where("group.id = :groupId", { groupId }) // Load group
 			.leftJoinAndSelect("group.userGroupRelations", "userGroupRelations") // Load userGroupRelations
 			.leftJoinAndSelect("group.course", "course") // Load course
 			.leftJoinAndSelect("course.config", "config") // Load course config
 			.innerJoinAndSelect("config.groupSettings", "groupSettings") // Load group settings (of course config)
-			.innerJoinAndSelect("course.courseUserRelations", "relation", "relation.userId = :userId", { userId }) // Load specific course-user
+			.innerJoinAndSelect("course.courseUserRelations", "relation", "relation.userId = :userId", { userId }) // Load specific course-user, error if not a member of course
 			.getOne();
+		
+		if (!group) throw new EntityNotFoundError(Group, null);
+		return group;
 	}
 
 	/**
@@ -106,6 +112,11 @@ export class GroupRepository extends Repository<Group> {
 		group.password = groupDto.password;
 		
 		return group.save();
+	}
+
+	async removeUser(groupId: string, userId: string): Promise<boolean> {
+		const removed = await this.manager.getRepository(UserGroupRelation).delete({ groupId, userId });
+		return removed.affected == 1;
 	}
 
 	/**

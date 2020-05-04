@@ -9,12 +9,16 @@ import { UserDto } from "../../shared/dto/user.dto";
 import { DtoFactory } from "../../shared/dto-factory";
 import { CourseClosedException, GroupsForbiddenException } from "../exceptions/custom-exceptions";
 import { GroupCreateBulkDto } from "../dto/group/group-create-bulk.dto";
+import { EventBus } from "@nestjs/cqrs";
+import { UserJoinedGroupEvent } from "../events/user-joined-group.event";
+import { UserLeftGroupEvent } from "../events/user-left-group.event";
 
 @Injectable()
 export class GroupService {
 
 	constructor(@InjectRepository(Group) private groupRepository: GroupRepository,
-				@InjectRepository(Course) private courseRepository: CourseRepository) { }
+				@InjectRepository(Course) private courseRepository: CourseRepository,
+				private events: EventBus) { }
 
 	/**
 	 * Creates a group, if the course allows groups.
@@ -69,14 +73,22 @@ export class GroupService {
 		if (sizeCurrent >= sizeMax) throw new ConflictException("Group is full.");
 		if (group.password && group.password !== password) throw new UnauthorizedException("The given password was incorrect.");
 
-		return this.groupRepository.addUserToGroup(groupId, userId);
+		const added = await this.groupRepository.addUserToGroup(groupId, userId);
+		if (added) {
+			this.events.publish(new UserJoinedGroupEvent(groupId, userId));
+		}
+		return added;
 	}
 
 	/**
 	 * Adds the user to the group without checking any constraints. 
 	 */
 	async addUserToGroup_Force(groupId: string, userId: string): Promise<any> {
-		return this.groupRepository.addUserToGroup(groupId, userId);
+		const added = this.groupRepository.addUserToGroup(groupId, userId);
+		if (added) {
+			this.events.publish(new UserJoinedGroupEvent(groupId, userId));
+		}
+		return added;
 	}
 
 	async getGroupsOfCourse(courseId: string): Promise<GroupDto[]> {
@@ -96,6 +108,15 @@ export class GroupService {
 		}
 		const group = await this.groupRepository.updateGroup(groupId, groupDto);
 		return DtoFactory.createGroupDto(group);
+	}
+
+	async removeUser(groupId: string, userId: string, reason?: string): Promise<void> {
+		const removed = await this.groupRepository.removeUser(groupId, userId);
+		if (removed) {
+			this.events.publish(new UserLeftGroupEvent(groupId, userId, reason));
+		} else {
+			throw new BadRequestException("Removal failed.");
+		}
 	}
 
 	async deleteGroup(groupId: string): Promise<boolean> {
