@@ -1,4 +1,4 @@
-import { Controller, Post, Param, Body, ParseUUIDPipe, Get, Patch, Delete } from "@nestjs/common";
+import { Controller, Post, Param, Body, Get, Patch, Delete } from "@nestjs/common";
 import { AssessmentService } from "../services/assessment.service";
 import { AssessmentDto, AssessmentCreateDto } from "../dto/assessment/assessment.dto";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
@@ -18,7 +18,7 @@ export class AssessmentController {
 	})
 	createAssessment(
 		@Param("courseId") courseId: string,
-		@Param("assignmentId", ParseUUIDPipe) assignmentId: string,
+		@Param("assignmentId") assignmentId: string,
 		@Body() assessment: AssessmentCreateDto
 	): Promise<AssessmentDto> {
 
@@ -33,14 +33,13 @@ export class AssessmentController {
 	})
 	addPartialAssessment(
 		@Param("courseId") courseId: string,
+		@Param("assignmentId") assignmentId: string,
 		@Param("assessmentId") assessmentId: string,
 		@Body() partial: PartialAssessmentDto
 	): Promise<PartialAssessmentDto> {
 
-		return this.assessmentService.addPartialAssessment(assessmentId, partial);
+		return this.assessmentService.addPartialAssessment(assignmentId, assessmentId, partial);
 	}
-
-
 
 	@Get()
 	@ApiOperation({
@@ -50,7 +49,7 @@ export class AssessmentController {
 	})
 	getAllAssessmentsForAssignment(
 		@Param("courseId") courseId: string,
-		@Param("assignmentId", ParseUUIDPipe) assignmentId: string
+		@Param("assignmentId") assignmentId: string
 	): Promise<AssessmentDto[]> {
 
 		// TODO: Check if user is allowed to request all assessments
@@ -65,8 +64,8 @@ export class AssessmentController {
 	})
 	getAssessmentById(
 		@Param("courseId") courseId: string,
-		@Param("assignmentId", ParseUUIDPipe) assignmentId: string,
-		@Param("assessmentId", ParseUUIDPipe) assessmentId: string
+		@Param("assignmentId") assignmentId: string,
+		@Param("assessmentId") assessmentId: string
 	): Promise<AssessmentDto> {
 
 		return this.assessmentService.getAssessmentById(assessmentId);
@@ -80,8 +79,8 @@ export class AssessmentController {
 	})
 	updateAssessment(
 		@Param("courseId") courseId: string,
-		@Param("assignmentId", ParseUUIDPipe) assignmentId: string,
-		@Param("assessmentId", ParseUUIDPipe) assessmentId: string,
+		@Param("assignmentId") assignmentId: string,
+		@Param("assessmentId") assessmentId: string,
 		@Body() assessmentDto: AssessmentDto
 	): Promise<AssessmentDto> {
 
@@ -96,8 +95,8 @@ export class AssessmentController {
 	})
 	deleteAssessment(
 		@Param("courseId") courseId: string,
-		@Param("assignmentId", ParseUUIDPipe) assignmentId: string,
-		@Param("assessmentId", ParseUUIDPipe) assessmentId: string
+		@Param("assignmentId") assignmentId: string,
+		@Param("assessmentId") assessmentId: string
 	): Promise<boolean> {
 
 		return this.assessmentService.deleteAssessment(assessmentId);
