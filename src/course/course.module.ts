@@ -22,24 +22,36 @@ import { CourseConfigRepository } from "./database/repositories/course-config.re
 import { GroupSettingsRepository } from "./database/repositories/group-settings.repository";
 import { AdmissionCriteraRepository } from "./database/repositories/admission-criteria.repository";
 import { AssignmentTemplateRepository } from "./database/repositories/assignment-template.repository";
+import { EventBus, CqrsModule } from "@nestjs/cqrs";
+import { UserJoinedGroupHandler } from "./events/user-joined-group.event";
+import { UserLeftGroupHandler } from "./events/user-left-group.event";
+import { GroupEvent } from "./entities/group-event.entity";
+
+const EventHandlers = [UserJoinedGroupHandler, UserLeftGroupHandler];
 
 @Module({
-	imports: [TypeOrmModule.forFeature([
-		CourseRepository,
-		UserRepository,
-		CourseUserRelationRepository,
-		GroupRepository,
-		AssignmentRepository,
-		AssessmentRepository,
-		AssessmentUserRelationRepository,
-		CourseConfigRepository,
-		GroupSettingsRepository,
-		AdmissionCriteraRepository,
-		AssignmentTemplateRepository
-	]),
-	HttpModule
+	imports: [
+		TypeOrmModule.forFeature([
+			CourseRepository,
+			UserRepository,
+			CourseUserRelationRepository,
+			GroupRepository,
+			AssignmentRepository,
+			AssessmentRepository,
+			AssessmentUserRelationRepository,
+			CourseConfigRepository,
+			GroupSettingsRepository,
+			AdmissionCriteraRepository,
+			AssignmentTemplateRepository,
+			GroupEvent
+		]),
+		CqrsModule,
+		HttpModule
 	],
 	controllers: [AssessmentController, AssignmentController, CourseController, GroupController, CourseConfigController],
-	providers: [CourseService, GroupService, AssignmentService, AssessmentService, UpdateService, CourseConfigService]
+	providers: [
+		CourseService, GroupService, AssignmentService, AssessmentService, UpdateService, CourseConfigService, 
+		...EventHandlers
+	]
 })
 export class CourseModule { }
