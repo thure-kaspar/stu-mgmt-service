@@ -7,7 +7,8 @@
     "^.+\\.(t|j)s$": "ts-jest"
   },
   "collectCoverageFrom": [
-	  "src/**/*.ts"
+	  "src/**/*.ts",
+	  "!src/test"
   ],
   "coveragePathIgnorePatterns": [
   ]
