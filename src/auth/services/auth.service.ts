@@ -55,13 +55,10 @@ export class AuthService {
 	 * in future requests.
 	 */
 	async login(authCredentials: AuthCredentialsDto): Promise<AuthTokenDto> {
-		throw new NotImplementedException();
-
-		// Check if credentials were valid
-		const isValid = true; // TODO: Implement
-
-		// If credentials were invalid
-		if (!isValid) throw new BadRequestException("Invalid credentials");
+		// TODO
+		if (process.env.NODE_ENV !== "development" && process.env.NODE_ENV !== "demo") {
+			throw new NotImplementedException();
+		}
 
 		// Create AuthToken for the user
 		const user = await this.userRepository.getUserByEmail(authCredentials.email);
