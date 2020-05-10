@@ -71,7 +71,7 @@ export class GroupService {
 		
 		if (group.isClosed) throw new ConflictException("Group is closed.");
 		if (sizeCurrent >= sizeMax) throw new ConflictException("Group is full.");
-		if (group.password && group.password !== password) throw new UnauthorizedException("The given password was incorrect.");
+		if (group.password && group.password !== password) throw new BadRequestException("The given password was incorrect.");
 
 		const added = await this.groupRepository.addUserToGroup(groupId, userId);
 		if (added) {
