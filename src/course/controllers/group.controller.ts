@@ -99,11 +99,11 @@ export class GroupController {
 
 	@Delete(":groupId/users/:userId")
 	@ApiOperation({
-		operationId: "removeUser",
+		operationId: "removeUserFromGroup",
 		summary: "Remove user",
 		description: "Removes the user from the group."
 	})
-	removeUser(
+	removeUserFromGroup(
 		@Param("courseId") courseId: string,
 		@Param("groupId") groupId: string,
 		@Param("userId") userId: string,
