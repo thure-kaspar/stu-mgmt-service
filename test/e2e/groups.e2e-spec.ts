@@ -81,13 +81,13 @@ describe("POST-REQUESTS for relations (Db contains data) of GroupController (e2e
 			.expect(201);
 	});
 
-	it("(POST) /groups/{groupId}/users/{userId} Incorrect password -> 401 Unauthorized", () => {
+	it("(POST) /groups/{groupId}/users/{userId} Incorrect password -> 400 BadRequest", () => {
 		const group = GROUP_1_JAVA;
 
 		return request(app.getHttpServer())
 			.post(`/courses/${course.id}/groups/${group.id}/users/${users[0].id}`)
 			.send({ password: "wrong_password" })
-			.expect(401);
+			.expect(400);
 	});
 
 	it("(POST) /groups/{groupId}/users/{userId} Group is closed -> 409 Conflict", () => {

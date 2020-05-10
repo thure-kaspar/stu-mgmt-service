@@ -239,7 +239,7 @@ describe("GroupService", () => {
 				expect(true).toEqual(false);
 			} catch(error) {
 				expect(error).toBeTruthy();
-				expect(error.status).toEqual(401);
+				expect(error.status).toEqual(400);
 			}
 		});
 	
