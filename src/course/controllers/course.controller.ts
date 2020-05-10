@@ -6,6 +6,7 @@ import { UserDto } from "../../shared/dto/user.dto";
 import { CourseFilterDto } from "../dto/course/course-filter.dto";
 import { ChangeCourseRoleDto } from "../dto/change-course-role.dto";
 import { CourseCreateDto } from "../dto/course/course-create.dto";
+import { PasswordDto } from "../../shared/dto/password.dto";
 
 @ApiTags("courses") 
 @Controller("courses")
@@ -38,9 +39,9 @@ export class CourseController {
 	})
 	addUser(@Param("courseId") courseId: string,
 			@Param("userId") userId: string,
-			@Body("password") password?: string,
+			@Body() password?: PasswordDto,
 	): Promise<any> {
-		return this.courseService.addUser(courseId, userId, password);
+		return this.courseService.addUser(courseId, userId, password.password);
 	}
 	
 	/**

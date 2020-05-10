@@ -1,9 +1,10 @@
 import { Controller, Get, Param, Post, Delete, Patch, Body } from "@nestjs/common";
 import { GroupService } from "../services/group.service";
 import { UserDto } from "../../shared/dto/user.dto";
-import { ApiTags, ApiOperation, ApiBody } from "@nestjs/swagger";
+import { ApiTags, ApiOperation } from "@nestjs/swagger";
 import { GroupDto } from "../dto/group/group.dto";
 import { GroupCreateBulkDto } from "../dto/group/group-create-bulk.dto";
+import { PasswordDto } from "../../shared/dto/password.dto";
 
 @ApiTags("groups")
 @Controller("courses/:courseId/groups")
@@ -44,15 +45,14 @@ export class GroupController {
 		summary: "Add user to group",
 		description: "Adds the user to the group, if constraints are fulfilled."
 	})
-	@ApiBody({ type: String })
 	addUserToGroup(
 		@Param("courseId") courseId: string,
 		@Param("groupId") groupId: string,
 		@Param("userId") userId: string,
-		@Body("password") password?: string
+		@Body() password?: PasswordDto,
 	): Promise<any> {
 
-		return this.groupService.addUserToGroup(groupId, userId, password);
+		return this.groupService.addUserToGroup(groupId, userId, password.password);
 	}
 
 	@Get()
