@@ -115,7 +115,6 @@ export abstract class DtoFactory {
 		return userDto;
 	}
 	
-	// TODO: Allow loading members
 	static createGroupDto(group: Group): GroupDto {
 		const groupDto: GroupDto = {
 			id: group.id,
@@ -125,6 +124,14 @@ export abstract class DtoFactory {
 		};
 
 		if (group.course) groupDto.course = this.createCourseDto(group.course);
+
+		if (group.userGroupRelations) {
+			groupDto.users = [];
+
+			if (group.userGroupRelations.length && group.userGroupRelations[0].user) {
+				groupDto.users = group.userGroupRelations.map(rel => this.createUserDto(rel.user));
+			}
+		}
 
 		return groupDto;
 	}

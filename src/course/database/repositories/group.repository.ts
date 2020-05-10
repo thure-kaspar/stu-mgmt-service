@@ -80,9 +80,8 @@ export class GroupRepository extends Repository<Group> {
 	 */
 	async getGroupsOfCourse(courseId: string): Promise<Group[]> {
 		return this.find({
-			where: {
-				courseId: courseId
-			}
+			where: { courseId },
+			relations: ["userGroupRelations", "userGroupRelations.user"],
 		});
 	}
 
