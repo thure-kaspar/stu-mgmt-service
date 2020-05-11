@@ -4,7 +4,7 @@ import { AssessmentRepository } from "../../../src/course/database/repositories/
 import { GroupRepository } from "../../../src/course/database/repositories/group.repository";
 import { GROUP_1_JAVA } from "../../mocks/groups/groups.mock";
 import { UserGroupRelation } from "../../../src/course/entities/user-group-relation.entity";
-import { UserGroupRelationsMock } from "../../mocks/relations.mock";
+import { UserGroupRelationsMock } from "../../mocks/groups/user-group-relations.mock";
 import { DtoFactory } from "../../../src/shared/dto-factory";
 import { AssessmentDto } from "../../../src/course/dto/assessment/assessment.dto";
 import { copy, convertToEntity } from "../../utils/object-helper";
