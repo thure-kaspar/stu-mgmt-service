@@ -2,14 +2,16 @@ import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
 import { getConnection } from "typeorm";
 import { DbMockService } from "../mocks/db-mock.service";
-import * as fromDtoMocks from "../mocks/relations.mock";
 import { GroupDto } from "../../src/course/dto/group/group.dto";
 import { CoursesMock, COURSE_JAVA_1920 } from "../mocks/courses.mock";
 import { GroupsMock, GROUP_1_JAVA } from "../mocks/groups/groups.mock";
-import { UsersMock } from "../mocks/users.mock";
+import { UsersMock, USER_STUDENT_2_JAVA, USER_STUDENT_JAVA } from "../mocks/users.mock";
 import { AssignmentsMock } from "../mocks/assignments.mock";
 import { AssessmentsMock } from "../mocks/assessments.mock";
 import { createApplication } from "../mocks/application.mock";
+import { UserGroupRelationsMock } from "../mocks/groups/user-group-relations.mock";
+import { copy } from "../utils/object-helper";
+import { GROUP_EVENTS_GROUP_1_MOCK } from "../mocks/groups/group-events.mock";
 
 let app: INestApplication;
 let dbMockService: DbMockService; // Should be initialized in every describe-block
@@ -37,9 +39,29 @@ describe("GET-REQUESTS of GroupController (e2e)", () => {
 		await getConnection().close(); // Close Db-Connection after all tests have been executed
 	});
 
+	it("(GET) /groups/{groupId}/users Retrieves the group with all relations", () => {
+		const group = copy(GROUP_1_JAVA);
+		group.course = COURSE_JAVA_1920;
+		group.history = GROUP_EVENTS_GROUP_1_MOCK;
+		group.users = [USER_STUDENT_JAVA, USER_STUDENT_2_JAVA];
+
+		const expected = copy(group);
+		expected.password = undefined; // Remove password due to it never being included in reponse
+		expected.history.forEach(h => h.timestamp = undefined); // Remove timespamp due to it being a data instance instead of string
+
+		return request(app.getHttpServer())
+			.get(`/courses/${course.id}/groups/${group.id}`)
+			.expect(({ body }) => {
+				const result = body as GroupDto;
+				expect(result.history[0].timestamp).toBeTruthy();
+				result.history.forEach(h => h.timestamp = undefined); // Remove timespamp due to it being a data instance instead of string
+				expect(result).toEqual(expected);
+			});
+	});
+
 	it("(GET) /groups/{groupId}/users Retrieves all members of the group", () => {
 		const group = GROUP_1_JAVA;
-		const memberCount = fromDtoMocks.UserGroupRelationsMock.filter(user => user.groupId === group.id).length;
+		const memberCount = UserGroupRelationsMock.filter(user => user.groupId === group.id).length;
 		console.assert(memberCount > 1, "The tested group should contains multiple users! Member count: ", memberCount);
 
 		return request(app.getHttpServer())

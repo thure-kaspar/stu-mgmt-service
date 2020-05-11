@@ -9,18 +9,21 @@ export const GROUP_EVENT_STUDENT_1_JOINED_GROUP: GroupEventDto = {
 	event: UserJoinedGroupEvent.name,
 	timestamp: new Date(2020, 1, 1),
 	user: USER_STUDENT_JAVA,
+	payload: null
 };
 
 export const GROUP_EVENT_TUTOR_JOINED_GROUP: GroupEventDto = {
 	event: UserJoinedGroupEvent.name,
 	timestamp: new Date(2020, 1, 2),
 	user: USER_STUDENT_3_JAVA_TUTOR,
+	payload: null
 };
 
 export const GROUP_EVENT_STUDENT_2_JOINED_GROUP: GroupEventDto = {
 	event: UserJoinedGroupEvent.name,
 	timestamp: new Date(2020, 1, 3),
 	user: USER_STUDENT_2_JAVA,
+	payload: null
 };
 
 export const GROUP_EVENT_TUTOR_LEFT_GROUP: GroupEventDto = {
