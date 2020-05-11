@@ -9,7 +9,7 @@ export class GroupEvent extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@ManyToMany(type => Group)
+	@ManyToMany(type => Group, group => group.history)
 	group: Group;
 
 	@Column()
