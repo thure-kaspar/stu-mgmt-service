@@ -96,6 +96,14 @@ export class GroupService {
 		return groups.map(group => DtoFactory.createGroupDto(group));
 	}
 
+	/**
+	 * Returns the group with its users, assessments and history.
+	 */
+	async getGroup(groupId: string): Promise<GroupDto> {
+		const group = await this.groupRepository.getGroupById_All(groupId);
+		return DtoFactory.createGroupDto(group);
+	}
+
 	async getUsersOfGroup(groupId: string): Promise<UserDto[]> {
 		const group = await this.groupRepository.getGroupWithUsers(groupId);
 		const userDtos = group.userGroupRelations.map(userGroupRelation => DtoFactory.createUserDto(userGroupRelation.user));

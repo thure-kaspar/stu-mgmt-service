@@ -43,6 +43,13 @@ export class GroupRepository extends Repository<Group> {
 		return this.findOneOrFail(groupId, { relations });
 	}
 
+	/** Returns the group with all relations loaded. */
+	async getGroupById_All(groupId: string): Promise<Group> {
+		return this.findOneOrFail(groupId, {
+			relations: ["course", "userGroupRelations", "userGroupRelations.user", "history"]
+		});
+	}
+
 	/**
 	 * Returns the group with its members.
 	 */

@@ -1,4 +1,4 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, OneToMany, Column, CreateDateColumn, JoinColumn, ManyToOne, ManyToMany } from "typeorm";
+import { BaseEntity, Entity, PrimaryGeneratedColumn, OneToMany, Column, CreateDateColumn, JoinColumn, ManyToOne, ManyToMany, JoinTable } from "typeorm";
 import { UserGroupRelation } from "./user-group-relation.entity";
 import { Course } from "./course.entity";
 import { Assessment } from "./assessment.entity";
@@ -34,6 +34,6 @@ export class Group extends BaseEntity {
 	@OneToMany(type => Assessment, assessment => assessment.group)
 	assessments: Assessment[];
 	
-	@ManyToMany(type => GroupEvent, groupEvent => groupEvent.group)
+	@OneToMany(type => GroupEvent, groupEvent => groupEvent.group)
 	history: GroupEvent[];
 }

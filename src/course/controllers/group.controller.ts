@@ -68,6 +68,20 @@ export class GroupController {
 		return this.groupService.getGroupsOfCourse(courseId);
 	}
 
+	@Get(":groupId")
+	@ApiOperation({
+		operationId: "getGroup",
+		summary: "Get group",
+		description: "Returns the group with its course, users, assessments and history."
+	})
+	getGroup(
+			@Param("courseId") courseId: string,
+			@Param("groupId") groupId: string
+	): Promise<GroupDto> {
+		return this.groupService.getGroup(groupId);
+	}
+
+
 	@Get(":groupId/users")
 	@ApiOperation({
 		operationId: "getUsersOfGroup",

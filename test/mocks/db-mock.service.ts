@@ -9,7 +9,7 @@ import { CourseUserRelation } from "../../src/course/entities/course-user-relati
 import { AssessmentUserRelation } from "../../src/course/entities/assessment-user-relation.entity";
 import { UserGroupRelation } from "../../src/course/entities/user-group-relation.entity";
 import { CoursesMock } from "./courses.mock";
-import { AssessmentUserRelationsMock, UserGroupRelationsMock, CourseUserRelationsMock } from "./relations.mock";
+import { AssessmentUserRelationsMock, CourseUserRelationsMock } from "./relations.mock";
 import { AssessmentsMock } from "./assessments.mock";
 import { AssignmentsMock } from "./assignments.mock";
 import { UsersMock } from "./users.mock";
@@ -25,6 +25,9 @@ import { COURSE_CONFIGS_MOCK } from "./course-config/course-config.mock";
 import { convertToEntityNoRelations, convertToEntity } from "../utils/object-helper";
 import { PARTIAL_ASSESSMENT_MOCK } from "./partial-assessments.mock";
 import { PartialAssessment } from "../../src/course/entities/partial-assessment.entity";
+import { UserGroupRelationsMock } from "./groups/user-group-relations.mock";
+import { getGroupEventEntities } from "./groups/group-events.mock";
+import { GroupEvent } from "../../src/course/entities/group-event.entity";
 
 //@Injectable() Not a "real" (injectable) service for now
 export class DbMockService {
@@ -32,6 +35,7 @@ export class DbMockService {
 	private con: EntityManager;
 	courses = CoursesMock
 	groups = GroupsMock;
+	groupEvents = getGroupEventEntities();
 	users = UsersMock;
 	assignments = AssignmentsMock;
 	assessments = AssessmentsMock;
@@ -60,6 +64,7 @@ export class DbMockService {
 		await this.createGroupSettings();
 		await this.createUsers();
 		await this.createGroups();
+		await this.createGroupEvents();
 		await this.createAssignments();
 		await this.createAssessments();
 		await this.createPartialAssessments();
@@ -128,6 +133,11 @@ export class DbMockService {
 	async createGroups(): Promise<void> {
 		const groups = this.groups.map(g => convertToEntityNoRelations(Group, g));
 		await this.con.getRepository(Group).insert(groups)
+			.catch(error => console.error(error));
+	}
+
+	async createGroupEvents(): Promise<void> {
+		await this.con.getRepository(GroupEvent).insert(this.groupEvents)
 			.catch(error => console.error(error));
 	}
 

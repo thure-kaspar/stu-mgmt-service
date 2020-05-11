@@ -1,6 +1,7 @@
 import { CourseDto } from "../course/course.dto";
 import { UserDto } from "../../../shared/dto/user.dto";
 import { ApiPropertyOptional, ApiProperty } from "@nestjs/swagger";
+import { GroupEventDto } from "./group-event.dto";
 
 export class GroupDto {
 	/** Unique identifier of this group. */
@@ -30,5 +31,5 @@ export class GroupDto {
 	/** The members of this group. */
 	//@ApiPropertyOptional({ description: "The members of this group.", type: UserDto, isArray: true })
     users?: UserDto[];
-
+	history?: GroupEventDto[];
 }

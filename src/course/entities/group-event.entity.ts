@@ -1,4 +1,4 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToMany, CreateDateColumn } from "typeorm";
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToMany, CreateDateColumn, ManyToOne, JoinTable } from "typeorm";
 import { Group } from "./group.entity";
 import { User } from "../../shared/entities/user.entity";
 import { GroupEventDto } from "../dto/group/group-event.dto";
@@ -9,13 +9,13 @@ export class GroupEvent extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@ManyToMany(type => Group, group => group.history)
+	@ManyToOne(type => Group, group => group.history)
 	group: Group;
 
 	@Column()
 	groupId: string;
 
-	@ManyToMany(type => User, { eager: true })
+	@ManyToOne(type => User, { eager: true })
 	user: User;
 
 	@Column()

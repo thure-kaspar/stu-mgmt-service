@@ -51,17 +51,3 @@ export const AssessmentUserRelationsMock = [
 		userId: USER_STUDENT_JAVA.id
 	}
 ];
-
-export const UserGroupRelationsMock = [
-	{
-		id: 1,
-		userId: USER_STUDENT_JAVA.id,
-		groupId: GROUP_1_JAVA.id
-	},
-	{
-		id: 2,
-		userId: USER_STUDENT_2_JAVA.id,
-		groupId: GROUP_1_JAVA.id
-	}
-
-];
