@@ -2,7 +2,7 @@ import { CourseRole } from "../../src/shared/enums";
 import { COURSE_JAVA_1920, COURSE_INFO_2_2020 } from "./courses.mock";
 import { USER_STUDENT_JAVA, USER_STUDENT_2_JAVA, USER_STUDENT_3_JAVA_TUTOR, USER_MGMT_ADMIN_JAVA_LECTURER } from "./users.mock";
 import { ASSESSMENT_JAVA_EVALUATED_GROUP_1, ASSESSMENT_JAVA_TESTAT_USER_1 } from "./assessments.mock";
-import { GROUP_1_JAVA } from "./groups.mock";
+import { GROUP_1_JAVA } from "./groups/groups.mock";
 
 export const CourseUserRelationsMock = [
 	{

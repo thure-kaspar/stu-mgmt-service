@@ -1,5 +1,5 @@
-import { GroupDto } from "../../src/course/dto/group/group.dto";
-import { COURSE_JAVA_1920 } from "./courses.mock";
+import { GroupDto } from "../../../src/course/dto/group/group.dto";
+import { COURSE_JAVA_1920 } from "../courses.mock";
 
 export const GROUP_1_JAVA: GroupDto = {
 	id: "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",

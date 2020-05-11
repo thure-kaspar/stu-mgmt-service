@@ -2,7 +2,7 @@
 import { UpdateMessage, EventType, AffectedObject } from "../../src/shared/dto/update-message.dto";
 import { COURSE_JAVA_1920 } from "./courses.mock";
 import { USER_STUDENT_JAVA } from "./users.mock";
-import { GROUP_1_JAVA } from "./groups.mock";
+import { GROUP_1_JAVA } from "./groups/groups.mock";
 import { ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP } from "./assignments.mock";
 
 //#region GROUP

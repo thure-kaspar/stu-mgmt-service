@@ -4,7 +4,7 @@ import { DtoFactory } from "../../../src/shared/dto-factory";
 import { GroupRepository } from "../../../src/course/database/repositories/group.repository";
 import { TestingModule, Test } from "@nestjs/testing";
 import { GroupDto } from "../../../src/course/dto/group/group.dto";
-import { GROUP_1_JAVA, GROUP_2_JAVA } from "../../mocks/groups.mock";
+import { GROUP_1_JAVA, GROUP_2_JAVA } from "../../mocks/groups/groups.mock";
 import { copy, convertToEntity, convertToEntityNoRelations } from "../../utils/object-helper";
 import { COURSE_JAVA_1920 } from "../../mocks/courses.mock";
 import { UserGroupRelation } from "../../../src/course/entities/user-group-relation.entity";

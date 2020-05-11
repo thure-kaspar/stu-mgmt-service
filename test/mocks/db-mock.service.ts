@@ -13,7 +13,7 @@ import { AssessmentUserRelationsMock, UserGroupRelationsMock, CourseUserRelation
 import { AssessmentsMock } from "./assessments.mock";
 import { AssignmentsMock } from "./assignments.mock";
 import { UsersMock } from "./users.mock";
-import { GroupsMock } from "./groups.mock";
+import { GroupsMock } from "./groups/groups.mock";
 import { ASSIGNMENT_TEMPLATES_MOCK } from "./course-config/assignment-templates.mock";
 import { GROUP_SETTINGS_MOCK } from "./course-config/group-settings.mock";
 import { ADMISSION_CRITERIA_JAVA } from "./course-config/admission-criteria.mock";

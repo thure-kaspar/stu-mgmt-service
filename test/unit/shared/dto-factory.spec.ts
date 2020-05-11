@@ -15,7 +15,7 @@ import { CourseRole } from "../../../src/shared/enums";
 import { ASSESSMENT_JAVA_EVALUATED_GROUP_1, ASSESSMENT_JAVA_TESTAT_USER_1 } from "../../mocks/assessments.mock";
 import { ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA_EVALUATED, ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP } from "../../mocks/assignments.mock";
 import { COURSE_INFO_2_2020, COURSE_JAVA_1920 } from "../../mocks/courses.mock";
-import { GROUP_1_JAVA, GROUP_2_JAVA } from "../../mocks/groups.mock";
+import { GROUP_1_JAVA, GROUP_2_JAVA } from "../../mocks/groups/groups.mock";
 import { USER_STUDENT_2_JAVA, USER_STUDENT_JAVA } from "../../mocks/users.mock";
 import { copy, convertToEntity } from "../../utils/object-helper";
 

@@ -2,7 +2,7 @@ import { AssessmentService } from "../../../src/course/services/assessment.servi
 import { TestingModule, Test } from "@nestjs/testing";
 import { AssessmentRepository } from "../../../src/course/database/repositories/assessment.repository";
 import { GroupRepository } from "../../../src/course/database/repositories/group.repository";
-import { GROUP_1_JAVA } from "../../mocks/groups.mock";
+import { GROUP_1_JAVA } from "../../mocks/groups/groups.mock";
 import { UserGroupRelation } from "../../../src/course/entities/user-group-relation.entity";
 import { UserGroupRelationsMock } from "../../mocks/relations.mock";
 import { DtoFactory } from "../../../src/shared/dto-factory";

@@ -4,7 +4,7 @@ import { getConnection } from "typeorm";
 import { CourseFilterDto } from "../../src/course/dto/course/course-filter.dto";
 import { CoursesMock, COURSE_JAVA_1920, COURSE_INFO_2_2020 } from "../mocks/courses.mock";
 import { DbMockService } from "../mocks/db-mock.service";
-import { GROUP_1_JAVA, GROUP_2_JAVA } from "../mocks/groups.mock";
+import { GROUP_1_JAVA, GROUP_2_JAVA } from "../mocks/groups/groups.mock";
 import { USER_STUDENT_JAVA } from "../mocks/users.mock";
 import { createApplication } from "../mocks/application.mock";
 import { copy } from "../utils/object-helper";

@@ -1,5 +1,5 @@
 import { AssessmentDto } from "../../src/course/dto/assessment/assessment.dto";
-import { GROUP_1_JAVA, GROUP_2_JAVA } from "./groups.mock";
+import { GROUP_1_JAVA, GROUP_2_JAVA } from "./groups/groups.mock";
 import { ASSIGNMENT_JAVA_EVALUATED, ASSIGNMENT_JAVA_TESTAT_EVALUATED_SINGLE, ASSIGNMENT_JAVA_IN_REVIEW } from "./assignments.mock";
 import { USER_STUDENT_JAVA, USER_STUDENT_3_JAVA_TUTOR } from "./users.mock";
 

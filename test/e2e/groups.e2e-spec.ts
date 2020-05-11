@@ -5,7 +5,7 @@ import { DbMockService } from "../mocks/db-mock.service";
 import * as fromDtoMocks from "../mocks/relations.mock";
 import { GroupDto } from "../../src/course/dto/group/group.dto";
 import { CoursesMock, COURSE_JAVA_1920 } from "../mocks/courses.mock";
-import { GroupsMock, GROUP_1_JAVA } from "../mocks/groups.mock";
+import { GroupsMock, GROUP_1_JAVA } from "../mocks/groups/groups.mock";
 import { UsersMock } from "../mocks/users.mock";
 import { AssignmentsMock } from "../mocks/assignments.mock";
 import { AssessmentsMock } from "../mocks/assessments.mock";
