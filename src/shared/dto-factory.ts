@@ -133,6 +133,10 @@ export abstract class DtoFactory {
 			}
 		}
 
+		if (group.assessments) {
+			groupDto.assessments = group.assessments.map(a => this.createAssessmentDto(a));
+		}
+
 		if (group.history) {
 			groupDto.history = group.history.map(event => event.toDto());
 		}
