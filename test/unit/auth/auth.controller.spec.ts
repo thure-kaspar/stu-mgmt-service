@@ -55,6 +55,7 @@ describe("Auth Controller", () => {
 				accessToken: "xxx.yyy.zzz",
 				email: authCredentials.email,
 				userId: "user_id_1",
+				username: "max_mustermann",
 				role: UserRole.USER,
 			};
 			authService.login = jest.fn().mockResolvedValue(expected);

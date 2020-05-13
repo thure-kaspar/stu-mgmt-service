@@ -78,6 +78,7 @@ export class AuthService {
 		const authToken: AuthTokenDto = { 
 			accessToken: accessToken, // JWT (encrypted)
 			userId: user.id,
+			username: user.username,
 			email: user.email,
 			role: user.role
 		};
