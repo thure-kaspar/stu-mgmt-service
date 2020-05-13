@@ -1,4 +1,4 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToOne, ManyToMany, OneToMany, JoinColumn } from "typeorm";
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToOne, ManyToMany, OneToMany, JoinColumn, ManyToOne } from "typeorm";
 import { Assignment } from "./assignment.entity";
 import { Group } from "./group.entity";
 import { AssessmentUserRelation } from "./assessment-user-relation.entity";
@@ -16,7 +16,7 @@ export class Assessment extends BaseEntity {
 	@Column({ nullable: true })
 	comment: string;
 	
-	@OneToOne(type => Assignment, assignment => assignment.assessments)
+	@ManyToOne(type => Assignment, assignment => assignment.assessments)
 	assignment: Assignment;
 
 	@Column()

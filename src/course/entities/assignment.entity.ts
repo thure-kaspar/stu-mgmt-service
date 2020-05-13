@@ -1,4 +1,4 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, JoinColumn, ManyToOne } from "typeorm";
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToMany, JoinColumn, ManyToOne } from "typeorm";
 import { Course } from "./course.entity";
 import { Assessment } from "./assessment.entity";
 import { AssignmentState, AssignmentType, CollaborationType } from "../../shared/enums";
