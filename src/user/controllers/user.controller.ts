@@ -76,18 +76,18 @@ export class UserController {
 		return this.userService.getGroupsOfUserForCourse(userId, courseId);
 	}
 
-	@Get(":userId/courses/:courseId/assessmentsWithGroups")
+	@Get(":userId/courses/:courseId/assessments")
 	@ApiOperation({
-		operationId: "getAssessmentsWithGroupsOfUserForCourse",
-		summary: "TODO",
-		description: ""
+		operationId: "getAssessmentsOfUserForCourse",
+		summary: "Get assessments",
+		description: "Returns all assessments of the user in the given course. Includes the group, if assessment specified a group."
 	})
 	getAssessmentsWithGroupsOfUserForCourse(
 		@Param("userId") userId: string,
 		@Param("courseId") courseId: string,
 	): Promise<AssessmentDto[]> {
 
-		return this.userService.getAssessmentsWithGroupsOfUserForCourse(userId, courseId);
+		return this.userService.getAssessmentsOfUserForCourse(userId, courseId);
 	}
 
 	@Patch(":userId")

@@ -48,32 +48,16 @@ export class UserService {
 	}
 
 	/**
-	 * Returns a collection of all groups the user was/is part of in the given course.
+	 * Returns a collection of all groups the user is part of in the given course.
 	 */
 	async getGroupsOfUserForCourse(userId: string, courseId: string): Promise<GroupDto[]> {
-		// Retrieve groups that user is currently a member of
 		const currentGroups = await this.groupRepository.getCurrentGroupsOfUserForCourse(courseId, userId);
-		const currentGroupDtos: GroupDto[] = [];
-		currentGroups.forEach(group => {
-			currentGroupDtos.push(DtoFactory.createGroupDto(group));
-		});
-
-		// TODO: Define a proper format for return value or split in two methods
-		return currentGroupDtos;
+		return currentGroups.map(g => DtoFactory.createGroupDto(g));
 	}
 
-	async getAssessmentsWithGroupsOfUserForCourse(userId: string, courseId: string): Promise<AssessmentDto[]> {
-		// Retrieve assessments of user with group and assignment
+	async getAssessmentsOfUserForCourse(userId: string, courseId: string): Promise<AssessmentDto[]> {
 		const assessments = await this.assessmentRepository.getAssessmentsOfUserForCourse_WithAssignment_WithGroups(courseId, userId);
-		const assessmentDtos= [];
-		assessments.forEach(assessment => {
-			// We only care about group-assessments here
-			if (assessment.groupId) {
-				assessmentDtos.push(DtoFactory.createAssessmentDto(assessment));
-			}
-		});
-
-		return assessmentDtos;
+		return assessments.map(a => DtoFactory.createAssessmentDto(a));
 	}
 
 	async updateUser(userId: string, userDto: UserDto): Promise<UserDto> {

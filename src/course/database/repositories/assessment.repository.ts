@@ -55,19 +55,14 @@ export class AssessmentRepository extends Repository<Assessment> {
 	}
 
 	async getAssessmentsOfUserForCourse_WithAssignment_WithGroups(courseId: string, userId: string): Promise<Assessment[]> {
-		const assessments = await this.find({
-			where: {
-				assignment: {
-					courseId: courseId
-				},
-				assessmentUserRelations: {
-					userId: userId
-				},
-			},
-			relations: ["assignment, group"]
-		});
-
-		return assessments;
+		return this.createQueryBuilder("assessment")
+			.innerJoin("assessment.assignment", "assignment")
+			.where("assignment.courseId = :courseId", { courseId })
+			.innerJoin("assessment.assessmentUserRelations", "userRelation")
+			.where("userRelation.userId = :userId", { userId })
+			.leftJoinAndSelect("assessment.partialAssessments", "partial")
+			.leftJoinAndSelect("assessment.group", "group")
+			.getMany();
 	}
 
 	/**
