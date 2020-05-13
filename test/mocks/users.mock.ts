@@ -66,7 +66,7 @@ export const UsersMock: UserDto[] = [
 	USER_MGMT_ADMIN_JAVA_LECTURER,
 	USER_SYSTEM_ADMIN,
 	USER_FROM_AUTH_SYSTEM,
-	USER_KLING_AUTH_SYSTEM
+	//USER_KLING_AUTH_SYSTEM
 ];
 
 export function getUsersOfCourseMock(): User[] {
