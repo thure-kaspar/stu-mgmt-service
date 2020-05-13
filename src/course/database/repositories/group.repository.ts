@@ -96,14 +96,11 @@ export class GroupRepository extends Repository<Group> {
 	 * Returns all groups that the user is currently a part of in the given course.
 	 */
 	async getCurrentGroupsOfUserForCourse(courseId: string, userId: string): Promise<Group[]> {
-		return this.find({
-			where: {
-				courseId: courseId,
-				userGroupRelations: {
-					userId: userId
-				}
-			}
-		});
+		return this.createQueryBuilder("group")
+			.where("group.courseId = :courseId", { courseId })
+			.innerJoin("group.userGroupRelations", "userRelation")
+			.where("userRelation.userId = :userId", { userId })
+			.getMany();
 	}
 
 	/**
