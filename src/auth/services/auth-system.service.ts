@@ -16,7 +16,7 @@ export class AuthSystemService {
 		try {
 			// Call external auth system's /authenticate/check method with token in Authorization-Header
 			const response = await this.http.get<AuthInfo>(this.authenticateCheckUrl,
-				{ headers: { "Authorization": credentials.token } }).toPromise();
+				{ headers: { "Authorization": "Bearer " + credentials.token } }).toPromise();
 
 			// Return AuthInfo, if user is authenticated
 			return response.data;
