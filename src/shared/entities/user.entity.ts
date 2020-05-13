@@ -9,7 +9,7 @@ export class User extends BaseEntity {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 
-    @Column()
+    @Column({ nullable: true })
 	email: string;
 	
 	@Column({ unique: true })
