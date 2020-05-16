@@ -103,6 +103,22 @@ export class GroupRepository extends Repository<Group> {
 			.getMany();
 	}
 
+	async getGroupHistoryOfUser(courseId: string, userId: string): Promise<Group[]> {
+		const query = await this.createQueryBuilder("group")
+			.where("group.courseId = :courseId", { courseId })
+			.innerJoinAndSelect("group.history", "history")
+			.where("history.userId = :userId", { userId })
+			.orderBy("history.timestamp", "ASC")
+			.getMany();
+
+		console.log(JSON.stringify(query, null, 4));
+		return query;
+	}
+
+	// async getGroupOfAssignment(userId: string, courseId: string, assignmentId: string): Promise<Group> {
+
+	// }
+
 	/**
 	 * Updates the group. Does not update any included relations.
 	 */

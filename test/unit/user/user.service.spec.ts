@@ -3,6 +3,8 @@ import { UserService } from "../../../src/user/services/user.service";
 import { UserRepository } from "../../../src/user/repositories/user.repository";
 import { GroupRepository } from "../../../src/course/database/repositories/group.repository";
 import { AssessmentRepository } from "../../../src/course/database/repositories/assessment.repository";
+import { AssignmentRepository } from "../../../src/course/database/repositories/assignment.repository";
+import { GroupEventRepository } from "../../../src/course/database/repositories/group-event.repository";
 
 const mock_UserRepository = () => ({
 
@@ -16,6 +18,14 @@ const mock_AssessmentRepository = () => ({
 
 });
 
+const mock_AssignmentRepository = () => ({
+	
+});
+
+const mock_GroupEventRepository = () => ({
+	
+});
+
 describe("UserService", () => {
 	let service: UserService;
 	let userRepository: UserRepository;
@@ -26,7 +36,9 @@ describe("UserService", () => {
 				UserService,
 				{ provide: UserRepository, useFactory: mock_UserRepository },
 				{ provide: GroupRepository, useFactory: mock_GroupRepository },
-				{ provide: AssessmentRepository, useFactory: mock_AssessmentRepository }
+				{ provide: AssessmentRepository, useFactory: mock_AssessmentRepository },
+				{ provide: AssignmentRepository, useFactory: mock_AssignmentRepository},
+				{ provide: GroupEventRepository, useFactory: mock_GroupEventRepository }
 			],
 		}).compile();
 

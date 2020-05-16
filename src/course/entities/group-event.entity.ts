@@ -32,8 +32,10 @@ export class GroupEvent extends BaseEntity {
 
 	toDto(): GroupEventDto {
 		return {
-			user: DtoFactory.createUserDto(this.user),
 			event: this.event,
+			userId: this.userId,
+			user: this.user ? DtoFactory.createUserDto(this.user) : undefined,
+			groupId: this.groupId,
 			payload: this.payload,
 			timestamp: this.timestamp
 		};

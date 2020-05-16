@@ -22,10 +22,10 @@ import { CourseConfigRepository } from "./database/repositories/course-config.re
 import { GroupSettingsRepository } from "./database/repositories/group-settings.repository";
 import { AdmissionCriteraRepository } from "./database/repositories/admission-criteria.repository";
 import { AssignmentTemplateRepository } from "./database/repositories/assignment-template.repository";
-import { EventBus, CqrsModule } from "@nestjs/cqrs";
+import { CqrsModule } from "@nestjs/cqrs";
 import { UserJoinedGroupHandler } from "./events/user-joined-group.event";
 import { UserLeftGroupHandler } from "./events/user-left-group.event";
-import { GroupEvent } from "./entities/group-event.entity";
+import { GroupEventRepository } from "./database/repositories/group-event.repository";
 
 const EventHandlers = [UserJoinedGroupHandler, UserLeftGroupHandler];
 
@@ -43,7 +43,7 @@ const EventHandlers = [UserJoinedGroupHandler, UserLeftGroupHandler];
 			GroupSettingsRepository,
 			AdmissionCriteraRepository,
 			AssignmentTemplateRepository,
-			GroupEvent
+			GroupEventRepository
 		]),
 		CqrsModule,
 		HttpModule

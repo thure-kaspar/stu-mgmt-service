@@ -5,6 +5,7 @@ import { ApiTags, ApiOperation } from "@nestjs/swagger";
 import { CourseDto } from "src/course/dto/course/course.dto";
 import { AssessmentDto } from "../../course/dto/assessment/assessment.dto";
 import { GroupDto } from "../../course/dto/group/group.dto";
+import { GroupEventDto } from "../../course/dto/group/group-event.dto";
 
 @ApiTags("users")
 @Controller("users")
@@ -75,6 +76,36 @@ export class UserController {
 
 		return this.userService.getGroupsOfUserForCourse(userId, courseId);
 	}
+
+	@Get(":userId/courses/:courseId/group-history")
+	@ApiOperation({
+		operationId: "getGroupHistoryOfUser",
+		summary: "Get group history of user for course",
+		description: "Retrieves the group history of a user in a course. Events are sorted by timestamp in descending order (new to old)."
+	})
+	getGroupHistoryOfUser(
+		@Param("userId") userId: string,
+		@Param("courseId") courseId: string,
+	): Promise<GroupEventDto[]> {
+
+		return this.userService.getGroupHistoryOfUser(userId, courseId);
+	}
+
+	@Get(":userId/courses/:courseId/assignments/:assignmentId/group")
+	@ApiOperation({
+		operationId: "getGroupOfAssignment",
+		summary: "Get group of assignment",
+		description: "Retrieves the group that the user was a member of when the assignment closed. Returns null, if user was not in a group. Throws error, if assignment has no end date."
+	})
+	getGroupOfAssignment(
+		@Param("userId") userId: string,
+		@Param("courseId") courseId: string,
+		@Param("assignmentId") assignmentId: string
+	): Promise<GroupDto> {
+
+		return this.userService.getGroupOfAssignment(userId, courseId, assignmentId);
+	}
+
 
 	@Get(":userId/courses/:courseId/assessments")
 	@ApiOperation({

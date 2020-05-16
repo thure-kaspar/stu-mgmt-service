@@ -19,7 +19,8 @@ export const ASSIGNMENT_JAVA_CLOSED: AssignmentDto = {
 	points: 100,
 	type: AssignmentType.HOMEWORK,
 	state: AssignmentState.CLOSED,
-	collaboration: CollaborationType.GROUP
+	collaboration: CollaborationType.GROUP,
+	endDate: new Date(2020, 5, 16)
 };
 
 export const ASSIGNMENT_JAVA_IN_REVIEW: AssignmentDto = {

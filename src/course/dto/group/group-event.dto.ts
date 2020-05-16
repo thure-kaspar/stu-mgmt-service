@@ -1,8 +1,10 @@
 import { UserDto } from "../../../shared/dto/user.dto";
 
 export class GroupEventDto {
-	user: UserDto;
 	event: string;
+	user?: UserDto;
+	userId: string;
+	groupId: string;
 	payload?: object;
 	timestamp: Date;
 }
