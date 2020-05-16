@@ -11,7 +11,7 @@ import { AssessmentsMock } from "../mocks/assessments.mock";
 import { createApplication } from "../mocks/application.mock";
 import { UserGroupRelationsMock } from "../mocks/groups/user-group-relations.mock";
 import { copy } from "../utils/object-helper";
-import { GROUP_EVENTS_GROUP_1_MOCK } from "../mocks/groups/group-events.mock";
+import { GROUP_EVENTS_MOCK } from "../mocks/groups/group-events.mock";
 
 let app: INestApplication;
 let dbMockService: DbMockService; // Should be initialized in every describe-block
@@ -42,7 +42,7 @@ describe("GET-REQUESTS of GroupController (e2e)", () => {
 	it("(GET) /groups/{groupId}/users Retrieves the group with all relations", () => {
 		const group = copy(GROUP_1_JAVA);
 		group.course = COURSE_JAVA_1920;
-		group.history = GROUP_EVENTS_GROUP_1_MOCK;
+		group.history = GROUP_EVENTS_MOCK;
 		group.users = [USER_STUDENT_JAVA, USER_STUDENT_2_JAVA];
 
 		const expected = copy(group);
