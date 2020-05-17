@@ -45,9 +45,20 @@ export class GroupRepository extends Repository<Group> {
 
 	/** Returns the group with all relations loaded. */
 	async getGroupById_All(groupId: string): Promise<Group> {
-		return this.findOneOrFail(groupId, {
-			relations: ["course", "assessments", "userGroupRelations", "userGroupRelations.user", "history"]
-		});
+		const query = await this.createQueryBuilder("group")
+			.where("group.id = :groupId", { groupId })
+			.leftJoinAndSelect("group.course", "course")
+			.leftJoinAndSelect("group.assessments", "assessment")
+			.leftJoinAndSelect("assessment.assignment", "assignment")
+			.leftJoinAndSelect("group.userGroupRelations", "userGroupRelation")
+			.leftJoinAndSelect("userGroupRelation.user", "user")
+			.leftJoinAndSelect("group.history", "history")
+			.leftJoinAndSelect("history.user", "history_user")
+			.orderBy("history.timestamp", "DESC")
+			.getOne();
+
+		if (!query) throw new EntityNotFoundError(Group, null);
+		return query;
 	}
 
 	/**
