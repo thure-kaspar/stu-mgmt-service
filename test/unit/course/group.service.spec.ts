@@ -18,6 +18,8 @@ import { CourseUserRelation } from "../../../src/course/entities/course-user-rel
 import { EventBus } from "@nestjs/cqrs";
 import { UserJoinedGroupEvent } from "../../../src/course/events/user-joined-group.event";
 import { UserLeftGroupEvent } from "../../../src/course/events/user-left-group.event";
+import { GroupEventRepository } from "../../../src/course/database/repositories/group-event.repository";
+import { AssignmentRepository } from "../../../src/course/database/repositories/assignment.repository";
 
 function getGroupWithUsersMock_JoiningPossible(passwordRequired = true) {
 	const group = convertToEntity(Group, GROUP_1_JAVA);
@@ -94,6 +96,14 @@ const mock_CourseRepository = () => ({
 	getCourseWithConfigAndGroupSettings: jest.fn().mockImplementation(() => { return mock_getCourseWithConfigAndGroupSettings(); })
 });
 
+const mock_GroupEventRepository = () => ({
+	
+});
+
+const mock_AssignmentRepository = () => ({
+	
+});
+
 const mock_EventBus = () => ({
 	publish: jest.fn()
 });
@@ -113,6 +123,8 @@ describe("GroupService", () => {
 				GroupService,
 				{ provide: GroupRepository, useFactory: mock_GroupRepository },
 				{ provide: CourseRepository, useFactory: mock_CourseRepository },
+				{ provide: GroupEventRepository, useFactory: mock_GroupEventRepository },
+				{ provide: AssignmentRepository, useFactory: mock_AssignmentRepository },
 				{ provide: EventBus, useFactory: mock_EventBus }
 			],
 		}).compile();

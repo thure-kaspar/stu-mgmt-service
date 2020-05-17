@@ -4,6 +4,7 @@ import { GroupDto } from "../../dto/group/group.dto";
 import { UserGroupRelation } from "../../entities/user-group-relation.entity";
 import { ConflictException } from "@nestjs/common";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
+import { User } from "../../../shared/entities/user.entity";
 
 @EntityRepository(Group)
 export class GroupRepository extends Repository<Group> {
@@ -61,6 +62,12 @@ export class GroupRepository extends Repository<Group> {
 		return query;
 	}
 
+	async getGroupsByIds(groupIds: string[]): Promise<Group[]> {
+		return this.createQueryBuilder("group")
+			.whereInIds(groupIds) // TODO: Check what happens if a group does not exist anymore -> Might need to use orWhere instead
+			.getMany();
+	}
+
 	/**
 	 * Returns the group with its members.
 	 */
@@ -114,16 +121,22 @@ export class GroupRepository extends Repository<Group> {
 			.getMany();
 	}
 
-	async getGroupHistoryOfUser(courseId: string, userId: string): Promise<Group[]> {
-		const query = await this.createQueryBuilder("group")
-			.where("group.courseId = :courseId", { courseId })
-			.innerJoinAndSelect("group.history", "history")
-			.where("history.userId = :userId", { userId })
-			.orderBy("history.timestamp", "ASC")
-			.getMany();
-
-		console.log(JSON.stringify(query, null, 4));
-		return query;
+	/**
+	 * Creates Group-Entities from the given map. Users will be added into the UserGroupRelations.
+	 */
+	async getRecreatedGroups(groupIdUsersMap: Map<string, User[]>): Promise<Group[]> {
+		const groups = await this.getGroupsByIds([...groupIdUsersMap.keys()]);
+		groups.forEach(group => {
+			group.userGroupRelations = [];
+			groupIdUsersMap.get(group.id).forEach(member => {
+				const relation = new UserGroupRelation();
+				relation.user = member;
+				relation.userId = member.id;
+				relation.groupId = group.id;
+				group.userGroupRelations.push(relation);
+			});
+		});
+		return groups;
 	}
 
 	// async getGroupOfAssignment(userId: string, courseId: string, assignmentId: string): Promise<Group> {

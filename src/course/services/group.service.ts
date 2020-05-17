@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, ConflictException, UnauthorizedException } from "@nestjs/common";
+import { Injectable, BadRequestException, ConflictException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { GroupRepository } from "../database/repositories/group.repository";
 import { CourseRepository } from "../database/repositories/course.repository";
@@ -12,12 +12,19 @@ import { GroupCreateBulkDto } from "../dto/group/group-create-bulk.dto";
 import { EventBus } from "@nestjs/cqrs";
 import { UserJoinedGroupEvent } from "../events/user-joined-group.event";
 import { UserLeftGroupEvent } from "../events/user-left-group.event";
+import { GroupEvent } from "../entities/group-event.entity";
+import { GroupEventRepository } from "../database/repositories/group-event.repository";
+import { Assignment } from "../entities/assignment.entity";
+import { AssignmentRepository } from "../database/repositories/assignment.repository";
+import { User } from "../../shared/entities/user.entity";
 
 @Injectable()
 export class GroupService {
 
 	constructor(@InjectRepository(Group) private groupRepository: GroupRepository,
 				@InjectRepository(Course) private courseRepository: CourseRepository,
+				@InjectRepository(GroupEvent) private groupEventRepository: GroupEventRepository,
+				@InjectRepository(Assignment) private assignmentRepository: AssignmentRepository, 
 				private events: EventBus) { }
 
 	/**
@@ -108,6 +115,42 @@ export class GroupService {
 		const group = await this.groupRepository.getGroupWithUsers(groupId);
 		const userDtos = group.userGroupRelations.map(userGroupRelation => DtoFactory.createUserDto(userGroupRelation.user));
 		return userDtos;
+	}
+
+	/**
+	 * Returns a snapshot of the group constellations at the time of the assignment's end.
+	 */
+	async getGroupsFromAssignment(courseId: string, assignmentId: string): Promise<GroupDto[]> {
+		const assignment = await this.assignmentRepository.getAssignmentById(assignmentId);
+		if (!assignment.endDate) {
+			throw new BadRequestException("Assignment has no end date."); 
+		}
+
+		// Get all events that happened before the assignment end
+		const history = await this.groupEventRepository.getGroupHistoryOfCourse(courseId, assignment.endDate);
+
+		// Replay the events to recreate the group constellations
+		const groupIdUsersMap = new Map<string, User[]>();
+
+		for (let i = history.length - 1; i >= 0; i--) {
+			const { event, user, groupId } = history[i];
+			if (event === UserJoinedGroupEvent.name) {
+				// Add user to group
+				if (groupIdUsersMap.has(groupId)) {
+					groupIdUsersMap.get(groupId).push(user);
+				} else {
+					groupIdUsersMap.set(groupId, [user]);
+				}
+			} else if (event === UserLeftGroupEvent.name) {
+				// Remove user from group
+				const groupWithoutUser = groupIdUsersMap.get(groupId).filter(u => u.id !== user.id);
+				groupIdUsersMap.set(groupId, groupWithoutUser);
+			}
+		}
+
+		// Generate groups from the group constellation map
+		const groups = await this.groupRepository.getRecreatedGroups(groupIdUsersMap);
+		return groups.map(g => DtoFactory.createGroupDto(g));
 	}
 
 	async updateGroup(groupId: string, groupDto: GroupDto): Promise<GroupDto> {
