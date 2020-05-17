@@ -12,6 +12,7 @@ import { createApplication } from "../mocks/application.mock";
 import { UserGroupRelationsMock } from "../mocks/groups/user-group-relations.mock";
 import { copy } from "../utils/object-helper";
 import { GROUP_EVENTS_MOCK } from "../mocks/groups/group-events.mock";
+import { GroupEventDto } from "../../src/course/dto/group/group-event.dto";
 
 let app: INestApplication;
 let dbMockService: DbMockService; // Should be initialized in every describe-block
@@ -70,6 +71,20 @@ describe("GET-REQUESTS of GroupController (e2e)", () => {
 			.expect(({ body }) => {
 				expect(body.length).toEqual(memberCount);
 			});
+	});
+
+	describe("(GET) /groups/history", () => {
+	
+		it("Retrieves the complete group history of a course (sorted by timestamp descending)", () => {
+			return request(app.getHttpServer())
+				.get(`/courses/${course.id}/groups/history`)
+				.expect(({ body }) => {
+					const result = body as GroupEventDto[];
+					expect(result.length).toBeGreaterThan(5); 
+					// TODO: Check if sorting + data is correct (Deserialize date from JSON)
+				});
+		});
+	
 	});
 
 	describe("(GET) /groups/assignments/{assignmentId}", () => {

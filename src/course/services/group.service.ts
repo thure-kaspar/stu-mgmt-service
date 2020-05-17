@@ -17,6 +17,7 @@ import { GroupEventRepository } from "../database/repositories/group-event.repos
 import { Assignment } from "../entities/assignment.entity";
 import { AssignmentRepository } from "../database/repositories/assignment.repository";
 import { User } from "../../shared/entities/user.entity";
+import { GroupEventDto } from "../dto/group/group-event.dto";
 
 @Injectable()
 export class GroupService {
@@ -115,6 +116,12 @@ export class GroupService {
 		const group = await this.groupRepository.getGroupWithUsers(groupId);
 		const userDtos = group.userGroupRelations.map(userGroupRelation => DtoFactory.createUserDto(userGroupRelation.user));
 		return userDtos;
+	}
+
+	/** Returns all group events of the course. */
+	async getGroupHistoryOfCourse(courseId: string): Promise<GroupEventDto[]> {
+		const events = await this.groupEventRepository.getGroupHistoryOfCourse(courseId);
+		return events.map(event => event.toDto());
 	}
 
 	/**

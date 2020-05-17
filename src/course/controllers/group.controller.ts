@@ -5,6 +5,7 @@ import { ApiTags, ApiOperation } from "@nestjs/swagger";
 import { GroupDto } from "../dto/group/group.dto";
 import { GroupCreateBulkDto } from "../dto/group/group-create-bulk.dto";
 import { PasswordDto } from "../../shared/dto/password.dto";
+import { GroupEventDto } from "../dto/group/group-event.dto";
 
 @ApiTags("groups")
 @Controller("courses/:courseId/groups")
@@ -66,6 +67,17 @@ export class GroupController {
 	): Promise<GroupDto[]> {
 		
 		return this.groupService.getGroupsOfCourse(courseId);
+	}
+
+	@Get("history")
+	@ApiOperation({
+		operationId: "getGroupHistoryOfCourse",
+		summary: "Get group history of course",
+		description: "Retrieves all group events of the course."
+	})
+	getGroupHistoryOfCourse(@Param("courseId") courseId: string): Promise<GroupEventDto[]> {
+
+		return this.groupService.getGroupHistoryOfCourse(courseId);
 	}
 
 	@Get("assignments/:assignmentId")
