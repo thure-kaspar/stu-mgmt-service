@@ -16,7 +16,7 @@ export class Assessment extends BaseEntity {
 	@Column({ nullable: true })
 	comment: string;
 	
-	@ManyToOne(type => Assignment, assignment => assignment.assessments)
+	@ManyToOne(type => Assignment, assignment => assignment.assessments, { onDelete: "CASCADE" })
 	assignment: Assignment;
 
 	@Column()
