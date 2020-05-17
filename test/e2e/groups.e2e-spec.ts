@@ -39,7 +39,7 @@ describe("GET-REQUESTS of GroupController (e2e)", () => {
 		await getConnection().close(); // Close Db-Connection after all tests have been executed
 	});
 
-	it("(GET) /groups/{groupId}/users Retrieves the group with all relations", () => {
+	it("(GET) /groups/{groupId} Retrieves the group with all relations", () => {
 		const group = copy(GROUP_1_JAVA);
 		group.course = COURSE_JAVA_1920;
 		group.history = GROUP_EVENTS_MOCK;

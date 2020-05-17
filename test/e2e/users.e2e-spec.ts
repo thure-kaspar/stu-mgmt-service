@@ -4,10 +4,16 @@ import { getConnection } from "typeorm";
 import { DbMockService } from "../mocks/db-mock.service";
 import { UserDto } from "../../src/shared/dto/user.dto";
 import { UserRole } from "../../src/shared/enums";
-import { UsersMock, USER_STUDENT_JAVA } from "../mocks/users.mock";
+import { UsersMock, USER_STUDENT_JAVA, USER_MGMT_ADMIN_JAVA_LECTURER } from "../mocks/users.mock";
 import { createApplication } from "../mocks/application.mock";
 import { copy } from "../utils/object-helper";
 import { CourseDto } from "../../src/course/dto/course/course.dto";
+import { COURSE_JAVA_1920 } from "../mocks/courses.mock";
+import { GROUP_1_JAVA } from "../mocks/groups/groups.mock";
+import { GroupDto } from "../../src/course/dto/group/group.dto";
+import { GROUP_EVENT_REJOIN_SCENARIO } from "../mocks/groups/group-events.mock";
+import { ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP } from "../mocks/assignments.mock";
+import { GroupEventDto } from "../../src/course/dto/group/group-event.dto";
 
 let app: INestApplication;
 let dbMockService: DbMockService; // Should be initialized in every describe-block
@@ -71,6 +77,80 @@ describe("GET-REQUESTS of UserController (e2e)", () => {
 				const result = body as CourseDto[];
 				expect(result[0].id).toBeTruthy();
 			});
+	});
+
+	it("(GET) /users/{userId}/courses Retrieves the user's group in a course", () => {
+		const course = COURSE_JAVA_1920;
+		const expected = GROUP_1_JAVA;
+
+		return request(app.getHttpServer())
+			.get(`/users/${user.id}/courses/${course.id}/groups`)
+			.expect(({ body }) => {
+				const result = body as GroupDto[];
+				expect(result[0].id).toEqual(expected.id);
+				expect(result[0].courseId).toEqual(expected.courseId);
+				expect(result[0].name).toEqual(expected.name);
+			});
+	});
+
+	describe("(GET) /users/{userId}/courses/{courseId}/group-history", () => {
+		const course = COURSE_JAVA_1920;
+
+		it("Retrieves the user's group history in a course (sorted by timestamp descending)", () => {
+			
+			const expected = GROUP_EVENT_REJOIN_SCENARIO().reverse(); // Ordered from new to old
+			const expectedJson = JSON.parse(JSON.stringify(expected)) as GroupEventDto[];
+
+			return request(app.getHttpServer())
+				.get(`/users/${user.id}/courses/${course.id}/group-history`)
+				.expect(({ body }) => {
+					const result = body as GroupDto[];
+					expect(result).toEqual(expectedJson);
+				});
+		});
+	
+	});
+
+	describe("(GET) /users/{userId}/courses/{courseId}/assignments/{assignmentId}/group", () => {
+		const course = COURSE_JAVA_1920;
+
+		it("Retrieves the user's group at the time of assignment's end date", () => {
+			const assignment = ASSIGNMENT_JAVA_CLOSED;
+			console.assert(!!assignment.endDate, "Assignment must have an end date.");
+			const expected = GROUP_1_JAVA;
+	
+			return request(app.getHttpServer())
+				.get(`/users/${user.id}/courses/${course.id}/assignments/${assignment.id}/group`)
+				.expect(({ body }) => {
+					const result = body as GroupDto;
+					expect(result.id).toEqual(expected.id);
+					expect(result.courseId).toEqual(expected.courseId);
+					expect(result.name).toEqual(expected.name);
+				});
+		});
+
+		it("User had no group -> Returns empty object", () => {
+			const assignment = ASSIGNMENT_JAVA_CLOSED;
+			const userNoGroup = USER_MGMT_ADMIN_JAVA_LECTURER;
+			console.assert(!!assignment.endDate, "Assignment must have an end date.");
+	
+			return request(app.getHttpServer())
+				.get(`/users/${userNoGroup.id}/courses/${course.id}/assignments/${assignment.id}/group`)
+				.expect(({ body }) => {
+					const result = body as GroupDto;
+					expect(result).toEqual({});
+				});
+		});
+
+		it("Assignment had no end date -> Throws 400 Bad Request", () => {
+			const assignment = ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP;
+			console.assert(!assignment.endDate, "Assignment must have no end date.");
+	
+			return request(app.getHttpServer())
+				.get(`/users/${user.id}/courses/${course.id}/assignments/${assignment.id}/group`)
+				.expect(400);
+		});
+	
 	});
 
 });
