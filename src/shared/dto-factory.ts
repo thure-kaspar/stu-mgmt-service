@@ -166,6 +166,7 @@ export abstract class DtoFactory {
 		const assessmentDto: AssessmentDto = {
 			id: assessment.id,
 			assignmentId: assessment.assignmentId,
+			assignment: assessment.assignment ? this.createAssignmentDto(assessment.assignment) : undefined,
 			groupId: assessment.groupId ?? undefined,
 			achievedPoints: assessment.achievedPoints,
 			comment: assessment.comment,
