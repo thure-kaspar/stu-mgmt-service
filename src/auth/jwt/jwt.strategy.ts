@@ -2,6 +2,8 @@ import { PassportStrategy } from "@nestjs/passport";
 import { Strategy, ExtractJwt } from "passport-jwt";
 import { JwtPayload } from "./jwt-payload.interface";
 import * as config from "config";
+import { UserDto } from "../../shared/dto/user.dto";
+import { UnauthorizedException } from "@nestjs/common";
 
 export class JwtStrategy extends PassportStrategy(Strategy) {
 	constructor() {
@@ -15,8 +17,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 	 * Validates the received authentication token (JWT) and attaches the decrypted user information
 	 * to the request body. 
 	 */
-	async validate(payload: JwtPayload): Promise<string> {
-		// TODO: implement
-		return null;
+	async validate(payload: JwtPayload): Promise<Partial<UserDto>> {
+		const { username, role } = payload;
+
+		if (!username) {
+			throw new UnauthorizedException();
+		}
+
+		return { username, role };
 	}
 }
