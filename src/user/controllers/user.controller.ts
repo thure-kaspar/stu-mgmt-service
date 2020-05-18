@@ -1,12 +1,14 @@
-import { Controller, Post, Body, Get, Param, Delete, Patch } from "@nestjs/common";
+import { Controller, Post, Body, Get, Param, Delete, Patch, UseGuards } from "@nestjs/common";
 import { UserService } from "../services/user.service";
 import { UserDto } from "../../shared/dto/user.dto";
-import { ApiTags, ApiOperation } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
 import { CourseDto } from "src/course/dto/course/course.dto";
 import { AssessmentDto } from "../../course/dto/assessment/assessment.dto";
 import { GroupDto } from "../../course/dto/group/group.dto";
 import { GroupEventDto } from "../../course/dto/group/group-event.dto";
+import { AuthGuard } from "@nestjs/passport";
 
+@ApiBearerAuth()
 @ApiTags("users")
 @Controller("users")
 export class UserController {
@@ -34,6 +36,7 @@ export class UserController {
 	}
 
 	@Get(":userId")
+	@UseGuards(AuthGuard())
 	@ApiOperation({
 		operationId: "getUserById",
 		summary: "Get user",

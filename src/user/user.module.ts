@@ -7,9 +7,13 @@ import { GroupRepository } from "../course/database/repositories/group.repositor
 import { AssessmentRepository } from "../course/database/repositories/assessment.repository";
 import { AssignmentRepository } from "../course/database/repositories/assignment.repository";
 import { GroupEventRepository } from "../course/database/repositories/group-event.repository";
+import { AuthModule } from "../auth/auth.module";
 
 @Module({
-	imports: [TypeOrmModule.forFeature([UserRepository, GroupRepository, GroupEventRepository, AssignmentRepository, AssessmentRepository])],
+	imports: [
+		TypeOrmModule.forFeature([UserRepository, GroupRepository, GroupEventRepository, AssignmentRepository, AssessmentRepository]),
+		AuthModule
+	],
 	controllers: [UserController],
 	providers: [UserService]
 })
