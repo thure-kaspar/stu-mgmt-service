@@ -1,12 +1,13 @@
 import { Controller, Post, Body, Get, Param, Delete, Patch, UseGuards } from "@nestjs/common";
 import { UserService } from "../services/user.service";
 import { UserDto } from "../../shared/dto/user.dto";
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiBasicAuth } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
 import { CourseDto } from "src/course/dto/course/course.dto";
 import { AssessmentDto } from "../../course/dto/assessment/assessment.dto";
 import { GroupDto } from "../../course/dto/group/group.dto";
 import { GroupEventDto } from "../../course/dto/group/group-event.dto";
 import { AuthGuard } from "@nestjs/passport";
+import { AssignmentGroupTuple } from "../dto/assignment-group-tuple.dto";
 
 @ApiBearerAuth()
 @ApiTags("users")
@@ -109,6 +110,18 @@ export class UserController {
 		return this.userService.getGroupOfAssignment(userId, courseId, assignmentId);
 	}
 
+	@Get(":userId/courses/:courseId/assignments/groups")
+	@ApiOperation({
+		operationId: "getGroupOfAllAssignments",
+		summary: "Get group of all assignments",
+		description: "Maps all assignments of a course to the user's group for the corresponding assignment."
+	})
+	getGroupOfAllAssignments(
+		@Param("userId") userId: string,
+		@Param("courseId") courseId: string
+	): Promise<AssignmentGroupTuple[]> {
+		return this.userService.getGroupOfAllAssignments(userId, courseId);
+	}
 
 	@Get(":userId/courses/:courseId/assessments")
 	@ApiOperation({

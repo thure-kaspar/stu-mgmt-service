@@ -18,6 +18,8 @@ import { GroupEventDto } from "../../course/dto/group/group-event.dto";
 import { GroupEventRepository } from "../../course/database/repositories/group-event.repository";
 import { UserJoinedGroupEvent } from "../../course/events/user-joined-group.event";
 import { CollaborationType } from "../../shared/enums";
+import { AssignmentDto } from "../../course/dto/assignment/assignment.dto";
+import { AssignmentGroupTuple } from "../dto/assignment-group-tuple.dto";
 
 @Injectable()
 export class UserService {
@@ -89,6 +91,39 @@ export class UserService {
 
 		const group = await this.groupRepository.getGroupById(groupId);
 		return DtoFactory.createGroupDto(group);
+	}
+
+	/**
+	 * Returns the groups that the user was a member of when the assignment submission closed 
+	 * or the current group, if no end date is specified, for all assignments of a course.
+	 */
+	async getGroupOfAllAssignments(userId: string, courseId: string): Promise<AssignmentGroupTuple[]> {
+		const [groupHistory, assignments] = await Promise.all([
+			this.groupEventRepository.getGroupHistoryOfUser(userId, courseId),
+			this.assignmentRepository.getAssignments(courseId)
+		]);
+
+		// Find group for every assignment
+		const assignmentToGroupId: Array<[Assignment, string]> = [];
+		assignments.forEach(a => assignmentToGroupId.push([a, this.findGroupOfAssignment(groupHistory, a)]));
+		
+		// Load groups
+		const groupIds = assignmentToGroupId.filter(entry => entry[1] !== null).map(entry => entry[1]);
+		const groups = await this.groupRepository.getGroupsByIds(groupIds);
+
+		// Transform to Tuples
+		const result: AssignmentGroupTuple[] = [];
+		assignmentToGroupId.forEach(entry => {
+			const [assignment, groupId] = entry;
+			const group = groups.find(g => g.id === groupId);
+			const groupDto = group ? DtoFactory.createGroupDto(group) : null;
+
+			result.push({
+				assignment: DtoFactory.createAssignmentDto(assignment),
+				group: groupDto
+			});
+		});
+		return result;
 	}
 
 	/**

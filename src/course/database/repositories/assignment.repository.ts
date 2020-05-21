@@ -10,11 +10,13 @@ export class AssignmentRepository extends Repository<Assignment> {
 		return assignment.save();
 	}
 
+	/** Returns all assignments of a course. Sorted by endDate (descending). */
 	async getAssignments(courseId: string): Promise<Assignment[]> {
 		return this.find({
 			where: {
 				courseId: courseId
-			}
+			},
+			order: { endDate: "DESC" }
 		});
 	}
 

@@ -3,7 +3,7 @@ import * as request from "supertest";
 import { getConnection } from "typeorm";
 import { DbMockService } from "../mocks/db-mock.service";
 import { UserDto } from "../../src/shared/dto/user.dto";
-import { UserRole } from "../../src/shared/enums";
+import { UserRole, CollaborationType } from "../../src/shared/enums";
 import { UsersMock, USER_STUDENT_JAVA, USER_MGMT_ADMIN_JAVA_LECTURER } from "../mocks/users.mock";
 import { createApplication } from "../mocks/application.mock";
 import { copy } from "../utils/object-helper";
@@ -12,8 +12,9 @@ import { COURSE_JAVA_1920 } from "../mocks/courses.mock";
 import { GROUP_1_JAVA } from "../mocks/groups/groups.mock";
 import { GroupDto } from "../../src/course/dto/group/group.dto";
 import { GROUP_EVENT_REJOIN_SCENARIO } from "../mocks/groups/group-events.mock";
-import { ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA_TESTAT_IN_PROGRESS_SINGLE } from "../mocks/assignments.mock";
+import { ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA_TESTAT_IN_PROGRESS_SINGLE, ASSIGNMENT_JAVA_INVISIBLE } from "../mocks/assignments.mock";
 import { GroupEventDto } from "../../src/course/dto/group/group-event.dto";
+import { AssignmentGroupTuple } from "../../src/user/dto/assignment-group-tuple.dto";
 
 let app: INestApplication;
 let dbMockService: DbMockService; // Should be initialized in every describe-block
@@ -130,9 +131,10 @@ describe("GET-REQUESTS of UserController (e2e)", () => {
 		});
 
 		it("Assignment had no end date -> Returns current group", () => {
-			const assignment = ASSIGNMENT_JAVA_TESTAT_IN_PROGRESS_SINGLE;
+			const assignment = ASSIGNMENT_JAVA_INVISIBLE;
 			const expected = GROUP_1_JAVA;
 			console.assert(!assignment.endDate, "Assignment must have no end date.");
+			console.assert(assignment.collaboration !== CollaborationType.SINGLE, "CollaborationType should not be SINGLE.");
 	
 			return request(app.getHttpServer())
 				.get(`/users/${user.id}/courses/${course.id}/assignments/${assignment.id}/group`)
@@ -154,6 +156,30 @@ describe("GET-REQUESTS of UserController (e2e)", () => {
 				.expect(({ body }) => {
 					const result = body as GroupDto;
 					expect(result).toEqual({});
+				});
+		});
+	
+	});
+
+	describe("(GET) /users/{userId}/courses/{courseId}/assignments/groups", () => {
+		const course = COURSE_JAVA_1920;
+		const currentGroup = GROUP_1_JAVA;
+
+		it("Retrieves the user's groups for all assignments", () => {
+			// TODO: Create a more complicated scenario with test data instead of using implicit knowledge about data
+			return request(app.getHttpServer())
+				.get(`/users/${user.id}/courses/${course.id}/assignments/groups`)
+				.expect(({ body }) => {
+					const result = body as AssignmentGroupTuple[];
+					result.forEach(entry => {
+
+						if (entry.assignment.collaboration === CollaborationType.SINGLE) {
+							expect(entry.group).toBeFalsy();
+						} else {
+							expect(entry.group.id).toEqual(currentGroup.id);
+						}
+
+					});
 				});
 		});
 	

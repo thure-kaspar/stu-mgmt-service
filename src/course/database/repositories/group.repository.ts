@@ -63,6 +63,7 @@ export class GroupRepository extends Repository<Group> {
 	}
 
 	async getGroupsByIds(groupIds: string[]): Promise<Group[]> {
+		if (groupIds?.length == 0) return [];
 		return this.createQueryBuilder("group")
 			.whereInIds(groupIds) // TODO: Check what happens if a group does not exist anymore -> Might need to use orWhere instead
 			.getMany();

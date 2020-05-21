@@ -9,7 +9,9 @@ export const ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP: AssignmentDto = {
 	points: 100,
 	type: AssignmentType.HOMEWORK,
 	state: AssignmentState.IN_PROGRESS,
-	collaboration: CollaborationType.GROUP
+	collaboration: CollaborationType.GROUP,
+	startDate: new Date(2020, 8, 3),
+	endDate: new Date(2020, 8, 10)
 };
 
 export const ASSIGNMENT_JAVA_CLOSED: AssignmentDto = {
@@ -20,7 +22,8 @@ export const ASSIGNMENT_JAVA_CLOSED: AssignmentDto = {
 	type: AssignmentType.HOMEWORK,
 	state: AssignmentState.CLOSED,
 	collaboration: CollaborationType.GROUP,
-	endDate: new Date(2020, 5, 16)
+	startDate: new Date(2020, 1, 9),
+	endDate: new Date(2020, 1, 16)
 };
 
 export const ASSIGNMENT_JAVA_IN_REVIEW: AssignmentDto = {
@@ -30,7 +33,9 @@ export const ASSIGNMENT_JAVA_IN_REVIEW: AssignmentDto = {
 	points: 100,
 	type: AssignmentType.HOMEWORK,
 	state: AssignmentState.IN_REVIEW,
-	collaboration: CollaborationType.SINGLE
+	collaboration: CollaborationType.SINGLE,
+	startDate: new Date(2020, 5, 11),
+	endDate: new Date(2020, 5, 18)
 };
 
 export const ASSIGNMENT_JAVA_EVALUATED: AssignmentDto = {
@@ -41,6 +46,8 @@ export const ASSIGNMENT_JAVA_EVALUATED: AssignmentDto = {
 	type: AssignmentType.HOMEWORK,
 	state: AssignmentState.EVALUATED,
 	collaboration: CollaborationType.GROUP_OR_SINGLE,
+	startDate: new Date(2020, 4, 4),
+	endDate: new Date(2020, 4, 11)
 };
 
 export const ASSIGNMENT_JAVA_INVISIBLE: AssignmentDto = {
@@ -61,6 +68,7 @@ export const ASSIGNMENT_JAVA_TESTAT_IN_PROGRESS_SINGLE: AssignmentDto = {
 	type: AssignmentType.TESTAT,
 	state: AssignmentState.IN_PROGRESS,
 	collaboration: CollaborationType.SINGLE,
+	startDate: new Date(2020, 7, 2),
 };
 
 export const ASSIGNMENT_JAVA_TESTAT_EVALUATED_SINGLE: AssignmentDto = {
@@ -71,6 +79,8 @@ export const ASSIGNMENT_JAVA_TESTAT_EVALUATED_SINGLE: AssignmentDto = {
 	type: AssignmentType.TESTAT,
 	state: AssignmentState.EVALUATED,
 	collaboration: CollaborationType.SINGLE,
+	startDate: new Date(2020, 3, 20),
+	endDate: new Date(2020, 3, 27)
 };
 
 export const AssignmentsMock: AssignmentDto[] = [
