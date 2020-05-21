@@ -111,14 +111,18 @@ export class GroupRepository extends Repository<Group> {
 	}
 
 	/**
-	 * Returns all groups that the user is currently a part of in the given course.
+	 * Returns the current group of a user in a course. 
+	 * Throws EntityNotFoundError, if no group is found.
 	 */
-	async getCurrentGroupsOfUserForCourse(courseId: string, userId: string): Promise<Group[]> {
-		return this.createQueryBuilder("group")
+	async getGroupOfUserForCourse(courseId: string, userId: string): Promise<Group> {
+		const group = await this.createQueryBuilder("group")
 			.where("group.courseId = :courseId", { courseId })
 			.innerJoin("group.userGroupRelations", "userRelation")
 			.where("userRelation.userId = :userId", { userId })
-			.getMany();
+			.getOne();
+		
+		if (!group) throw new EntityNotFoundError(Group, null);
+		return group;
 	}
 
 	/**

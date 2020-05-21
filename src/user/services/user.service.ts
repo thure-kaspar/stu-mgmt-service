@@ -56,11 +56,11 @@ export class UserService {
 	}
 
 	/**
-	 * Returns a collection of all groups the user is part of in the given course.
+	 * Returns the current group of a user in a course.
 	 */
-	async getGroupsOfUserForCourse(userId: string, courseId: string): Promise<GroupDto[]> {
-		const currentGroups = await this.groupRepository.getCurrentGroupsOfUserForCourse(courseId, userId);
-		return currentGroups.map(g => DtoFactory.createGroupDto(g));
+	async getGroupOfUserForCourse(userId: string, courseId: string): Promise<GroupDto> {
+		const group = await this.groupRepository.getGroupOfUserForCourse(courseId, userId);
+		return DtoFactory.createGroupDto(group);
 	}
 
 	/**

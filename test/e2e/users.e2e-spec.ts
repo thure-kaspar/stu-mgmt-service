@@ -86,10 +86,10 @@ describe("GET-REQUESTS of UserController (e2e)", () => {
 		return request(app.getHttpServer())
 			.get(`/users/${user.id}/courses/${course.id}/groups`)
 			.expect(({ body }) => {
-				const result = body as GroupDto[];
-				expect(result[0].id).toEqual(expected.id);
-				expect(result[0].courseId).toEqual(expected.courseId);
-				expect(result[0].name).toEqual(expected.name);
+				const result = body as GroupDto;
+				expect(result.id).toEqual(expected.id);
+				expect(result.courseId).toEqual(expected.courseId);
+				expect(result.name).toEqual(expected.name);
 			});
 	});
 

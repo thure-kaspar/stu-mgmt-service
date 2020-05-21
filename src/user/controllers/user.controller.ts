@@ -1,7 +1,7 @@
 import { Controller, Post, Body, Get, Param, Delete, Patch, UseGuards } from "@nestjs/common";
 import { UserService } from "../services/user.service";
 import { UserDto } from "../../shared/dto/user.dto";
-import { ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiBasicAuth } from "@nestjs/swagger";
 import { CourseDto } from "src/course/dto/course/course.dto";
 import { AssessmentDto } from "../../course/dto/assessment/assessment.dto";
 import { GroupDto } from "../../course/dto/group/group.dto";
@@ -68,16 +68,16 @@ export class UserController {
 
 	@Get(":userId/courses/:courseId/groups")
 	@ApiOperation({
-		operationId: "getGroupsOfUserForCourse",
-		summary: "Get groups of user for course",
-		description: "Retrieves all groups that the user is a member of in a course."
+		operationId: "getGroupOfUserForCourse",
+		summary: "Get group of user for course",
+		description: "Retrieves the user's current group in a course."
 	})
-	getGroupsOfUserForCourse(
+	getGroupOfUserForCourse(
 		@Param("userId") userId: string,
 		@Param("courseId") courseId: string,
-	): Promise<GroupDto[]> {
+	): Promise<GroupDto> {
 
-		return this.userService.getGroupsOfUserForCourse(userId, courseId);
+		return this.userService.getGroupOfUserForCourse(userId, courseId);
 	}
 
 	@Get(":userId/courses/:courseId/group-history")
