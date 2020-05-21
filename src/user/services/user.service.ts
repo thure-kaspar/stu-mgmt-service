@@ -17,6 +17,7 @@ import { GroupEvent } from "../../course/entities/group-event.entity";
 import { GroupEventDto } from "../../course/dto/group/group-event.dto";
 import { GroupEventRepository } from "../../course/database/repositories/group-event.repository";
 import { UserJoinedGroupEvent } from "../../course/events/user-joined-group.event";
+import { CollaborationType } from "../../shared/enums";
 
 @Injectable()
 export class UserService {
@@ -81,8 +82,23 @@ export class UserService {
 			this.assignmentRepository.getAssignmentById(assignmentId)
 		]);
 
-		// If user never joined a group
-		if (groupHistory.length == 0) return null; 
+		const groupId = this.findGroupOfAssignment(groupHistory, assignment);
+
+		// If user was not in a group for the assignment
+		if (!groupId) return null;
+
+		const group = await this.groupRepository.getGroupById(groupId);
+		return DtoFactory.createGroupDto(group);
+	}
+
+	/**
+	 * Algorithm that finds the user's group for an assignment.
+	 * Returns the groupId.
+	 * Returns null, if user was not in a group or groups were not allowed.
+	 */
+	private findGroupOfAssignment(groupHistory: GroupEvent[], assignment: Assignment): string {
+		if (groupHistory.length == 0) return null; // If user never joined a group
+		if (assignment.collaboration === CollaborationType.SINGLE) return null; // If groups were disallowed
 
 		let groupId = null;
 
@@ -102,12 +118,7 @@ export class UserService {
 				groupId = lastEventBeforeAssignmentEnd.groupId;
 			}
 		}
-
-		// If user was not in a group for the assignment
-		if (!groupId) return null;
-
-		const group = await this.groupRepository.getGroupById(groupId);
-		return DtoFactory.createGroupDto(group);
+		return groupId;
 	}
 
 	async getAssessmentsOfUserForCourse(userId: string, courseId: string): Promise<AssessmentDto[]> {
