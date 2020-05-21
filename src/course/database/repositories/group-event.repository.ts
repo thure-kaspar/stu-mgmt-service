@@ -28,15 +28,23 @@ export class GroupEventRepository extends Repository<GroupEvent> {
 
 	/**
 	 * Returns all GroupEvents of the user in the course.
-	 * Events are sorted by their timestamp in descending order (new to old). 
+	 * Events are sorted by their timestamp in descending order (new to old).
+	 * 
+	 * @param courseId
+	 * @param [before] Allows to exclude all events that happened after the given date.
 	 */
-	getGroupHistoryOfUser(userId: string, courseId: string): Promise<GroupEvent[]> {
-		return this.createQueryBuilder("event")
+	getGroupHistoryOfUser(userId: string, courseId: string, before?: Date): Promise<GroupEvent[]> {
+		const query = this.createQueryBuilder("event")
 			.innerJoin("event.group", "group")
 			.where("event.userId = :userId", { userId })
 			.andWhere("group.courseId = :courseId", { courseId })
-			.orderBy("event.timestamp", "DESC")
-			.getMany();
+			.orderBy("event.timestamp", "DESC");
+
+		if (before) {
+			query.andWhere("event.timestamp < :before", { before });
+		}
+
+		return query.getMany();
 	}
 
 }
