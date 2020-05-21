@@ -16,7 +16,7 @@ import { AssignmentRepository } from "../../course/database/repositories/assignm
 import { GroupEvent } from "../../course/entities/group-event.entity";
 import { GroupEventDto } from "../../course/dto/group/group-event.dto";
 import { GroupEventRepository } from "../../course/database/repositories/group-event.repository";
-import { UserLeftGroupEvent } from "../../course/events/user-left-group.event";
+import { UserJoinedGroupEvent } from "../../course/events/user-joined-group.event";
 
 @Injectable()
 export class UserService {
@@ -81,21 +81,32 @@ export class UserService {
 			this.assignmentRepository.getAssignmentById(assignmentId)
 		]);
 
-		if (!assignment.endDate) { 
-			throw new BadRequestException("Failed to determine the user's group, because assignment has no end date.");
+		// If user never joined a group
+		if (groupHistory.length == 0) return null; 
+
+		let groupId = null;
+
+		// If assignment has not ended yet, assign current group (if it exists)
+		if (!assignment.endDate) {
+			if (groupHistory[0].event === UserJoinedGroupEvent.name) {
+				groupId = groupHistory[0].groupId;
+			}
+		} else {
+			// Find last event that happened before assignment submission closed
+			const lastEventBeforeAssignmentEnd = groupHistory.find(event => 
+				event.timestamp.getTime() < assignment.endDate.getTime()
+			);
+
+			// If user joined a group before end of assignment, assign joined group
+			if (lastEventBeforeAssignmentEnd?.event === UserJoinedGroupEvent.name) {
+				groupId = lastEventBeforeAssignmentEnd.groupId;
+			}
 		}
 
-		// Find last event that happened before assignment submission closed
-		const lastEventBeforeAssignmentEnd = groupHistory.find(event => 
-			event.timestamp.getTime() < assignment.endDate.getTime()
-		);
+		// If user was not in a group for the assignment
+		if (!groupId) return null;
 
-		// Return null, if user was not in a group
-		if (!lastEventBeforeAssignmentEnd || lastEventBeforeAssignmentEnd.event === UserLeftGroupEvent.name) {
-			return null;
-		}
-
-		const group = await this.groupRepository.getGroupById(lastEventBeforeAssignmentEnd.groupId);
+		const group = await this.groupRepository.getGroupById(groupId);
 		return DtoFactory.createGroupDto(group);
 	}
 

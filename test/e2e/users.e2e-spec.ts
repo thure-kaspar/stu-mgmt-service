@@ -12,7 +12,7 @@ import { COURSE_JAVA_1920 } from "../mocks/courses.mock";
 import { GROUP_1_JAVA } from "../mocks/groups/groups.mock";
 import { GroupDto } from "../../src/course/dto/group/group.dto";
 import { GROUP_EVENT_REJOIN_SCENARIO } from "../mocks/groups/group-events.mock";
-import { ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP } from "../mocks/assignments.mock";
+import { ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA_TESTAT_IN_PROGRESS_SINGLE } from "../mocks/assignments.mock";
 import { GroupEventDto } from "../../src/course/dto/group/group-event.dto";
 
 let app: INestApplication;
@@ -129,6 +129,21 @@ describe("GET-REQUESTS of UserController (e2e)", () => {
 				});
 		});
 
+		it("Assignment had no end date -> Returns current group", () => {
+			const assignment = ASSIGNMENT_JAVA_TESTAT_IN_PROGRESS_SINGLE;
+			const expected = GROUP_1_JAVA;
+			console.assert(!assignment.endDate, "Assignment must have no end date.");
+	
+			return request(app.getHttpServer())
+				.get(`/users/${user.id}/courses/${course.id}/assignments/${assignment.id}/group`)
+				.expect(({ body }) => {
+					const result = body as GroupDto;
+					expect(result.id).toEqual(expected.id);
+					expect(result.courseId).toEqual(expected.courseId);
+					expect(result.name).toEqual(expected.name);
+				});
+		});
+
 		it("User had no group -> Returns empty object", () => {
 			const assignment = ASSIGNMENT_JAVA_CLOSED;
 			const userNoGroup = USER_MGMT_ADMIN_JAVA_LECTURER;
@@ -140,15 +155,6 @@ describe("GET-REQUESTS of UserController (e2e)", () => {
 					const result = body as GroupDto;
 					expect(result).toEqual({});
 				});
-		});
-
-		it("Assignment had no end date -> Throws 400 Bad Request", () => {
-			const assignment = ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP;
-			console.assert(!assignment.endDate, "Assignment must have no end date.");
-	
-			return request(app.getHttpServer())
-				.get(`/users/${user.id}/courses/${course.id}/assignments/${assignment.id}/group`)
-				.expect(400);
 		});
 	
 	});
