@@ -161,7 +161,7 @@ export class CourseConfigController {
 		return this.configService.removeAdmissionCriteria(courseId);
 	}
 
-	@Delete("assignment-template")
+	@Delete("assignment-template/:id")
 	@ApiOperation({
 		operationId: "deleteAssignmentTemplate",
 		summary: "Delete assignment template",

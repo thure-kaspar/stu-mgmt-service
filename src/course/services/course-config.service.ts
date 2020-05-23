@@ -1,4 +1,4 @@
-import { Injectable, NotImplementedException } from "@nestjs/common";
+import { Injectable, BadRequestException } from "@nestjs/common";
 import { CourseConfigDto, CourseConfigUpdateDto } from "../dto/course-config/course-config.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CourseConfig } from "../entities/course-config.entity";
@@ -82,7 +82,7 @@ export class CourseConfigService {
 	
 	/** Updates the admission criteria of a course. */
 	async updateAdmissionCriteria(courseId: string, criteriaDto: AdmissionCriteriaDto): Promise<AdmissionCriteriaDto> {
-		const criteria = await this.admissionCriteriaRepo.updateAssignmentCriteria(courseId, criteriaDto);
+		const criteria = await this.admissionCriteriaRepo.updateAssignmentCriteria(courseId, criteriaDto); // TODO: validate Dto
 		return criteria.toDto();
 	}
 
@@ -116,7 +116,8 @@ export class CourseConfigService {
 	 * @throws Error, if deletion failed or had no effect.
 	 */
 	async removeAssignmentTemplateFromCourse(courseId: string, id: number): Promise<void> { 
-		throw new NotImplementedException(); // TODO: Implement template course relation
+		const deleted = await this.templateRepo.removeTemplate(id);
+		if (!deleted) throw new BadRequestException("Failed to delete the template.");
 	}
 
 }
