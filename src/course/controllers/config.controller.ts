@@ -138,6 +138,22 @@ export class CourseConfigController {
 	): Promise<AdmissionCriteriaDto> {
 		return this.configService.updateAdmissionCriteria(courseId, criteria);
 	}
+
+	@Patch("assignment-template/:id")
+	@ApiOperation({
+		operationId: "updateAssignmentTemplate",
+		summary: "Update assignment template",
+		description: "Updates the assignment template."
+	})
+	updateAssignmentTemplate(
+		@Param("courseId") courseId: string,
+		@Param("id") id: number,
+		@Body() template: AssignmentTemplateDto
+	): Promise<AssignmentTemplateDto> {
+
+		return this.configService.updateAssignmentTemplate(id, template);
+	}
+
 	//#endregion
 
 	//#region DELETE
