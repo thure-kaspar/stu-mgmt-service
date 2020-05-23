@@ -5,12 +5,14 @@ import * as config from "config";
 import { DbMockService } from "../test/mocks/db-mock.service";
 import { getConnection } from "typeorm";
 import { EntityNotFoundFilter } from "./shared/entity-not-found.filter";
+import { ValidationPipe } from "@nestjs/common";
 
 async function bootstrap(): Promise<void> {
 	const serverConfig = config.get("server");
 	const port = process.env.SERVER_PORT || serverConfig.port;
 	const app = await NestFactory.create(AppModule);
 	app.useGlobalFilters(new EntityNotFoundFilter());
+	app.useGlobalPipes(new ValidationPipe({ transform: true })); // Automatically transform primitive params to their type
 	app.enableCors();
 	//app.setGlobalPrefix("mgmt/v1");
 

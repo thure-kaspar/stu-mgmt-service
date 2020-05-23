@@ -1,4 +1,4 @@
-import { INestApplication } from "@nestjs/common";
+import { INestApplication, ValidationPipe } from "@nestjs/common";
 import { TestingModule, Test } from "@nestjs/testing";
 import { AppModule } from "../../src/app.module";
 import { NodemailerService } from "../../src/mailing/services/nodemailer.service";
@@ -20,6 +20,7 @@ export async function createApplication(): Promise<INestApplication> {
 
 	const app = moduleFixture.createNestApplication();
 	app.useGlobalFilters(new EntityNotFoundFilter());
+	app.useGlobalPipes(new ValidationPipe({ transform: true })); // Automatically transform primitive params to their type
 	await app.init();
 
 	return app;
