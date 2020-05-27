@@ -1,5 +1,5 @@
 import { GroupDto } from "../../../src/course/dto/group/group.dto";
-import { COURSE_JAVA_1920 } from "../courses.mock";
+import { COURSE_JAVA_1920, COURSE_JAVA_2020 } from "../courses.mock";
 
 export const GROUP_1_JAVA: GroupDto = {
 	id: "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
@@ -17,4 +17,15 @@ export const GROUP_2_JAVA: GroupDto = {
 	isClosed: true
 };
 
-export const GroupsMock: GroupDto[] = [GROUP_1_JAVA, GROUP_2_JAVA];
+export const GROUP_3_JAVA2020: GroupDto = {
+	id: "f2cd0543-e699-40f3-9eb1-ea59a3c91abe",
+	courseId: COURSE_JAVA_2020.id,
+	name: "JAVA-001",
+	isClosed: false
+};
+
+export const GroupsMock: GroupDto[] = [
+	GROUP_1_JAVA, 
+	GROUP_2_JAVA, 
+	GROUP_3_JAVA2020
+];

@@ -9,6 +9,15 @@ export const COURSE_JAVA_1920: CourseDto = {
 	link: "test.test",
 };
 
+export const COURSE_JAVA_2020: CourseDto = {
+	id: "java-sose2020", 
+	shortname: "java", 
+	semester: "sose2020", 
+	title: "Programmierpraktikum I: Java", 
+	isClosed: false, 
+	link: "test.test",
+};
+
 export const COURSE_JAVA_1819: CourseDto = {
 	id: "java-wise1819", 
 	shortname: "java", 
@@ -30,5 +39,6 @@ export const COURSE_INFO_2_2020: CourseDto = {
 export const CoursesMock: CourseDto[] = [
 	COURSE_JAVA_1920,
 	COURSE_JAVA_1819,
+	COURSE_JAVA_2020,
 	COURSE_INFO_2_2020
 ];

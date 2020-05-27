@@ -1,8 +1,7 @@
 import { CourseRole } from "../../src/shared/enums";
-import { COURSE_JAVA_1920, COURSE_INFO_2_2020 } from "./courses.mock";
-import { USER_STUDENT_JAVA, USER_STUDENT_2_JAVA, USER_STUDENT_3_JAVA_TUTOR, USER_MGMT_ADMIN_JAVA_LECTURER } from "./users.mock";
+import { COURSE_JAVA_1920, COURSE_INFO_2_2020, COURSE_JAVA_2020 } from "./courses.mock";
+import { USER_STUDENT_JAVA, USER_STUDENT_2_JAVA, USER_STUDENT_3_JAVA_TUTOR, USER_MGMT_ADMIN_JAVA_LECTURER, USER_ELSHAR, USER_KUNOLD } from "./users.mock";
 import { ASSESSMENT_JAVA_EVALUATED_GROUP_1, ASSESSMENT_JAVA_TESTAT_USER_1 } from "./assessments.mock";
-import { GROUP_1_JAVA } from "./groups/groups.mock";
 
 export const CourseUserRelationsMock = [
 	{
@@ -34,7 +33,32 @@ export const CourseUserRelationsMock = [
 		courseId: COURSE_INFO_2_2020.id,
 		userId: USER_MGMT_ADMIN_JAVA_LECTURER.id,
 		role: CourseRole.LECTURER
-	}
+	},
+	{
+		id: 6,
+		courseId: COURSE_JAVA_2020.id,
+		userId: USER_ELSHAR.id,
+		role: CourseRole.STUDENT
+	},
+	{
+		id: 7,
+		courseId: COURSE_JAVA_2020.id,
+		userId: USER_KUNOLD.id,
+		role: CourseRole.STUDENT
+	},
+	{
+		id: 8,
+		courseId: COURSE_JAVA_1920.id,
+		userId: USER_ELSHAR.id,
+		role: CourseRole.STUDENT
+	},
+	{
+		id: 9,
+		courseId: COURSE_JAVA_1920.id,
+		userId: USER_KUNOLD.id,
+		role: CourseRole.STUDENT
+	},
+
 ];
 
 export const AssessmentUserRelationsMock = [

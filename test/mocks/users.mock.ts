@@ -59,6 +59,22 @@ export const USER_KLING_AUTH_SYSTEM: UserDto = {
 	role: UserRole.SYSTEM_ADMIN
 };
 
+export const USER_ELSHAR: UserDto = {
+	id: "3e52e822-4ebc-49c3-94e2-06ba447b5d1f",
+	email: "elshar@test.com",
+	username: "elshar",
+	rzName: "elshar",
+	role: UserRole.SYSTEM_ADMIN
+};
+
+export const USER_KUNOLD: UserDto = {
+	id: "24b4ec8c-dd8a-4bd6-843c-2c412fb1d5b7",
+	email: "kunold@test.com",
+	username: "kunold",
+	rzName: "kunold",
+	role: UserRole.SYSTEM_ADMIN
+};
+
 export const UsersMock: UserDto[] = [
 	USER_STUDENT_JAVA, 
 	USER_STUDENT_2_JAVA,
@@ -66,6 +82,8 @@ export const UsersMock: UserDto[] = [
 	USER_MGMT_ADMIN_JAVA_LECTURER,
 	USER_SYSTEM_ADMIN,
 	USER_FROM_AUTH_SYSTEM,
+	USER_ELSHAR,
+	USER_KUNOLD,
 	//USER_KLING_AUTH_SYSTEM
 ];
 

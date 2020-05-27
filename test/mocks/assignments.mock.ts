@@ -1,6 +1,6 @@
 import { AssignmentDto } from "../../src/course/dto/assignment/assignment.dto";
 import { AssignmentType, CollaborationType, AssignmentState } from "../../src/shared/enums";
-import { COURSE_JAVA_1920 } from "./courses.mock";
+import { COURSE_JAVA_1920, COURSE_JAVA_2020 } from "./courses.mock";
 
 export const ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP: AssignmentDto = {
 	id: "b2f6c008-b9f7-477f-9e8b-ff34ce339077",
@@ -83,6 +83,52 @@ export const ASSIGNMENT_JAVA_TESTAT_EVALUATED_SINGLE: AssignmentDto = {
 	endDate: new Date(2020, 3, 27)
 };
 
+export const ASSIGNMENT_JAVA2020_GROUP: AssignmentDto = {
+	id: "962390b6-de9a-493a-8db1-5f1787576e51",
+	courseId: COURSE_JAVA_2020.id,
+	name: "Assignment 01 (Group)",
+	points: 100,
+	type: AssignmentType.HOMEWORK,
+	state: AssignmentState.IN_PROGRESS,
+	collaboration: CollaborationType.GROUP,
+	startDate: new Date(2020, 5, 27),
+};
+
+export const ASSIGNMENT_JAVA2020_SINGLE: AssignmentDto = {
+	id: "8de9a9fd-591a-4801-a326-41b5f1c0aff5",
+	courseId: COURSE_JAVA_2020.id,
+	name: "Assignment 02 (Single)",
+	points: 100,
+	type: AssignmentType.HOMEWORK,
+	state: AssignmentState.IN_PROGRESS,
+	collaboration: CollaborationType.SINGLE,
+	startDate: new Date(2020, 5, 27),
+};
+
+export const ASSIGNMENT_JAVA2020_SINGLE_2: AssignmentDto = {
+	id: "3b70193f-ff6b-4183-abf9-ea0c9f96b0a2",
+	courseId: COURSE_JAVA_2020.id,
+	name: "Assignment 03 (Single)",
+	points: 100,
+	type: AssignmentType.HOMEWORK,
+	state: AssignmentState.IN_PROGRESS,
+	collaboration: CollaborationType.SINGLE,
+	startDate: new Date(2020, 5, 27),
+};
+
+export const ASSIGNMENT_JAVA2020_GROUP_CLOSED: AssignmentDto = {
+	id: "f288c766-1c8f-4d7f-9440-714786e3ee37",
+	courseId: COURSE_JAVA_2020.id,
+	name: "Assignment 04 (Group) (Closed)",
+	points: 100,
+	type: AssignmentType.HOMEWORK,
+	state: AssignmentState.CLOSED,
+	collaboration: CollaborationType.GROUP,
+	startDate: new Date(2020, 5, 27),
+};
+
+
+
 export const AssignmentsMock: AssignmentDto[] = [
 	ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP,
 	ASSIGNMENT_JAVA_CLOSED,
@@ -90,5 +136,9 @@ export const AssignmentsMock: AssignmentDto[] = [
 	ASSIGNMENT_JAVA_EVALUATED,
 	ASSIGNMENT_JAVA_INVISIBLE,
 	ASSIGNMENT_JAVA_TESTAT_IN_PROGRESS_SINGLE,
-	ASSIGNMENT_JAVA_TESTAT_EVALUATED_SINGLE
+	ASSIGNMENT_JAVA_TESTAT_EVALUATED_SINGLE,
+	ASSIGNMENT_JAVA2020_GROUP,
+	ASSIGNMENT_JAVA2020_SINGLE,
+	ASSIGNMENT_JAVA2020_SINGLE_2,
+	ASSIGNMENT_JAVA2020_GROUP_CLOSED
 ];
