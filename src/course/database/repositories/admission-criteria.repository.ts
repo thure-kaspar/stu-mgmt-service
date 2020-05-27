@@ -33,7 +33,7 @@ export class AdmissionCriteraRepository extends Repository<AdmissionCritera> {
 	}
 
 	/** Updates the admission criteria. */
-	async updateAssignmentCriteria(courseId: string, criteriaDto: AdmissionCriteriaDto): Promise<AdmissionCritera> {
+	async updateAdmissionCriteria(courseId: string, criteriaDto: AdmissionCriteriaDto): Promise<AdmissionCritera> {
 		const criteria = await this.getByCourseId(courseId);
 		criteria.admissionCriteria = criteriaDto;
 		return criteria.save();

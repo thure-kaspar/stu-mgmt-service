@@ -82,7 +82,7 @@ export class CourseConfigService {
 	
 	/** Updates the admission criteria of a course. */
 	async updateAdmissionCriteria(courseId: string, criteriaDto: AdmissionCriteriaDto): Promise<AdmissionCriteriaDto> {
-		const criteria = await this.admissionCriteriaRepo.updateAssignmentCriteria(courseId, criteriaDto); // TODO: validate Dto
+		const criteria = await this.admissionCriteriaRepo.updateAdmissionCriteria(courseId, criteriaDto); // TODO: validate Dto
 		return criteria.toDto();
 	}
 
