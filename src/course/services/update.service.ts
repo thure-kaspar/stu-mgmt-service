@@ -17,7 +17,9 @@ export class UpdateService {
 	 */
 	send(message: UpdateMessage): void {
 		//this.logger.verbose("[disabled] Sending update to: <URL>");
-		//this.http.post("INSERT-URL-HERE", message).toPromise();
+		if (message.courseId === "java-sose2020") {
+			this.http.post("http://127.0.0.1:1111/rest/update", message).toPromise();
+		}
 	}
 
 }
