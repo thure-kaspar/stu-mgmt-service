@@ -26,8 +26,13 @@ import { CqrsModule } from "@nestjs/cqrs";
 import { UserJoinedGroupHandler } from "./events/user-joined-group.event";
 import { UserLeftGroupHandler } from "./events/user-left-group.event";
 import { GroupEventRepository } from "./database/repositories/group-event.repository";
+import { CanJoinCourseHandler } from "./queries/can-join-course/can-join-course.query";
+import { CourseMemberGuard } from "./guards/course-member.guard";
+import { AuthModule } from "../auth/auth.module";
 
 const EventHandlers = [UserJoinedGroupHandler, UserLeftGroupHandler];
+const QueryHandlers = [CanJoinCourseHandler];
+const Guards = [CourseMemberGuard];
 
 @Module({
 	imports: [
@@ -46,12 +51,15 @@ const EventHandlers = [UserJoinedGroupHandler, UserLeftGroupHandler];
 			GroupEventRepository
 		]),
 		CqrsModule,
-		HttpModule
+		HttpModule,
+		AuthModule
 	],
 	controllers: [AssessmentController, AssignmentController, CourseController, GroupController, CourseConfigController],
 	providers: [
-		CourseService, GroupService, AssignmentService, AssessmentService, UpdateService, CourseConfigService, 
-		...EventHandlers
+		CourseService, GroupService, AssignmentService, AssessmentService, UpdateService, CourseConfigService,
+		...Guards,
+		...EventHandlers,
+		...QueryHandlers
 	]
 })
 export class CourseModule { }

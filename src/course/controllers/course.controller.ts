@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Body, Patch, Delete, Query, ValidationPipe } from "@nestjs/common";
+import { Controller, Get, Param, Post, Body, Patch, Delete, Query, ValidationPipe, UseGuards } from "@nestjs/common";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
 import { CourseService } from "../services/course.service";
 import { CourseDto } from "../dto/course/course.dto";
@@ -7,12 +7,18 @@ import { CourseFilterDto } from "../dto/course/course-filter.dto";
 import { ChangeCourseRoleDto } from "../dto/change-course-role.dto";
 import { CourseCreateDto } from "../dto/course/course-create.dto";
 import { PasswordDto } from "../../shared/dto/password.dto";
+import { CanJoinCourseQuery } from "../queries/can-join-course/can-join-course.query";
+import { QueryBus } from "@nestjs/cqrs";
+import { AuthGuard } from "@nestjs/passport";
+import { CourseMemberGuard } from "../guards/course-member.guard";
+import { CanJoinCourseDto } from "../queries/can-join-course/can-join-course.dto";
 
 @ApiTags("courses") 
 @Controller("courses")
 export class CourseController {
 
-	constructor(private courseService: CourseService) { }
+	constructor(private courseService: CourseService,
+				private queryBus: QueryBus) { }
 
 	/**
 	 * Creates a new course.
@@ -61,6 +67,7 @@ export class CourseController {
 	 * Returns the course.
 	 */
 	@Get(":courseId")
+	@UseGuards(AuthGuard(), CourseMemberGuard)
 	@ApiOperation({
 		operationId: "getCourseById",
 		summary: "Get course",
@@ -99,6 +106,20 @@ export class CourseController {
 	})
 	getUsersOfCourse(@Param("courseId") courseId: string): Promise<UserDto[]> {
 		return this.courseService.getUsersOfCourse(courseId);
+	}
+
+	@Get(":courseId/users/:userId/canJoin")
+	@ApiOperation({
+		operationId: "canUserJoinCourse",
+		summary: "Check if joining is possible",
+		description: "Checks, if the user is able to join the course. A user can join a course, if he's not already a member and the course is not closed."
+	})
+	canUserJoinCourse(
+		@Param("courseId") courseId: string,
+		@Param("userId") userId: string,
+	): Promise<CanJoinCourseDto> {
+
+		return this.queryBus.execute(new CanJoinCourseQuery(courseId, userId));
 	}
 
 	/**
