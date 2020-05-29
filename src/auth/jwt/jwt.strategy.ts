@@ -18,12 +18,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 	 * to the request body. 
 	 */
 	async validate(payload: JwtPayload): Promise<Partial<UserDto>> {
-		const { username, role } = payload;
+		const { userId, username, role } = payload;
 
 		if (!username) {
 			throw new UnauthorizedException();
 		}
 
-		return { username, role };
+		return { id: userId, username, role };
 	}
 }
