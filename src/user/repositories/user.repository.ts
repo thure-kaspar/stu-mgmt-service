@@ -41,6 +41,17 @@ export class UserRepository extends Repository<User> {
 		return user.courseUserRelations.map(relation => relation.course);
 	}
 
+	/** Determines, wether the user is a member of the course. */
+	async isMemberOfCourse(userId: string, courseId: string): Promise<boolean> {
+		const user = await this.createQueryBuilder("user")
+			.where("user.id = :id", { id: userId })
+			.innerJoin("user.courseUserRelations", "courseRelation")
+			.andWhere("courseRelation.courseId = :courseId", { courseId })
+			.getOne();
+			
+		return !!user;
+	} 
+
 	async updateUser(userId: string, userDto: UserDto): Promise<User> {
 		const user = await this.getUserById(userId);
 
