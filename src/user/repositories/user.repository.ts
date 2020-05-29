@@ -34,16 +34,11 @@ export class UserRepository extends Repository<User> {
 	}
 
 	async getCoursesOfUser(userId: string): Promise<Course[]> {
-		const user = await this.findOneOrFail(userId, { relations: ["courseUserRelations", "courseUserRelations.course"] });
-		const courses = [];
+		const user = await this.findOneOrFail(userId, { 
+			relations: ["courseUserRelations", "courseUserRelations.course"] 
+		});
 
-		if (user.courseUserRelations) {
-			user.courseUserRelations.forEach(courseUserRelation => {
-				courses.push(courseUserRelation.course);
-			});
-		}
-
-		return courses;
+		return user.courseUserRelations.map(relation => relation.course);
 	}
 
 	async updateUser(userId: string, userDto: UserDto): Promise<User> {
