@@ -1,13 +1,32 @@
 import { ForbiddenException } from "@nestjs/common";
+import { ApiProperty } from "@nestjs/swagger";
 
 export class CourseClosedException extends ForbiddenException {
-	constructor(message = "Course is closed.") {
-		super(message);
+	constructor() {
+		super("CourseClosedException");
+	}
+}
+
+export class NotACourseMemberException extends ForbiddenException {
+	constructor() {
+		super("NotACourseMemberException");
 	}
 }
 
 export class GroupsForbiddenException extends ForbiddenException {
-	constructor(message = "Groups are forbidden.") {
-		super(message);
+	constructor() {
+		super("GroupsForbiddenException");
 	}
+}
+
+// ### Export for swagger ###
+enum StudentMgmtExceptions {
+	CourseClosedException = "CourseClosedException",
+	NotACourseMemberException = "NotACourseMemberException",
+	GroupsForbiddenException = "GroupsForbiddenException"
+}
+
+export class StudentMgmtException {
+	@ApiProperty({ enum: StudentMgmtExceptions })
+	name: StudentMgmtException;
 }

@@ -6,6 +6,7 @@ import { DbMockService } from "../test/mocks/db-mock.service";
 import { getConnection } from "typeorm";
 import { EntityNotFoundFilter } from "./shared/entity-not-found.filter";
 import { ValidationPipe } from "@nestjs/common";
+import { StudentMgmtException } from "./course/exceptions/custom-exceptions";
 
 async function bootstrap(): Promise<void> {
 	const serverConfig = config.get("server");
@@ -30,7 +31,7 @@ async function bootstrap(): Promise<void> {
 		.addTag("users")
 		.addTag("test")
 		.build();
-	const document = SwaggerModule.createDocument(app, options);
+	const document = SwaggerModule.createDocument(app, options, { extraModels: [StudentMgmtException] });
 	SwaggerModule.setup("api", app, document);
 
 	// If demo environment, populate database with test data
