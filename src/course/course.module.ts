@@ -24,13 +24,13 @@ import { AdmissionCriteraRepository } from "./database/repositories/admission-cr
 import { AssignmentTemplateRepository } from "./database/repositories/assignment-template.repository";
 import { CqrsModule } from "@nestjs/cqrs";
 import { UserJoinedGroupHandler } from "./events/user-joined-group.event";
-import { UserLeftGroupHandler } from "./events/user-left-group.event";
+import { UserLeftGroupHandler, UserLeftGroupNotificationHandler } from "./events/user-left-group.event";
 import { GroupEventRepository } from "./database/repositories/group-event.repository";
 import { CanJoinCourseHandler } from "./queries/can-join-course/can-join-course.query";
 import { CourseMemberGuard } from "./guards/course-member.guard";
 import { AuthModule } from "../auth/auth.module";
 
-const EventHandlers = [UserJoinedGroupHandler, UserLeftGroupHandler];
+const EventHandlers = [UserJoinedGroupHandler, UserLeftGroupHandler, UserLeftGroupNotificationHandler];
 const QueryHandlers = [CanJoinCourseHandler];
 const Guards = [CourseMemberGuard];
 
