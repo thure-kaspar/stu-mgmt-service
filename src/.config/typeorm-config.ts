@@ -8,9 +8,6 @@ import { UserGroupRelation } from "../course/entities/user-group-relation.entity
 import { Assignment } from "../course/entities/assignment.entity";
 import { Assessment } from "../course/entities/assessment.entity";
 import { AssessmentUserRelation } from "../course/entities/assessment-user-relation.entity";
-import { AssignmentSubscriber } from "../course/database/subscribers/assignment.subscriber";
-import { UserGroupRelationSubscriber } from "../course/database/subscribers/user-group.subscriber";
-import { CourseUserRelationSubscriber } from "../course/database/subscribers/course-user.subscriber";
 import { MailTemplate } from "../mailing/entities/mail-template.entity";
 import { CourseConfig } from "../course/entities/course-config.entity";
 import { AssignmentTemplate } from "../course/entities/assignment-template.entity";
@@ -35,6 +32,5 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
 	entities: [Course, User, Group, CourseUserRelation, UserGroupRelation, Assignment, Assessment, AssessmentUserRelation, MailTemplate,
 		CourseConfig, AssignmentTemplate, GroupSettings, AdmissionCritera, PartialAssessment, GroupEvent
 	],
-	subscribers: [CourseUserRelationSubscriber, UserGroupRelationSubscriber, AssignmentSubscriber],
 	logging: loggingConfig.dbErrors ? ["error"] : undefined
 };
