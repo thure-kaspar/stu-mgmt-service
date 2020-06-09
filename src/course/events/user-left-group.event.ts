@@ -40,7 +40,7 @@ export class UserLeftGroupNotificationHandler implements IEventHandler<UserLeftG
 	async handle(event: UserLeftGroupEvent): Promise<void> {
 
 		const course = await this.courseRepo.createQueryBuilder("course")
-			.innerJoin("course.groups", "group", "group.id := groupId", { groupId: event.groupId })
+			.innerJoin("course.groups", "group", "group.id = :groupId", { groupId: event.groupId })
 			.innerJoinAndSelect("course.config", "config")
 			.getOne();
 
@@ -50,7 +50,8 @@ export class UserLeftGroupNotificationHandler implements IEventHandler<UserLeftG
 				type: "REMOVE",
 				courseId: course.id,
 				entityId: event.userId,
-				entityId_relation: event.groupId
+				entityId_relation: event.groupId,
+				date: new Date()
 			});
 		}
 	}
