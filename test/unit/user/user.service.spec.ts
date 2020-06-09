@@ -1,10 +1,10 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { UserService } from "../../../src/user/services/user.service";
 import { UserRepository } from "../../../src/user/repositories/user.repository";
-import { GroupRepository } from "../../../src/course/database/repositories/group.repository";
-import { AssessmentRepository } from "../../../src/course/database/repositories/assessment.repository";
-import { AssignmentRepository } from "../../../src/course/database/repositories/assignment.repository";
-import { GroupEventRepository } from "../../../src/course/database/repositories/group-event.repository";
+import { GroupRepository } from "../../../src/course/repositories/group.repository";
+import { AssessmentRepository } from "../../../src/course/repositories/assessment.repository";
+import { AssignmentRepository } from "../../../src/course/repositories/assignment.repository";
+import { GroupEventRepository } from "../../../src/course/repositories/group-event.repository";
 import { convertToEntity } from "../../utils/object-helper";
 import { GROUP_EVENT_REJOIN_SCENARIO } from "../../mocks/groups/group-events.mock";
 import { GroupEvent } from "../../../src/course/entities/group-event.entity";

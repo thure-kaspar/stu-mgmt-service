@@ -1,7 +1,7 @@
 import { TestingModule, Test } from "@nestjs/testing";
 import { AssignmentService } from "../../../src/course/services/assignment.service";
 import { DtoFactory } from "../../../src/shared/dto-factory";
-import { AssignmentRepository } from "../../../src/course/database/repositories/assignment.repository";
+import { AssignmentRepository } from "../../../src/course/repositories/assignment.repository";
 import { AssignmentDto } from "../../../src/course/dto/assignment/assignment.dto";
 import { copy, convertToEntity } from "../../utils/object-helper";
 import { ASSIGNMENT_JAVA_EVALUATED, ASSIGNMENT_JAVA_IN_REVIEW } from "../../mocks/assignments.mock";

@@ -1,15 +1,15 @@
 import { Repository, EntityRepository } from "typeorm";
-import { Course } from "../../entities/course.entity";
-import { CourseDto } from "../../dto/course/course.dto";
-import { CourseFilterDto } from "../../dto/course/course-filter.dto";
-import { AdmissionCritera } from "../../entities/admission-criteria.entity";
-import { CourseConfig } from "../../entities/course-config.entity";
-import { GroupSettings } from "../../entities/group-settings.entity";
-import { AssignmentTemplate } from "../../entities/assignment-template.entity";
-import { CourseCreateDto } from "../../dto/course/course-create.dto";
-import { CourseUserRelation } from "../../entities/course-user-relation.entity";
-import { CourseRole } from "../../../shared/enums";
-import { User } from "../../../shared/entities/user.entity";
+import { Course } from "../entities/course.entity";
+import { CourseDto } from "../dto/course/course.dto";
+import { CourseFilterDto } from "../dto/course/course-filter.dto";
+import { AdmissionCritera } from "../entities/admission-criteria.entity";
+import { CourseConfig } from "../entities/course-config.entity";
+import { GroupSettings } from "../entities/group-settings.entity";
+import { AssignmentTemplate } from "../entities/assignment-template.entity";
+import { CourseCreateDto } from "../dto/course/course-create.dto";
+import { CourseUserRelation } from "../entities/course-user-relation.entity";
+import { CourseRole } from "../../shared/enums";
+import { User } from "../../shared/entities/user.entity";
 
 @EntityRepository(Course)
 export class CourseRepository extends Repository<Course> {

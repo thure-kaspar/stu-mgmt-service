@@ -1,7 +1,7 @@
 import { AssessmentService } from "../../../src/course/services/assessment.service";
 import { TestingModule, Test } from "@nestjs/testing";
-import { AssessmentRepository } from "../../../src/course/database/repositories/assessment.repository";
-import { GroupRepository } from "../../../src/course/database/repositories/group.repository";
+import { AssessmentRepository } from "../../../src/course/repositories/assessment.repository";
+import { GroupRepository } from "../../../src/course/repositories/group.repository";
 import { GROUP_1_JAVA } from "../../mocks/groups/groups.mock";
 import { UserGroupRelation } from "../../../src/course/entities/user-group-relation.entity";
 import { UserGroupRelationsMock } from "../../mocks/groups/user-group-relations.mock";
@@ -11,7 +11,7 @@ import { copy, convertToEntity } from "../../utils/object-helper";
 import { ASSESSMENT_JAVA_EVALUATED_GROUP_1, ASSESSMENT_JAVA_TESTAT_USER_1, ASSESSMENT_JAVA_EVALUATED_GROUP_2 } from "../../mocks/assessments.mock";
 import { Group } from "../../../src/course/entities/group.entity";
 import { Assessment } from "../../../src/course/entities/assessment.entity";
-import { AssignmentRepository } from "../../../src/course/database/repositories/assignment.repository";
+import { AssignmentRepository } from "../../../src/course/repositories/assignment.repository";
 import { Assignment } from "../../../src/course/entities/assignment.entity";
 import { ASSIGNMENT_JAVA_IN_REVIEW, ASSIGNMENT_JAVA_CLOSED } from "../../mocks/assignments.mock";
 import { PartialAssessmentDto } from "../../../src/course/dto/assessment/partial-assessment.dto";

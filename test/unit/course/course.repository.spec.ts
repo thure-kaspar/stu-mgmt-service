@@ -1,4 +1,4 @@
-import { CourseRepository } from "../../../src/course/database/repositories/course.repository";
+import { CourseRepository } from "../../../src/course/repositories/course.repository";
 import { TestingModule, Test } from "@nestjs/testing";
 import { CourseDto } from "../../../src/course/dto/course/course.dto";
 import { copy, convertToEntity } from "../../utils/object-helper";

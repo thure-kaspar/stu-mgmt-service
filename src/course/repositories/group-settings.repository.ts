@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from "typeorm";
-import { GroupSettings } from "../../entities/group-settings.entity";
-import { GroupSettingsDto } from "../../dto/course-config/group-settings.dto";
+import { GroupSettings } from "../entities/group-settings.entity";
+import { GroupSettingsDto } from "../dto/course-config/group-settings.dto";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
 
 @EntityRepository(GroupSettings)

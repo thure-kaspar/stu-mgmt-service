@@ -1,6 +1,6 @@
 import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
-import { CourseRepository } from "../../database/repositories/course.repository";
+import { CourseRepository } from "../../repositories/course.repository";
 import { Course } from "../../entities/course.entity";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
 import { CanJoinCourseDto } from "./can-join-course.dto";

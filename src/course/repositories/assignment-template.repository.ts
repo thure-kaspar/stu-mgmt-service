@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from "typeorm";
-import { AssignmentTemplate } from "../../entities/assignment-template.entity";
-import { AssignmentTemplateDto } from "../../dto/course-config/assignment-template.dto";
+import { AssignmentTemplate } from "../entities/assignment-template.entity";
+import { AssignmentTemplateDto } from "../dto/course-config/assignment-template.dto";
 
 @EntityRepository(AssignmentTemplate)
 export class AssignmentTemplateRepository extends Repository<AssignmentTemplate> {

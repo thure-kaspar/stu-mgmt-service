@@ -1,7 +1,7 @@
 import { Injectable, BadRequestException, ConflictException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { GroupRepository } from "../database/repositories/group.repository";
-import { CourseRepository } from "../database/repositories/course.repository";
+import { GroupRepository } from "../repositories/group.repository";
+import { CourseRepository } from "../repositories/course.repository";
 import { Course } from "../entities/course.entity";
 import { Group } from "../entities/group.entity";
 import { GroupDto } from "../dto/group/group.dto";
@@ -13,9 +13,9 @@ import { EventBus } from "@nestjs/cqrs";
 import { UserJoinedGroupEvent } from "../events/user-joined-group.event";
 import { UserLeftGroupEvent } from "../events/user-left-group.event";
 import { GroupEvent } from "../entities/group-event.entity";
-import { GroupEventRepository } from "../database/repositories/group-event.repository";
+import { GroupEventRepository } from "../repositories/group-event.repository";
 import { Assignment } from "../entities/assignment.entity";
-import { AssignmentRepository } from "../database/repositories/assignment.repository";
+import { AssignmentRepository } from "../repositories/assignment.repository";
 import { User } from "../../shared/entities/user.entity";
 import { GroupEventDto } from "../dto/group/group-event.dto";
 

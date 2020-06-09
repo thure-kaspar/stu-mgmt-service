@@ -3,10 +3,10 @@ import { UserController } from "./controllers/user.controller";
 import { UserService } from "./services/user.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { UserRepository } from "./repositories/user.repository";
-import { GroupRepository } from "../course/database/repositories/group.repository";
-import { AssessmentRepository } from "../course/database/repositories/assessment.repository";
-import { AssignmentRepository } from "../course/database/repositories/assignment.repository";
-import { GroupEventRepository } from "../course/database/repositories/group-event.repository";
+import { GroupRepository } from "../course/repositories/group.repository";
+import { AssessmentRepository } from "../course/repositories/assessment.repository";
+import { AssignmentRepository } from "../course/repositories/assignment.repository";
+import { GroupEventRepository } from "../course/repositories/group-event.repository";
 import { AuthModule } from "../auth/auth.module";
 
 @Module({

@@ -1,9 +1,9 @@
 import { Repository, EntityRepository } from "typeorm";
-import { Assessment } from "../../entities/assessment.entity";
-import { AssessmentDto, AssessmentCreateDto } from "../../dto/assessment/assessment.dto";
-import { AssessmentUserRelation } from "../../entities/assessment-user-relation.entity";
-import { PartialAssessmentDto } from "../../dto/assessment/partial-assessment.dto";
-import { PartialAssessment } from "../../entities/partial-assessment.entity";
+import { Assessment } from "../entities/assessment.entity";
+import { AssessmentDto, AssessmentCreateDto } from "../dto/assessment/assessment.dto";
+import { AssessmentUserRelation } from "../entities/assessment-user-relation.entity";
+import { PartialAssessmentDto } from "../dto/assessment/partial-assessment.dto";
+import { PartialAssessment } from "../entities/partial-assessment.entity";
 
 @EntityRepository(Assessment)
 export class AssessmentRepository extends Repository<Assessment> {

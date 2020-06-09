@@ -2,12 +2,12 @@ import { Injectable, BadRequestException } from "@nestjs/common";
 import { AssessmentDto, AssessmentCreateDto } from "../dto/assessment/assessment.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Assessment } from "../entities/assessment.entity";
-import { AssessmentRepository } from "../database/repositories/assessment.repository";
-import { GroupRepository } from "../database/repositories/group.repository";
+import { AssessmentRepository } from "../repositories/assessment.repository";
+import { GroupRepository } from "../repositories/group.repository";
 import { Group } from "../entities/group.entity";
 import { DtoFactory } from "../../shared/dto-factory";
 import { PartialAssessmentDto } from "../dto/assessment/partial-assessment.dto";
-import { AssignmentRepository } from "../database/repositories/assignment.repository";
+import { AssignmentRepository } from "../repositories/assignment.repository";
 import { Assignment } from "../entities/assignment.entity";
 import { AssignmentState } from "../../shared/enums";
 

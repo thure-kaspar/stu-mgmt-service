@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from "typeorm";
-import { AdmissionCritera } from "../../entities/admission-criteria.entity";
-import { AdmissionCriteriaDto } from "../../dto/course-config/admission-criteria.dto";
+import { AdmissionCritera } from "../entities/admission-criteria.entity";
+import { AdmissionCriteriaDto } from "../dto/course-config/admission-criteria.dto";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
 
 @EntityRepository(AdmissionCritera)

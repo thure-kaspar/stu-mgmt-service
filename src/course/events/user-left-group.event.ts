@@ -4,7 +4,7 @@ import { GroupEvent } from "../entities/group-event.entity";
 import { Repository } from "typeorm";
 import { UpdateService } from "../services/update.service";
 import { Course } from "../entities/course.entity";
-import { CourseRepository } from "../database/repositories/course.repository";
+import { CourseRepository } from "../repositories/course.repository";
 
 export class UserLeftGroupEvent {
 	constructor(

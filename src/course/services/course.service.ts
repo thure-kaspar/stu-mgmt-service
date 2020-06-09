@@ -1,10 +1,10 @@
 import { Injectable, BadRequestException } from "@nestjs/common";
 import { CourseDto } from "src/course/dto/course/course.dto";
 import { InjectRepository } from "@nestjs/typeorm";
-import { CourseRepository } from "../database/repositories/course.repository";
+import { CourseRepository } from "../repositories/course.repository";
 import { Course } from "../entities/course.entity";
 import { CourseUserRelation } from "../entities/course-user-relation.entity";
-import { CourseUserRelationRepository } from "../database/repositories/course-user-relation.repository";
+import { CourseUserRelationRepository } from "../repositories/course-user-relation.repository";
 import { UserDto } from "../../shared/dto/user.dto";
 import { CourseRole } from "../../shared/enums";
 import { CourseFilterDto } from "../dto/course/course-filter.dto";

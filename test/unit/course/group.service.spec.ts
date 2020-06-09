@@ -1,7 +1,7 @@
 import { GroupService } from "../../../src/course/services/group.service";
-import { CourseRepository } from "../../../src/course/database/repositories/course.repository";
+import { CourseRepository } from "../../../src/course/repositories/course.repository";
 import { DtoFactory } from "../../../src/shared/dto-factory";
-import { GroupRepository } from "../../../src/course/database/repositories/group.repository";
+import { GroupRepository } from "../../../src/course/repositories/group.repository";
 import { TestingModule, Test } from "@nestjs/testing";
 import { GroupDto } from "../../../src/course/dto/group/group.dto";
 import { GROUP_1_JAVA, GROUP_2_JAVA } from "../../mocks/groups/groups.mock";
@@ -18,8 +18,8 @@ import { CourseUserRelation } from "../../../src/course/entities/course-user-rel
 import { EventBus } from "@nestjs/cqrs";
 import { UserJoinedGroupEvent } from "../../../src/course/events/user-joined-group.event";
 import { UserLeftGroupEvent } from "../../../src/course/events/user-left-group.event";
-import { GroupEventRepository } from "../../../src/course/database/repositories/group-event.repository";
-import { AssignmentRepository } from "../../../src/course/database/repositories/assignment.repository";
+import { GroupEventRepository } from "../../../src/course/repositories/group-event.repository";
+import { AssignmentRepository } from "../../../src/course/repositories/assignment.repository";
 
 function getGroupWithUsersMock_JoiningPossible(passwordRequired = true) {
 	const group = convertToEntity(Group, GROUP_1_JAVA);

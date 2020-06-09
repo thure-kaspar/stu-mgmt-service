@@ -1,5 +1,5 @@
 import { Repository, EntityRepository } from "typeorm";
-import { GroupEvent } from "../../entities/group-event.entity";
+import { GroupEvent } from "../entities/group-event.entity";
 
 @EntityRepository(GroupEvent)
 export class GroupEventRepository extends Repository<GroupEvent> {

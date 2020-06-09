@@ -2,7 +2,7 @@ import { Injectable, BadRequestException } from "@nestjs/common";
 import { AssignmentDto } from "../dto/assignment/assignment.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Assignment } from "../entities/assignment.entity";
-import { AssignmentRepository } from "../database/repositories/assignment.repository";
+import { AssignmentRepository } from "../repositories/assignment.repository";
 import { DtoFactory } from "../../shared/dto-factory";
 
 @Injectable()

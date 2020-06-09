@@ -8,10 +8,10 @@ import { AdmissionCriteriaDto } from "../dto/course-config/admission-criteria.dt
 import { GroupSettingsDto, GroupSettingsUpdateDto } from "../dto/course-config/group-settings.dto";
 import { AssignmentTemplate } from "../entities/assignment-template.entity";
 import { AssignmentTemplateDto } from "../dto/course-config/assignment-template.dto";
-import { CourseConfigRepository } from "../database/repositories/course-config.repository";
-import { GroupSettingsRepository } from "../database/repositories/group-settings.repository";
-import { AssignmentTemplateRepository } from "../database/repositories/assignment-template.repository";
-import { AdmissionCriteraRepository } from "../database/repositories/admission-criteria.repository";
+import { CourseConfigRepository } from "../repositories/course-config.repository";
+import { GroupSettingsRepository } from "../repositories/group-settings.repository";
+import { AssignmentTemplateRepository } from "../repositories/assignment-template.repository";
+import { AdmissionCriteraRepository } from "../repositories/admission-criteria.repository";
 
 @Injectable()
 export class CourseConfigService {

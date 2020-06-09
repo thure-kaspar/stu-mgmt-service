@@ -1,6 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { CourseUserRelationRepository } from "../../../src/course/database/repositories/course-user-relation.repository";
-import { CourseRepository } from "../../../src/course/database/repositories/course.repository";
+import { CourseUserRelationRepository } from "../../../src/course/repositories/course-user-relation.repository";
+import { CourseRepository } from "../../../src/course/repositories/course.repository";
 import { CourseService } from "../../../src/course/services/course.service";
 import { DtoFactory } from "../../../src/shared/dto-factory";
 import { CourseFilterDto } from "../../../src/course/dto/course/course-filter.dto";

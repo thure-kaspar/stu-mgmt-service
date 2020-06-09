@@ -1,7 +1,7 @@
 import { ConflictException } from "@nestjs/common";
 import { EntityRepository, Repository } from "typeorm";
-import { CourseUserRelation } from "../../entities/course-user-relation.entity";
-import { CourseRole } from "../../../shared/enums";
+import { CourseUserRelation } from "../entities/course-user-relation.entity";
+import { CourseRole } from "../../shared/enums";
 
 @EntityRepository(CourseUserRelation)
 export class CourseUserRelationRepository extends Repository<CourseUserRelation> {
