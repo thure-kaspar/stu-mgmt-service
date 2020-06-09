@@ -72,7 +72,7 @@ export class GroupService {
 	 *   - Group has not reached the allowed maximum capacity
 	 *   - Given password matches the group's password
 	 */
-	async addUserToGroup(groupId: string, userId: string, password?: string): Promise<any> {
+	async addUserToGroup(groupId: string, userId: string, password?: string): Promise<void> {
 		const group = await this.groupRepository.getGroupForAddUserToGroup(groupId, userId);
 		const sizeMax = group.course.config.groupSettings.sizeMax;
 		const sizeCurrent  = group.userGroupRelations.length;
@@ -84,19 +84,21 @@ export class GroupService {
 		const added = await this.groupRepository.addUserToGroup(groupId, userId);
 		if (added) {
 			this.events.publish(new UserJoinedGroupEvent(groupId, userId));
+		} else {
+			throw new BadRequestException("Failed to add user to group.");
 		}
-		return added;
 	}
 
 	/**
 	 * Adds the user to the group without checking any constraints. 
 	 */
-	async addUserToGroup_Force(groupId: string, userId: string): Promise<any> {
+	async addUserToGroup_Force(groupId: string, userId: string): Promise<void> {
 		const added = this.groupRepository.addUserToGroup(groupId, userId);
 		if (added) {
 			this.events.publish(new UserJoinedGroupEvent(groupId, userId));
+		} else {
+			throw new BadRequestException("Failed to add user to group.");
 		}
-		return added;
 	}
 
 	async getGroupsOfCourse(courseId: string): Promise<GroupDto[]> {
@@ -173,7 +175,7 @@ export class GroupService {
 		if (removed) {
 			this.events.publish(new UserLeftGroupEvent(groupId, userId, reason));
 		} else {
-			throw new BadRequestException("Removal failed.");
+			throw new BadRequestException("Failed to remove the user.");
 		}
 	}
 
