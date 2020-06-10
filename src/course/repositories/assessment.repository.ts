@@ -34,10 +34,11 @@ export class AssessmentRepository extends Repository<Assessment> {
 	}
 
 	async getAllAssessmentsForAssignment(assignmentId: string): Promise<Assessment[]> {
-		return this.find({
+		return this.find({ 
 			where: {
 				assignmentId: assignmentId
-			}
+			},
+			relations: ["group", "creator", "assessmentUserRelations", "assessmentUserRelations.user"]
 		});
 	}
 

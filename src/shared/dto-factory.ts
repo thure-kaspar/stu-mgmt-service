@@ -180,6 +180,10 @@ export abstract class DtoFactory {
 		// If assessment belongs to a single student
 		if (assessment.assessmentUserRelations?.length == 1) {
 			assessmentDto.userId = assessment.assessmentUserRelations[0].userId;
+
+			if (assessment.assessmentUserRelations[0].user) {
+				assessmentDto.user = this.createUserDto(assessment.assessmentUserRelations[0].user);
+			}
 		}
 
 		// If creator was loaded
