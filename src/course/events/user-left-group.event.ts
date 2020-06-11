@@ -5,6 +5,7 @@ import { Repository } from "typeorm";
 import { UpdateService } from "../services/update.service";
 import { Course } from "../entities/course.entity";
 import { CourseRepository } from "../repositories/course.repository";
+import { AffectedObject, EventType } from "../../shared/dto/update-message.dto";
 
 export class UserLeftGroupEvent {
 	constructor(
@@ -46,8 +47,8 @@ export class UserLeftGroupNotificationHandler implements IEventHandler<UserLeftG
 
 		if (course?.config?.subscriptionUrl) {
 			this.updateService.send(course.config.subscriptionUrl, {
-				affectedObject: "USER_GROUP_RELATION",
-				type: "REMOVE",
+				affectedObject: AffectedObject.USER_GROUP_RELATION,
+				type: EventType.REMOVE,
 				courseId: course.id,
 				entityId: event.userId,
 				entityId_relation: event.groupId,
