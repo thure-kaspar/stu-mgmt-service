@@ -1,13 +1,27 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
+export enum EventType {
+	INSERT = "INSERT",
+	UPDATE = "UPDATE",
+	REMOVE = "REMOVE"
+}
+
+export enum AffectedObject {
+	USER = "USER",
+	GROUP = "GROUP",
+	USER_GROUP_RELATION = "USER_GROUP_RELATION",
+	COURSE_USER_RELATION = "COURSE_USER_RELATION",
+	ASSIGNMENT = "ASSIGNMENT"
+}
+
 export class UpdateMessage {
 	/** The type of event, i.e INSERT, UPDATE or REMOVE. */
 	@ApiProperty({ description: "The type of event, i.e INSERT, UPDATE or REMOVE." })
-	type: "INSERT" | "UPDATE" | "REMOVE";
+	type: EventType;
 
 	/** The type of object that has been affected. */
 	@ApiProperty({ description: "The type of object that has been affected." })
-	affectedObject: "USER" | "GROUP" | "USER_GROUP_RELATION" | "COURSE_USER_RELATION" | "ASSIGNMENT";
+	affectedObject: AffectedObject;
 
 	/** Identifier of the course, in which the event happened. */
 	@ApiProperty({ description: "Identifier of the course, in which the event happened." })
