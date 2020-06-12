@@ -71,7 +71,7 @@ export class CourseController {
 	@ApiOperation({
 		operationId: "getCourseById",
 		summary: "Get course",
-		description: "Returns the course."
+		description: "Retrieves the course, if the requesting user is a member of this course."
 	})
 	getCourseById(@Param("courseId") courseId: string): Promise<CourseDto> {
 		return this.courseService.getCourseById(courseId);
