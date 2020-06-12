@@ -24,8 +24,17 @@ export const GROUP_3_JAVA2020: GroupDto = {
 	isClosed: false
 };
 
+export const GROUP_4_JAVA: GroupDto = {
+	id: "01144a38-bf03-4ef7-9c87-db6aa81ea7e0",
+	courseId: COURSE_JAVA_1920.id,
+	name: "Testgroup 3",
+	password: "123",
+	isClosed: false
+};
+
 export const GroupsMock: GroupDto[] = [
 	GROUP_1_JAVA, 
 	GROUP_2_JAVA, 
-	GROUP_3_JAVA2020
+	GROUP_3_JAVA2020,
+	GROUP_4_JAVA
 ];
