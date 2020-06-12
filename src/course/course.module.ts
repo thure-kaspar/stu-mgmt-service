@@ -29,6 +29,9 @@ import { GroupEventRepository } from "./repositories/group-event.repository";
 import { CanJoinCourseHandler } from "./queries/can-join-course/can-join-course.query";
 import { CourseMemberGuard } from "./guards/course-member.guard";
 import { AuthModule } from "../auth/auth.module";
+import { AssessmentAllocationController } from "./controllers/assessment-allocation.controller";
+import { AssessmentAllocationService } from "./services/assessment-allocation.service";
+import { AssessmentAllocationRepository } from "./repositories/assessment-allocation.repository";
 
 const EventHandlers = [UserJoinedGroupHandler, UserLeftGroupHandler, UserLeftGroupNotificationHandler];
 const QueryHandlers = [CanJoinCourseHandler];
@@ -48,15 +51,16 @@ const Guards = [CourseMemberGuard];
 			GroupSettingsRepository,
 			AdmissionCriteraRepository,
 			AssignmentTemplateRepository,
-			GroupEventRepository
+			GroupEventRepository,
+			AssessmentAllocationRepository
 		]),
 		CqrsModule,
 		HttpModule,
 		AuthModule
 	],
-	controllers: [AssessmentController, AssignmentController, CourseController, GroupController, CourseConfigController],
+	controllers: [AssessmentController, AssignmentController, CourseController, GroupController, CourseConfigController, AssessmentAllocationController],
 	providers: [
-		CourseService, GroupService, AssignmentService, AssessmentService, UpdateService, CourseConfigService,
+		CourseService, GroupService, AssignmentService, AssessmentService, UpdateService, CourseConfigService, AssessmentAllocationService,
 		...Guards,
 		...EventHandlers,
 		...QueryHandlers

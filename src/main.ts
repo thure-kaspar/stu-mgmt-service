@@ -29,6 +29,7 @@ async function bootstrap(): Promise<void> {
 		.addTag("assessments")
 		.addTag("groups")
 		.addTag("users")
+		.addTag("assessment-allocation")
 		.addTag("test")
 		.build();
 	const document = SwaggerModule.createDocument(app, options, { extraModels: [StudentMgmtException] });
