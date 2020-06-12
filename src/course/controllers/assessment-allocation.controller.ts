@@ -16,6 +16,7 @@ export class AssessmentAllocationController {
 		description: "Maps an evaluator to a group or user. If the group or user is already assigned to another evaluator, changes the evaluator."
 	})
 	createAllocation(
+		@Param("courseId") courseId: string,
 		@Param("assignmentId") assignmentId: string,
 		@Body() allocation: AssessmentAllocationDto
 	): Promise<AssessmentAllocationDto> {
@@ -32,7 +33,10 @@ export class AssessmentAllocationController {
 		summary: "Get assessment allocations",
 		description: "Returns a list of allocations, which map an evaluator to a group or user."
 	})
-	getAllocations(@Param("assignmentId") assignmentId: string): Promise<AssessmentAllocationDto[]> {
+	getAllocations(
+		@Param("courseId") courseId: string,
+		@Param("assignmentId") assignmentId: string
+	): Promise<AssessmentAllocationDto[]> {
 		return this.allocationService.getAllocations(assignmentId);
 	}
 
@@ -55,6 +59,7 @@ export class AssessmentAllocationController {
 		description: "Query must specify either groupId or userId."
 	})
 	removeAllocation(
+		@Param("courseId") courseId: string,
 		@Param("assignmentId") assignmentId: string,
 		@Query("groupId") groupId: string,
 		@Query("userId") userId: string,
