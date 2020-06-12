@@ -4,7 +4,7 @@ import { getConnection } from "typeorm";
 import { CourseFilterDto } from "../../src/course/dto/course/course-filter.dto";
 import { CoursesMock, COURSE_JAVA_1920, COURSE_INFO_2_2020 } from "../mocks/courses.mock";
 import { DbMockService } from "../mocks/db-mock.service";
-import { GROUP_1_JAVA, GROUP_2_JAVA } from "../mocks/groups/groups.mock";
+import { GROUP_1_JAVA, GROUP_2_JAVA, GroupsMock } from "../mocks/groups/groups.mock";
 import { USER_STUDENT_JAVA } from "../mocks/users.mock";
 import { createApplication } from "../mocks/application.mock";
 import { copy } from "../utils/object-helper";
@@ -47,7 +47,7 @@ describe("GET-REQUESTS of CourseController (e2e)", () => {
 		return request(app.getHttpServer())
 			.get(`/courses?shortname=${filter.shortname}&title=${filter.title}`)
 			.expect(({ body }) => {
-				expect(body.length).toEqual(2);
+				expect(body.length).toEqual(3);
 			});
 	});
 
@@ -56,10 +56,13 @@ describe("GET-REQUESTS of CourseController (e2e)", () => {
 			shortname: "java"
 		};
 
+		const expectedLength = CoursesMock.filter(c => c.shortname === filter.shortname).length;
+		console.assert(expectedLength > 1, "The should be multiple course with the same shortname.");
+
 		return request(app.getHttpServer())
 			.get(`/courses?shortname=${filter.shortname}`)
 			.expect(({ body }) => {
-				expect(body.length).toEqual(2);
+				expect(body.length).toEqual(expectedLength);
 			});
 	});
 
@@ -80,10 +83,13 @@ describe("GET-REQUESTS of CourseController (e2e)", () => {
 	});
 
 	it("(GET) /courses/{courseId}/groups Retrieves all groups of a course", () => {
+		const expectedLength = GroupsMock.filter(g => g.courseId === course.id).length;
+		console.assert(expectedLength > 1, "Course should have multiple groups");
+
 		return request(app.getHttpServer())
 			.get(`/courses/${course.id}/groups`)
 			.expect(({ body }) => {
-				expect(body.length).toEqual(2); 
+				expect(body.length).toEqual(expectedLength);
 			});
 	});
 
