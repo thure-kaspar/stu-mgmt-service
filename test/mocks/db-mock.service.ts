@@ -28,6 +28,8 @@ import { PartialAssessment } from "../../src/course/entities/partial-assessment.
 import { UserGroupRelationsMock } from "./groups/user-group-relations.mock";
 import { getGroupEventEntities } from "./groups/group-events.mock";
 import { GroupEvent } from "../../src/course/entities/group-event.entity";
+import { ASSESSMENT_ALLOCATIONS_MOCK } from "./assessment-allocation";
+import { AssessmentAllocation } from "../../src/course/entities/assessment-allocation.entity";
 
 //@Injectable() Not a "real" (injectable) service for now
 export class DbMockService {
@@ -47,6 +49,7 @@ export class DbMockService {
 	groupSettings = GROUP_SETTINGS_MOCK;
 	admissionCriteria = ADMISSION_CRITERIA_JAVA;
 	configs = COURSE_CONFIGS_MOCK;
+	allocations = ASSESSMENT_ALLOCATIONS_MOCK;
 	
 	constructor(connection: Connection) { 
 		this.con = connection.manager;
@@ -71,6 +74,7 @@ export class DbMockService {
 		await this.createCourseUserRelations();
 		await this.createUserGroupRelations();
 		await this.createAssessmentUserRelations();
+		await this.createAssessmentAllocations();
 	}
 
 	async createCourses(): Promise<void> {
@@ -171,6 +175,12 @@ export class DbMockService {
 
 	async createUserGroupRelations(): Promise<void> {
 		await this.con.getRepository(UserGroupRelation).insert(this.userGroupRelations)
+			.catch(error => console.error(error));
+	}
+
+	async createAssessmentAllocations(): Promise<void> {
+		const allocations = this.allocations.map(a => convertToEntity(AssessmentAllocation, a));
+		await this.con.getRepository(AssessmentAllocation).insert(allocations)
 			.catch(error => console.error(error));
 	}
 
