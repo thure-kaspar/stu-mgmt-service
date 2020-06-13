@@ -7,7 +7,7 @@ import { AssessmentAllocationDto } from "../../src/course/dto/assessment-allocat
 import { ASSESSMENT_ALLOCATION_1, ASSESSMENT_ALLOCATIONS_MOCK } from "../mocks/assessment-allocation";
 import { GROUP_4_JAVA } from "../mocks/groups/groups.mock";
 import { COURSE_JAVA_1920 } from "../mocks/courses.mock";
-import { ASSIGNMENT_JAVA_IN_REVIEW, ASSIGNMENT_JAVA_CLOSED } from "../mocks/assignments.mock";
+import { ASSIGNMENT_JAVA_IN_REVIEW, ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA2020_GROUP, ASSIGNMENT_JAVA2020_SINGLE, ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP } from "../mocks/assignments.mock";
 import { USER_STUDENT_2_JAVA, USER_MGMT_ADMIN_JAVA_LECTURER } from "../mocks/users.mock";
 import { copy } from "../utils/object-helper";
 
@@ -108,6 +108,46 @@ describe("POST-REQUESTS of AssessmentController (e2e)", () => {
 			});
 		
 		});
+	});
+
+	describe("(POST) courses/:courseId/assignments/:assignmentId/assessment-allocation/from-existing/:existingAssignmentId", () => {
+	
+		it("Existing assignment has allocations -> Creates allocations for new assignment", () => {
+			const newAssignment = ASSIGNMENT_JAVA2020_GROUP;
+			const existingAssignment = assignment;
+			console.assert(newAssignment.id !== existingAssignment.id, "Assignments should be different.");
+
+			// Expect same data with new assignment id
+			const expected = copy(ASSESSMENT_ALLOCATIONS_MOCK);
+			expected.forEach(a => a.assignmentId = newAssignment.id);
+			console.assert(expected.length > 1, "Database should contain multipe assessment allocations.");
+
+			return request(app.getHttpServer())
+				.post(`/courses/${course.id}/assignments/${newAssignment.id}/assessment-allocations/from-existing/${existingAssignment.id}`)
+				.expect(201)
+				.expect(({ body }) => {
+					const result = body as AssessmentAllocationDto[];
+					expect(result).toEqual(expected);
+				});
+		});
+
+		it("Existing assignment has no allocations -> Returns empty array", () => {
+			const newAssignment = ASSIGNMENT_JAVA2020_GROUP;
+			const existingAssignment = ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP;
+			console.assert(
+				ASSESSMENT_ALLOCATIONS_MOCK.filter(a => a.assignmentId === existingAssignment.id).length == 0, 
+				"There should be no allocations for this assignment."
+			);
+
+			return request(app.getHttpServer())
+				.post(`/courses/${course.id}/assignments/${newAssignment.id}/assessment-allocations/from-existing/${existingAssignment.id}`)
+				.expect(201)
+				.expect(({ body }) => {
+					const result = body as AssessmentAllocationDto[];
+					expect(result.length).toEqual(0);
+				});
+		});
+	
 	});
 
 });

@@ -25,6 +25,10 @@ export class AssessmentAllocationService {
 		// Get allocations from existing assignment
 		const allocations = await this.allocationRepo.getAllocationsOfAssignment(existingAssignmentId);
 
+		if (allocations.length == 0) {
+			return []; // Return empty array, if no allocations exist
+		}
+
 		// Change to new assignment
 		allocations.forEach(a => a.assignmentId = newAssignmentId);
 

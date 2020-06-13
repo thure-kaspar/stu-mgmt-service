@@ -27,6 +27,21 @@ export class AssessmentAllocationController {
 		return this.allocationService.createAllocation(allocation);
 	}
 
+	@Post("from-existing/:existingAssignmentId")
+	@ApiOperation({
+		operationId: "addAllocationsFromExistingAssignment",
+		summary: "Copy assessment allocation from another assignment",
+		description: "Applies the allocations from another assignment to the specified assignment."
+	})
+	addAllocationsFromExistingAssignment(
+		@Param("courseId") courseId: string,
+		@Param("assignmentId") assignmentId: string,
+		@Param("existingAssignmentId") existingAssignmentId: string
+	): Promise<AssessmentAllocationDto[]> {
+		
+		return this.allocationService.addAllocationsFromExistingAssignment(assignmentId, existingAssignmentId);
+	}
+
 	@Get()
 	@ApiOperation({
 		operationId: "getAllocations",
