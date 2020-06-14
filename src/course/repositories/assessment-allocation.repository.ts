@@ -11,14 +11,19 @@ export class AssessmentAllocationRepository extends Repository<AssessmentAllocat
 	 */
 	async createAllocation(allocation: AssessmentAllocationDto): Promise<AssessmentAllocation> {
 		// Where conditions checking, wether group/user is already assigned to a different evaluator
-		const where: Partial<AssessmentAllocationDto> = {
-			assignmentId: allocation.assignmentId,
-			groupId: allocation.groupId,
-			userId: allocation.userId,
+		let where: Partial<AssessmentAllocationDto> = {
+			assignmentId: allocation.assignmentId
 		};
+
+		if (allocation.groupId) {
+			where = { ...where, groupId: allocation.groupId };
+		} else if (allocation.userId) {
+			where = { ...where, userId: allocation.userId };
+		}
 		
-		// Update if it exists
 		const existing = await this.getAllocation(where);
+
+		// Update if it exists
 		if (existing) {
 			existing.assignedEvaluatorId = allocation.assignedEvaluatorId;
 			return this.save(existing);

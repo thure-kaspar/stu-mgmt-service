@@ -1,4 +1,4 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, OneToOne, Column, JoinColumn, ManyToOne, Unique, ManyToMany, JoinTable } from "typeorm";
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToOne, Unique } from "typeorm";
 import { Assignment } from "./assignment.entity";
 import { User } from "../../shared/entities/user.entity";
 import { Group } from "./group.entity";
@@ -19,23 +19,20 @@ export class AssessmentAllocation extends BaseEntity {
 	assignmentId: string;
 
 	/** The user, whose solution should be evaluated. */
-	@ManyToMany(type => User, { nullable: true, onDelete: "CASCADE" })
-	@JoinTable()
+	@ManyToOne(type => User, { nullable: true, onDelete: "CASCADE" })
 	user: User;
 
 	@Column({ nullable: true })
 	userId: string;
 
 	/** The group, whose solution should be evaluated. */
-	@ManyToMany(type => Group, { nullable: true, onDelete: "CASCADE" })
-	@JoinTable()
+	@ManyToOne(type => Group, { nullable: true, onDelete: "CASCADE" })
 	group: Group;
 
 	@Column({ nullable: true })
 	groupId: string;
 
-	@ManyToMany(type => Assignment, { onDelete: "CASCADE" })
-	@JoinTable()
+	@ManyToOne(type => User, { onDelete: "CASCADE" })
 	assignedEvaluator: User;
 	
 	@Column()
