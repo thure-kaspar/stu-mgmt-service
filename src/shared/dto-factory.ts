@@ -188,12 +188,12 @@ export abstract class DtoFactory {
 
 		// If creator was loaded
 		if (assessment.creator) assessmentDto.creator = this.createUserDto(assessment.creator);
-	
-		// TODO: Fix: Group will contain current members, but we want members from assessmentUserRelations!
+
 		if (assessment.group) {
 			assessmentDto.group = this.createGroupDto(assessment.group);
+			assessmentDto.group.users = assessment.assessmentUserRelations.map(rel => this.createUserDto(rel.user));
 		}
-    
+
 		return assessmentDto;
 	}
 
