@@ -10,15 +10,12 @@ export class AssessmentRepository extends Repository<Assessment> {
 
 	async createAssessment(assessmentDto: AssessmentCreateDto, userIds: string[]): Promise<Assessment> {
 		const assessment = this.createEntityFromDto(assessmentDto);
-		assessment.assessmentUserRelations = [];
-
-		// Create AssessmentUserRelations (will be saved due to enabled cascade)
-		userIds.forEach(userId => {
-			const userRelation = new AssessmentUserRelation();
-			userRelation.userId = userId;
-			assessment.assessmentUserRelations.push(userRelation);
+		assessment.assessmentUserRelations = userIds.map(userId => {
+			const relation = new AssessmentUserRelation();
+			relation.assignmentId = assessmentDto.assignmentId;
+			relation.userId = userId;
+			return relation;
 		});
-		
 		return assessment.save();
 	}
 

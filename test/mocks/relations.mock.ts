@@ -64,18 +64,22 @@ export const CourseUserRelationsMock = [
 export const AssessmentUserRelationsMock = [
 	{
 		assessmentId: ASSESSMENT_JAVA_EVALUATED_GROUP_1.id,
+		assignmentId: ASSESSMENT_JAVA_EVALUATED_GROUP_1.assignmentId,
 		userId: USER_STUDENT_JAVA.id
 	},
 	{
 		assessmentId: ASSESSMENT_JAVA_EVALUATED_GROUP_1.id,
+		assignmentId: ASSESSMENT_JAVA_EVALUATED_GROUP_1.assignmentId,
 		userId: USER_STUDENT_2_JAVA.id
 	},
 	{
 		assessmentId: ASSESSMENT_JAVA_TESTAT_USER_1.id,
+		assignmentId: ASSESSMENT_JAVA_TESTAT_USER_1.assignmentId,
 		userId: USER_STUDENT_JAVA.id
 	},
 	{
 		assessmentId: ASSESSMENT_JAVA_IN_REVIEW.id,
+		assignmentId: ASSESSMENT_JAVA_IN_REVIEW.assignmentId,
 		userId: USER_STUDENT_JAVA.id
 	},
 	
