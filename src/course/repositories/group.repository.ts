@@ -40,8 +40,8 @@ export class GroupRepository extends Repository<Group> {
 		return userGroupRelation ? true : false;
 	}
 
-	async getGroupById(groupId: string, ...relations: string[]): Promise<Group> {
-		return this.findOneOrFail(groupId, { relations });
+	async getGroupById(groupId: string): Promise<Group> {
+		return this.findOneOrFail(groupId);
 	}
 
 	/** Returns the group with all relations loaded. */
@@ -143,10 +143,6 @@ export class GroupRepository extends Repository<Group> {
 		});
 		return groups;
 	}
-
-	// async getGroupOfAssignment(userId: string, courseId: string, assignmentId: string): Promise<Group> {
-
-	// }
 
 	/**
 	 * Updates the group. Does not update any included relations.
