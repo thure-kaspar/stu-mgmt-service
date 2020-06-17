@@ -4,7 +4,7 @@ import { createApplication } from "../mocks/application.mock";
 import { DbMockService } from "../mocks/db-mock.service";
 import { getConnection } from "typeorm";
 import { AssessmentAllocationDto } from "../../src/course/dto/assessment-allocation/assessment-allocation.dto";
-import { ASSESSMENT_ALLOCATION_1, ASSESSMENT_ALLOCATIONS_MOCK } from "../mocks/assessment-allocation";
+import { ASSESSMENT_ALLOCATION_1_ASSIGNMENT_JAVA_IN_REVIEW, ASSESSMENT_ALLOCATIONS_MOCK } from "../mocks/assessment-allocation";
 import { GROUP_4_JAVA } from "../mocks/groups/groups.mock";
 import { COURSE_JAVA_1920 } from "../mocks/courses.mock";
 import { ASSIGNMENT_JAVA_IN_REVIEW, ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA2020_GROUP, ASSIGNMENT_JAVA2020_SINGLE, ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP } from "../mocks/assignments.mock";
@@ -36,7 +36,7 @@ describe("POST-REQUESTS of AssessmentController (e2e)", () => {
 	
 		it("Already assigned to different evaluator -> Changes the evaluator", () => {
 			// Change assigned evaluator of existing allocation
-			const allocation = copy(ASSESSMENT_ALLOCATION_1);
+			const allocation = copy(ASSESSMENT_ALLOCATION_1_ASSIGNMENT_JAVA_IN_REVIEW);
 			console.assert(USER_MGMT_ADMIN_JAVA_LECTURER.id !== allocation.assignedEvaluatorId, "Assigned evaluator should change.");
 			allocation.assignedEvaluatorId = USER_MGMT_ADMIN_JAVA_LECTURER.id;
 
@@ -53,7 +53,7 @@ describe("POST-REQUESTS of AssessmentController (e2e)", () => {
 		describe("Allocation does not exists -> Create the allocation", () => {
 			
 			it("For group", () => {
-				const allocation = copy(ASSESSMENT_ALLOCATION_1);
+				const allocation = copy(ASSESSMENT_ALLOCATION_1_ASSIGNMENT_JAVA_IN_REVIEW);
 				allocation.groupId = GROUP_4_JAVA.id;
 
 				return request(app.getHttpServer())
@@ -67,7 +67,7 @@ describe("POST-REQUESTS of AssessmentController (e2e)", () => {
 			});
 
 			it("For user", () => {
-				const allocation = copy(ASSESSMENT_ALLOCATION_1);
+				const allocation = copy(ASSESSMENT_ALLOCATION_1_ASSIGNMENT_JAVA_IN_REVIEW);
 				allocation.groupId = undefined;
 				allocation.userId = USER_STUDENT_2_JAVA.id;
 
@@ -86,7 +86,7 @@ describe("POST-REQUESTS of AssessmentController (e2e)", () => {
 		describe("Invalid Dto", () => {
 
 			it("Wrong assignmentId -> Throws error", () => {
-				const invalidAllocation = copy(ASSESSMENT_ALLOCATION_1);
+				const invalidAllocation = copy(ASSESSMENT_ALLOCATION_1_ASSIGNMENT_JAVA_IN_REVIEW);
 				console.assert(invalidAllocation.assignmentId !== ASSIGNMENT_JAVA_CLOSED.id, "Assignment ids should be different before the change.");
 				invalidAllocation.assignmentId = ASSIGNMENT_JAVA_CLOSED.id;
 
@@ -97,7 +97,7 @@ describe("POST-REQUESTS of AssessmentController (e2e)", () => {
 			});
 		
 			it("No groupId or userid -> Throws error", () => {
-				const invalidAllocation = copy(ASSESSMENT_ALLOCATION_1);
+				const invalidAllocation = copy(ASSESSMENT_ALLOCATION_1_ASSIGNMENT_JAVA_IN_REVIEW);
 				invalidAllocation.groupId = undefined;
 				invalidAllocation.userId = undefined;
 
@@ -204,7 +204,7 @@ describe("DELETE-REQUESTS of AssessmentController (e2e)", () => {
 	describe("(DELETE) courses/:courseId/assignments/:assignmentId/assessment-allocation", () => {
 	
 		it("Removes the Allocation", () => {
-			const allocationToRemove = ASSESSMENT_ALLOCATION_1;
+			const allocationToRemove = ASSESSMENT_ALLOCATION_1_ASSIGNMENT_JAVA_IN_REVIEW;
 			console.assert(!!allocationToRemove.groupId, "Allocation should have a defined groupId");
 
 			return request(app.getHttpServer())
