@@ -80,6 +80,21 @@ export class GroupController {
 		return this.groupService.getGroupHistoryOfCourse(courseId);
 	}
 
+	@Get(":groupId/assignments/:assignmentId")
+	@ApiOperation({
+		operationId: "getGroupFromAssignment",
+		summary: "Get snapshot of a group at assignment end",
+		description: "Returns a snapshot of the group's members at the time of the assignment's end."
+	})
+	getGroupFromAssignment(
+		@Param("courseId") courseId: string,
+		@Param("groupId") groupId: string,
+		@Param("assignmentId") assignmentId: string
+	): Promise<GroupDto> {
+		
+		return this.groupService.getGroupFromAssignment(groupId, assignmentId);
+	}
+
 	@Get("assignments/:assignmentId")
 	@ApiOperation({
 		operationId: "getGroupsFromAssignment",
