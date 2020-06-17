@@ -40,4 +40,12 @@ export class GroupEvent extends BaseEntity {
 			timestamp: this.timestamp
 		};
 	}
+	
+}
+
+/** Replays the events by iterating from oldest to newest event and executes the given funtion for each event. */
+export function replayEvents(events: GroupEvent[], processEvent: (event: GroupEvent) => void): void {
+	for (let i = events.length - 1; i >= 0; i--){
+		processEvent(events[i]);
+	}
 }

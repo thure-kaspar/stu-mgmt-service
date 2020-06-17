@@ -12,7 +12,7 @@ import { GroupCreateBulkDto } from "../dto/group/group-create-bulk.dto";
 import { EventBus } from "@nestjs/cqrs";
 import { UserJoinedGroupEvent } from "../events/user-joined-group.event";
 import { UserLeftGroupEvent } from "../events/user-left-group.event";
-import { GroupEvent } from "../entities/group-event.entity";
+import { GroupEvent, replayEvents } from "../entities/group-event.entity";
 import { GroupEventRepository } from "../repositories/group-event.repository";
 import { Assignment } from "../entities/assignment.entity";
 import { AssignmentRepository } from "../repositories/assignment.repository";
@@ -127,12 +127,53 @@ export class GroupService {
 	}
 
 	/**
+	 * Returns the group and its members for an assignment.
+	 * If assignment has no end date, returns the group with current members.
+	 */
+	async getGroupFromAssignment(groupId: string, assignmentId: string): Promise<GroupDto> {
+		const assignment = await this.assignmentRepository.getAssignmentById(assignmentId);
+		
+		// If assignment has no end date, return the group with its current members
+		if (!assignment.endDate) {
+			return this.getGroup(groupId); 
+		}
+
+		// Get all events that happened before the assignment end
+		const history = await this.groupEventRepository.getGroupHistoryOfGroup(groupId, assignment.endDate);
+		
+		// Replay group event and recreate group
+		const userIdUserMap = new Map<string, User>();
+
+		replayEvents(history, (groupEvent) => {
+			const { event, user } = groupEvent;
+			switch (event) {
+			case UserJoinedGroupEvent.name:
+				userIdUserMap.set(user.id, user);
+				break;
+			case UserLeftGroupEvent.name:
+				userIdUserMap.delete(user.id);
+				break;
+			default:
+				break;
+			}
+		});
+
+		// Load recreated group with users
+		const groups = await this.groupRepository.getRecreatedGroups(
+			new Map([[groupId, Array.from(userIdUserMap.values())]])
+		);
+		return DtoFactory.createGroupDto(groups[0]);
+	}
+
+	/**
 	 * Returns a snapshot of the group constellations at the time of the assignment's end.
 	 */
 	async getGroupsFromAssignment(courseId: string, assignmentId: string): Promise<GroupDto[]> {
 		const assignment = await this.assignmentRepository.getAssignmentById(assignmentId);
+
+		// If assignment has no end date, return current groups with their members
 		if (!assignment.endDate) {
-			throw new BadRequestException("Assignment has no end date."); 
+			return this.getGroupsOfCourse(courseId);
 		}
 
 		// Get all events that happened before the assignment end
@@ -141,21 +182,26 @@ export class GroupService {
 		// Replay the events to recreate the group constellations
 		const groupIdUsersMap = new Map<string, User[]>();
 
-		for (let i = history.length - 1; i >= 0; i--) {
-			const { event, user, groupId } = history[i];
-			if (event === UserJoinedGroupEvent.name) {
+		replayEvents(history, (groupEvent) => {
+			const { event, user, groupId } = groupEvent;
+			switch (event) {
+			case UserJoinedGroupEvent.name:
 				// Add user to group
 				if (groupIdUsersMap.has(groupId)) {
 					groupIdUsersMap.get(groupId).push(user);
 				} else {
 					groupIdUsersMap.set(groupId, [user]);
 				}
-			} else if (event === UserLeftGroupEvent.name) {
+				break;
+			case UserLeftGroupEvent.name:
 				// Remove user from group
 				const groupWithoutUser = groupIdUsersMap.get(groupId).filter(u => u.id !== user.id);
 				groupIdUsersMap.set(groupId, groupWithoutUser);
+				break;
+			default:
+				break;
 			}
-		}
+		});
 
 		// Generate groups from the group constellation map
 		const groups = await this.groupRepository.getRecreatedGroups(groupIdUsersMap);
