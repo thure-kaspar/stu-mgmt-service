@@ -28,7 +28,7 @@ import { PartialAssessment } from "../../src/course/entities/partial-assessment.
 import { UserGroupRelationsMock } from "./groups/user-group-relations.mock";
 import { getGroupEventEntities } from "./groups/group-events.mock";
 import { GroupEvent } from "../../src/course/entities/group-event.entity";
-import { ASSESSMENT_ALLOCATIONS_MOCK } from "./assessment-allocation";
+import { ASSESSMENT_ALLOCATIONS_MOCK } from "./assessment-allocation.mock";
 import { AssessmentAllocation } from "../../src/course/entities/assessment-allocation.entity";
 
 //@Injectable() Not a "real" (injectable) service for now

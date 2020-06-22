@@ -4,7 +4,7 @@ import { createApplication } from "../mocks/application.mock";
 import { DbMockService } from "../mocks/db-mock.service";
 import { getConnection } from "typeorm";
 import { AssessmentAllocationDto } from "../../src/course/dto/assessment-allocation/assessment-allocation.dto";
-import { ASSESSMENT_ALLOCATION_1_ASSIGNMENT_JAVA_IN_REVIEW, ASSESSMENT_ALLOCATIONS_MOCK } from "../mocks/assessment-allocation";
+import { ASSESSMENT_ALLOCATION_1_ASSIGNMENT_JAVA_IN_REVIEW, ASSESSMENT_ALLOCATIONS_MOCK } from "../mocks/assessment-allocation.mock";
 import { GROUP_4_JAVA } from "../mocks/groups/groups.mock";
 import { COURSE_JAVA_1920 } from "../mocks/courses.mock";
 import { ASSIGNMENT_JAVA_IN_REVIEW, ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA2020_GROUP, ASSIGNMENT_JAVA2020_SINGLE, ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP } from "../mocks/assignments.mock";
