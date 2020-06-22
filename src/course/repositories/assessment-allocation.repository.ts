@@ -42,13 +42,27 @@ export class AssessmentAllocationRepository extends Repository<AssessmentAllocat
 		return this.save(allocationEntities);
 	}
 
-	/** Returns all AssessmentAllocations of a particular assignment. */
+	/** Returns all ```AssessmentAllocations``` of a particular assignment. */
 	async getAllocationsOfAssignment(assignmentId: string): Promise<AssessmentAllocation[]> {
 		return this.find({
 			where: {
 				assignmentId: assignmentId
 			}
 		});
+	}
+
+	async getAllocationsOfAssignmentForGroups(assignmentId: string, groupIds: string[]): Promise<AssessmentAllocation[]> {
+		return this.createQueryBuilder("allocation")
+			.where("allocation.assignmentId = :assignmentId", { assignmentId })
+			.andWhereInIds(groupIds.map(id => ({ groupId: id })))
+			.getMany();
+	}
+
+	async getAllocationsOfAssignmentForUsers(assignmentId: string, userIds: string[]): Promise<AssessmentAllocation[]> {
+		return this.createQueryBuilder("allocation")
+			.where("allocation.assignmentId = :assignmentId", { assignmentId })
+			.andWhereInIds(userIds.map(id => ({ userId: id })))
+			.getMany();
 	}
 
 	/**

@@ -3,6 +3,7 @@ import { CourseUserRelation } from "../../course/entities/course-user-relation.e
 import { UserGroupRelation } from "../../course/entities/user-group-relation.entity";
 import { AssessmentUserRelation } from "../../course/entities/assessment-user-relation.entity";
 import { UserRole } from "../enums";
+import { AssessmentAllocation } from "../../course/entities/assessment-allocation.entity";
 
 @Entity("users")
 export class User extends BaseEntity {
@@ -28,5 +29,8 @@ export class User extends BaseEntity {
     userGroupRelations: UserGroupRelation[];
     
     @OneToMany(type => AssessmentUserRelation, assessmentUserRelation => assessmentUserRelation.user)
-    assessmentUserRelations: AssessmentUserRelation[];
+	assessmentUserRelations: AssessmentUserRelation[];
+	
+	@OneToMany(type => AssessmentAllocation, allocation => allocation.user)
+	assessmentAllocations: AssessmentAllocation[];
 }

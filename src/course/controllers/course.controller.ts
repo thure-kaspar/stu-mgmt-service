@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Body, Patch, Delete, Query, ValidationPipe, UseGuards } from "@nestjs/common";
+import { Controller, Get, Param, Post, Body, Patch, Delete, Query, ValidationPipe, UseGuards, Req } from "@nestjs/common";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
 import { CourseService } from "../services/course.service";
 import { CourseDto } from "../dto/course/course.dto";
@@ -12,6 +12,13 @@ import { QueryBus } from "@nestjs/cqrs";
 import { AuthGuard } from "@nestjs/passport";
 import { CourseMemberGuard } from "../guards/course-member.guard";
 import { CanJoinCourseDto } from "../queries/can-join-course/can-join-course.dto";
+import { Request } from "express";
+import { AssignedEvaluatorFilter } from "../queries/groups-with-assigned-evaluator/group-with-assigned-evaluator.dto";
+import { UserWithAssignedEvaluatorDto } from "../queries/users-with-assigned-evaluator/user-with-assigned-evaluator.dto";
+import { UsersWithAssignedEvaluatorQuery } from "../queries/users-with-assigned-evaluator/users-with-assigned-evaluator.query";
+import { setTotalCountHeader, sanitizeEnum } from "../../../test/utils/http-utils";
+import { CourseParticipantsFilter } from "../dto/course/course-participants.filter";
+import { CourseRole } from "../../shared/enums";
 
 @ApiTags("courses") 
 @Controller("courses")
@@ -104,8 +111,33 @@ export class CourseController {
 		summary: "Get users of course",
 		description: "Returns a collection of users that are signed up for this course."
 	})
-	getUsersOfCourse(@Param("courseId") courseId: string): Promise<UserDto[]> {
-		return this.courseService.getUsersOfCourse(courseId);
+	async getUsersOfCourse(
+		@Req() request: Request,
+		@Param("courseId") courseId: string,
+		@Query() filter?: CourseParticipantsFilter
+	): Promise<UserDto[]> {
+		filter.courseRole = sanitizeEnum(CourseRole, filter.courseRole);
+		
+		const [users, count] = await this.courseService.getUsersOfCourse(courseId, filter);
+		setTotalCountHeader(request, count);
+		return users;
+	}
+
+	@Get(":courseId/users/assignments/:assignmentId/with-assigned-evaluator")
+	@ApiOperation({
+		operationId: "getUsersWithAssignedEvaluator",
+		summary: "Get users with assigned evaluator",
+		description: "Returns users with their assigned evaluator for a particular assignment."
+	})
+	async getUsersWithAssignedEvaluator(
+		@Req() request: Request,
+		@Param("courseId") courseId: string,
+		@Param("assignmentId") assignmentId: string,
+		@Query() filter?: AssignedEvaluatorFilter
+	): Promise<UserWithAssignedEvaluatorDto[]> {
+		const [users, count] = await this.queryBus.execute(new UsersWithAssignedEvaluatorQuery(courseId, assignmentId, filter));
+		setTotalCountHeader(request, count);
+		return users;
 	}
 
 	@Get(":courseId/users/:userId/canJoin")

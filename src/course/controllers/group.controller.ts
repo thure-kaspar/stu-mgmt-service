@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Delete, Patch, Body } from "@nestjs/common";
+import { Controller, Get, Param, Post, Delete, Patch, Body, Query, Res, Req } from "@nestjs/common";
 import { GroupService } from "../services/group.service";
 import { UserDto } from "../../shared/dto/user.dto";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
@@ -6,11 +6,17 @@ import { GroupDto } from "../dto/group/group.dto";
 import { GroupCreateBulkDto } from "../dto/group/group-create-bulk.dto";
 import { PasswordDto } from "../../shared/dto/password.dto";
 import { GroupEventDto } from "../dto/group/group-event.dto";
+import { GroupWithAssignedEvaluatorDto, AssignedEvaluatorFilter } from "../queries/groups-with-assigned-evaluator/group-with-assigned-evaluator.dto";
+import { QueryBus } from "@nestjs/cqrs";
+import { GroupsWithAssignedEvaluatorQuery } from "../queries/groups-with-assigned-evaluator/groups-with-assigned-evaluator.query";
+import { Request } from "express";
+import { setTotalCountHeader } from "../../../test/utils/http-utils";
 
 @ApiTags("groups")
 @Controller("courses/:courseId/groups")
 export class GroupController {
-	constructor(private groupService: GroupService) { }
+	constructor(private groupService: GroupService,
+				private queryBus: QueryBus) { }
 
 	@Post()
 	@ApiOperation({
@@ -108,6 +114,23 @@ export class GroupController {
 		
 		return this.groupService.getGroupsFromAssignment(courseId, assignmentId);
 	}
+
+	@Get("assignments/:assignmentId/with-assigned-evaluator")
+	@ApiOperation({
+		operationId: "getGroupsWithAssignedEvaluator",
+		summary: "Get groups with assigned evaluator",
+		description: "Retrieves groups with their assigned evaluator for an assignment"
+	})
+	async getGroupsWithAssignedEvaluator(
+		@Req() request: Request,
+		@Param("courseId") courseId: string,
+		@Param("assignmentId") assignmentId: string,
+		@Query() filter?: AssignedEvaluatorFilter
+	): Promise<GroupWithAssignedEvaluatorDto[]> {
+		const [groups, count] = await this.queryBus.execute(new GroupsWithAssignedEvaluatorQuery(courseId, assignmentId, filter));
+		setTotalCountHeader(request, count);
+		return groups;
+	} 	
 
 	@Get(":groupId")
 	@ApiOperation({

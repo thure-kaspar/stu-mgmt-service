@@ -3,6 +3,7 @@ import { UserGroupRelation } from "./user-group-relation.entity";
 import { Course } from "./course.entity";
 import { Assessment } from "./assessment.entity";
 import { GroupEvent } from "./group-event.entity";
+import { AssessmentAllocation } from "./assessment-allocation.entity";
 
 @Entity("groups")
 export class Group extends BaseEntity {
@@ -36,4 +37,7 @@ export class Group extends BaseEntity {
 	
 	@OneToMany(type => GroupEvent, groupEvent => groupEvent.group)
 	history: GroupEvent[];
+
+	@OneToMany(type => AssessmentAllocation, allocation => allocation.group)
+	assessmentAllocations: AssessmentAllocation[]; 
 }
