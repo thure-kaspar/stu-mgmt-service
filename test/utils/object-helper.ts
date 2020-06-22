@@ -1,5 +1,4 @@
 import { BaseEntity } from "typeorm";
-import { CourseConfig } from "../../src/course/entities/course-config.entity";
 
 /**
  * Returns a deep copy of the given object.
