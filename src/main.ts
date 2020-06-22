@@ -14,7 +14,7 @@ async function bootstrap(): Promise<void> {
 	const app = await NestFactory.create(AppModule);
 	app.useGlobalFilters(new EntityNotFoundFilter());
 	app.useGlobalPipes(new ValidationPipe({ transform: true })); // Automatically transform primitive params to their type
-	app.enableCors();
+	app.enableCors({ exposedHeaders: "x-total-count" });
 	//app.setGlobalPrefix("mgmt/v1");
 
 	const options = new DocumentBuilder()
