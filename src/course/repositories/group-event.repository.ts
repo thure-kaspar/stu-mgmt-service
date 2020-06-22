@@ -47,4 +47,25 @@ export class GroupEventRepository extends Repository<GroupEvent> {
 		return query.getMany();
 	}
 
+	/**
+	 * Returns all GroupEvents of a group.
+	 * Users are included in the event entities.
+	 * Events are sorted by their timestamp in descending order (new to old).
+	 * 
+	 * @param groupId
+	 * @param [before] Allows to exclude all events that happened after the given date.
+	 */
+	getGroupHistoryOfGroup(groupId: string, before?: Date): Promise<GroupEvent[]> {
+		const query = this.createQueryBuilder("event")
+			.where("event.groupId = :groupId", { groupId })
+			.innerJoinAndSelect("event.user", "user")
+			.orderBy("event.timestamp", "DESC");
+
+		if (before) {
+			query.andWhere("event.timestamp < :before", { before });
+		}
+
+		return query.getMany();
+	}
+
 }
