@@ -10,6 +10,7 @@ import { CourseRepository } from "./course.repository";
 import { GroupEventRepository } from "./group-event.repository";
 import { GroupSettingsRepository } from "./group-settings.repository";
 import { GroupRepository } from "./group.repository";
+import { CourseUserRepository } from "./course-user-repository";
 
 export const Repositories = [
 	AdmissionCriteraRepository,
@@ -19,6 +20,7 @@ export const Repositories = [
 	AssignmentTemplateRepository,
 	AssignmentRepository,
 	CourseConfigRepository,
+	CourseUserRepository,
 	CourseUserRelationRepository,
 	CourseRepository,
 	GroupEventRepository,

@@ -11,12 +11,15 @@ import { CourseFilterDto } from "../dto/course/course-filter.dto";
 import { DtoFactory } from "../../shared/dto-factory";
 import { CourseClosedException } from "../exceptions/custom-exceptions";
 import { CourseCreateDto } from "../dto/course/course-create.dto";
+import { CourseParticipantsFilter } from "../dto/course/course-participants.filter";
+import { CourseUserRepository } from "../repositories/course-user-repository";
 
 @Injectable()
 export class CourseService {
 
 	constructor(@InjectRepository(Course) private courseRepository: CourseRepository,
-		@InjectRepository(CourseUserRelation) private courseUserRepository: CourseUserRelationRepository) { }
+				@InjectRepository(CourseUserRepository) private courseUserRepository: CourseUserRepository,
+				@InjectRepository(CourseUserRelation) private courseUserRelationRepository: CourseUserRelationRepository) { }
 
 	async createCourse(courseDto: CourseCreateDto): Promise<CourseDto> {
 		if (!courseDto.config) throw new BadRequestException("CourseConfig is missing.");
@@ -47,7 +50,7 @@ export class CourseService {
 			throw new BadRequestException("The given password was incorrect.");
 		}
 
-		return this.courseUserRepository.createCourseUserRelation(courseId, userId, CourseRole.STUDENT);
+		return this.courseUserRelationRepository.createCourseUserRelation(courseId, userId, CourseRole.STUDENT);
 	}
 
 	async getCourses(filter?: CourseFilterDto): Promise<CourseDto[]> {
@@ -65,10 +68,10 @@ export class CourseService {
 		return DtoFactory.createCourseDto(course);
 	}
 
-	async getUsersOfCourse(courseId: string): Promise<UserDto[]> {
-		const course = await this.courseRepository.getCourseWithUsers(courseId);
-		const userDtos = course.courseUserRelations.map(courseUserRelation => DtoFactory.createUserDto(courseUserRelation.user, courseUserRelation.role));
-		return userDtos;
+	async getUsersOfCourse(courseId: string, filter?: CourseParticipantsFilter): Promise<[UserDto[], number]> {
+		const [users, count] = await this.courseUserRepository.getUsersOfCourse(courseId, filter);
+		const userDtos = users.map(user => DtoFactory.createUserDto(user, user.courseUserRelations[0].role));
+		return [userDtos, count];
 	}
 
 	async updateCourse(courseId: string, courseDto: CourseDto): Promise<CourseDto> {
@@ -77,7 +80,7 @@ export class CourseService {
 	}
 
 	async updateRole(courseId: string, userId: string, role: CourseRole): Promise<boolean> {
-		return this.courseUserRepository.updateRole(courseId, userId, role);
+		return this.courseUserRelationRepository.updateRole(courseId, userId, role);
 	}
 
 	async deleteCourse(courseId: string): Promise<boolean> {
@@ -85,7 +88,7 @@ export class CourseService {
 	}
 
 	async removeUser(courseId: string, userId: string): Promise<boolean> {
-		return await this.courseUserRepository.removeUser(courseId, userId);
+		return await this.courseUserRelationRepository.removeUser(courseId, userId);
 	}
 
 }
