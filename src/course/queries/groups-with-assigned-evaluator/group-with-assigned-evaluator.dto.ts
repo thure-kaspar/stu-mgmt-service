@@ -14,4 +14,6 @@ export class AssignedEvaluatorFilter extends PaginationFilter {
 	assignedEvaluatorId?: string;
 	@ApiPropertyOptional({ description: "Excludes groups/users that have already been reviewed." })
 	excludeAlreadyReviewed?: boolean;
+	@ApiPropertyOptional({ description: "Filter by group or username." })
+	nameOfGroupOrUser?: string;
 }

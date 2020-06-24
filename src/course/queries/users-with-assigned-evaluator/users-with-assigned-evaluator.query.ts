@@ -25,7 +25,7 @@ export class UsersWithAssignedEvaluatorHandler implements IQueryHandler<UsersWit
 
 	async execute(query: UsersWithAssignedEvaluatorQuery): Promise<[UserWithAssignedEvaluatorDto[], number]> {
 		const { courseId, assignmentId } = query;
-		const { assignedEvaluatorId, skip, take } = query.filter || { };
+		const { assignedEvaluatorId, nameOfGroupOrUser, skip, take } = query.filter || { };
 		
 		// Query Users of course and join assessment allocation, if available to retrieve id of assigned evaluator.
 		const userQuery = this.userRepo.createQueryBuilder("user")
@@ -34,13 +34,18 @@ export class UsersWithAssignedEvaluatorHandler implements IQueryHandler<UsersWit
 
 		if (skip) userQuery.skip(skip);
 		if (take) userQuery.take(take);
+
 		if (assignedEvaluatorId) {
 			// Filter by evaluator
 			userQuery.andWhere("allocation.assignedEvaluatorId = :assignedEvaluatorId", { assignedEvaluatorId });
 		}
+		
+		if (nameOfGroupOrUser) {
+			userQuery.andWhere("user.username ILIKE :name", { name: `%${nameOfGroupOrUser}%` });
+		}
 
 		const [users, count] = await userQuery.getManyAndCount();
-		
+
 		const dtos = users.map(user => ({
 			user: DtoFactory.createUserDto(user),
 			assignedEvaluatorId: user.assessmentAllocations[0]?.assignedEvaluatorId
