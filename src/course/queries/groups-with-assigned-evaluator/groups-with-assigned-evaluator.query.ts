@@ -4,6 +4,7 @@ import { GroupWithAssignedEvaluatorDto, AssignedEvaluatorFilter } from "./group-
 import { Group } from "../../entities/group.entity";
 import { GroupRepository } from "../../repositories/group.repository";
 import { DtoFactory } from "../../../shared/dto-factory";
+import { Assessment } from "../../entities/assessment.entity";
 
 /**
  * Queries groups of a course with their assigned evaluator for a particular assignment.
@@ -24,7 +25,7 @@ export class GroupsWithAssignedEvaluatorHandler implements IQueryHandler<GroupsW
 
 	async execute(query: GroupsWithAssignedEvaluatorQuery): Promise<[GroupWithAssignedEvaluatorDto[], number]> {
 		const { courseId, assignmentId } = query;
-		const { assignedEvaluatorId, excludeAlreadyReviewed, skip, take } = query.filter || { };
+		const { assignedEvaluatorId, excludeAlreadyReviewed, nameOfGroupOrUser, skip, take } = query.filter || { };
 		
 		// Query groups of course and join assessment allocation, if available to retrieve id of assigned evaluator.
 		const groupQuery = this.groupRepo.createQueryBuilder("group")
@@ -33,21 +34,32 @@ export class GroupsWithAssignedEvaluatorHandler implements IQueryHandler<GroupsW
 
 		if (skip) groupQuery.skip(skip);
 		if (take) groupQuery.take(take);
+
 		if (assignedEvaluatorId) {
 			// Filter by evaluator
 			groupQuery.andWhere("allocation.assignedEvaluatorId = :assignedEvaluatorId", { assignedEvaluatorId });
 		}
+
+		if (nameOfGroupOrUser) {
+			groupQuery.andWhere("group.name ILIKE :name", { name: `%${nameOfGroupOrUser}%`});
+		}
+
 		if (excludeAlreadyReviewed) {
+			// Subquery to find all ids of groups that have been reviewed
+			const reviewedGroupsSubQuery = this.groupRepo.manager.getRepository(Assessment).createQueryBuilder("assessment")
+				.where("assessment.assignmentId = :assignmentId", { assignmentId })
+				.andWhere("assessment.groupId != null")
+				.select("assessment.groupId");
+
 			// Exclude groups that have already been reviewed
-			groupQuery.leftJoin("group.assessments", "assessment", "assessment.assignmentId = :assignmentId", { assignmentId })
-				.andWhere("COUNT(assessment) = 0");
+			groupQuery.andWhere("group.id NOT IN (" + reviewedGroupsSubQuery.getSql() + ")");
 		}
 
 		const [groups, count] = await groupQuery.getManyAndCount();
 		
 		const dtos = groups.map(group => ({
 			group: DtoFactory.createGroupDto(group),
-			assignedEvaluatorId: group.assessmentAllocations[0].assignedEvaluatorId
+			assignedEvaluatorId: group.assessmentAllocations[0]?.assignedEvaluatorId
 		}));
 
 		return [dtos, count];
