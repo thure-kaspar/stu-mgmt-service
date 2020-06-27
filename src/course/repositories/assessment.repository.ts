@@ -54,10 +54,8 @@ export class AssessmentRepository extends Repository<Assessment> {
 
 	async getAssessmentsOfUserForCourse_WithAssignment_WithGroups(courseId: string, userId: string): Promise<Assessment[]> {
 		return this.createQueryBuilder("assessment")
-			.innerJoin("assessment.assignment", "assignment")
-			.where("assignment.courseId = :courseId", { courseId })
-			.innerJoin("assessment.assessmentUserRelations", "userRelation")
-			.where("userRelation.userId = :userId", { userId })
+			.innerJoin("assessment.assignment", "assignment", "assignment.courseId = :courseId", { courseId })
+			.innerJoin("assessment.assessmentUserRelations", "userRelation", "userRelation.userId = :userId", { userId })
 			.leftJoinAndSelect("assessment.partialAssessments", "partial")
 			.leftJoinAndSelect("assessment.group", "group")
 			.getMany();

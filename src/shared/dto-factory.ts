@@ -195,7 +195,7 @@ export abstract class DtoFactory {
 
 		if (assessment.group) {
 			assessmentDto.group = this.createGroupDto(assessment.group);
-			assessmentDto.group.users = assessment.assessmentUserRelations.map(rel => this.createUserDto(rel.user));
+			assessmentDto.group.users = assessment.assessmentUserRelations?.map(rel => this.createUserDto(rel.user));
 		}
 
 		return assessmentDto;
