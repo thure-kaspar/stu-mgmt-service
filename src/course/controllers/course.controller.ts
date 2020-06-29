@@ -135,7 +135,9 @@ export class CourseController {
 		@Param("assignmentId") assignmentId: string,
 		@Query() filter?: AssignedEvaluatorFilter
 	): Promise<UserWithAssignedEvaluatorDto[]> {
-		const [users, count] = await this.queryBus.execute(new UsersWithAssignedEvaluatorQuery(courseId, assignmentId, filter));
+		const [users, count] = await this.queryBus.execute(
+			new UsersWithAssignedEvaluatorQuery(courseId, assignmentId, new AssignedEvaluatorFilter(filter))
+		);
 		setTotalCountHeader(request, count);
 		return users;
 	}

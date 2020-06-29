@@ -1,6 +1,7 @@
 import { ApiPropertyOptional } from "@nestjs/swagger";
 import { PaginationFilter } from "../../../shared/pagination.filter";
 import { GroupDto } from "../../dto/group/group.dto";
+import { transformBoolean } from "../../../../test/utils/http-utils";
 
 export class GroupWithAssignedEvaluatorDto {
 	group: GroupDto;
@@ -12,8 +13,17 @@ export class GroupWithAssignedEvaluatorDto {
 export class AssignedEvaluatorFilter extends PaginationFilter {
 	@ApiPropertyOptional({ description: "Filter by assigned evaluator." })
 	assignedEvaluatorId?: string;
+
 	@ApiPropertyOptional({ description: "Excludes groups/users that have already been reviewed." })
 	excludeAlreadyReviewed?: boolean;
+
 	@ApiPropertyOptional({ description: "Filter by group or username." })
 	nameOfGroupOrUser?: string;
+
+	constructor(filter: Partial<AssignedEvaluatorFilter>) {
+		super(filter);
+		this.assignedEvaluatorId = filter?.assignedEvaluatorId;
+		this.nameOfGroupOrUser = filter?.nameOfGroupOrUser;
+		this.excludeAlreadyReviewed = transformBoolean(filter?.excludeAlreadyReviewed); 
+	}
 }

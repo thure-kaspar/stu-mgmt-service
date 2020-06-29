@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Delete, Patch, Body, Query, Res, Req } from "@nestjs/common";
+import { Controller, Get, Param, Post, Delete, Patch, Body, Query, Req } from "@nestjs/common";
 import { GroupService } from "../services/group.service";
 import { UserDto } from "../../shared/dto/user.dto";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
@@ -127,7 +127,9 @@ export class GroupController {
 		@Param("assignmentId") assignmentId: string,
 		@Query() filter?: AssignedEvaluatorFilter
 	): Promise<GroupWithAssignedEvaluatorDto[]> {
-		const [groups, count] = await this.queryBus.execute(new GroupsWithAssignedEvaluatorQuery(courseId, assignmentId, filter));
+		const [groups, count] = await this.queryBus.execute(
+			new GroupsWithAssignedEvaluatorQuery(courseId, assignmentId, new AssignedEvaluatorFilter(filter))
+		);
 		setTotalCountHeader(request, count);
 		return groups;
 	} 	
