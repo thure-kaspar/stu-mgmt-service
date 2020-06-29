@@ -10,13 +10,15 @@ import { PartialAssessmentDto } from "../dto/assessment/partial-assessment.dto";
 import { AssignmentRepository } from "../repositories/assignment.repository";
 import { Assignment } from "../entities/assignment.entity";
 import { AssignmentState } from "../../shared/enums";
+import { GroupService } from "./group.service";
 
 @Injectable()
 export class AssessmentService {
 
 	constructor(@InjectRepository(Assessment) private assessmentRepository: AssessmentRepository,
 				@InjectRepository(Assignment) private assignmentRepository: AssignmentRepository,
-				@InjectRepository(Group) private groupRepository: GroupRepository
+				@InjectRepository(Group) private groupRepository: GroupRepository,
+				private groupService: GroupService,
 	) { }
 
 	async createAssessment(assignmentId: string, assessmentDto: AssessmentCreateDto): Promise<AssessmentDto> {
@@ -28,8 +30,9 @@ export class AssessmentService {
 		let userIds: string[];
 		// If assessment should apply to a group
 		if (assessmentDto.groupId) {
-			const group = await this.groupRepository.getGroupWithUsers(assessmentDto.groupId);
-			userIds = group.userGroupRelations.map(x => x.userId);
+			// Get ids of members that were in this group for the assignment
+			const group = await this.groupService.getGroupFromAssignment(assessmentDto.groupId, assignmentId);
+			userIds = group.users.map(x => x.id);
 		// If assessment should apply to single user
 		} else if (assessmentDto.userId) {
 			userIds = [assessmentDto.userId];
