@@ -54,13 +54,17 @@ export class GroupsWithAssignedEvaluatorHandler implements IQueryHandler<GroupsW
 
 			// Exclude groups that have already been reviewed
 			groupQuery.andWhere("group.id NOT IN (" + reviewedGroupsSubQuery.getSql() + ")");
+		} else {
+			// Join assessment, if it exists
+			groupQuery.leftJoinAndSelect("group.assessments", "assessment", "assessment.assignmentId = :assignmentId", { assignmentId });
 		}
 
 		const [groups, count] = await groupQuery.getManyAndCount();
 		
 		const dtos = groups.map(group => ({
 			group: DtoFactory.createGroupDto(group),
-			assignedEvaluatorId: group.assessmentAllocations[0]?.assignedEvaluatorId
+			assignedEvaluatorId: group.assessmentAllocations[0]?.assignedEvaluatorId,
+			assessmentId: group.assessments?.length > 0 ? group.assessments[0].id : undefined
 		}));
 
 		return [dtos, count];

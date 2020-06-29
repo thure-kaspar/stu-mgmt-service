@@ -8,6 +8,9 @@ export class GroupWithAssignedEvaluatorDto {
 
 	@ApiPropertyOptional({ description: "UserId of the assigned evaluator (for assignment)." })
 	assignedEvaluatorId?: string;
+
+	@ApiPropertyOptional({ description: "Id of the assessment, if it exists." })
+	assessmentId?: string;
 }
 
 export class AssignedEvaluatorFilter extends PaginationFilter {
