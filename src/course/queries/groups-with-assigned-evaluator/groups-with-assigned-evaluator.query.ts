@@ -46,9 +46,10 @@ export class GroupsWithAssignedEvaluatorHandler implements IQueryHandler<GroupsW
 
 		if (excludeAlreadyReviewed) {
 			// Subquery to find all ids of groups that have been reviewed
-			const reviewedGroupsSubQuery = this.groupRepo.manager.getRepository(Assessment).createQueryBuilder("assessment")
+			const reviewedGroupsSubQuery = this.groupRepo.manager.getRepository(Assessment)
+				.createQueryBuilder("assessment")
 				.where("assessment.assignmentId = :assignmentId", { assignmentId })
-				.andWhere("assessment.groupId != null")
+				.andWhere("assessment.groupId IS NOT NULL")
 				.select("assessment.groupId");
 
 			// Exclude groups that have already been reviewed
