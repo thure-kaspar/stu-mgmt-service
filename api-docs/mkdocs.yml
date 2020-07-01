@@ -1,0 +1,22 @@
+site_name: Student-Management-System-API Documentation
+repo_name: Student-Management-System/StudentMgmt-Backend
+repo_url: https://github.com/Student-Management-System/StudentMgmt-Backend/api-docs
+
+nav:
+  - index.md
+  - getting-started.md
+  - authentication.md
+  - Using the API:
+    - course-creation.md
+  - faq.md
+
+theme:
+  name: material
+  palette:
+    primary: teal
+    accent: grey
+
+markdown_extensions:
+    - codehilite
+    - pymdownx.tabbed
+    - pymdownx.superfences
