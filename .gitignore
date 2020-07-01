@@ -4,6 +4,7 @@
 
 # generated documentation
 /documentation
+/api-docs/site
 
 # Logs
 logs
