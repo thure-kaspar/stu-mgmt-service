@@ -11,14 +11,14 @@ The Student-Management-System does not accept or store any passwords. Instead lo
 Upon a successful login with the Sparkyservice, you will receive a [JSON Web Token](https://en.wikipedia.org/wiki/JSON_Web_Token) (JWT) inside of the response body
 (see [this](http://147.172.178.30:8080/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config#/auth-controller/authenticate)).
 This JWT can then be used to login into the Student-Management-System via [this route](http://147.172.178.30:3000/api/#/authentication/loginWithToken).
-As you can see, the system expects an object with the property "token" as the request body for this route.
+As you can see, the system expects an object with the property `token` as the request body for this route.
 ```json
 {
   "token": "your.jwt.token"
 }
 ```
 If the supplied token was valid, you will receive a HTTP-Status 200 (OK) and the response body will contain an object, which most importantly contains
-a new JWT inside of the "accessToken" property. This token must be used in future requests to the system to enable authentication.
+a new JWT inside of the `accessToken` property. This token must be used in future requests to the system to enable authentication.
 ```json
 {
   "accessToken": "new.jwt.token",
@@ -49,7 +49,7 @@ Authorization: "Bearer " + yourToken;
 #### Setting Authorization-Header with client
 
 You can use the provided methods of the generated client to configure the Authorization-Header.
-The client provides methods to set headers explicitly or you can use the configuration property of any service like so:
+The client provides methods to set headers explicitly or you can use the `configuration` property of any service like so:
 ```typescript
 someService.defaultHeaders.set("Authorization", yourToken);
 // or
@@ -57,12 +57,15 @@ someService.configuration.accessToken = yourToken;
 ```
 You can also set it globally for all services:
 
-=== "TypeScript"
+=== "Angular"
 	```typescript
-	// Angular example (app.module.ts)
-	ApiModule.forRoot(() => new Configuration({
-		accessToken: // bind some function to this to retrieve the token
-	}))
+	// app.module.ts
+	imports: [
+		// ...
+		ApiModule.forRoot(() => new Configuration({
+			accessToken: // bind some function to this to retrieve the token
+		}))
+	]
 	```
 
 === "Java"

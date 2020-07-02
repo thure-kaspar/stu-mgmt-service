@@ -4,10 +4,12 @@ repo_url: https://github.com/Student-Management-System/StudentMgmt-Backend/api-d
 
 nav:
   - index.md
+  - fundamental-concepts.md
   - getting-started.md
   - authentication.md
   - Using the API:
     - course-creation.md
+    - searching-courses.md
   - faq.md
 
 theme:

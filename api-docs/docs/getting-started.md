@@ -3,7 +3,8 @@
 Interacting with the Student-Management-System's API can be simplified by utilizing a generated client for your desired programming language
 (i.e. Java, Python, C#, JavaScript, TypeScript). If you prefer to not work with a generated client, you can also use a native http-library.
 In this case, you're responsible for correctly assembling the requested URLs and data objects. Using a generated client is generally recommended,
-because it guarantees correctly ordered and typed parameters and displays which parameters are optional.
+because it guarantees correctly ordered and typed parameters and displays which parameters are optional. It also takes care of (de)serializing
+the request objects to/from JSON.
 
 The automatically generated [OpenAPI-Specification](https://en.wikipedia.org/wiki/OpenAPI_Specification) of the system can be found here:
 

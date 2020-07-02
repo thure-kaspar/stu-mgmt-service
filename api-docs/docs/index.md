@@ -1,6 +1,6 @@
 # Introduction
 
-This website hosts documentation about the Student-Management-System's API.
+This website hosts documentation about the **Student-Management-System's API**.
 The [Swagger-UI](http://147.172.178.30:3000/api/) provides information about the available endpoints and data schemas,
 and will be referenced in the documentation. However, the it does not explain how the API can be used by other systems.
 Therefore, we will use this place to offer additional guidance for developers, that are building applications, which interact with the 
@@ -11,6 +11,7 @@ Before you start your work on an additional application, check if the client alr
 it. Feel free to [contribute](https://github.com/Student-Management-System/StudentMgmt-Client)!
 
 If you're looking for samples of systems integrating the API, take a look into these [repositories](https://github.com/Student-Management-System).
+Also make sure to check out our [FAQ](/faq).
 
 ![Screenshot](img/swagger-ui-screenshot.png "Swagger UI")
 
@@ -33,6 +34,7 @@ in the [GitHub repository](https://github.com/Student-Management-System/StudentM
 
 ## Helpful links
 
+#### [FAQ](/faq)
 #### [GitHub](https://github.com/Student-Management-System/StudentMgmt-Backend)
 #### [Swagger-UI](http://147.172.178.30:3000/api/)
 #### [API-Specification](http://147.172.178.30:3000/api-json)
