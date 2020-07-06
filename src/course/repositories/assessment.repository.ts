@@ -26,7 +26,7 @@ export class AssessmentRepository extends Repository<Assessment> {
 
 	async getAssessmentById(assessmentId: string): Promise<Assessment> {
 		return this.findOneOrFail(assessmentId, {
-			relations: ["partialAssessments", "assessmentUserRelations", "assessmentUserRelations.user"]
+			relations: ["partialAssessments", "assessmentUserRelations", "assessmentUserRelations.user", "assignment", "creator"]
 		});
 	}
 
