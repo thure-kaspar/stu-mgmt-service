@@ -9,6 +9,7 @@ import { COURSE_JAVA_1920 } from "../mocks/courses.mock";
 import { DbMockService } from "../mocks/db-mock.service";
 import { copy } from "../utils/object-helper";
 import { PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW, PARTIAL_ASSESSMENT_2_JAVA_IN_REVIEW } from "../mocks/partial-assessments.mock";
+import { USER_STUDENT_JAVA } from "../mocks/users.mock";
 
 let app: INestApplication;
 let dbMockService: DbMockService;
@@ -72,8 +73,9 @@ describe("GET-REQUESTS of AssessmentController (e2e)", () => {
 		const assignment = copy(ASSIGNMENT_JAVA_IN_REVIEW);
 		const assessment = copy(ASSESSMENT_JAVA_IN_REVIEW);
 		assessment.partialAssessments = [PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW, PARTIAL_ASSESSMENT_2_JAVA_IN_REVIEW];
-		const expected = copy(assessment);
-		expected.userId = undefined;
+		assessment.user = USER_STUDENT_JAVA;
+		assessment.userId = USER_STUDENT_JAVA.id;
+		const expected = (assessment);
 
 		return request(app.getHttpServer())
 			.get(`/courses/${course.id}/assignments/${assignment.id}/assessments/${assessment.id}`)

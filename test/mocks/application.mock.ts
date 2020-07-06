@@ -5,7 +5,8 @@ import { NodemailerService } from "../../src/mailing/services/nodemailer.service
 import { DisabledMailing } from "./mailing.mock";
 import { EntityNotFoundFilter } from "../../src/shared/entity-not-found.filter";
 import { AuthGuard } from "@nestjs/passport";
-import { AuthGuardMock } from "./guards.mock";
+import { AuthGuardMock, CourseMemberGuardMock } from "./guards.mock";
+import { CourseMemberGuard } from "../../src/course/guards/course-member.guard";
 
 /**
  * Creates and returns an initialized NestApplication for e2e-testing purposes.
@@ -15,6 +16,7 @@ export async function createApplication(): Promise<INestApplication> {
 		imports: [AppModule],
 	})
 		.overrideGuard(AuthGuard()).useValue(new AuthGuardMock())
+		.overrideGuard(CourseMemberGuard).useClass(CourseMemberGuardMock)
 		.overrideProvider(NodemailerService).useClass(DisabledMailing)
 		.compile();
 

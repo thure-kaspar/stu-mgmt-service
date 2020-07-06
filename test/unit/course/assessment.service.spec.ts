@@ -17,6 +17,9 @@ import { ASSIGNMENT_JAVA_IN_REVIEW, ASSIGNMENT_JAVA_CLOSED } from "../../mocks/a
 import { PartialAssessmentDto } from "../../../src/course/dto/assessment/partial-assessment.dto";
 import { PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW } from "../../mocks/partial-assessments.mock";
 import { PartialAssessment } from "../../../src/course/entities/partial-assessment.entity";
+import { GroupService } from "../../../src/course/services/group.service";
+import { USER_STUDENT_JAVA, USER_STUDENT_2_JAVA } from "../../mocks/users.mock";
+import { GroupDto } from "../../../src/course/dto/group/group.dto";
 
 const mock_AssessmentRepository = () => ({
 	createAssessment: jest.fn().mockResolvedValue(convertToEntity(Assessment, ASSESSMENT_JAVA_EVALUATED_GROUP_1)),
@@ -48,8 +51,17 @@ function getGroupMock(): Group {
 	return group;
 }
 
-const mock_GroupRepository = () => ({
-	getGroupWithUsers: jest.fn().mockResolvedValue(getGroupMock())
+function getGroupFromAssignmentMock(): GroupDto {
+	const group = copy(GROUP_1_JAVA);
+	group.users = [
+		USER_STUDENT_JAVA,
+		USER_STUDENT_2_JAVA
+	];
+	return group;
+}
+
+const mock_GroupService = () => ({
+	getGroupFromAssignment: jest.fn().mockResolvedValue(getGroupFromAssignmentMock())
 });
 
 describe("AssessmentService", () => {
@@ -57,7 +69,8 @@ describe("AssessmentService", () => {
 	let service: AssessmentService;
 	let assessmentRepository: AssessmentRepository;
 	let assignmentRepository: AssignmentRepository;
-	let groupRepository: GroupRepository;
+	let groupService: GroupService;
+
 	let assessmentDto: AssessmentDto;
 
 	beforeEach(async () => {
@@ -66,7 +79,7 @@ describe("AssessmentService", () => {
 				AssessmentService,
 				{ provide: AssessmentRepository, useFactory: mock_AssessmentRepository },
 				{ provide: AssignmentRepository, useFactory: mock_AssignmentRepository },
-				{ provide: GroupRepository, useFactory: mock_GroupRepository }
+				{ provide: GroupService, useFactory: mock_GroupService }
 			],
 		}).compile();
 		
@@ -75,7 +88,7 @@ describe("AssessmentService", () => {
 		service = module.get<AssessmentService>(AssessmentService);
 		assessmentRepository = module.get<AssessmentRepository>(AssessmentRepository);
 		assignmentRepository = module.get(AssignmentRepository);
-		groupRepository = module.get<GroupRepository>(GroupRepository);
+		groupService = module.get(GroupService);
 		assessmentDto = copy(ASSESSMENT_JAVA_EVALUATED_GROUP_1);
 	});
 
@@ -91,11 +104,11 @@ describe("AssessmentService", () => {
 		});
 
 		it("Assessment for group -> Loads group members and extracts userIds", async () => {
-			const expectedUserIds = UserGroupRelationsMock.map(x => x.userId);
+			const expectedUserIds = getGroupFromAssignmentMock().users.map(u => u.id);
 
 			await service.createAssessment(assessmentDto.assignmentId, assessmentDto);
 
-			expect(groupRepository.getGroupWithUsers).toHaveBeenCalledWith(assessmentDto.groupId);
+			expect(groupService.getGroupFromAssignment).toHaveBeenCalledWith(assessmentDto.groupId, assessmentDto.assignmentId);
 			expect(assessmentRepository.createAssessment).toBeCalledWith(assessmentDto, expectedUserIds);
 		});
 

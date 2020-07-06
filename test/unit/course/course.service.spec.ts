@@ -9,11 +9,12 @@ import { CourseRole } from "../../../src/shared/enums";
 import { COURSE_JAVA_1920, COURSE_INFO_2_2020 } from "../../mocks/courses.mock";
 import { copy, convertToEntity } from "../../utils/object-helper";
 import { USER_STUDENT_JAVA, USER_STUDENT_2_JAVA } from "../../mocks/users.mock";
-import { CourseUserRelation } from "../../../src/course/entities/course-user-relation.entity";
 import { User } from "../../../src/shared/entities/user.entity";
 import { COURSE_CONFIG_JAVA_1920 } from "../../mocks/course-config/course-config.mock";
 import { Course } from "../../../src/course/entities/course.entity";
 import { CourseConfig } from "../../../src/course/entities/course-config.entity";
+import { CourseUserRepository } from "../../../src/course/repositories/course-user-repository";
+import { CourseUserRelation } from "../../../src/course/entities/course-user-relation.entity";
 
 const mock_CourseRepository = () => ({
 	createCourse: jest.fn().mockResolvedValue(convertToEntity(Course, COURSE_JAVA_1920)),
@@ -38,16 +39,34 @@ const mock_CourseRepository = () => ({
 });
 
 
-const mock_CourseUserRepository = () => ({
+const mock_CourseUserRelationRepository = () => ({
 	createCourseUserRelation: jest.fn(),
 	updateRole: jest.fn(),
+});
+
+const mock_CourseUserRepository = () => ({
+	getUsersOfCourse: jest.fn().mockImplementation(() => {
+		const user1 = convertToEntity(User, USER_STUDENT_JAVA);
+		user1.courseUserRelations =  [new CourseUserRelation()];
+		user1.courseUserRelations[0].role = CourseRole.STUDENT;
+
+		const user2 = convertToEntity(User, USER_STUDENT_2_JAVA);
+		user2.courseUserRelations = [new CourseUserRelation()];
+		user2.courseUserRelations[0].role = CourseRole.STUDENT;
+
+		const users = [user1, user2];
+		const count = users.length;
+
+		return [users, count];
+	})
 });
 
 describe("CourseService", () => {
 
 	let service: CourseService;
 	let courseRepository: CourseRepository;
-	let courseUserRepository: CourseUserRelationRepository;
+	let courseUserRelationRepository: CourseUserRelationRepository;
+	let courseUserRepository: CourseUserRepository;
 	let courseDto: CourseDto;
 
 	beforeEach(async () => {
@@ -55,7 +74,8 @@ describe("CourseService", () => {
 			providers: [
 				CourseService,
 				{ provide: CourseRepository, useFactory: mock_CourseRepository },
-				{ provide: CourseUserRelationRepository, useFactory: mock_CourseUserRepository }
+				{ provide: CourseUserRelationRepository, useFactory: mock_CourseUserRelationRepository },
+				{ provide: CourseUserRepository, useFactory: mock_CourseUserRepository }
 			],
 		}).compile();
 		
@@ -64,7 +84,8 @@ describe("CourseService", () => {
 
 		service = module.get<CourseService>(CourseService);
 		courseRepository = module.get<CourseRepository>(CourseRepository);
-		courseUserRepository = module.get<CourseUserRelationRepository>(CourseUserRelationRepository);
+		courseUserRelationRepository = module.get<CourseUserRelationRepository>(CourseUserRelationRepository);
+		courseUserRepository = module.get(CourseUserRepository);
 		courseDto = copy(COURSE_JAVA_1920);
 
 	});
@@ -125,7 +146,7 @@ describe("CourseService", () => {
 
 			await service.addUser(courseDto.id, userId, courseDto.config.password);
 
-			expect(courseUserRepository.createCourseUserRelation).toBeCalledWith(courseDto.id, userId, role);
+			expect(courseUserRelationRepository.createCourseUserRelation).toBeCalledWith(courseDto.id, userId, role);
 		});
 
 		it("No password required -> Calls repository for relation creation", async () => {	
@@ -142,7 +163,7 @@ describe("CourseService", () => {
 
 			await service.addUser(courseDto.id, userId);
 
-			expect(courseUserRepository.createCourseUserRelation).toBeCalledWith(courseDto.id, userId, role);
+			expect(courseUserRelationRepository.createCourseUserRelation).toBeCalledWith(courseDto.id, userId, role);
 		});
 
 		it("Incorrect password -> Throws Exception", async () => {
@@ -224,16 +245,9 @@ describe("CourseService", () => {
 
 		it("Calls repository to load with users", async () => {
 			const id = courseDto.id;
-			const course = convertToEntity(Course, courseDto);
-			// Mock user relations
-			const relation = new CourseUserRelation();
-			relation.user = new User();
-			relation.role = CourseRole.STUDENT;
-			course.courseUserRelations = [relation];
-			courseRepository.getCourseWithUsers = jest.fn().mockResolvedValueOnce(course);
-
+			const filter = undefined;
 			await service.getUsersOfCourse(id);
-			expect(courseRepository.getCourseWithUsers).toHaveBeenCalledWith(id);
+			expect(courseUserRepository.getUsersOfCourse).toHaveBeenCalledWith(id, filter);
 		});
 
 	});
@@ -261,7 +275,7 @@ describe("CourseService", () => {
 
 			await service.updateRole(courseId, userId, role);
 
-			expect(courseUserRepository.updateRole).toHaveBeenCalledWith(courseId, userId, role);
+			expect(courseUserRelationRepository.updateRole).toHaveBeenCalledWith(courseId, userId, role);
 		});
 	
 	});

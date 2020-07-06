@@ -3,8 +3,6 @@ import { AssessmentDto, AssessmentCreateDto } from "../dto/assessment/assessment
 import { InjectRepository } from "@nestjs/typeorm";
 import { Assessment } from "../entities/assessment.entity";
 import { AssessmentRepository } from "../repositories/assessment.repository";
-import { GroupRepository } from "../repositories/group.repository";
-import { Group } from "../entities/group.entity";
 import { DtoFactory } from "../../shared/dto-factory";
 import { PartialAssessmentDto } from "../dto/assessment/partial-assessment.dto";
 import { AssignmentRepository } from "../repositories/assignment.repository";
@@ -17,7 +15,6 @@ export class AssessmentService {
 
 	constructor(@InjectRepository(Assessment) private assessmentRepository: AssessmentRepository,
 				@InjectRepository(Assignment) private assignmentRepository: AssignmentRepository,
-				@InjectRepository(Group) private groupRepository: GroupRepository,
 				private groupService: GroupService,
 	) { }
 

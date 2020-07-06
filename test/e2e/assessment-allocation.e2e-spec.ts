@@ -118,7 +118,7 @@ describe("POST-REQUESTS of AssessmentController (e2e)", () => {
 			console.assert(newAssignment.id !== existingAssignment.id, "Assignments should be different.");
 
 			// Expect same data with new assignment id
-			const expected = copy(ASSESSMENT_ALLOCATIONS_MOCK);
+			const expected = copy(ASSESSMENT_ALLOCATIONS_MOCK).filter(a => a.assignmentId === existingAssignment.id);
 			expected.forEach(a => a.assignmentId = newAssignment.id);
 			console.assert(expected.length > 1, "Database should contain multipe assessment allocations.");
 

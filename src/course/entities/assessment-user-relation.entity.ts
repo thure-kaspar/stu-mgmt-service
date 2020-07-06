@@ -14,7 +14,7 @@ export class AssessmentUserRelation extends BaseEntity {
 	@PrimaryColumn()
 	assessmentId: string;
 
-	@ManyToOne(type => Assignment)
+	@ManyToOne(type => Assignment, { onDelete: "CASCADE" })
 	assignment: Assignment;
 
 	@Column()
