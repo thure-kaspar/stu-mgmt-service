@@ -10,7 +10,7 @@ The Student-Management-System does not accept or store any passwords. Instead lo
 
 Upon a successful login with the Sparkyservice, you will receive a [JSON Web Token](https://en.wikipedia.org/wiki/JSON_Web_Token) (JWT) inside of the response body
 (see [this](http://147.172.178.30:8080/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config#/auth-controller/authenticate)).
-This JWT can then be used to login into the Student-Management-System via [this route](http://147.172.178.30:3000/api/#/authentication/loginWithToken).
+This JWT can then be used to login into the Student-Management-System via [[POST] /auth/loginWithToken](http://147.172.178.30:3000/api/#/authentication/loginWithToken).
 As you can see, the system expects an object with the property `token` as the request body for this route.
 ```json
 {

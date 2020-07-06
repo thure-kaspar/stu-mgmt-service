@@ -9,7 +9,7 @@ allows copying an entire course's configuration in order to make admins lives ea
 
 The corresponding endpoint for this operation is [[POST] /courses](http://147.172.178.30:3000/api/#/courses/createCourse).
 The data expected request body is defined in `CourseCreateDto`.
-A generated client will provide this method through `CoursesService.createCourse`.
+A generated client will provide this method through `CourseService.createCourse`.
 Requires `ADMIN` role.
 
 ## Mandatory properties 

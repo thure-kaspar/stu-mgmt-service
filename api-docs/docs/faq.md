@@ -33,7 +33,7 @@ The total element count can be accessed through a custom `X-TOTAL-COUNT` header 
 	this.courseService.getCourses(undefined, "sose2020", undefined, skip, take, "response")
 	.subscribe(
 		response => {
-			const totalCount = response.headers.
+			const totalCount = response.headers.get("x-total-count");
 			const courses = response.body;
 		}
 	);

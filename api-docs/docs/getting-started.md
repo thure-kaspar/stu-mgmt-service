@@ -50,7 +50,7 @@ If you have successfully added the client to your project, you should be able to
 Classes are named according to their tag in the API-Specification and suffixed with "Service". Every service will contain methods corresponding to its routes.
 
 Example:
-Tag "Courses" with Route "/courses" will be available as CoursesService.getCourses.
+Tag "Courses" with Route "/courses" will be available as `CourseService.getCourses`.
 
 ![Screenshot](img/integrated-client.png "Integrated client")
 

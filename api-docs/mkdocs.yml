@@ -9,7 +9,10 @@ nav:
   - authentication.md
   - Using the API:
     - course-creation.md
+    - course-updating.md
     - searching-courses.md
+    - joining-courses.md
+    - course-participants.md
   - faq.md
 
 theme:
