@@ -36,7 +36,7 @@ we could perform a request like this:
 	// TODO
 	```
 
-The request could look like this:
+The response could look like this:
 ```json
 [
   {
