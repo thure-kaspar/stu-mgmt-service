@@ -9,10 +9,11 @@ import { Controllers } from "./controllers";
 import { Services } from "./services";
 import { Guards } from "./guards";
 import { UserRepository } from "../user/repositories/user.repository";
+import { AssessmentEvent } from "./entities/assessment-event.entity";
 
 @Module({
 	imports: [
-		TypeOrmModule.forFeature([...Repositories, UserRepository]),
+		TypeOrmModule.forFeature([...Repositories, UserRepository, AssessmentEvent]),
 		CqrsModule,
 		HttpModule,
 		AuthModule
