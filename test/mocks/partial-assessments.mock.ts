@@ -2,6 +2,7 @@ import { PartialAssessmentDto, Severity } from "../../src/course/dto/assessment/
 import { ASSESSMENT_JAVA_IN_REVIEW } from "./assessments.mock";
 
 export const PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW: PartialAssessmentDto = {
+	id: 1,
 	assessmentId: ASSESSMENT_JAVA_IN_REVIEW.id,
 	title: "Task 1",
 	comment: "Very good",
@@ -11,8 +12,9 @@ export const PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW: PartialAssessmentDto = {
 };
 
 export const PARTIAL_ASSESSMENT_2_JAVA_IN_REVIEW: PartialAssessmentDto = {
+	id: 2,
 	assessmentId: ASSESSMENT_JAVA_IN_REVIEW.id,
-	title: "Task 1",
+	title: "Task 2",
 	comment: "Very bad",
 	points: 0,
 	severity: Severity.CRITICAL,
