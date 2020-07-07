@@ -27,7 +27,7 @@ export abstract class DtoFactory {
 			semester: course.semester,
 			title: course.title,
 			isClosed: course.isClosed,
-			link: course.link
+			link: course.link ?? undefined
 		};
 		
 		// Add relational data, if available
@@ -154,13 +154,13 @@ export abstract class DtoFactory {
 			courseId: assignment.courseId,
 			name: assignment.name,
 			state: assignment.state,
-			startDate: assignment.startDate,
-			endDate: assignment.endDate,
-			comment: assignment.comment,
-			link: assignment.link,
+			startDate: assignment.startDate ?? undefined,
+			endDate: assignment.endDate ?? undefined,
+			comment: assignment.comment ?? undefined,
+			link: assignment.link ?? undefined,
 			type: assignment.type,
 			points: assignment.points,
-			bonusPoints: assignment.bonusPoints,
+			bonusPoints: assignment.bonusPoints ?? undefined,
 			collaboration: assignment.collaboration
 		};
 		return assignmentDto;
@@ -173,7 +173,7 @@ export abstract class DtoFactory {
 			assignment: assessment.assignment ? this.createAssignmentDto(assessment.assignment) : undefined,
 			groupId: assessment.groupId ?? undefined,
 			achievedPoints: assessment.achievedPoints,
-			comment: assessment.comment,
+			comment: assessment.comment ?? undefined,
 			creatorId: assessment.creatorId
 		};
 
