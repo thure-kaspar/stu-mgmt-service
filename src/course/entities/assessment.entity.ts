@@ -34,7 +34,7 @@ export class Assessment extends BaseEntity {
 	@Column({ nullable: false })
 	creatorId: string;
 
-	@OneToMany(type => PartialAssessment, partialAssessment => partialAssessment.assessment, { cascade: true })
+	@OneToMany(type => PartialAssessment, partialAssessment => partialAssessment.assessment, { cascade: ["insert"] })
 	partialAssessments: PartialAssessment[];
 
 	// We need to assign the points to users individually, in case they switch group

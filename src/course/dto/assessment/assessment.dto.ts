@@ -50,3 +50,9 @@ export class AssessmentDto {
 
 /** Version of AssessmentDto containing only properties that can used for creation. */
 export class AssessmentCreateDto extends OmitType(AssessmentDto, ["group", "creator", "id", "assignment"]) { }
+/** Version of AssessmentDto containing only properties that can be updated. */
+export class AssessmentUpdateDto extends OmitType(AssessmentDto, ["group", "groupId", "creator", "creatorId", "id", "assignment", "assignmentId", "user", "userId"]) {
+	/** UserId of the person that updated the assessment. Automatically set by the server. */
+	@ApiPropertyOptional({ description: "UserId of the person that updated the assessment. Automatically set by the server."})
+	updatedBy?: string;
+}

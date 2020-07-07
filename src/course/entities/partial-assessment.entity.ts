@@ -31,12 +31,13 @@ export class PartialAssessment extends BaseEntity {
 	
 	toDto(): PartialAssessmentDto {
 		return {
+			id: this.id,
 			assessmentId: this.assessmentId,
 			title: this.title,
-			type: this.type,
-			severity: this.severity,
-			comment: this.comment,
-			points: this.points
+			type: this.type ?? undefined,
+			severity: this.severity ?? undefined,
+			comment: this.comment ?? undefined,
+			points: this.points ?? undefined
 		};
 	}
 	

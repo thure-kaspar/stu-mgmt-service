@@ -1,5 +1,5 @@
 import { Injectable, BadRequestException } from "@nestjs/common";
-import { AssessmentDto, AssessmentCreateDto } from "../dto/assessment/assessment.dto";
+import { AssessmentDto, AssessmentCreateDto, AssessmentUpdateDto } from "../dto/assessment/assessment.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Assessment } from "../entities/assessment.entity";
 import { AssessmentRepository } from "../repositories/assessment.repository";
@@ -9,13 +9,20 @@ import { AssignmentRepository } from "../repositories/assignment.repository";
 import { Assignment } from "../entities/assignment.entity";
 import { AssignmentState } from "../../shared/enums";
 import { GroupService } from "./group.service";
+import { EventBus } from "@nestjs/cqrs";
+import { AssessmentScoreChangedEvent } from "../events/assessment-score-changed.event";
+import { AssessmentEvent } from "../entities/assessment-event.entity";
+import { Repository } from "typeorm";
+import { AssessmentEventDto } from "../dto/assessment/assessment-event.dto";
 
 @Injectable()
 export class AssessmentService {
 
 	constructor(@InjectRepository(Assessment) private assessmentRepository: AssessmentRepository,
 				@InjectRepository(Assignment) private assignmentRepository: AssignmentRepository,
+				@InjectRepository(AssessmentEvent) private assessmentEventsRepo: Repository<AssessmentEvent>,
 				private groupService: GroupService,
+				private events: EventBus,
 	) { }
 
 	async createAssessment(assignmentId: string, assessmentDto: AssessmentCreateDto): Promise<AssessmentDto> {
@@ -66,12 +73,54 @@ export class AssessmentService {
 		return DtoFactory.createAssessmentDto(assessment);
 	}
 
-	async updateAssessment(assessmentId: string, assessmentDto: AssessmentDto): Promise<AssessmentDto> {
-		if (assessmentId !== assessmentDto.id) {
-			throw new BadRequestException("AssessmentId refers to a different assessment.");
+
+	/**
+	 * Returns events that have a relation with the specified assessment (i.e. `AssessmentScoreChangedEvent`).
+	 */
+	async getEventsOfAssessment(assessmentId: string): Promise<AssessmentEventDto[]> {
+		const assessmentEvents = await this.assessmentEventsRepo.find({
+			where: {
+				assessmentId
+			},
+			order: {
+				timestamp: "ASC"
+			}
+		});
+		return assessmentEvents.map(event => event.toDto());
+	}
+
+	/**
+	 * Updates the assessment including its partial assessments. Triggers `AssessmentScoreChangedEvent`, if the score changed.
+	 * @param assessmentId Id of the assessment.
+	 * @param assessmentDto The updated assessment including all partial assessments.
+	 * @param updatedBy UserId of the user, who triggered the update.
+	 * @returns Updated assessment.
+	 */
+	async updateAssessment(assessmentId: string, assessmentDto: AssessmentUpdateDto, updatedBy: string): Promise<AssessmentDto> {
+		// Check that assignment is in IN_REVIEW state
+		const original = await this.assessmentRepository.getAssessmentById(assessmentId);
+		if (original.assignment.state !== AssignmentState.IN_REVIEW) {
+			throw new BadRequestException("Assignment not IN_REVIEW state.");
 		}
-		const assessment = await this.assessmentRepository.updateAssessment(assessmentId, assessmentDto);
-		return DtoFactory.createAssessmentDto(assessment);
+
+		// Check that partial assessment contain correct assessmentId
+		assessmentDto.partialAssessments?.forEach(partial => {
+			if (partial.assessmentId !== assessmentId) {
+				throw new BadRequestException("Partial assessments must containt corresponding assessmentId.");
+			}
+		});
+
+		const updated = await this.assessmentRepository.updateAssessment(assessmentId, assessmentDto);
+
+		// Store event, if achieved points changed
+		if (original.achievedPoints !== updated.achievedPoints) {
+			this.events.publish(new AssessmentScoreChangedEvent(assessmentId, updatedBy, {
+				oldScore: original.achievedPoints,
+				newScore: updated.achievedPoints
+			}));
+		}
+
+		return DtoFactory.createAssessmentDto(updated);
 	}
 
 	async deleteAssessment(assessmentId: string): Promise<boolean> {

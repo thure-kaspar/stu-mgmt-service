@@ -6,6 +6,7 @@ export enum Severity {
 }
 
 export class PartialAssessmentDto {
+	id?: number;
 	assessmentId: string;
 	title: string;
 	type?: string;

@@ -1,11 +1,16 @@
-import { Controller, Post, Param, Body, Get, Patch, Delete } from "@nestjs/common";
+import { Controller, Post, Param, Body, Get, Patch, Delete, UseGuards } from "@nestjs/common";
 import { AssessmentService } from "../services/assessment.service";
-import { AssessmentDto, AssessmentCreateDto } from "../dto/assessment/assessment.dto";
+import { AssessmentDto, AssessmentCreateDto, AssessmentUpdateDto } from "../dto/assessment/assessment.dto";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
 import { PartialAssessmentDto } from "../dto/assessment/partial-assessment.dto";
+import { GetUser } from "../../auth/decorators/get-user.decorator";
+import { UserDto } from "../../shared/dto/user.dto";
+import { AuthGuard } from "@nestjs/passport";
+import { AssessmentEventDto } from "../dto/assessment/assessment-event.dto";
 
 @ApiTags("assessments")
 @Controller("courses/:courseId/assignments/:assignmentId/assessments")
+@UseGuards(AuthGuard())
 export class AssessmentController {
 
 	constructor(private assessmentService: AssessmentService) { }
@@ -71,6 +76,21 @@ export class AssessmentController {
 		return this.assessmentService.getAssessmentById(assessmentId);
 	}
 
+	@Get(":assessmentId/events")
+	@ApiOperation({
+		operationId: "getEventsOfAssessment",
+		summary: "Get assessment events",
+		description: "Retrieves events of the assessment."
+	})
+	getEventsOfAssessment(
+		@Param("courseId") courseId: string,
+		@Param("assignmentId") assignmentId: string,
+		@Param("assessmentId") assessmentId: string
+	): Promise<AssessmentEventDto[]> {
+
+		return this.assessmentService.getEventsOfAssessment(assessmentId);
+	}
+
 	@Patch(":assessmentId")
 	@ApiOperation({
 		operationId: "updateAssessment",
@@ -81,10 +101,11 @@ export class AssessmentController {
 		@Param("courseId") courseId: string,
 		@Param("assignmentId") assignmentId: string,
 		@Param("assessmentId") assessmentId: string,
-		@Body() assessmentDto: AssessmentDto
+		@Body() assessmentDto: AssessmentUpdateDto,
+		@GetUser() updatedBy: UserDto,
 	): Promise<AssessmentDto> {
 
-		return this.assessmentService.updateAssessment(assessmentId, assessmentDto);
+		return this.assessmentService.updateAssessment(assessmentId, assessmentDto, updatedBy.id);
 	}
 
 	@Delete(":assessmentId")
