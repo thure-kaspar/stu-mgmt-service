@@ -29,11 +29,18 @@ export class AssessmentAllocationService {
 			return []; // Return empty array, if no allocations exist
 		}
 
-		// Change to new assignment
-		allocations.forEach(a => a.assignmentId = newAssignmentId);
+		// Create dtos for new allocations
+		const allocationDtos = allocations.map<AssessmentAllocationDto>(a => {
+			return {
+				assignmentId: newAssignmentId,
+				assignedEvaluatorId: a.assignedEvaluatorId,
+				groupId: a.groupId,
+				userId: a.userId
+			};
+		});
 
 		// Create allocations
-		const createdAllocations = await this.allocationRepo.createAllocations(allocations);
+		const createdAllocations = await this.allocationRepo.createAllocations(allocationDtos);
 		return createdAllocations.map(a => a.toDto());
 	}
 
@@ -55,6 +62,11 @@ export class AssessmentAllocationService {
 		if (!removed) {
 			throw new BadRequestException("Failed to delete the AssessmentAllocation.");
 		}
+	}
+
+	/** Removes all allocations that have been made for the specfied assignment. */
+	async removeAllAllocationsOfAssignment(assignmentId: string): Promise<void> {
+		return this.allocationRepo.removeAllAllocationsOfAssignment(assignmentId);
 	}
 
 }

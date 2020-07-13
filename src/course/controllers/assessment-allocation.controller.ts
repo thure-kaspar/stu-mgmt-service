@@ -87,4 +87,13 @@ export class AssessmentAllocationController {
 		return this.allocationService.removeAllocation(allocation);
 	}
 
+	@Delete("all")
+	removeAllAllocationsOfAssignment(
+		@Param("courseId") courseId: string,
+		@Param("assignmentId") assignmentId: string,
+	): Promise<void> {
+
+		return this.allocationService.removeAllAllocationsOfAssignment(assignmentId);
+	}
+
 }

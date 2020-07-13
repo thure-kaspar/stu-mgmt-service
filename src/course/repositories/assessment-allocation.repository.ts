@@ -94,4 +94,12 @@ export class AssessmentAllocationRepository extends Repository<AssessmentAllocat
 		return result.affected == 1;
 	}
 
+
+	/**
+	 * Removes all allocations that have been made for the specfied assignment.
+	 */
+	async removeAllAllocationsOfAssignment(assignmentId: string): Promise<void> {
+		await this.delete({ assignmentId });
+	}
+
 }
