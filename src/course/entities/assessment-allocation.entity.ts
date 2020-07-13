@@ -5,8 +5,8 @@ import { Group } from "./group.entity";
 import { AssessmentAllocationDto } from "../dto/assessment-allocation/assessment-allocation.dto";
 
 @Entity()
-@Unique("Unique_AssignmentId_GroupId_UserId", ["assignmentId", "groupId", "userId"]) // A group or user can only be assigned to one evaluator per assignment
-
+@Unique("Unique_AssignmentId_GroupId", ["assignmentId", "groupId"]) // A Group can only be assigned once for every assessment
+@Unique("Unique_AssignmentId_UserId", ["assignmentId", "userId"]) // A User can only be assigned once for every assessment 
 export class AssessmentAllocation extends BaseEntity {
 
 	@PrimaryGeneratedColumn()
