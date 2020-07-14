@@ -1,8 +1,9 @@
-import { ApiTags, ApiOperation, ApiQuery } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiQuery, ApiBearerAuth } from "@nestjs/swagger";
 import { Controller, Param, Post, Body, Delete, BadRequestException, Query, Get } from "@nestjs/common";
 import { AssessmentAllocationDto } from "../dto/assessment-allocation/assessment-allocation.dto";
 import { AssessmentAllocationService } from "../services/assessment-allocation.service";
 
+@ApiBearerAuth()
 @ApiTags("assessment-allocation")
 @Controller("courses/:courseId/assignments/:assignmentId/assessment-allocations")
 export class AssessmentAllocationController {

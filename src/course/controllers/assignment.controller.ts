@@ -1,8 +1,9 @@
 import { Controller, Post, Param, Body, Get, Patch, Delete } from "@nestjs/common";
-import { ApiTags, ApiOperation } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
 import { AssignmentService } from "../services/assignment.service";
 import { AssignmentDto } from "../dto/assignment/assignment.dto";
 
+@ApiBearerAuth()
 @ApiTags("assignments")
 @Controller("courses/:courseId/assignments")
 export class AssignmentController {

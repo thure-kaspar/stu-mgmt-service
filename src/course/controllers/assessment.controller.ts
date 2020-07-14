@@ -1,13 +1,14 @@
 import { Controller, Post, Param, Body, Get, Patch, Delete, UseGuards } from "@nestjs/common";
 import { AssessmentService } from "../services/assessment.service";
 import { AssessmentDto, AssessmentCreateDto, AssessmentUpdateDto } from "../dto/assessment/assessment.dto";
-import { ApiTags, ApiOperation } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
 import { PartialAssessmentDto } from "../dto/assessment/partial-assessment.dto";
 import { GetUser } from "../../auth/decorators/get-user.decorator";
 import { UserDto } from "../../shared/dto/user.dto";
 import { AuthGuard } from "@nestjs/passport";
 import { AssessmentEventDto } from "../dto/assessment/assessment-event.dto";
 
+@ApiBearerAuth()
 @ApiTags("assessments")
 @Controller("courses/:courseId/assignments/:assignmentId/assessments")
 @UseGuards(AuthGuard())

@@ -1,7 +1,7 @@
 import { Controller, Get, Param, Post, Delete, Patch, Body, Query, Req } from "@nestjs/common";
 import { GroupService } from "../services/group.service";
 import { UserDto } from "../../shared/dto/user.dto";
-import { ApiTags, ApiOperation } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
 import { GroupDto } from "../dto/group/group.dto";
 import { GroupCreateBulkDto } from "../dto/group/group-create-bulk.dto";
 import { PasswordDto } from "../../shared/dto/password.dto";
@@ -12,6 +12,7 @@ import { GroupsWithAssignedEvaluatorQuery } from "../queries/groups-with-assigne
 import { Request } from "express";
 import { setTotalCountHeader } from "../../../test/utils/http-utils";
 
+@ApiBearerAuth()
 @ApiTags("groups")
 @Controller("courses/:courseId/groups")
 export class GroupController {

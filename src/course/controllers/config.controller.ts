@@ -1,5 +1,5 @@
 import { Controller, Param, Body, Post, Get, Patch, Delete } from "@nestjs/common";
-import { ApiTags, ApiOperation } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
 import { CourseConfigDto } from "../dto/course-config/course-config.dto";
 import { GroupSettingsDto } from "../dto/course-config/group-settings.dto";
 import { AdmissionCriteriaDto } from "../dto/course-config/admission-criteria.dto";
@@ -8,6 +8,7 @@ import { CourseConfigService } from "../services/course-config.service";
 import { CourseConfigUpdateDto } from "../dto/course-config/course-config.dto";
 import { GroupSettingsUpdateDto } from "../dto/course-config/group-settings.dto";
 
+@ApiBearerAuth()
 @ApiTags("course-config")
 @Controller("courses/:courseId/config")
 export class CourseConfigController {
