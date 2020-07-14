@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Post, Body, Patch, Delete, Query, ValidationPipe, UseGuards, Req } from "@nestjs/common";
-import { ApiTags, ApiOperation } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
 import { CourseService } from "../services/course.service";
 import { CourseDto } from "../dto/course/course.dto";
 import { UserDto } from "../../shared/dto/user.dto";
@@ -20,6 +20,7 @@ import { setTotalCountHeader, sanitizeEnum } from "../../../test/utils/http-util
 import { CourseParticipantsFilter } from "../dto/course/course-participants.filter";
 import { CourseRole } from "../../shared/enums";
 
+@ApiBearerAuth()
 @ApiTags("courses") 
 @Controller("courses")
 export class CourseController {
