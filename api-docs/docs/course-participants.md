@@ -5,7 +5,7 @@ The following article explains how you can manage the participants of a course.
 ## Searching participants
 
 First of all, you might be interested in retrieving the course participants. 
-[[GET] courses/{courseId}/users](http://147.172.178.30:3000/api/#/courses/getUsersOfCourse) and `CourseService.getUsersOfCourse`
+[[GET] courses/{courseId}/users](http://147.172.178.30:3000/api/#/course-participants/getUsersOfCourse) and `CourseParticipants.getUsersOfCourse`
 allow you do just that. You can filter the results with the following parameters:
 ```
 username - Only include participants that match this username (%username%)
@@ -23,7 +23,7 @@ we could perform a request like this:
 	const take = undefined; // No pagination
 
 	// Find all lecturers and tutors
-	this.courseService.getUsersOfCourse(courseId, undefined, undefined, roles]
+	this.courseParticipantsService.getUsersOfCourse(courseId, undefined, undefined, roles]
 		.subscribe(
 			result => {
 				const evaluators = result;
@@ -59,8 +59,8 @@ The response could look like this:
 ## Change participants role
 
 Let's say we want to promote a participant to the Tutor role. For this purpose, we can use 
-[[PATCH] /courses/{courseId}/users/{userId}/role](http://147.172.178.30:3000/api/#/courses/updateUserRole) and
-`CourseService.updateUserRole`. The request requires the `LECTURER` role.
+[[PATCH] /courses/{courseId}/users/{userId}/role](http://147.172.178.30:3000/api/#/course-participants/updateUserRole) and
+`CourseParticipants.updateUserRole`. The request requires the `LECTURER` role.
 We need to specify the new role inside of the request body by using `ChangeCourseRoleDto` or
 creating an object with the following schema:
 ```typescript
@@ -72,8 +72,8 @@ If the request was successful, you'll receive a HTTP-Status 200 without a repons
 
 ## Removing a participant
 
-If you need to remove a participant from the course, you can do so by using [[DELETE] /courses/{courseId}/users/{userId}](http://147.172.178.30:3000/api/#/courses/removeUser)
-and `CourseService.removeUser`.
+If you need to remove a participant from the course, you can do so by using [[DELETE] /courses/{courseId}/users/{userId}](http://147.172.178.30:3000/api/#/course-participants/removeUser)
+and `CourseParticipants.removeUser`.
 The request requires the `LECTURER` role.
 
 If the request was successful, you'll receive a HTTP-Status 200 without a reponse body.
