@@ -24,6 +24,7 @@ async function bootstrap(): Promise<void> {
 		.setVersion("1.0")
 		.addTag("authentication")
 		.addTag("courses")
+		.addTag("course-participants")
 		.addTag("course-config")
 		.addTag("assignments")
 		.addTag("assessments")
