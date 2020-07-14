@@ -1,4 +1,4 @@
-import { Repository, EntityRepository, Brackets } from "typeorm";
+import { Repository, EntityRepository } from "typeorm";
 import { User } from "../../shared/entities/user.entity";
 import { CourseParticipantsFilter } from "../dto/course/course-participants.filter";
 
@@ -24,11 +24,7 @@ export class CourseUserRepository extends Repository<User> {
 		}
 	
 		if (courseRole?.length > 0) {
-			query.andWhere(new Brackets(q => {
-				courseRole.forEach(role => {
-					q.orWhere("courseRelation.role = :courseRole", { courseRole: role });
-				});
-			}));
+			query.andWhere("courseRelation.role IN (:...courseRole)", { courseRole });
 		}
 
 		return query.getManyAndCount();
