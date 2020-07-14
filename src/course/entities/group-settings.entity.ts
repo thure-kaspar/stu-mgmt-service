@@ -1,9 +1,9 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from "typeorm";
-import { CourseConfig } from "./course-config.entity";
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { GroupSettingsDto } from "../dto/course-config/group-settings.dto";
+import { CourseConfig } from "./course-config.entity";
 
 @Entity()
-export class GroupSettings extends BaseEntity {
+export class GroupSettings {
 	@PrimaryGeneratedColumn()
 	id: number;
 

@@ -55,7 +55,7 @@ export function assignMatchingProperties(target: any, source: any): void {
  * Will only work, if entity and dto share a similar structure. Will not perform any custom mapping between these objects.
  * Does not include nested objects such as relations.
  */
-export function convertToEntityNoRelations<T extends BaseEntity>(target: (new () => T), dto: unknown): T {
+export function convertToEntityNoRelations<T>(target: (new () => T), dto: unknown): T {
 	const entity = new target();
 	assignProperties(entity, copy(dto)); // TODO: Using wrong method while assignMatchingProperties doesn't work
 	return entity;
@@ -66,7 +66,7 @@ export function convertToEntityNoRelations<T extends BaseEntity>(target: (new ()
  * Will only work, if entity and dto share a similar structure. Will not perform any custom mapping between these objects.
  * Nested objects will be assigned, but not instantiated as entities.
  */
-export function convertToEntity<T extends BaseEntity>(target: (new () => T), dto: unknown): T {
+export function convertToEntity<T>(target: (new () => T), dto: unknown): T {
 	const entity = new target();
 	assignProperties(entity, copy(dto));
 	return entity;

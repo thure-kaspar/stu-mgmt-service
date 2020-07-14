@@ -1,10 +1,10 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, ManyToOne, Column, OneToOne, CreateDateColumn, Index, JoinColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "../../shared/entities/user.entity";
 import { Group } from "./group.entity";
 
 @Entity("user_group_relations")
 @Index("IDX_UserId_GroupId", ["userId", "groupId"], { unique: true })
-export class UserGroupRelation extends BaseEntity {
+export class UserGroupRelation {
     @PrimaryGeneratedColumn()
     id: number;
 

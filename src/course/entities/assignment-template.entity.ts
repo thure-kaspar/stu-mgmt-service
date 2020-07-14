@@ -1,10 +1,10 @@
-import { BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, Entity, JoinColumn } from "typeorm";
-import { AssignmentType, CollaborationType, AssignmentState } from "../../shared/enums";
-import { CourseConfig } from "./course-config.entity";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { AssignmentState, AssignmentType, CollaborationType } from "../../shared/enums";
 import { AssignmentTemplateDto } from "../dto/course-config/assignment-template.dto";
+import { CourseConfig } from "./course-config.entity";
 
 @Entity()
-export class AssignmentTemplate extends BaseEntity {
+export class AssignmentTemplate {
 	@PrimaryGeneratedColumn()
 	id: number;
 

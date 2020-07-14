@@ -5,7 +5,6 @@ import { AssessmentUserRelation } from "../entities/assessment-user-relation.ent
 import { PartialAssessmentDto } from "../dto/assessment/partial-assessment.dto";
 import { PartialAssessment } from "../entities/partial-assessment.entity";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
-import { AssessmentEvent } from "../entities/assessment-event.entity";
 
 @EntityRepository(Assessment)
 export class AssessmentRepository extends Repository<Assessment> {
@@ -18,12 +17,13 @@ export class AssessmentRepository extends Repository<Assessment> {
 			relation.userId = userId;
 			return relation;
 		});
-		return assessment.save();
+		return this.save(assessment);
 	}
 
 	async addPartialAssessment(partialAssessmentDto: PartialAssessmentDto): Promise<PartialAssessment> {
-		const partial = this.manager.getRepository(PartialAssessment).create(partialAssessmentDto);
-		return partial.save();
+		const partialRepo = this.manager.getRepository(PartialAssessment);
+		const partial = partialRepo.create(partialAssessmentDto);
+		return partialRepo.save(partial);
 	}
 
 	async getAssessmentById(assessmentId: string): Promise<Assessment> {

@@ -1,10 +1,10 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToMany, JoinColumn, ManyToOne } from "typeorm";
-import { Course } from "./course.entity";
-import { Assessment } from "./assessment.entity";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { AssignmentState, AssignmentType, CollaborationType } from "../../shared/enums";
+import { Assessment } from "./assessment.entity";
+import { Course } from "./course.entity";
 
 @Entity("assignments")
-export class Assignment extends BaseEntity {
+export class Assignment {
 	@PrimaryGeneratedColumn("uuid")
 	id: string;
 

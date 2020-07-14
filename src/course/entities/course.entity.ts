@@ -1,12 +1,12 @@
-import { BaseEntity, Entity, Column, OneToMany, PrimaryColumn, Index, OneToOne } from "typeorm";
-import { CourseUserRelation } from "./course-user-relation.entity";
-import { Group } from "./group.entity";
+import { Column, Entity, Index, OneToMany, OneToOne, PrimaryColumn } from "typeorm";
 import { Assignment } from "./assignment.entity";
 import { CourseConfig } from "./course-config.entity";
+import { CourseUserRelation } from "./course-user-relation.entity";
+import { Group } from "./group.entity";
 
 @Entity("courses")
 @Index("IDX_Shortname_Semester", ["shortname", "semester"], { unique: true })
-export class Course extends BaseEntity {
+export class Course {
     @PrimaryColumn()
     id: string;
 

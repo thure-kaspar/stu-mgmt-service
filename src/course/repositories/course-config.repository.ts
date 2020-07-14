@@ -12,7 +12,7 @@ export class CourseConfigRepository extends Repository<CourseConfig> {
 	/** Inserts the course config into the database. */
 	createCourseConfig(courseId: string, configDto: CourseConfigDto): Promise<CourseConfig> {
 		const config = this._createInsertableEntity(courseId, configDto);
-		return config.save();
+		return this.save(config);
 	}
 
 	/** Returns the course config without relations. Throws error, if not found. */

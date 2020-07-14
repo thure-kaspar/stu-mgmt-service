@@ -1,12 +1,12 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { User } from "../../shared/entities/user.entity";
+import { AssessmentUserRelation } from "./assessment-user-relation.entity";
 import { Assignment } from "./assignment.entity";
 import { Group } from "./group.entity";
-import { AssessmentUserRelation } from "./assessment-user-relation.entity";
-import { User } from "../../shared/entities/user.entity";
 import { PartialAssessment } from "./partial-assessment.entity";
 
 @Entity("assessments")
-export class Assessment extends BaseEntity {
+export class Assessment {
 	@PrimaryGeneratedColumn("uuid")
 	id: string;
 	

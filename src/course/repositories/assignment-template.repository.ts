@@ -9,7 +9,7 @@ export class AssignmentTemplateRepository extends Repository<AssignmentTemplate>
 	createAssignmentTemplate(configId: number, templateDto: AssignmentTemplateDto): Promise<AssignmentTemplate> { 
 		const template = this.create(templateDto);
 		template.courseConfigId = configId;
-		return template.save();
+		return this.save(template);
 	}
 
 	/** Retrieves a template. Throws error, if template with given id does not exist. */

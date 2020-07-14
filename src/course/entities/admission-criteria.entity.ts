@@ -1,9 +1,9 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from "typeorm";
-import { CourseConfig } from "./course-config.entity";
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { AdmissionCriteriaDto } from "../dto/course-config/admission-criteria.dto";
+import { CourseConfig } from "./course-config.entity";
 
 @Entity()
-export class AdmissionCritera extends BaseEntity {
+export class AdmissionCritera {
 	@PrimaryGeneratedColumn()
 	id: number;
 

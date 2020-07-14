@@ -14,7 +14,7 @@ export class GroupRepository extends Repository<Group> {
 	 */
 	async createGroup(groupDto: GroupDto): Promise<Group> {
 		const group = this.createEntityFromDto(groupDto);
-		return group.save();
+		return this.save(group);
 	}
 
 	/**
@@ -29,10 +29,11 @@ export class GroupRepository extends Repository<Group> {
 	 * Adds the given user to the group.
 	 */
 	async addUserToGroup(groupId: string, userId: string): Promise<boolean> {
+		const userGroupRelationRepo = this.manager.getRepository(UserGroupRelation);
 		const userGroupRelation = new UserGroupRelation();
 		userGroupRelation.groupId = groupId;
 		userGroupRelation.userId = userId;
-		await userGroupRelation.save()
+		await userGroupRelationRepo.save(userGroupRelation)
 			.catch((error) => {
 				if (error.code === "23505")
 					throw new ConflictException("This user is already a member of this group.");
@@ -155,7 +156,7 @@ export class GroupRepository extends Repository<Group> {
 		group.isClosed = groupDto.isClosed;
 		group.password = groupDto.password;
 		
-		return group.save();
+		return this.save(group);
 	}
 
 	async removeUser(groupId: string, userId: string): Promise<boolean> {

@@ -38,7 +38,7 @@ export class CourseRepository extends Repository<Course> {
 			course.courseUserRelations = courseUserRelations;
 		}
 
-		return course.save();
+		return this.save(course);
 	}
 
 	async getCourses(filter?: CourseFilter): Promise<Course[]> {
@@ -108,7 +108,7 @@ export class CourseRepository extends Repository<Course> {
 		course.isClosed = courseDto.isClosed;
 		course.link = courseDto.link;
     
-		return course.save();
+		return this.save(course);
 	}
 
 	async deleteCourse(courseId: string): Promise<boolean> {

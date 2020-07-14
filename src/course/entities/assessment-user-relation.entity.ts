@@ -1,11 +1,11 @@
-import { BaseEntity, PrimaryColumn, Entity, Index, JoinColumn, ManyToOne, Column } from "typeorm";
-import { Assessment } from "./assessment.entity";
+import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
 import { User } from "../../shared/entities/user.entity";
+import { Assessment } from "./assessment.entity";
 import { Assignment } from "./assignment.entity";
 
 @Entity("assessment_user_relations")
 @Index("IDX_AssignmentId_UserId", ["assignmentId", "userId"], { unique: true })
-export class AssessmentUserRelation extends BaseEntity {
+export class AssessmentUserRelation {
 
 	@ManyToOne(type => Assessment, assessment => assessment.assessmentUserRelations, { onDelete: "CASCADE" })
 	@JoinColumn()

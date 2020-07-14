@@ -1,12 +1,12 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, OneToMany, Column, CreateDateColumn, JoinColumn, ManyToOne, ManyToMany, JoinTable } from "typeorm";
-import { UserGroupRelation } from "./user-group-relation.entity";
-import { Course } from "./course.entity";
-import { Assessment } from "./assessment.entity";
-import { GroupEvent } from "./group-event.entity";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { AssessmentAllocation } from "./assessment-allocation.entity";
+import { Assessment } from "./assessment.entity";
+import { Course } from "./course.entity";
+import { GroupEvent } from "./group-event.entity";
+import { UserGroupRelation } from "./user-group-relation.entity";
 
 @Entity("groups")
-export class Group extends BaseEntity {
+export class Group {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 

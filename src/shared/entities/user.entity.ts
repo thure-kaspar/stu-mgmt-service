@@ -1,12 +1,12 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { AssessmentAllocation } from "../../course/entities/assessment-allocation.entity";
+import { AssessmentUserRelation } from "../../course/entities/assessment-user-relation.entity";
 import { CourseUserRelation } from "../../course/entities/course-user-relation.entity";
 import { UserGroupRelation } from "../../course/entities/user-group-relation.entity";
-import { AssessmentUserRelation } from "../../course/entities/assessment-user-relation.entity";
 import { UserRole } from "../enums";
-import { AssessmentAllocation } from "../../course/entities/assessment-allocation.entity";
 
 @Entity("users")
-export class User extends BaseEntity {
+export class User {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 

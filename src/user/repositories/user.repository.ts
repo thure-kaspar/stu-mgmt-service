@@ -8,7 +8,7 @@ export class UserRepository extends Repository<User> {
 
 	async createUser(userDto: UserDto): Promise<User> {
 		const user = this.createEntityFromDto(userDto);
-		return user.save();
+		return this.save(user);
 	}
 
 	async getAllUsers(): Promise<User[]> {
@@ -59,7 +59,7 @@ export class UserRepository extends Repository<User> {
 		user.email = userDto.email;
 		user.role = userDto.role;
 
-		return user.save();
+		return this.save(user);
 	}
 
 	async deleteUser(userId: string): Promise<boolean> {

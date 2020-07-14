@@ -1,12 +1,12 @@
-import { BaseEntity, PrimaryGeneratedColumn, OneToOne, Column, OneToMany, Entity, JoinColumn } from "typeorm";
-import { GroupSettings } from "./group-settings.entity";
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { CourseConfigDto } from "../dto/course-config/course-config.dto";
 import { AdmissionCritera } from "./admission-criteria.entity";
 import { AssignmentTemplate } from "./assignment-template.entity";
 import { Course } from "./course.entity";
-import { CourseConfigDto } from "../dto/course-config/course-config.dto";
+import { GroupSettings } from "./group-settings.entity";
 
 @Entity()
-export class CourseConfig extends BaseEntity {
+export class CourseConfig {
 	@PrimaryGeneratedColumn()
 	id: number;
 

@@ -5,6 +5,7 @@ import { Group } from "../../entities/group.entity";
 import { GroupRepository } from "../../repositories/group.repository";
 import { DtoFactory } from "../../../shared/dto-factory";
 import { Assessment } from "../../entities/assessment.entity";
+import { Repository } from "typeorm";
 
 /**
  * Queries groups of a course with their assigned evaluator for a particular assignment.
@@ -21,7 +22,7 @@ export class GroupsWithAssignedEvaluatorQuery {
 @QueryHandler(GroupsWithAssignedEvaluatorQuery)
 export class GroupsWithAssignedEvaluatorHandler implements IQueryHandler<GroupsWithAssignedEvaluatorQuery> {
 
-	constructor(@InjectRepository(Group) private groupRepo: GroupRepository) { }
+	constructor(@InjectRepository(Group) private groupRepo: Repository<Group>) { }
 
 	async execute(query: GroupsWithAssignedEvaluatorQuery): Promise<[GroupWithAssignedEvaluatorDto[], number]> {
 		const { courseId, assignmentId } = query;

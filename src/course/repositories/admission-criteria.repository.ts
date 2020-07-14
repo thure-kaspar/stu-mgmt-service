@@ -12,7 +12,7 @@ export class AdmissionCriteraRepository extends Repository<AdmissionCritera> {
 		criteria.courseConfigId = configId;
 		criteria.admissionCriteria = criteriaDto;
 		
-		const saved = await criteria.save();
+		const saved = await this.save(criteria);
 		return saved;
 	}
 
@@ -36,13 +36,13 @@ export class AdmissionCriteraRepository extends Repository<AdmissionCritera> {
 	async updateAdmissionCriteria(courseId: string, criteriaDto: AdmissionCriteriaDto): Promise<AdmissionCritera> {
 		const criteria = await this.getByCourseId(courseId);
 		criteria.admissionCriteria = criteriaDto;
-		return criteria.save();
+		return this.save(criteria);
 	}
 
 	/** Deletes the admission criteria. Returns true, if removal was successful. */
 	async removeAdmissionCriteria(courseId: string): Promise<boolean> {
 		const criteria = await this.getByCourseId(courseId);
-		const deleted = await criteria.remove();
+		const deleted = await this.remove(criteria);
 		return !!deleted;
 	}
 

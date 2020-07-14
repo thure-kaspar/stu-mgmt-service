@@ -7,7 +7,7 @@ export class AssignmentRepository extends Repository<Assignment> {
 
 	async createAssignment(assignmentDto: AssignmentDto): Promise<Assignment> {
 		const assignment = this.createEntityFromDto(assignmentDto);
-		return assignment.save();
+		return this.save(assignment);
 	}
 
 	/** Returns all assignments of a course. Sorted by endDate (descending). */

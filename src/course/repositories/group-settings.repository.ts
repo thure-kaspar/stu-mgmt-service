@@ -9,7 +9,7 @@ export class GroupSettingsRepository extends Repository<GroupSettings> {
 	/** Inserts the group settings into the database and returns them. */
 	createGroupSettings(configId: number, settingsDto: GroupSettingsDto): Promise<GroupSettings> {
 		const settings = this.create(settingsDto);
-		return settings.save();
+		return this.save(settings);
 	}
 	
 	/** Retrieves the group settings. Throws error, if not found. */
@@ -32,7 +32,7 @@ export class GroupSettingsRepository extends Repository<GroupSettings> {
 	async updateGroupSettings(courseId: string, partial: Partial<GroupSettings>): Promise<GroupSettings> {
 		const settings = await this.getByCourseId(courseId);
 		const updated = this.create({...settings, ...partial});
-		return updated.save();
+		return this.save(updated);
 	}
 
 }

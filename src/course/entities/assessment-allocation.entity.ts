@@ -1,13 +1,13 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToOne, Unique } from "typeorm";
-import { Assignment } from "./assignment.entity";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, Unique } from "typeorm";
 import { User } from "../../shared/entities/user.entity";
-import { Group } from "./group.entity";
 import { AssessmentAllocationDto } from "../dto/assessment-allocation/assessment-allocation.dto";
+import { Assignment } from "./assignment.entity";
+import { Group } from "./group.entity";
 
 @Entity()
 @Unique("Unique_AssignmentId_GroupId", ["assignmentId", "groupId"]) // A Group can only be assigned once for every assessment
 @Unique("Unique_AssignmentId_UserId", ["assignmentId", "userId"]) // A User can only be assigned once for every assessment 
-export class AssessmentAllocation extends BaseEntity {
+export class AssessmentAllocation {
 
 	@PrimaryGeneratedColumn()
 	id: number;

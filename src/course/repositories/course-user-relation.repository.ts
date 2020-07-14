@@ -12,7 +12,7 @@ export class CourseUserRelationRepository extends Repository<CourseUserRelation>
 		courseUserRelation.userId = userId;
 		courseUserRelation.role = role;
 
-		await courseUserRelation.save()
+		await this.save(courseUserRelation)
 			.catch((error) => {
 				if (error.code === "23505") { // TODO: Store error codes in enum
 					throw new ConflictException("This user is already signed up to the course.");
@@ -25,7 +25,7 @@ export class CourseUserRelationRepository extends Repository<CourseUserRelation>
 	async updateRole(courseId: string, userId: string, role: CourseRole): Promise<boolean> {
 		const relation = await this.findOneOrFail({ where: { courseId, userId } });
 		relation.role = role;
-		const updated = await relation.save();
+		const updated = await this.save(relation);
 		return updated ? true : false;
 	}
 
