@@ -24,6 +24,7 @@ import { EventBus } from "@nestjs/cqrs";
 import { AssessmentScoreChangedEvent } from "../../../src/course/events/assessment-score-changed.event";
 import { Repository } from "typeorm";
 import { AssessmentEvent } from "../../../src/course/entities/assessment-event.entity";
+import { getRepositoryToken } from "@nestjs/typeorm";
 
 const mock_AssessmentRepository = () => ({
 	createAssessment: jest.fn().mockResolvedValue(convertToEntity(Assessment, ASSESSMENT_JAVA_EVALUATED_GROUP_1)),
@@ -98,7 +99,7 @@ describe("AssessmentService", () => {
 				AssessmentService,
 				{ provide: AssessmentRepository, useFactory: mock_AssessmentRepository },
 				{ provide: AssignmentRepository, useFactory: mock_AssignmentRepository },
-				{ provide: Repository, useFactory: mock_Repository }, // TODO: Fix wrong provider
+				{ provide: getRepositoryToken(AssessmentEvent), useFactory: mock_Repository },
 				{ provide: GroupService, useFactory: mock_GroupService },
 				{ provide: EventBus, useFactory: mock_EventBus }
 			],
