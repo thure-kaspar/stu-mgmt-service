@@ -1,7 +1,7 @@
 import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
 import { getConnection } from "typeorm";
-import { CourseFilterDto } from "../../src/course/dto/course/course-filter.dto";
+import { CourseFilter } from "../../src/course/dto/course/course-filter.dto";
 import { CoursesMock, COURSE_JAVA_1920, COURSE_INFO_2_2020 } from "../mocks/courses.mock";
 import { DbMockService } from "../mocks/db-mock.service";
 import { GROUP_1_JAVA, GROUP_2_JAVA, GroupsMock } from "../mocks/groups/groups.mock";
@@ -39,7 +39,7 @@ describe("GET-REQUESTS of CourseController (e2e)", () => {
 	});
 
 	it("(GET) /courses With filter -> Retrieves the filtered courses", () => {
-		const filter: CourseFilterDto = { 
+		const filter: CourseFilter = { 
 			shortname: "java", 
 			title: "Programmier" 
 		};
@@ -52,7 +52,7 @@ describe("GET-REQUESTS of CourseController (e2e)", () => {
 	});
 
 	it("(GET) /courses With filter -> Retrieves all iterations of the course", () => {
-		const filter: CourseFilterDto = { 
+		const filter: CourseFilter = { 
 			shortname: "java"
 		};
 

@@ -1,7 +1,7 @@
 import { Repository, EntityRepository } from "typeorm";
 import { Course } from "../entities/course.entity";
 import { CourseDto } from "../dto/course/course.dto";
-import { CourseFilterDto } from "../dto/course/course-filter.dto";
+import { CourseFilter } from "../dto/course/course-filter.dto";
 import { AdmissionCritera } from "../entities/admission-criteria.entity";
 import { CourseConfig } from "../entities/course-config.entity";
 import { GroupSettings } from "../entities/group-settings.entity";
@@ -41,7 +41,7 @@ export class CourseRepository extends Repository<Course> {
 		return course.save();
 	}
 
-	async getCourses(filter?: CourseFilterDto): Promise<Course[]> {
+	async getCourses(filter?: CourseFilter): Promise<Course[]> {
 		// Check if filter-object was supplied with properties
 		if (filter && Object.keys(filter).length > 0) {
 			const query = this.createQueryBuilder("course");
