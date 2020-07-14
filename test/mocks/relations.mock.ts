@@ -1,6 +1,6 @@
 import { CourseRole } from "../../src/shared/enums";
 import { COURSE_JAVA_1920, COURSE_INFO_2_2020, COURSE_JAVA_2020 } from "./courses.mock";
-import { USER_STUDENT_JAVA, USER_STUDENT_2_JAVA, USER_STUDENT_3_JAVA_TUTOR, USER_MGMT_ADMIN_JAVA_LECTURER, USER_ELSHAR, USER_KUNOLD } from "./users.mock";
+import { USER_STUDENT_JAVA, USER_STUDENT_2_JAVA, USER_STUDENT_3_JAVA_TUTOR, USER_MGMT_ADMIN_JAVA_LECTURER, USER_ELSHAR, USER_KUNOLD, USER_FROM_AUTH_SYSTEM } from "./users.mock";
 import { ASSESSMENT_JAVA_EVALUATED_GROUP_1, ASSESSMENT_JAVA_TESTAT_USER_1, ASSESSMENT_JAVA_IN_REVIEW, ASSESSMENT_JAVA_IN_REVIEW_NO_PARTIALS } from "./assessments.mock";
 
 export const CourseUserRelationsMock = [
@@ -58,7 +58,12 @@ export const CourseUserRelationsMock = [
 		userId: USER_KUNOLD.id,
 		role: CourseRole.STUDENT
 	},
-
+	{
+		id: 10,
+		courseId: COURSE_JAVA_1920.id,
+		userId: USER_FROM_AUTH_SYSTEM.id,
+		role: CourseRole.TUTOR 
+	}
 ];
 
 export const AssessmentUserRelationsMock = [
