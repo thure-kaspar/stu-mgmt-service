@@ -1,6 +1,6 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, ValidationPipe } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, ValidationPipe, BadRequestException } from "@nestjs/common";
 import { QueryBus } from "@nestjs/cqrs";
-import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiOperation, ApiTags, ApiQuery } from "@nestjs/swagger";
 import { Request } from "express";
 import { sanitizeEnum, setTotalCountHeader } from "../../../test/utils/http-utils";
 import { PasswordDto } from "../../shared/dto/password.dto";
@@ -14,6 +14,10 @@ import { AssignedEvaluatorFilter } from "../queries/groups-with-assigned-evaluat
 import { UserWithAssignedEvaluatorDto } from "../queries/users-with-assigned-evaluator/user-with-assigned-evaluator.dto";
 import { UsersWithAssignedEvaluatorQuery } from "../queries/users-with-assigned-evaluator/users-with-assigned-evaluator.query";
 import { CourseParticipantsService } from "../services/course-participants.service";
+import { ParticipantsComparisonDto } from "../queries/compare-participants-list/participants-comparison.dto";
+import { CourseId } from "../entities/course.entity";
+import { CompareParticipantsListQuery } from "../queries/compare-participants-list/compare-participants-list.query";
+import { transformArray } from "../../utils/http-utils";
 
 @ApiBearerAuth()
 @ApiTags("course-participants")
@@ -59,6 +63,26 @@ export class CourseParticipantsController {
 		const [users, count] = await this.courseParticipantsService.getUsersOfCourse(courseId, filter);
 		setTotalCountHeader(request, count);
 		return users;
+	}
+
+	@Get("compare-participants-list")
+	@ApiOperation({
+		operationId: "compareParticipantsList",
+		summary: "Compare participants list.",
+		description: "Returns an Object, which divides the course participants in two groups (in/out)."
+	})
+	@ApiQuery({ name: "compareToCourseIds", type: String, isArray: true })
+	compareParticipantsList(
+		@Param("courseId") courseId: string,
+		@Query("compareToCourseIds") compareToCourseIds: CourseId[]
+	): Promise<ParticipantsComparisonDto> {
+		
+		compareToCourseIds = transformArray(compareToCourseIds);
+		if (compareToCourseIds?.length > 0) {
+			return this.queryBus.execute(new CompareParticipantsListQuery(courseId, compareToCourseIds));
+		} else {
+			throw new BadRequestException("No courseIds were specified for comparison.");
+		}
 	}
 
 	@Get(":userId/canJoin")
