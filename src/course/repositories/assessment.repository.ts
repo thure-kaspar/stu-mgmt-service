@@ -101,7 +101,7 @@ export class AssessmentRepository extends Repository<Assessment> {
 
 		// Update comment, if included (allow setting to null)
 		if (comment !== undefined) {
-			assessment.comment = updateDto.comment; 
+			assessment.comment = comment?.length > 0 ? comment : null; 
 		} 
 
 		// Perform insert/update/delete in one transaction
