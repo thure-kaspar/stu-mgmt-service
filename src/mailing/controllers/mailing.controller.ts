@@ -13,7 +13,7 @@ export class MailingController {
 	@Post("send")
 	@ApiOperation({
 		operationId: "send",
-		summary: "Send mail",
+		summary: "Send mail.",
 		description: "Sends the mail."
 	})
 	send(@Body() mailDto: MailDto): Promise<void> {

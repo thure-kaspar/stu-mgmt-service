@@ -12,7 +12,7 @@ export class AuthController {
 	@Post("register")
 	@ApiOperation({
 		operationId: "register",
-		summary: "Register user",
+		summary: "Register user.",
 		description: "Creates a new account."
 	})
 	register(@Body(ValidationPipe) authCredentials: AuthCredentialsDto): Promise<void> {
@@ -23,7 +23,7 @@ export class AuthController {
 	@Post("login")
 	@ApiOperation({
 		operationId: "login",
-		summary: "Login",
+		summary: "Login.",
 		description: "Logs the user in to the StudentMgmt-Backend directly."
 	})
 	@HttpCode(200)
@@ -36,7 +36,7 @@ export class AuthController {
 	@Post("loginWithToken")
 	@ApiOperation({
 		operationId: "loginWithToken",
-		summary: "Login with token",
+		summary: "Login with token.",
 		description: "Logs the user in to the StudentMgmt-Backend via the credentials provided by the external authentication system."
 	})
 	@HttpCode(200)

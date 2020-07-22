@@ -23,7 +23,7 @@ export class CourseController {
 	@Post()
 	@ApiOperation({
 		operationId: "createCourse",
-		summary: "Create course",
+		summary: "Create course.",
 		description: "Creates a new course."
 	})
 	createCourse(@Body() courseDto: CourseCreateDto): Promise<CourseDto> {
@@ -36,7 +36,7 @@ export class CourseController {
 	@Get()
 	@ApiOperation({
 		operationId: "getCourses",
-		summary: "Get courses",
+		summary: "Get courses.",
 		description: "Returns all courses that match the given filter."
 	})
 	getCourses(@Query() filter?: CourseFilter): Promise<CourseDto[]> {
@@ -50,7 +50,7 @@ export class CourseController {
 	@UseGuards(AuthGuard(), CourseMemberGuard)
 	@ApiOperation({
 		operationId: "getCourseById",
-		summary: "Get course",
+		summary: "Get course.",
 		description: "Retrieves the course, if the requesting user is a member of this course."
 	})
 	getCourseById(@Param("courseId") courseId: CourseId): Promise<CourseDto> {
@@ -63,7 +63,7 @@ export class CourseController {
 	@Get(":name/semester/:semester")
 	@ApiOperation({
 		operationId: "getCourseByNameAndSemester",
-		summary: "Get course by name and semester",
+		summary: "Get course by name and semester.",
 		description: ""
 	})
 	getCourseByNameAndSemester(
@@ -80,7 +80,7 @@ export class CourseController {
 	@Patch(":courseId")
 	@ApiOperation({
 		operationId: "updateCourse",
-		summary: "Update course",
+		summary: "Update course.",
 		description: "Updates the course."
 	})
 	updateCourse(
@@ -97,7 +97,7 @@ export class CourseController {
 	@Delete(":courseId")
 	@ApiOperation({
 		operationId: "deleteCourse",
-		summary: "Delete course",
+		summary: "Delete course.",
 		description: "Deletes the course."
 	})
 	deleteCourse(

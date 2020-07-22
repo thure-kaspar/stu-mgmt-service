@@ -23,7 +23,7 @@ export class GroupController {
 	@Post()
 	@ApiOperation({
 		operationId: "createGroup",
-		summary: "Create group",
+		summary: "Create group.",
 		description: "Creates a new group, if course allows group creation."
 	})
 	createGroup(
@@ -37,7 +37,7 @@ export class GroupController {
 	@Post("bulk")
 	@ApiOperation({
 		operationId: "createMultipleGroups",
-		summary: "Create multiple groups",
+		summary: "Create multiple groups.",
 		description: "Creates multiple groups with the given names or naming schema and count."
 	})
 	createMultipleGroups(
@@ -51,7 +51,7 @@ export class GroupController {
 	@Post(":groupId/users/:userId")
 	@ApiOperation({
 		operationId: "addUserToGroup",
-		summary: "Add user to group",
+		summary: "Add user to group.",
 		description: "Adds the user to the group, if constraints are fulfilled."
 	})
 	addUserToGroup(
@@ -67,7 +67,7 @@ export class GroupController {
 	@Get()
 	@ApiOperation({
 		operationId: "getGroupsOfCourse",
-		summary: "Get groups of course",
+		summary: "Get groups of course.",
 		description: "Retrieves all groups that belong to the course."
 	})
 	getGroupsOfCourse(
@@ -80,7 +80,7 @@ export class GroupController {
 	@Get("history")
 	@ApiOperation({
 		operationId: "getGroupHistoryOfCourse",
-		summary: "Get group history of course",
+		summary: "Get group history of course.",
 		description: "Retrieves all group events of the course."
 	})
 	getGroupHistoryOfCourse(@Param("courseId") courseId: CourseId): Promise<GroupEventDto[]> {
@@ -91,7 +91,7 @@ export class GroupController {
 	@Get(":groupId/assignments/:assignmentId")
 	@ApiOperation({
 		operationId: "getGroupFromAssignment",
-		summary: "Get snapshot of a group at assignment end",
+		summary: "Get snapshot of a group at assignment end.",
 		description: "Returns a snapshot of the group's members at the time of the assignment's end."
 	})
 	getGroupFromAssignment(
@@ -106,7 +106,7 @@ export class GroupController {
 	@Get("assignments/:assignmentId")
 	@ApiOperation({
 		operationId: "getGroupsFromAssignment",
-		summary: "Get snapshot of groups at assignment end",
+		summary: "Get snapshot of groups at assignment end.",
 		description: "Returns a snapshot of the group constellations at the time of the assignment's end."
 	})
 	getGroupsFromAssignment(
@@ -120,7 +120,7 @@ export class GroupController {
 	@Get("assignments/:assignmentId/with-assigned-evaluator")
 	@ApiOperation({
 		operationId: "getGroupsWithAssignedEvaluator",
-		summary: "Get groups with assigned evaluator",
+		summary: "Get groups with assigned evaluator.",
 		description: "Retrieves groups with their assigned evaluator for an assignment"
 	})
 	async getGroupsWithAssignedEvaluator(
@@ -139,7 +139,7 @@ export class GroupController {
 	@Get(":groupId")
 	@ApiOperation({
 		operationId: "getGroup",
-		summary: "Get group",
+		summary: "Get group.",
 		description: "Returns the group with its course, users, assessments and history."
 	})
 	getGroup(
@@ -153,7 +153,7 @@ export class GroupController {
 	@Get(":groupId/users")
 	@ApiOperation({
 		operationId: "getUsersOfGroup",
-		summary: "Get users of group",
+		summary: "Get users of group.",
 		description: "Retrieves all users that are members of the group."
 	})
 	getUsersOfGroup(
@@ -167,7 +167,7 @@ export class GroupController {
 	@Patch(":groupId")
 	@ApiOperation({
 		operationId: "updateGroup",
-		summary: "Update group",
+		summary: "Update group.",
 		description: "Updates the group"
 	})
 	updateGroup(
@@ -182,7 +182,7 @@ export class GroupController {
 	@Delete(":groupId/users/:userId")
 	@ApiOperation({
 		operationId: "removeUserFromGroup",
-		summary: "Remove user",
+		summary: "Remove user.",
 		description: "Removes the user from the group."
 	})
 	removeUserFromGroup(
@@ -198,7 +198,7 @@ export class GroupController {
 	@Delete(":groupId")
 	@ApiOperation({
 		operationId: "deleteGroup",
-		summary: "Delete group",
+		summary: "Delete group.",
 		description: "Deletes the group."
 	})
 	deleteGroup(

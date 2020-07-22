@@ -34,7 +34,7 @@ export class CourseParticipantsController {
 	@Post(":userId")
 	@ApiOperation({
 		operationId: "addUser",
-		summary: "Add user to course",
+		summary: "Add user to course.",
 		description: "Adds a user to the course. If the course requires a password, the correct password needs to be included in the request body."
 	})
 	addUser(@Param("courseId") courseId: CourseId,
@@ -50,7 +50,7 @@ export class CourseParticipantsController {
 	@Get()
 	@ApiOperation({
 		operationId: "getUsersOfCourse",
-		summary: "Get users of course",
+		summary: "Get users of course.",
 		description: "Returns a collection of users that are signed up for this course."
 	})
 	async getUsersOfCourse(
@@ -68,7 +68,7 @@ export class CourseParticipantsController {
 	@Get("compare-participants-list")
 	@ApiOperation({
 		operationId: "compareParticipantsList",
-		summary: "Compare participants list.",
+		summary: "Compare participants list..",
 		description: "Returns an Object, which divides the course participants in two groups (in/out)."
 	})
 	@ApiQuery({ name: "compareToCourseIds", type: String, isArray: true })
@@ -88,7 +88,7 @@ export class CourseParticipantsController {
 	@Get(":userId/canJoin")
 	@ApiOperation({
 		operationId: "canUserJoinCourse",
-		summary: "Check if joining is possible",
+		summary: "Check if joining is possible.",
 		description: "Checks, if the user is able to join the course. A user can join a course, if he's not already a member and the course is not closed."
 	})
 	canUserJoinCourse(
@@ -102,7 +102,7 @@ export class CourseParticipantsController {
 	@Get("assignments/:assignmentId/with-assigned-evaluator")
 	@ApiOperation({
 		operationId: "getUsersWithAssignedEvaluator",
-		summary: "Get users with assigned evaluator",
+		summary: "Get users with assigned evaluator.",
 		description: "Returns users with their assigned evaluator for a particular assignment."
 	})
 	async getUsersWithAssignedEvaluator(
@@ -124,7 +124,7 @@ export class CourseParticipantsController {
 	@Patch(":userId/role")
 	@ApiOperation({
 		operationId: "updateUserRole",
-		summary: "Update user's role in course",
+		summary: "Update user's role in course.",
 		description: "Assigns the given role to the user of this course."
 	})
 	updateUserRole(
@@ -142,7 +142,7 @@ export class CourseParticipantsController {
 	@Delete(":userId")
 	@ApiOperation({
 		operationId: "removeUser",
-		summary: "Remove user from course",
+		summary: "Remove user from course.",
 		description: "Removes the user from the course. Returns true, if removal was successful."
 	})
 	removeUser(

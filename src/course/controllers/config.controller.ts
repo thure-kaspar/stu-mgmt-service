@@ -20,7 +20,7 @@ export class CourseConfigController {
 	@Post()
 	@ApiOperation({
 		operationId: "createCourseConfig",
-		summary: "Create course config",
+		summary: "Create course config.",
 		description: "Saves a configuration for a course, if it does not have one already."
 	})
 	createCourseConfig(
@@ -33,7 +33,7 @@ export class CourseConfigController {
 	@Post(":configId/admission-criteria")
 	@ApiOperation({
 		operationId: "createAdmissionCriteria",
-		summary: "Create admission criteria",
+		summary: "Create admission criteria.",
 		description: "Creates admission criteria for a course."
 	})
 	createAdmissionCriteria(
@@ -47,7 +47,7 @@ export class CourseConfigController {
 	@Post(":configId/assignment-templates")
 	@ApiOperation({
 		operationId: "createAssignmentTemplate",
-		summary: "Create assignment template",
+		summary: "Create assignment template.",
 		description: "Creates an assignment template."
 	})
 	createAssignmentTemplate(
@@ -63,7 +63,7 @@ export class CourseConfigController {
 	@Get()
 	@ApiOperation({
 		operationId: "getCourseConfig",
-		summary: "Get course config",
+		summary: "Get course config.",
 		description: "Retrieves the configuration of a course."
 	})
 	getCourseConfig(@Param("courseId") courseId: CourseId): Promise<CourseConfigDto> {
@@ -73,7 +73,7 @@ export class CourseConfigController {
 	@Get("group-settings")
 	@ApiOperation({
 		operationId: "getGroupSettings",
-		summary: "Get group settings",
+		summary: "Get group settings.",
 		description: "Retrieves the group settings of a course."
 	})
 	getGroupSettings(@Param("courseId") courseId: CourseId): Promise<GroupSettingsDto> {
@@ -83,7 +83,7 @@ export class CourseConfigController {
 	@Get("admission-criteria")
 	@ApiOperation({
 		operationId: "getAdmissionCriteria",
-		summary: "Get admission criteria",
+		summary: "Get admission criteria.",
 		description: "Retrieves the admission criteria of a course."
 	})
 	getAdmissionCriteria(@Param("courseId") courseId: CourseId): Promise<AdmissionCriteriaDto> {
@@ -93,7 +93,7 @@ export class CourseConfigController {
 	@Get("assignment-templates")
 	@ApiOperation({
 		operationId: "getAssignmentTemplates",
-		summary: "Get assignment templates",
+		summary: "Get assignment templates.",
 		description: "Retrieves the assignment templates of a course."
 	})
 	getAssignmentTemplates(@Param("courseId") courseId: CourseId): Promise<AssignmentTemplateDto[]> {
@@ -105,7 +105,7 @@ export class CourseConfigController {
 	@Patch()
 	@ApiOperation({
 		operationId: "updateCourseConfig",
-		summary: "Update course config",
+		summary: "Update course config.",
 		description: "Updates the configuration of a course."
 	})
 	updateCourseConfig(
@@ -118,7 +118,7 @@ export class CourseConfigController {
 	@Patch("group-settings")
 	@ApiOperation({
 		operationId: "updateGroupSettings",
-		summary: "Update group settings",
+		summary: "Update group settings.",
 		description: "Updates the group settings of a course."
 	})
 	updateGroupSettings(
@@ -131,7 +131,7 @@ export class CourseConfigController {
 	@Patch("admission-criteria")
 	@ApiOperation({
 		operationId: "updateAdmissionCriteria",
-		summary: "Update admission criteria",
+		summary: "Update admission criteria.",
 		description: "Updates the admission criteria of a course."
 	})
 	updateAdmissionCriteria(
@@ -144,7 +144,7 @@ export class CourseConfigController {
 	@Patch("assignment-template/:id")
 	@ApiOperation({
 		operationId: "updateAssignmentTemplate",
-		summary: "Update assignment template",
+		summary: "Update assignment template.",
 		description: "Updates the assignment template."
 	})
 	updateAssignmentTemplate(
@@ -162,7 +162,7 @@ export class CourseConfigController {
 	@Delete()
 	@ApiOperation({
 		operationId: "removeCourseConfig",
-		summary: "Remove course config",
+		summary: "Remove course config.",
 		description: "Removes the complete configuration of a course. Includes group settings, admission criteria and templates."
 	})
 	deleteCourseConfig(@Param("courseId") courseId: CourseId): Promise<void> {
@@ -172,7 +172,7 @@ export class CourseConfigController {
 	@Delete("admission-criteria")
 	@ApiOperation({
 		operationId: "removeAdmissionCriteria",
-		summary: "Remove admssion criteria",
+		summary: "Remove admssion criteria.",
 		description: "Removes the admission criteria of a course."
 	})
 	deleteAdmissionCriteria(@Param("courseId") courseId: CourseId): Promise<void> {
@@ -182,7 +182,7 @@ export class CourseConfigController {
 	@Delete("assignment-template/:id")
 	@ApiOperation({
 		operationId: "deleteAssignmentTemplate",
-		summary: "Delete assignment template",
+		summary: "Delete assignment template.",
 		description: "Deletes the assignment template."
 	})
 	deleteAssignmentTemplate(

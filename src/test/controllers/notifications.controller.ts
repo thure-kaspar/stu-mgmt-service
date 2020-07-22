@@ -13,7 +13,7 @@ export class NotificationsController {
 	@Post()
 	@ApiOperation({
 		operationId: "sendNotification",
-		summary: "Send notication",
+		summary: "Send notication.",
 		description: "Sends the given UpdateMessage to the specified URL via HTTP-POST. Use (GET) /notifications for examples."
 	})
 	sendNotification(@Body() testMessage: UpdateMessageTestDto): void {
@@ -24,7 +24,7 @@ export class NotificationsController {
 	@Post("log")
 	@ApiOperation({
 		operationId: "logReceivedMessage",
-		summary: "SHOULD NOT BE CALLED",
+		summary: "SHOULD NOT BE CALLED.",
 		description: "Logs the received UpdateMessage send from (POST) /notifications, if it was send to this route (/notifications/log)."
 	})
 	logReceivedMessage(@Body() message: UpdateMessage): void {
@@ -34,7 +34,7 @@ export class NotificationsController {
 	@Get()
 	@ApiOperation({
 		operationId: "getNotification",
-		summary: "Get UpdateMessage-Examples",
+		summary: "Get UpdateMessage-Examples.",
 		description: "Returns all possible UpdateMessages."
 	})
 	getNotification(): UpdateMessage[] {

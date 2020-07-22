@@ -13,7 +13,7 @@ export class AssignmentController {
 	@Post()
 	@ApiOperation({
 		operationId: "createAssignment",
-		summary: "Create assignment",
+		summary: "Create assignment.",
 		description: "Creates a new assignment."
 	})
 	createAssignment(
@@ -27,7 +27,7 @@ export class AssignmentController {
 	@Get()
 	@ApiOperation({
 		operationId: "getAssignmentsOfCourse",
-		summary: "Get assignments of course",
+		summary: "Get assignments of course.",
 		description: "Retrieves all assignments of the course."
 	})
 	getAssignmentsOfCourse(
@@ -40,7 +40,7 @@ export class AssignmentController {
 	@Get(":assignmentId")
 	@ApiOperation({
 		operationId: "getAssignmentById",
-		summary: "Get assignment",
+		summary: "Get assignment.",
 		description: "Retrieves the assignment."
 	})
 	getAssignmentById(
@@ -54,7 +54,7 @@ export class AssignmentController {
 	@Patch(":assignmentId")
 	@ApiOperation({
 		operationId: "updateAssignment",
-		summary: "Update assignment",
+		summary: "Update assignment.",
 		description: "Updates the assignment."
 	})
 	updateAssignment(
@@ -69,7 +69,7 @@ export class AssignmentController {
 	@Delete(":assignmentId")
 	@ApiOperation({
 		operationId: "deleteAssignment",
-		summary: "Delete assignment",
+		summary: "Delete assignment.",
 		description: "Deletes the assignment. Returns true, if removal was successful."
 	})
 	deleteAssignment(

@@ -20,7 +20,7 @@ export class AssessmentController {
 	@Post()
 	@ApiOperation({
 		operationId: "createAssessment",
-		summary: "Create assessment",
+		summary: "Create assessment.",
 		description: "Creates a new assessment."
 	})
 	createAssessment(
@@ -35,7 +35,7 @@ export class AssessmentController {
 	@Post(":assessmentId")
 	@ApiOperation({
 		operationId: "addPartialAssessment",
-		summary: "Add partial assessment",
+		summary: "Add partial assessment.",
 		description: "Adds a partial assessment for an exisiting assessment. Alternatively, partial assessments can be created together with the assessment."
 	})
 	addPartialAssessment(
@@ -51,7 +51,7 @@ export class AssessmentController {
 	@Get()
 	@ApiOperation({
 		operationId: "getAllAssessmentsForAssignment",
-		summary: "Get assessments of assignment",
+		summary: "Get assessments of assignment.",
 		description: "Retrieves all assessments that have been created for the assignment."
 	})
 	getAllAssessmentsForAssignment(
@@ -66,7 +66,7 @@ export class AssessmentController {
 	@Get(":assessmentId")
 	@ApiOperation({
 		operationId: "getAssessmentById",
-		summary: "Get assessment",
+		summary: "Get assessment.",
 		description: "Retrieves the assessment."
 	})
 	getAssessmentById(
@@ -81,7 +81,7 @@ export class AssessmentController {
 	@Get(":assessmentId/events")
 	@ApiOperation({
 		operationId: "getEventsOfAssessment",
-		summary: "Get assessment events",
+		summary: "Get assessment events.",
 		description: "Retrieves events of the assessment."
 	})
 	getEventsOfAssessment(
@@ -96,7 +96,7 @@ export class AssessmentController {
 	@Patch(":assessmentId")
 	@ApiOperation({
 		operationId: "updateAssessment",
-		summary: "Update assessment",
+		summary: "Update assessment.",
 		description: "Updates the assessment."
 	})
 	updateAssessment(
@@ -113,7 +113,7 @@ export class AssessmentController {
 	@Delete(":assessmentId")
 	@ApiOperation({
 		operationId: "deleteAssessment",
-		summary: "Delete assessment",
+		summary: "Delete assessment.",
 		description: "Deletes the assessment. Returns true, if removal was successful."
 	})
 	deleteAssessment(

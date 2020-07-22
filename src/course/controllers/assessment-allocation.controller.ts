@@ -14,7 +14,7 @@ export class AssessmentAllocationController {
 	@Post()
 	@ApiOperation({
 		operationId: "createAllocation",
-		summary: "Assign assessment to evaluator",
+		summary: "Assign assessment to evaluator.",
 		description: "Maps an evaluator to a group or user. If the group or user is already assigned to another evaluator, changes the evaluator."
 	})
 	createAllocation(
@@ -32,7 +32,7 @@ export class AssessmentAllocationController {
 	@Post("from-existing/:existingAssignmentId")
 	@ApiOperation({
 		operationId: "addAllocationsFromExistingAssignment",
-		summary: "Copy assessment allocation from another assignment",
+		summary: "Copy assessment allocation from another assignment.",
 		description: "Applies the allocations from another assignment to the specified assignment."
 	})
 	addAllocationsFromExistingAssignment(
@@ -47,7 +47,7 @@ export class AssessmentAllocationController {
 	@Get()
 	@ApiOperation({
 		operationId: "getAllocations",
-		summary: "Get assessment allocations",
+		summary: "Get assessment allocations.",
 		description: "Returns a list of allocations, which map an evaluator to a group or user."
 	})
 	getAllocations(
@@ -60,7 +60,7 @@ export class AssessmentAllocationController {
 	@Delete()
 	@ApiOperation({
 		operationId: "removeAllocation",
-		summary: "Remove allocation",
+		summary: "Remove allocation.",
 		description: "Removes the assignment of the specified group or user. Throws error, if removal was unsuccessful."
 	})
 	@ApiQuery({

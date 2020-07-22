@@ -20,7 +20,7 @@ export class UserController {
 	@Post()
 	@ApiOperation({
 		operationId: "createUser",
-		summary: "Create user",
+		summary: "Create user.",
 		description: "Creates a user."
 	})
 	createUser(@Body() userDto: UserDto): Promise<UserDto> {
@@ -30,7 +30,7 @@ export class UserController {
 	@Get()
 	@ApiOperation({
 		operationId: "getAllUsers",
-		summary: "Get users",
+		summary: "Get users.",
 		description: "Retrieves all users that match the specified filter."
 	})
 	getUsers(): Promise<UserDto[]> {
@@ -41,7 +41,7 @@ export class UserController {
 	@UseGuards(AuthGuard())
 	@ApiOperation({
 		operationId: "getUserById",
-		summary: "Get user",
+		summary: "Get user.",
 		description: "Retrieves the user."
 	})
 	getUserById(@Param("userId") userId: string): Promise<UserDto> {
@@ -51,7 +51,7 @@ export class UserController {
 	@Get("email/:email")
 	@ApiOperation({
 		operationId: "getUserbyEmail",
-		summary: "Get user by email",
+		summary: "Get user by email.",
 		description: "Retrieves a user by email."
 	})
 	getUserbyEmail(@Param("email") email: string): Promise<UserDto> {
@@ -61,7 +61,7 @@ export class UserController {
 	@Get(":userId/courses")
 	@ApiOperation({
 		operationId: "getCoursesOfUser",
-		summary: "Get courses of user",
+		summary: "Get courses of user.",
 		description: "Retrieves all courses that the user is a member of."
 	})
 	getCoursesOfUser(@Param("userId") userId: string): Promise<CourseDto[]> {
@@ -71,7 +71,7 @@ export class UserController {
 	@Get(":userId/courses/:courseId/groups")
 	@ApiOperation({
 		operationId: "getGroupOfUserForCourse",
-		summary: "Get group of user for course",
+		summary: "Get group of user for course.",
 		description: "Retrieves the user's current group in a course."
 	})
 	getGroupOfUserForCourse(
@@ -85,7 +85,7 @@ export class UserController {
 	@Get(":userId/courses/:courseId/group-history")
 	@ApiOperation({
 		operationId: "getGroupHistoryOfUser",
-		summary: "Get group history of user for course",
+		summary: "Get group history of user for course.",
 		description: "Retrieves the group history of a user in a course. Events are sorted by timestamp in descending order (new to old)."
 	})
 	getGroupHistoryOfUser(
@@ -99,7 +99,7 @@ export class UserController {
 	@Get(":userId/courses/:courseId/assignments/:assignmentId/group")
 	@ApiOperation({
 		operationId: "getGroupOfAssignment",
-		summary: "Get group of assignment",
+		summary: "Get group of assignment.",
 		description: "Retrieves the group that the user was a member of when the assignment closed or the current group, if it hasn't closed yet. Returns null, if user was not in a group."
 	})
 	getGroupOfAssignment(
@@ -114,7 +114,7 @@ export class UserController {
 	@Get(":userId/courses/:courseId/assignments/groups")
 	@ApiOperation({
 		operationId: "getGroupOfAllAssignments",
-		summary: "Get group of all assignments",
+		summary: "Get group of all assignments.",
 		description: "Maps all assignments of a course to the user's group for the corresponding assignment."
 	})
 	getGroupOfAllAssignments(
@@ -127,7 +127,7 @@ export class UserController {
 	@Get(":userId/courses/:courseId/assessments")
 	@ApiOperation({
 		operationId: "getAssessmentsOfUserForCourse",
-		summary: "Get assessments",
+		summary: "Get assessments.",
 		description: "Returns all assessments of the user in the given course. Includes the group, if assessment specified a group."
 	})
 	getAssessmentsWithGroupsOfUserForCourse(
@@ -141,7 +141,7 @@ export class UserController {
 	@Patch(":userId")
 	@ApiOperation({
 		operationId: "updateUser",
-		summary: "Update user",
+		summary: "Update user.",
 		description: "Updates the user"
 	})
 	updateUser(
@@ -154,7 +154,7 @@ export class UserController {
 	@Delete(":userId")
 	@ApiOperation({
 		operationId: "deleteUser",
-		summary: "Delete user",
+		summary: "Delete user.",
 		description: "Deletes the user. Returns true, if removes was successful."
 	})
 	deleteUser(@Param("userId") userId: string): Promise<boolean> {
