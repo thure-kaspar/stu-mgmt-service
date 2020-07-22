@@ -6,6 +6,7 @@ import { PartialAssessmentDto } from "../dto/assessment/partial-assessment.dto";
 import { PartialAssessment } from "../entities/partial-assessment.entity";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
 import { CourseId } from "../entities/course.entity";
+import { AssessmentFilter } from "../dto/assessment/assessment-filter.dto";
 
 @EntityRepository(Assessment)
 export class AssessmentRepository extends Repository<Assessment> {
@@ -42,34 +43,45 @@ export class AssessmentRepository extends Repository<Assessment> {
 		return result;
 	}
 
-	async getAllAssessmentsForAssignment(assignmentId: string): Promise<Assessment[]> {
-		return this.find({ 
-			where: {
-				assignmentId: assignmentId
-			},
-			relations: ["group", "creator", "assessmentUserRelations", "assessmentUserRelations.user"]
-		});
+	async getAssessmentsForAssignment(assignmentId: string, filter?: AssessmentFilter): Promise<[Assessment[], number]> {
+		const { groupId, userId, creatorId, minScore, skip, take } = filter || { };
+
+		const query = this.createQueryBuilder("assessment")
+			.where("assessment.assignmentId = :assignmentId", { assignmentId })
+			.innerJoinAndSelect("assessment.creator", "creator")
+			.leftJoinAndSelect("assessment.group", "group") // Include group, if it exists
+			.leftJoinAndSelect("assessment.partialAssessments", "partials") // Include partial assessments, if they exist
+			.innerJoin("assessment.assignment", "assignment")
+			.orderBy("assignment.endDate", "ASC")
+			.skip(skip)
+			.take(take);
+
+		if (groupId) {
+			query.andWhere("assessment.groupId = :groupId", { groupId });
+		}
+
+		if (userId) {
+			query.leftJoin("assessment.assessmentUserRelations", "userRelation", "userRelation.userId = :userId", { userId });
+		}
+
+		if (creatorId) {
+			query.andWhere("assessment.creatorId = :creatorId", { creatorId });
+		}
+
+		if (minScore) {
+			query.andWhere("assessment.achievedPoints >= :minScore", { minScore });
+		}
+
+		return query.getManyAndCount();
 	}
 
 	async getAssessmentsOfUserForCourse(courseId: CourseId, userId: string): Promise<Assessment[]> {
-		return this.find({
-			where: {
-				assignment: {
-					courseId: courseId
-				},
-				assessmentUserRelations: {
-					userId: userId
-				}
-			}
-		});
-	}
-
-	async getAssessmentsOfUserForCourse_WithAssignment_WithGroups(courseId: CourseId, userId: string): Promise<Assessment[]> {
 		return this.createQueryBuilder("assessment")
-			.innerJoin("assessment.assignment", "assignment", "assignment.courseId = :courseId", { courseId })
-			.innerJoin("assessment.assessmentUserRelations", "userRelation", "userRelation.userId = :userId", { userId })
-			.leftJoinAndSelect("assessment.partialAssessments", "partial")
-			.leftJoinAndSelect("assessment.group", "group")
+			.innerJoinAndSelect("assessment.creator", "creator")
+			.leftJoinAndSelect("assessment.partialAssessments", "partials") // Include partial assessments, if they exist
+			.leftJoinAndSelect("assessment.group", "group") // Include group, if it exists
+			.innerJoin("assessment.assessmentUserRelations", "userRelation", "userRelation.userId = :userId", { userId }) // User condition
+			.innerJoin("assessment.assignment", "assignment", "assignment.courseId = :courseId", { courseId }) // Course condition
 			.getMany();
 	}
 

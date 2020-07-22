@@ -158,7 +158,7 @@ export class UserService {
 	}
 
 	async getAssessmentsOfUserForCourse(userId: string, courseId: CourseId): Promise<AssessmentDto[]> {
-		const assessments = await this.assessmentRepository.getAssessmentsOfUserForCourse_WithAssignment_WithGroups(courseId, userId);
+		const assessments = await this.assessmentRepository.getAssessmentsOfUserForCourse(courseId, userId);
 		return assessments.map(a => DtoFactory.createAssessmentDto(a));
 	}
 

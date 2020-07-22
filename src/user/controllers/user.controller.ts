@@ -130,7 +130,7 @@ export class UserController {
 		summary: "Get assessments.",
 		description: "Returns all assessments of the user in the given course. Includes the group, if assessment specified a group."
 	})
-	getAssessmentsWithGroupsOfUserForCourse(
+	getAssessmentsOfUserForCourse(
 		@Param("userId") userId: string,
 		@Param("courseId") courseId: CourseId,
 	): Promise<AssessmentDto[]> {

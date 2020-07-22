@@ -14,6 +14,7 @@ import { AssessmentScoreChangedEvent } from "../events/assessment-score-changed.
 import { AssessmentEvent } from "../entities/assessment-event.entity";
 import { Repository } from "typeorm";
 import { AssessmentEventDto } from "../dto/assessment/assessment-event.dto";
+import { AssessmentFilter } from "../dto/assessment/assessment-filter.dto";
 
 @Injectable()
 export class AssessmentService {
@@ -63,16 +64,19 @@ export class AssessmentService {
 		return partialAssessment.toDto();
 	}
 
-	async getAssessmentsForAssignment(assignmentId: string): Promise<AssessmentDto[]> {
-		const assessments = await this.assessmentRepository.getAllAssessmentsForAssignment(assignmentId);
-		return assessments.map(assessment => DtoFactory.createAssessmentDto(assessment));
+	/**
+	 * Returns all assessments that match the specified filter.
+	 */
+	async getAssessmentsForAssignment(assignmentId: string, filter?: AssessmentFilter): Promise<[AssessmentDto[], number]> {
+		const [assessments, count] = await this.assessmentRepository.getAssessmentsForAssignment(assignmentId, filter);
+		const dtos = assessments.map(assessment => DtoFactory.createAssessmentDto(assessment));
+		return [dtos, count];
 	}
 
 	async getAssessmentById(assessmentId: string): Promise<AssessmentDto> {
 		const assessment = await this.assessmentRepository.getAssessmentById(assessmentId);
 		return DtoFactory.createAssessmentDto(assessment);
 	}
-
 
 	/**
 	 * Returns events that have a relation with the specified assessment (i.e. `AssessmentScoreChangedEvent`).

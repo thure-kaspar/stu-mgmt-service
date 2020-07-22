@@ -1,38 +1,41 @@
-import { AssessmentService } from "../../../src/course/services/assessment.service";
-import { TestingModule, Test } from "@nestjs/testing";
-import { AssessmentRepository } from "../../../src/course/repositories/assessment.repository";
-import { GroupRepository } from "../../../src/course/repositories/group.repository";
-import { GROUP_1_JAVA } from "../../mocks/groups/groups.mock";
-import { UserGroupRelation } from "../../../src/course/entities/user-group-relation.entity";
-import { UserGroupRelationsMock } from "../../mocks/groups/user-group-relations.mock";
-import { DtoFactory } from "../../../src/shared/dto-factory";
-import { AssessmentDto } from "../../../src/course/dto/assessment/assessment.dto";
-import { copy, convertToEntity } from "../../utils/object-helper";
-import { ASSESSMENT_JAVA_EVALUATED_GROUP_1, ASSESSMENT_JAVA_TESTAT_USER_1, ASSESSMENT_JAVA_EVALUATED_GROUP_2, ASSESSMENT_JAVA_IN_REVIEW } from "../../mocks/assessments.mock";
-import { Group } from "../../../src/course/entities/group.entity";
-import { Assessment } from "../../../src/course/entities/assessment.entity";
-import { AssignmentRepository } from "../../../src/course/repositories/assignment.repository";
-import { Assignment } from "../../../src/course/entities/assignment.entity";
-import { ASSIGNMENT_JAVA_IN_REVIEW, ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA_EVALUATED } from "../../mocks/assignments.mock";
-import { PartialAssessmentDto } from "../../../src/course/dto/assessment/partial-assessment.dto";
-import { PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW, PARTIAL_ASSESSMENT_MOCK } from "../../mocks/partial-assessments.mock";
-import { PartialAssessment } from "../../../src/course/entities/partial-assessment.entity";
-import { GroupService } from "../../../src/course/services/group.service";
-import { USER_STUDENT_JAVA, USER_STUDENT_2_JAVA } from "../../mocks/users.mock";
-import { GroupDto } from "../../../src/course/dto/group/group.dto";
 import { EventBus } from "@nestjs/cqrs";
-import { AssessmentScoreChangedEvent } from "../../../src/course/events/assessment-score-changed.event";
-import { Repository } from "typeorm";
-import { AssessmentEvent } from "../../../src/course/entities/assessment-event.entity";
+import { Test, TestingModule } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
+import { AssessmentDto } from "../../../src/course/dto/assessment/assessment.dto";
+import { PartialAssessmentDto } from "../../../src/course/dto/assessment/partial-assessment.dto";
+import { GroupDto } from "../../../src/course/dto/group/group.dto";
+import { AssessmentEvent } from "../../../src/course/entities/assessment-event.entity";
+import { Assessment } from "../../../src/course/entities/assessment.entity";
+import { Assignment } from "../../../src/course/entities/assignment.entity";
+import { Group } from "../../../src/course/entities/group.entity";
+import { PartialAssessment } from "../../../src/course/entities/partial-assessment.entity";
+import { UserGroupRelation } from "../../../src/course/entities/user-group-relation.entity";
+import { AssessmentScoreChangedEvent } from "../../../src/course/events/assessment-score-changed.event";
+import { AssessmentRepository } from "../../../src/course/repositories/assessment.repository";
+import { AssignmentRepository } from "../../../src/course/repositories/assignment.repository";
+import { AssessmentService } from "../../../src/course/services/assessment.service";
+import { GroupService } from "../../../src/course/services/group.service";
+import { DtoFactory } from "../../../src/shared/dto-factory";
+import { ASSESSMENT_JAVA_EVALUATED_GROUP_1, ASSESSMENT_JAVA_EVALUATED_GROUP_2, ASSESSMENT_JAVA_IN_REVIEW, ASSESSMENT_JAVA_TESTAT_USER_1 } from "../../mocks/assessments.mock";
+import { ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA_EVALUATED, ASSIGNMENT_JAVA_IN_REVIEW } from "../../mocks/assignments.mock";
+import { GROUP_1_JAVA } from "../../mocks/groups/groups.mock";
+import { UserGroupRelationsMock } from "../../mocks/groups/user-group-relations.mock";
+import { PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW, PARTIAL_ASSESSMENT_MOCK } from "../../mocks/partial-assessments.mock";
+import { USER_STUDENT_2_JAVA, USER_STUDENT_JAVA } from "../../mocks/users.mock";
+import { convertToEntity, copy } from "../../utils/object-helper";
 
 const mock_AssessmentRepository = () => ({
 	createAssessment: jest.fn().mockResolvedValue(convertToEntity(Assessment, ASSESSMENT_JAVA_EVALUATED_GROUP_1)),
 	addPartialAssessment: jest.fn().mockResolvedValue(convertToEntity(PartialAssessment, PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW)),
-	getAllAssessmentsForAssignment: jest.fn().mockResolvedValue([
-		convertToEntity(Assessment, ASSESSMENT_JAVA_EVALUATED_GROUP_1),
-		convertToEntity(Assessment, ASSESSMENT_JAVA_EVALUATED_GROUP_2),
-	]),
+	getAssessmentsForAssignment: jest.fn().mockImplementation(() => {
+		const data = [
+			convertToEntity(Assessment, ASSESSMENT_JAVA_EVALUATED_GROUP_1),
+			convertToEntity(Assessment, ASSESSMENT_JAVA_EVALUATED_GROUP_2),
+		];
+		const count = 2;
+
+		return [data, count];
+	}),
 	getAssessmentById: jest.fn().mockImplementation(() => {
 		// Assessment without partial assessments, not in review state
 		const assessment = convertToEntity(Assessment, ASSESSMENT_JAVA_EVALUATED_GROUP_1);
@@ -218,14 +221,17 @@ describe("AssessmentService", () => {
 
 	describe("getAssessmentsForAssignment", () => {
 		
-		it("Returns Dtos", async () => {
-			await service.getAssessmentsForAssignment(assessmentDto.assignmentId);
+		it("Returns Dtos and count", async () => {
+			const [dtos, count] = await service.getAssessmentsForAssignment(assessmentDto.assignmentId);
 			expect(DtoFactory.createAssessmentDto).toHaveBeenCalled();
+			expect(dtos).toBeTruthy();
+			expect(count).toBeTruthy();
 		});
 
 		it("Calls repository for retrieval", async () => {
+			const filter = undefined;
 			await service.getAssessmentsForAssignment(assessmentDto.assignmentId);
-			expect(assessmentRepository.getAllAssessmentsForAssignment).toHaveBeenCalledWith(assessmentDto.assignmentId);
+			expect(assessmentRepository.getAssessmentsForAssignment).toHaveBeenCalledWith(assessmentDto.assignmentId, filter);
 		});
 	
 	});

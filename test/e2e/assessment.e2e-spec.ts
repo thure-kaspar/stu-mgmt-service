@@ -3,7 +3,7 @@ import * as request from "supertest";
 import { getConnection } from "typeorm";
 import { AssessmentDto, AssessmentUpdateDto } from "../../src/course/dto/assessment/assessment.dto";
 import { createApplication } from "../mocks/application.mock";
-import { ASSESSMENT_JAVA_EVALUATED_GROUP_1, ASSESSMENT_JAVA_TESTAT_USER_1, ASSESSMENT_JAVA_IN_REVIEW, ASSESSMENT_JAVA_IN_REVIEW_NO_PARTIALS } from "../mocks/assessments.mock";
+import { ASSESSMENT_JAVA_EVALUATED_GROUP_1, ASSESSMENT_JAVA_TESTAT_USER_1, ASSESSMENT_JAVA_IN_REVIEW, ASSESSMENT_JAVA_IN_REVIEW_NO_PARTIALS, AssessmentsMock } from "../mocks/assessments.mock";
 import { ASSIGNMENT_JAVA_EVALUATED, ASSIGNMENT_JAVA_TESTAT_EVALUATED_SINGLE, ASSIGNMENT_JAVA_IN_REVIEW } from "../mocks/assignments.mock";
 import { COURSE_JAVA_1920 } from "../mocks/courses.mock";
 import { DbMockService } from "../mocks/db-mock.service";
@@ -32,14 +32,54 @@ describe("GET-REQUESTS of AssessmentController (e2e)", () => {
 		await getConnection().close(); // Close Db-Connection after all tests have been executed
 	});
 
-	it("(GET) /courses/{courseId}/assignments/{assignmentId}/assessments Retrieves all assessments for the assignment", () => {
-		const assignment = ASSIGNMENT_JAVA_EVALUATED;
+	describe("(GET) /courses/{courseId}/assignments/{assignmentId}/assessments", () => {
+	
+		it("Retrieves all assessments for the assignment", () => {
+			const assignment = ASSIGNMENT_JAVA_EVALUATED;
+	
+			return request(app.getHttpServer())
+				.get(`/courses/${course.id}/assignments/${assignment.id}/assessments`)
+				.expect(({ body }) => {
+					expect(body.length).toEqual(2);
+				});
+		});
 
-		return request(app.getHttpServer())
-			.get(`/courses/${course.id}/assignments/${assignment.id}/assessments`)
-			.expect(({ body }) => {
-				expect(body.length).toEqual(2);
-			});
+		it("Retrieves assessment of group for the assignment", () => {
+			const assignment = ASSIGNMENT_JAVA_EVALUATED;
+			const assessment = ASSESSMENT_JAVA_EVALUATED_GROUP_1;
+			console.assert(assignment.id === assessment.assignmentId, "Assessment should belong to assignment.");
+
+			// If we specify groupId, we expect one assessment to be returned
+			const queryString = `groupId=${assessment.groupId}`;
+
+			return request(app.getHttpServer())
+				.get(`/courses/${course.id}/assignments/${assignment.id}/assessments?${queryString}`)
+				.expect(({ body }) => {
+					const result = body as AssessmentDto[];
+					expect(result.length).toEqual(1);
+					expect(result[0].id).toEqual(assessment.id);
+					expect(result[0].creator).toBeTruthy();
+					expect(result[0].group).toBeTruthy();
+				});
+		});
+
+		it("Retrieves assessments with score >= minScore", () => {
+			const assignment = ASSIGNMENT_JAVA_EVALUATED;
+			const minScore = 50;
+
+			const expectedCount = AssessmentsMock.filter(a => a.achievedPoints >= minScore && a.assignmentId === assignment.id).length;
+			console.assert(expectedCount > 0, "There should be at least one assessment with achievedPoints >= minScore");
+
+			const queryString = `minScore=${minScore}`;
+
+			return request(app.getHttpServer())
+				.get(`/courses/${course.id}/assignments/${assignment.id}/assessments?${queryString}`)
+				.expect(({ body }) => {
+					const result = body as AssessmentDto[];
+					expect(result.length).toEqual(expectedCount);
+				});
+		});
+	
 	});
 
 	it("(GET) /courses/{courseId}/assignments/{assignmentId}/assessments/{assessmentId} Retrieves the (group) assessment", () => {

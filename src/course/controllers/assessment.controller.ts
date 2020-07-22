@@ -1,4 +1,4 @@
-import { Controller, Post, Param, Body, Get, Patch, Delete, UseGuards } from "@nestjs/common";
+import { Controller, Post, Param, Body, Get, Patch, Delete, UseGuards, Query, Req } from "@nestjs/common";
 import { AssessmentService } from "../services/assessment.service";
 import { AssessmentDto, AssessmentCreateDto, AssessmentUpdateDto } from "../dto/assessment/assessment.dto";
 import { ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
@@ -8,6 +8,9 @@ import { UserDto } from "../../shared/dto/user.dto";
 import { AuthGuard } from "@nestjs/passport";
 import { AssessmentEventDto } from "../dto/assessment/assessment-event.dto";
 import { CourseId } from "../entities/course.entity";
+import { AssessmentFilter } from "../dto/assessment/assessment-filter.dto";
+import { PaginatedResult } from "../../utils/http-utils";
+import { Request } from "express";
 
 @ApiBearerAuth()
 @ApiTags("assessments")
@@ -50,17 +53,18 @@ export class AssessmentController {
 
 	@Get()
 	@ApiOperation({
-		operationId: "getAllAssessmentsForAssignment",
+		operationId: "getAssessmentsForAssignment",
 		summary: "Get assessments of assignment.",
-		description: "Retrieves all assessments that have been created for the assignment."
+		description: "Retrieves assessments that have been created for the assignment."
 	})
-	getAllAssessmentsForAssignment(
+	getAssessmentsForAssignment(
+		@Req() request: Request,
 		@Param("courseId") courseId: CourseId,
-		@Param("assignmentId") assignmentId: string
+		@Param("assignmentId") assignmentId: string,
+		@Query() filter?: AssessmentFilter
 	): Promise<AssessmentDto[]> {
 
-		// TODO: Check if user is allowed to request all assessments
-		return this.assessmentService.getAssessmentsForAssignment(assignmentId);
+		return PaginatedResult(this.assessmentService.getAssessmentsForAssignment(assignmentId, new AssessmentFilter(filter)), request);
 	}
 
 	@Get(":assessmentId")
