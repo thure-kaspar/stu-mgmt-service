@@ -1,5 +1,6 @@
 import { AssignmentState, AssignmentType, CollaborationType } from "../../../shared/enums";
 import { ApiPropertyOptional, ApiProperty } from "@nestjs/swagger";
+import { CourseId } from "../../entities/course.entity";
 
 export class AssignmentDto {
 	/** Unique identifier of this assignment. */
@@ -8,7 +9,7 @@ export class AssignmentDto {
 
 	/** Identifier of the course that this assignment belongs to. */
 	@ApiProperty({ description: "Identifier of the course that this assignment belongs to." })
-	courseId: string;
+	courseId: CourseId;
 
 	/** The title of this assignment. */
 	@ApiProperty({ description: "The title of this assignment." })

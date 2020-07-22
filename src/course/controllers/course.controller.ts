@@ -7,6 +7,7 @@ import { CourseFilter } from "../dto/course/course-filter.dto";
 import { CourseDto } from "../dto/course/course.dto";
 import { CourseMemberGuard } from "../guards/course-member.guard";
 import { CourseService } from "../services/course.service";
+import { CourseId } from "../entities/course.entity";
 
 @ApiBearerAuth()
 @ApiTags("courses") 
@@ -52,7 +53,7 @@ export class CourseController {
 		summary: "Get course",
 		description: "Retrieves the course, if the requesting user is a member of this course."
 	})
-	getCourseById(@Param("courseId") courseId: string): Promise<CourseDto> {
+	getCourseById(@Param("courseId") courseId: CourseId): Promise<CourseDto> {
 		return this.courseService.getCourseById(courseId);
 	}
 
@@ -83,7 +84,7 @@ export class CourseController {
 		description: "Updates the course."
 	})
 	updateCourse(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Body() courseDto: CourseDto
 	): Promise<CourseDto> {
 
@@ -100,7 +101,7 @@ export class CourseController {
 		description: "Deletes the course."
 	})
 	deleteCourse(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 	): Promise<boolean> {
 
 		return this.courseService.deleteCourse(courseId);

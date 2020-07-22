@@ -1,7 +1,7 @@
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { AssessmentAllocation } from "./assessment-allocation.entity";
 import { Assessment } from "./assessment.entity";
-import { Course } from "./course.entity";
+import { Course, CourseId } from "./course.entity";
 import { GroupEvent } from "./group-event.entity";
 import { UserGroupRelation } from "./user-group-relation.entity";
 
@@ -27,7 +27,7 @@ export class Group {
 	course: Course;
 	
 	@Column()
-	courseId: string;
+	courseId: CourseId;
 
 	@OneToMany(type => UserGroupRelation, userGroupRelation => userGroupRelation.group)
 	userGroupRelations: UserGroupRelation[];

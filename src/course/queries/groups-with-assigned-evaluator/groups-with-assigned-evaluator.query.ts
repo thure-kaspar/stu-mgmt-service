@@ -1,11 +1,11 @@
 import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
-import { GroupWithAssignedEvaluatorDto, AssignedEvaluatorFilter } from "./group-with-assigned-evaluator.dto";
-import { Group } from "../../entities/group.entity";
-import { GroupRepository } from "../../repositories/group.repository";
+import { Repository } from "typeorm";
 import { DtoFactory } from "../../../shared/dto-factory";
 import { Assessment } from "../../entities/assessment.entity";
-import { Repository } from "typeorm";
+import { CourseId } from "../../entities/course.entity";
+import { Group } from "../../entities/group.entity";
+import { AssignedEvaluatorFilter, GroupWithAssignedEvaluatorDto } from "./group-with-assigned-evaluator.dto";
 
 /**
  * Queries groups of a course with their assigned evaluator for a particular assignment.
@@ -13,7 +13,7 @@ import { Repository } from "typeorm";
  */
 export class GroupsWithAssignedEvaluatorQuery { 
 	constructor(
-		public readonly courseId: string,
+		public readonly courseId: CourseId,
 		public readonly assignmentId: string,
 		public readonly filter?: AssignedEvaluatorFilter
 	) { }

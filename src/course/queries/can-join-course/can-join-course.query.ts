@@ -1,13 +1,13 @@
 import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CourseRepository } from "../../repositories/course.repository";
-import { Course } from "../../entities/course.entity";
+import { Course, CourseId } from "../../entities/course.entity";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
 import { CanJoinCourseDto } from "./can-join-course.dto";
 
 export class CanJoinCourseQuery { 
 	constructor(
-		public readonly courseId: string, 
+		public readonly courseId: CourseId, 
 		public readonly userId: string
 	) { }
 }

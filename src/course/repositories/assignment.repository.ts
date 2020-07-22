@@ -1,6 +1,7 @@
 import { Repository, EntityRepository } from "typeorm";
 import { Assignment } from "../entities/assignment.entity";
 import { AssignmentDto } from "../dto/assignment/assignment.dto";
+import { CourseId } from "../entities/course.entity";
 
 @EntityRepository(Assignment)
 export class AssignmentRepository extends Repository<Assignment> {
@@ -11,7 +12,7 @@ export class AssignmentRepository extends Repository<Assignment> {
 	}
 
 	/** Returns all assignments of a course. Sorted by endDate (descending). */
-	async getAssignments(courseId: string): Promise<Assignment[]> {
+	async getAssignments(courseId: CourseId): Promise<Assignment[]> {
 		return this.find({
 			where: {
 				courseId: courseId

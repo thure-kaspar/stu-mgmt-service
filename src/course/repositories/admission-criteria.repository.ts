@@ -2,6 +2,7 @@ import { EntityRepository, Repository } from "typeorm";
 import { AdmissionCritera } from "../entities/admission-criteria.entity";
 import { AdmissionCriteriaDto } from "../dto/course-config/admission-criteria.dto";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
+import { CourseId } from "../entities/course.entity";
 
 @EntityRepository(AdmissionCritera)
 export class AdmissionCriteraRepository extends Repository<AdmissionCritera> {
@@ -22,7 +23,7 @@ export class AdmissionCriteraRepository extends Repository<AdmissionCritera> {
 	}
 
 	/** Retrieves the admission criteria. Throws error, if not found. */
-	async getByCourseId(courseId: string): Promise<AdmissionCritera> {
+	async getByCourseId(courseId: CourseId): Promise<AdmissionCritera> {
 		const criteria = await this.createQueryBuilder("criteria")
 			.innerJoin("criteria.courseConfig", "c")
 			.where("c.courseId = :courseId", { courseId })
@@ -33,14 +34,14 @@ export class AdmissionCriteraRepository extends Repository<AdmissionCritera> {
 	}
 
 	/** Updates the admission criteria. */
-	async updateAdmissionCriteria(courseId: string, criteriaDto: AdmissionCriteriaDto): Promise<AdmissionCritera> {
+	async updateAdmissionCriteria(courseId: CourseId, criteriaDto: AdmissionCriteriaDto): Promise<AdmissionCritera> {
 		const criteria = await this.getByCourseId(courseId);
 		criteria.admissionCriteria = criteriaDto;
 		return this.save(criteria);
 	}
 
 	/** Deletes the admission criteria. Returns true, if removal was successful. */
-	async removeAdmissionCriteria(courseId: string): Promise<boolean> {
+	async removeAdmissionCriteria(courseId: CourseId): Promise<boolean> {
 		const criteria = await this.getByCourseId(courseId);
 		const deleted = await this.remove(criteria);
 		return !!deleted;

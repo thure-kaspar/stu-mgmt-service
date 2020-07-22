@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { CourseId } from "../../course/entities/course.entity";
 
 export enum EventType {
 	INSERT = "INSERT",
@@ -25,7 +26,7 @@ export class UpdateMessage {
 
 	/** Identifier of the course, in which the event happened. */
 	@ApiProperty({ description: "Identifier of the course, in which the event happened." })
-	courseId: string;
+	courseId: CourseId;
 
 	/** Identifier of the entity that has changed. Type is always indicated by the first noun of affectedObject. */
 	@ApiProperty({ description: "Identifier of the entity that has changed. Type is always indicated by the first noun of affectedObject." })

@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn
 import { CourseConfigDto } from "../dto/course-config/course-config.dto";
 import { AdmissionCritera } from "./admission-criteria.entity";
 import { AssignmentTemplate } from "./assignment-template.entity";
-import { Course } from "./course.entity";
+import { Course, CourseId } from "./course.entity";
 import { GroupSettings } from "./group-settings.entity";
 
 @Entity()
@@ -15,7 +15,7 @@ export class CourseConfig {
 	course: Course;
 
 	@Column()
-	courseId: string;
+	courseId: CourseId;
 
 	@Column({ nullable: true })
 	password: string;

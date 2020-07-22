@@ -2,6 +2,7 @@ import { ApiTags, ApiOperation, ApiQuery, ApiBearerAuth } from "@nestjs/swagger"
 import { Controller, Param, Post, Body, Delete, BadRequestException, Query, Get } from "@nestjs/common";
 import { AssessmentAllocationDto } from "../dto/assessment-allocation/assessment-allocation.dto";
 import { AssessmentAllocationService } from "../services/assessment-allocation.service";
+import { CourseId } from "../entities/course.entity";
 
 @ApiBearerAuth()
 @ApiTags("assessment-allocation")
@@ -17,7 +18,7 @@ export class AssessmentAllocationController {
 		description: "Maps an evaluator to a group or user. If the group or user is already assigned to another evaluator, changes the evaluator."
 	})
 	createAllocation(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string,
 		@Body() allocation: AssessmentAllocationDto
 	): Promise<AssessmentAllocationDto> {
@@ -35,7 +36,7 @@ export class AssessmentAllocationController {
 		description: "Applies the allocations from another assignment to the specified assignment."
 	})
 	addAllocationsFromExistingAssignment(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string,
 		@Param("existingAssignmentId") existingAssignmentId: string
 	): Promise<AssessmentAllocationDto[]> {
@@ -50,7 +51,7 @@ export class AssessmentAllocationController {
 		description: "Returns a list of allocations, which map an evaluator to a group or user."
 	})
 	getAllocations(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string
 	): Promise<AssessmentAllocationDto[]> {
 		return this.allocationService.getAllocations(assignmentId);
@@ -75,7 +76,7 @@ export class AssessmentAllocationController {
 		description: "Query must specify either groupId or userId."
 	})
 	removeAllocation(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string,
 		@Query("groupId") groupId: string,
 		@Query("userId") userId: string,
@@ -90,7 +91,7 @@ export class AssessmentAllocationController {
 
 	@Delete("all")
 	removeAllAllocationsOfAssignment(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string,
 	): Promise<void> {
 

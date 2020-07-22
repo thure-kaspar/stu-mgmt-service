@@ -1,6 +1,7 @@
 import { Repository, EntityRepository } from "typeorm";
 import { User } from "../../shared/entities/user.entity";
 import { CourseParticipantsFilter } from "../dto/course/course-participants.filter";
+import { CourseId } from "../entities/course.entity";
 
 /**
  * Repository for queries related to course participants.
@@ -11,7 +12,7 @@ export class CourseUserRepository extends Repository<User> {
 	/**
 	 * Returns the participants of a course.
 	 */
-	async getUsersOfCourse(courseId: string, filter?: CourseParticipantsFilter): Promise<[User[], number]> {
+	async getUsersOfCourse(courseId: CourseId, filter?: CourseParticipantsFilter): Promise<[User[], number]> {
 		const { courseRole, username, skip, take } = filter || { };
 
 		const query = this.createQueryBuilder("user")

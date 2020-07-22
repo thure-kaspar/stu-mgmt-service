@@ -2,7 +2,7 @@ import { Injectable, BadRequestException, ConflictException } from "@nestjs/comm
 import { InjectRepository } from "@nestjs/typeorm";
 import { GroupRepository } from "../repositories/group.repository";
 import { CourseRepository } from "../repositories/course.repository";
-import { Course } from "../entities/course.entity";
+import { Course, CourseId } from "../entities/course.entity";
 import { Group } from "../entities/group.entity";
 import { GroupDto } from "../dto/group/group.dto";
 import { UserDto } from "../../shared/dto/user.dto";
@@ -31,7 +31,7 @@ export class GroupService {
 	/**
 	 * Creates a group, if the course allows groups.
 	 */
-	async createGroup(courseId: string, groupDto: GroupDto): Promise<GroupDto> {
+	async createGroup(courseId: CourseId, groupDto: GroupDto): Promise<GroupDto> {
 		if (courseId !== groupDto.courseId) throw new BadRequestException("CourseId refers to a different course");
 
 		// Check if group creation is allowed
@@ -46,7 +46,7 @@ export class GroupService {
 	/**
 	 * Creates multiple groups at once, using the given names or naming schema and count.
 	 */
-	async createMultipleGroups(courseId: string, groupCreateBulk: GroupCreateBulkDto): Promise<GroupDto[]> {
+	async createMultipleGroups(courseId: CourseId, groupCreateBulk: GroupCreateBulkDto): Promise<GroupDto[]> {
 		const { names, nameSchema, count } = groupCreateBulk;
 		let groups: GroupDto[] = [];
 
@@ -101,7 +101,7 @@ export class GroupService {
 		}
 	}
 
-	async getGroupsOfCourse(courseId: string): Promise<GroupDto[]> {
+	async getGroupsOfCourse(courseId: CourseId): Promise<GroupDto[]> {
 		const groups = await this.groupRepository.getGroupsOfCourse(courseId);
 		return groups.map(group => DtoFactory.createGroupDto(group));
 	}
@@ -121,7 +121,7 @@ export class GroupService {
 	}
 
 	/** Returns all group events of the course. */
-	async getGroupHistoryOfCourse(courseId: string): Promise<GroupEventDto[]> {
+	async getGroupHistoryOfCourse(courseId: CourseId): Promise<GroupEventDto[]> {
 		const events = await this.groupEventRepository.getGroupHistoryOfCourse(courseId);
 		return events.map(event => event.toDto());
 	}
@@ -168,7 +168,7 @@ export class GroupService {
 	/**
 	 * Returns a snapshot of the group constellations at the time of the assignment's end.
 	 */
-	async getGroupsFromAssignment(courseId: string, assignmentId: string): Promise<GroupDto[]> {
+	async getGroupsFromAssignment(courseId: CourseId, assignmentId: string): Promise<GroupDto[]> {
 		const assignment = await this.assignmentRepository.getAssignmentById(assignmentId);
 
 		// If assignment has no end date, return current groups with their members

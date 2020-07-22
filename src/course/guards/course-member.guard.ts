@@ -4,6 +4,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { UserRepository } from "../../user/repositories/user.repository";
 import { User } from "../../shared/entities/user.entity";
 import { NotACourseMemberException } from "../exceptions/custom-exceptions";
+import { CourseId } from "../entities/course.entity";
 
 /**
  * Only allows requests for users, that are members of the course.
@@ -16,7 +17,7 @@ export class CourseMemberGuard implements CanActivate {
 	async canActivate(context: ExecutionContext): Promise<boolean> {	
 		const request = context.switchToHttp().getRequest();
 		const user: UserDto = request.user;
-		const courseId: string = request.params.courseId;
+		const courseId: CourseId = request.params.courseId;
 
 		if (await this.userRepo.isMemberOfCourse(user.id, courseId)) {
 			return true;

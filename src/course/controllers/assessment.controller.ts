@@ -7,6 +7,7 @@ import { GetUser } from "../../auth/decorators/get-user.decorator";
 import { UserDto } from "../../shared/dto/user.dto";
 import { AuthGuard } from "@nestjs/passport";
 import { AssessmentEventDto } from "../dto/assessment/assessment-event.dto";
+import { CourseId } from "../entities/course.entity";
 
 @ApiBearerAuth()
 @ApiTags("assessments")
@@ -23,7 +24,7 @@ export class AssessmentController {
 		description: "Creates a new assessment."
 	})
 	createAssessment(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string,
 		@Body() assessment: AssessmentCreateDto
 	): Promise<AssessmentDto> {
@@ -38,7 +39,7 @@ export class AssessmentController {
 		description: "Adds a partial assessment for an exisiting assessment. Alternatively, partial assessments can be created together with the assessment."
 	})
 	addPartialAssessment(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string,
 		@Param("assessmentId") assessmentId: string,
 		@Body() partial: PartialAssessmentDto
@@ -54,7 +55,7 @@ export class AssessmentController {
 		description: "Retrieves all assessments that have been created for the assignment."
 	})
 	getAllAssessmentsForAssignment(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string
 	): Promise<AssessmentDto[]> {
 
@@ -69,7 +70,7 @@ export class AssessmentController {
 		description: "Retrieves the assessment."
 	})
 	getAssessmentById(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string,
 		@Param("assessmentId") assessmentId: string
 	): Promise<AssessmentDto> {
@@ -84,7 +85,7 @@ export class AssessmentController {
 		description: "Retrieves events of the assessment."
 	})
 	getEventsOfAssessment(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string,
 		@Param("assessmentId") assessmentId: string
 	): Promise<AssessmentEventDto[]> {
@@ -99,7 +100,7 @@ export class AssessmentController {
 		description: "Updates the assessment."
 	})
 	updateAssessment(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string,
 		@Param("assessmentId") assessmentId: string,
 		@Body() assessmentDto: AssessmentUpdateDto,
@@ -116,7 +117,7 @@ export class AssessmentController {
 		description: "Deletes the assessment. Returns true, if removal was successful."
 	})
 	deleteAssessment(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string,
 		@Param("assessmentId") assessmentId: string
 	): Promise<boolean> {

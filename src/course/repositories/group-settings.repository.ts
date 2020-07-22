@@ -2,6 +2,7 @@ import { EntityRepository, Repository } from "typeorm";
 import { GroupSettings } from "../entities/group-settings.entity";
 import { GroupSettingsDto } from "../dto/course-config/group-settings.dto";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
+import { CourseId } from "../entities/course.entity";
 
 @EntityRepository(GroupSettings)
 export class GroupSettingsRepository extends Repository<GroupSettings> {
@@ -18,7 +19,7 @@ export class GroupSettingsRepository extends Repository<GroupSettings> {
 	}
 
 	/** Retrieves the group settings. Throws error, if not found. */
-	async getByCourseId(courseId: string): Promise<GroupSettings> {
+	async getByCourseId(courseId: CourseId): Promise<GroupSettings> {
 		const settings = await this.createQueryBuilder("settings")
 			.innerJoin("settings.courseConfig", "c")
 			.where("c.courseId = :courseId", { courseId })
@@ -29,7 +30,7 @@ export class GroupSettingsRepository extends Repository<GroupSettings> {
 	}
 
 	/** Partially updates the group settings and returns them. */
-	async updateGroupSettings(courseId: string, partial: Partial<GroupSettings>): Promise<GroupSettings> {
+	async updateGroupSettings(courseId: CourseId, partial: Partial<GroupSettings>): Promise<GroupSettings> {
 		const settings = await this.getByCourseId(courseId);
 		const updated = this.create({...settings, ...partial});
 		return this.save(updated);

@@ -5,6 +5,7 @@ import { UserGroupRelation } from "../entities/user-group-relation.entity";
 import { ConflictException } from "@nestjs/common";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
 import { User } from "../../shared/entities/user.entity";
+import { CourseId } from "../entities/course.entity";
 
 @EntityRepository(Group)
 export class GroupRepository extends Repository<Group> {
@@ -105,7 +106,7 @@ export class GroupRepository extends Repository<Group> {
 	 * @returns
 	 * @memberof GroupRepository
 	 */
-	async getGroupsOfCourse(courseId: string): Promise<Group[]> {
+	async getGroupsOfCourse(courseId: CourseId): Promise<Group[]> {
 		return this.find({
 			where: { courseId },
 			relations: ["userGroupRelations", "userGroupRelations.user"],
@@ -116,7 +117,7 @@ export class GroupRepository extends Repository<Group> {
 	 * Returns the current group of a user in a course. 
 	 * Throws EntityNotFoundError, if no group is found.
 	 */
-	async getGroupOfUserForCourse(courseId: string, userId: string): Promise<Group> {
+	async getGroupOfUserForCourse(courseId: CourseId, userId: string): Promise<Group> {
 		const group = await this.createQueryBuilder("group")
 			.where("group.courseId = :courseId", { courseId })
 			.innerJoin("group.userGroupRelations", "userRelation")

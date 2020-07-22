@@ -37,7 +37,7 @@ export class CourseParticipantsController {
 		summary: "Add user to course",
 		description: "Adds a user to the course. If the course requires a password, the correct password needs to be included in the request body."
 	})
-	addUser(@Param("courseId") courseId: string,
+	addUser(@Param("courseId") courseId: CourseId,
 			@Param("userId") userId: string,
 			@Body() password?: PasswordDto,
 	): Promise<any> {
@@ -55,7 +55,7 @@ export class CourseParticipantsController {
 	})
 	async getUsersOfCourse(
 		@Req() request: Request,
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Query() filter?: CourseParticipantsFilter
 	): Promise<UserDto[]> {
 		filter.courseRole = sanitizeEnum(CourseRole, filter.courseRole);
@@ -73,7 +73,7 @@ export class CourseParticipantsController {
 	})
 	@ApiQuery({ name: "compareToCourseIds", type: String, isArray: true })
 	compareParticipantsList(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Query("compareToCourseIds") compareToCourseIds: CourseId[]
 	): Promise<ParticipantsComparisonDto> {
 		
@@ -92,7 +92,7 @@ export class CourseParticipantsController {
 		description: "Checks, if the user is able to join the course. A user can join a course, if he's not already a member and the course is not closed."
 	})
 	canUserJoinCourse(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Param("userId") userId: string,
 	): Promise<CanJoinCourseDto> {
 
@@ -107,7 +107,7 @@ export class CourseParticipantsController {
 	})
 	async getUsersWithAssignedEvaluator(
 		@Req() request: Request,
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string,
 		@Query() filter?: AssignedEvaluatorFilter
 	): Promise<UserWithAssignedEvaluatorDto[]> {
@@ -128,7 +128,7 @@ export class CourseParticipantsController {
 		description: "Assigns the given role to the user of this course."
 	})
 	updateUserRole(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Param("userId") userId: string,
 		@Body(ValidationPipe) dto: ChangeCourseRoleDto
 	): Promise<boolean> {
@@ -146,7 +146,7 @@ export class CourseParticipantsController {
 		description: "Removes the user from the course. Returns true, if removal was successful."
 	})
 	removeUser(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Param("userId") userId: string,
 	): Promise<boolean> {
 

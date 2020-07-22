@@ -8,6 +8,7 @@ import { GroupDto } from "../../course/dto/group/group.dto";
 import { GroupEventDto } from "../../course/dto/group/group-event.dto";
 import { AuthGuard } from "@nestjs/passport";
 import { AssignmentGroupTuple } from "../dto/assignment-group-tuple.dto";
+import { CourseId } from "../../course/entities/course.entity";
 
 @ApiBearerAuth()
 @ApiTags("users")
@@ -75,7 +76,7 @@ export class UserController {
 	})
 	getGroupOfUserForCourse(
 		@Param("userId") userId: string,
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 	): Promise<GroupDto> {
 
 		return this.userService.getGroupOfUserForCourse(userId, courseId);
@@ -89,7 +90,7 @@ export class UserController {
 	})
 	getGroupHistoryOfUser(
 		@Param("userId") userId: string,
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 	): Promise<GroupEventDto[]> {
 
 		return this.userService.getGroupHistoryOfUser(userId, courseId);
@@ -103,7 +104,7 @@ export class UserController {
 	})
 	getGroupOfAssignment(
 		@Param("userId") userId: string,
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string
 	): Promise<GroupDto> {
 
@@ -118,7 +119,7 @@ export class UserController {
 	})
 	getGroupOfAllAssignments(
 		@Param("userId") userId: string,
-		@Param("courseId") courseId: string
+		@Param("courseId") courseId: CourseId
 	): Promise<AssignmentGroupTuple[]> {
 		return this.userService.getGroupOfAllAssignments(userId, courseId);
 	}
@@ -131,7 +132,7 @@ export class UserController {
 	})
 	getAssessmentsWithGroupsOfUserForCourse(
 		@Param("userId") userId: string,
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 	): Promise<AssessmentDto[]> {
 
 		return this.userService.getAssessmentsOfUserForCourse(userId, courseId);

@@ -11,6 +11,7 @@ import { QueryBus } from "@nestjs/cqrs";
 import { GroupsWithAssignedEvaluatorQuery } from "../queries/groups-with-assigned-evaluator/groups-with-assigned-evaluator.query";
 import { Request } from "express";
 import { setTotalCountHeader } from "../../../test/utils/http-utils";
+import { CourseId } from "../entities/course.entity";
 
 @ApiBearerAuth()
 @ApiTags("groups")
@@ -26,7 +27,7 @@ export class GroupController {
 		description: "Creates a new group, if course allows group creation."
 	})
 	createGroup(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Body() groupDto: GroupDto
 	): Promise<GroupDto> {
 
@@ -40,7 +41,7 @@ export class GroupController {
 		description: "Creates multiple groups with the given names or naming schema and count."
 	})
 	createMultipleGroups(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Body() groupCreateBulk: GroupCreateBulkDto 
 	): Promise<GroupDto[]> {
 
@@ -54,7 +55,7 @@ export class GroupController {
 		description: "Adds the user to the group, if constraints are fulfilled."
 	})
 	addUserToGroup(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Param("groupId") groupId: string,
 		@Param("userId") userId: string,
 		@Body() password?: PasswordDto,
@@ -70,7 +71,7 @@ export class GroupController {
 		description: "Retrieves all groups that belong to the course."
 	})
 	getGroupsOfCourse(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 	): Promise<GroupDto[]> {
 		
 		return this.groupService.getGroupsOfCourse(courseId);
@@ -82,7 +83,7 @@ export class GroupController {
 		summary: "Get group history of course",
 		description: "Retrieves all group events of the course."
 	})
-	getGroupHistoryOfCourse(@Param("courseId") courseId: string): Promise<GroupEventDto[]> {
+	getGroupHistoryOfCourse(@Param("courseId") courseId: CourseId): Promise<GroupEventDto[]> {
 
 		return this.groupService.getGroupHistoryOfCourse(courseId);
 	}
@@ -94,7 +95,7 @@ export class GroupController {
 		description: "Returns a snapshot of the group's members at the time of the assignment's end."
 	})
 	getGroupFromAssignment(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Param("groupId") groupId: string,
 		@Param("assignmentId") assignmentId: string
 	): Promise<GroupDto> {
@@ -109,7 +110,7 @@ export class GroupController {
 		description: "Returns a snapshot of the group constellations at the time of the assignment's end."
 	})
 	getGroupsFromAssignment(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string
 	): Promise<GroupDto[]> {
 		
@@ -124,7 +125,7 @@ export class GroupController {
 	})
 	async getGroupsWithAssignedEvaluator(
 		@Req() request: Request,
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string,
 		@Query() filter?: AssignedEvaluatorFilter
 	): Promise<GroupWithAssignedEvaluatorDto[]> {
@@ -142,7 +143,7 @@ export class GroupController {
 		description: "Returns the group with its course, users, assessments and history."
 	})
 	getGroup(
-			@Param("courseId") courseId: string,
+			@Param("courseId") courseId: CourseId,
 			@Param("groupId") groupId: string
 	): Promise<GroupDto> {
 		return this.groupService.getGroup(groupId);
@@ -156,7 +157,7 @@ export class GroupController {
 		description: "Retrieves all users that are members of the group."
 	})
 	getUsersOfGroup(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Param("groupId") groupId: string
 	): Promise<UserDto[]> {
 
@@ -170,7 +171,7 @@ export class GroupController {
 		description: "Updates the group"
 	})
 	updateGroup(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Param("groupId") groupId: string,
 		@Body() groupDto: GroupDto
 	): Promise<GroupDto> {
@@ -185,7 +186,7 @@ export class GroupController {
 		description: "Removes the user from the group."
 	})
 	removeUserFromGroup(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Param("groupId") groupId: string,
 		@Param("userId") userId: string,
 		@Body("reason") reason?: string
@@ -201,7 +202,7 @@ export class GroupController {
 		description: "Deletes the group."
 	})
 	deleteGroup(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Param("groupId") groupId: string
 	): Promise<boolean> {
 

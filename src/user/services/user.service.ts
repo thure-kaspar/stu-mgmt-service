@@ -20,6 +20,7 @@ import { UserJoinedGroupEvent } from "../../course/events/user-joined-group.even
 import { CollaborationType } from "../../shared/enums";
 import { AssignmentDto } from "../../course/dto/assignment/assignment.dto";
 import { AssignmentGroupTuple } from "../dto/assignment-group-tuple.dto";
+import { CourseId } from "../../course/entities/course.entity";
 
 @Injectable()
 export class UserService {
@@ -61,7 +62,7 @@ export class UserService {
 	/**
 	 * Returns the current group of a user in a course.
 	 */
-	async getGroupOfUserForCourse(userId: string, courseId: string): Promise<GroupDto> {
+	async getGroupOfUserForCourse(userId: string, courseId: CourseId): Promise<GroupDto> {
 		const group = await this.groupRepository.getGroupOfUserForCourse(courseId, userId);
 		return DtoFactory.createGroupDto(group);
 	}
@@ -70,7 +71,7 @@ export class UserService {
 	 * Returns all group events of the user in the course.
 	 * Events are sorted by their timestamp in descending order (new to old). 
 	 */
-	async getGroupHistoryOfUser(userId: string, courseId: string): Promise<GroupEventDto[]> {
+	async getGroupHistoryOfUser(userId: string, courseId: CourseId): Promise<GroupEventDto[]> {
 		const history = await this.groupEventRepository.getGroupHistoryOfUser(userId, courseId);
 		return history.map(event => event.toDto());
 	}
@@ -78,7 +79,7 @@ export class UserService {
 	/**
 	 * Returns the group that the user was a member of when the assignment submission closed.
 	 */
-	async getGroupOfAssignment(userId: string, courseId: string, assignmentId: string): Promise<GroupDto> {
+	async getGroupOfAssignment(userId: string, courseId: CourseId, assignmentId: string): Promise<GroupDto> {
 		const [groupHistory, assignment] = await Promise.all([
 			this.groupEventRepository.getGroupHistoryOfUser(userId, courseId),
 			this.assignmentRepository.getAssignmentById(assignmentId)
@@ -97,7 +98,7 @@ export class UserService {
 	 * Returns the groups that the user was a member of when the assignment submission closed 
 	 * or the current group, if no end date is specified, for all assignments of a course.
 	 */
-	async getGroupOfAllAssignments(userId: string, courseId: string): Promise<AssignmentGroupTuple[]> {
+	async getGroupOfAllAssignments(userId: string, courseId: CourseId): Promise<AssignmentGroupTuple[]> {
 		const [groupHistory, assignments] = await Promise.all([
 			this.groupEventRepository.getGroupHistoryOfUser(userId, courseId),
 			this.assignmentRepository.getAssignments(courseId)
@@ -156,7 +157,7 @@ export class UserService {
 		return groupId;
 	}
 
-	async getAssessmentsOfUserForCourse(userId: string, courseId: string): Promise<AssessmentDto[]> {
+	async getAssessmentsOfUserForCourse(userId: string, courseId: CourseId): Promise<AssessmentDto[]> {
 		const assessments = await this.assessmentRepository.getAssessmentsOfUserForCourse_WithAssignment_WithGroups(courseId, userId);
 		return assessments.map(a => DtoFactory.createAssessmentDto(a));
 	}

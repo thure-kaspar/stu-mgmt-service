@@ -6,6 +6,7 @@ import { UserWithAssignedEvaluatorDto } from "./user-with-assigned-evaluator.dto
 import { User } from "../../../shared/entities/user.entity";
 import { UserRepository } from "../../../user/repositories/user.repository";
 import { Assessment } from "../../entities/assessment.entity";
+import { CourseId } from "../../entities/course.entity";
 
 /**
  * Queries users of a course with their assigned evaluator for a particular assignment.
@@ -13,7 +14,7 @@ import { Assessment } from "../../entities/assessment.entity";
  */
 export class UsersWithAssignedEvaluatorQuery { 
 	constructor(
-		public readonly courseId: string,
+		public readonly courseId: CourseId,
 		public readonly assignmentId: string,
 		public readonly filter?: AssignedEvaluatorFilter
 	) { }

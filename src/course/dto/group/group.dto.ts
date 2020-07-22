@@ -3,6 +3,7 @@ import { UserDto } from "../../../shared/dto/user.dto";
 import { ApiPropertyOptional, ApiProperty } from "@nestjs/swagger";
 import { GroupEventDto } from "./group-event.dto";
 import { AssessmentDto } from "../assessment/assessment.dto";
+import { CourseId } from "../../entities/course.entity";
 
 export class GroupDto {
 	/** Unique identifier of this group. */
@@ -11,7 +12,7 @@ export class GroupDto {
 	
 	/** Identifier of the course that this group belongs to. */
 	@ApiProperty({ description: "Identifier of the course that this group belongs to." })
-	courseId: string;
+	courseId: CourseId;
 	
 	/** The course that this group belongs to. */
 	//@ApiPropertyOptional({ description: "The course that this group belongs to.", type: () => CourseDto })

@@ -5,6 +5,7 @@ import { AssessmentUserRelation } from "../entities/assessment-user-relation.ent
 import { PartialAssessmentDto } from "../dto/assessment/partial-assessment.dto";
 import { PartialAssessment } from "../entities/partial-assessment.entity";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
+import { CourseId } from "../entities/course.entity";
 
 @EntityRepository(Assessment)
 export class AssessmentRepository extends Repository<Assessment> {
@@ -50,7 +51,7 @@ export class AssessmentRepository extends Repository<Assessment> {
 		});
 	}
 
-	async getAssessmentsOfUserForCourse(courseId: string, userId: string): Promise<Assessment[]> {
+	async getAssessmentsOfUserForCourse(courseId: CourseId, userId: string): Promise<Assessment[]> {
 		return this.find({
 			where: {
 				assignment: {
@@ -63,7 +64,7 @@ export class AssessmentRepository extends Repository<Assessment> {
 		});
 	}
 
-	async getAssessmentsOfUserForCourse_WithAssignment_WithGroups(courseId: string, userId: string): Promise<Assessment[]> {
+	async getAssessmentsOfUserForCourse_WithAssignment_WithGroups(courseId: CourseId, userId: string): Promise<Assessment[]> {
 		return this.createQueryBuilder("assessment")
 			.innerJoin("assessment.assignment", "assignment", "assignment.courseId = :courseId", { courseId })
 			.innerJoin("assessment.assessmentUserRelations", "userRelation", "userRelation.userId = :userId", { userId })

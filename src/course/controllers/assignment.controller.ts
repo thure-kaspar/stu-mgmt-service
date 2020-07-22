@@ -2,6 +2,7 @@ import { Controller, Post, Param, Body, Get, Patch, Delete } from "@nestjs/commo
 import { ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
 import { AssignmentService } from "../services/assignment.service";
 import { AssignmentDto } from "../dto/assignment/assignment.dto";
+import { CourseId } from "../entities/course.entity";
 
 @ApiBearerAuth()
 @ApiTags("assignments")
@@ -16,7 +17,7 @@ export class AssignmentController {
 		description: "Creates a new assignment."
 	})
 	createAssignment(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Body() assignmentDto: AssignmentDto
 	): Promise<AssignmentDto> {
 
@@ -30,7 +31,7 @@ export class AssignmentController {
 		description: "Retrieves all assignments of the course."
 	})
 	getAssignmentsOfCourse(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 	): Promise<AssignmentDto[]> {
 
 		return this.assignmentService.getAssignments(courseId);
@@ -43,7 +44,7 @@ export class AssignmentController {
 		description: "Retrieves the assignment."
 	})
 	getAssignmentById(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string 
 	): Promise<AssignmentDto> {
 
@@ -57,7 +58,7 @@ export class AssignmentController {
 		description: "Updates the assignment."
 	})
 	updateAssignment(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string,
 		@Body() assignmentDto: AssignmentDto
 	): Promise<AssignmentDto> {
@@ -72,7 +73,7 @@ export class AssignmentController {
 		description: "Deletes the assignment. Returns true, if removal was successful."
 	})
 	deleteAssignment(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string
 	): Promise<boolean> {
 

@@ -7,6 +7,7 @@ import { AssignmentTemplateDto } from "../dto/course-config/assignment-template.
 import { CourseConfigService } from "../services/course-config.service";
 import { CourseConfigUpdateDto } from "../dto/course-config/course-config.dto";
 import { GroupSettingsUpdateDto } from "../dto/course-config/group-settings.dto";
+import { CourseId } from "../entities/course.entity";
 
 @ApiBearerAuth()
 @ApiTags("course-config")
@@ -23,7 +24,7 @@ export class CourseConfigController {
 		description: "Saves a configuration for a course, if it does not have one already."
 	})
 	createCourseConfig(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Body() config: CourseConfigDto
 	): Promise<CourseConfigDto> {
 		return this.configService.createCourseConfig(courseId, config);
@@ -36,7 +37,7 @@ export class CourseConfigController {
 		description: "Creates admission criteria for a course."
 	})
 	createAdmissionCriteria(
-		@Param("courseId") courseId: string, 
+		@Param("courseId") courseId: CourseId, 
 		@Param("configId") configId: number,
 		@Body() admissionCriteria: AdmissionCriteriaDto
 	): Promise<AdmissionCriteriaDto> {
@@ -50,7 +51,7 @@ export class CourseConfigController {
 		description: "Creates an assignment template."
 	})
 	createAssignmentTemplate(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Param("configId") configId: number,
 		@Body() template: AssignmentTemplateDto
 	): Promise<AssignmentTemplateDto> {
@@ -65,7 +66,7 @@ export class CourseConfigController {
 		summary: "Get course config",
 		description: "Retrieves the configuration of a course."
 	})
-	getCourseConfig(@Param("courseId") courseId: string): Promise<CourseConfigDto> {
+	getCourseConfig(@Param("courseId") courseId: CourseId): Promise<CourseConfigDto> {
 		return this.configService.getCourseConfig(courseId);
 	}
 
@@ -75,7 +76,7 @@ export class CourseConfigController {
 		summary: "Get group settings",
 		description: "Retrieves the group settings of a course."
 	})
-	getGroupSettings(@Param("courseId") courseId: string): Promise<GroupSettingsDto> {
+	getGroupSettings(@Param("courseId") courseId: CourseId): Promise<GroupSettingsDto> {
 		return this.configService.getGroupSettings(courseId);
 	}
 
@@ -85,7 +86,7 @@ export class CourseConfigController {
 		summary: "Get admission criteria",
 		description: "Retrieves the admission criteria of a course."
 	})
-	getAdmissionCriteria(@Param("courseId") courseId: string): Promise<AdmissionCriteriaDto> {
+	getAdmissionCriteria(@Param("courseId") courseId: CourseId): Promise<AdmissionCriteriaDto> {
 		return this.configService.getAdmissionCriteria(courseId);
 	}
 
@@ -95,7 +96,7 @@ export class CourseConfigController {
 		summary: "Get assignment templates",
 		description: "Retrieves the assignment templates of a course."
 	})
-	getAssignmentTemplates(@Param("courseId") courseId: string): Promise<AssignmentTemplateDto[]> {
+	getAssignmentTemplates(@Param("courseId") courseId: CourseId): Promise<AssignmentTemplateDto[]> {
 		return this.configService.getAssignmentTemplates(courseId);
 	}
 	//#endregion
@@ -108,7 +109,7 @@ export class CourseConfigController {
 		description: "Updates the configuration of a course."
 	})
 	updateCourseConfig(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Body() update: CourseConfigUpdateDto,
 	): Promise<CourseConfigDto> {
 		return this.configService.updateCourseConfig(courseId, update);
@@ -121,7 +122,7 @@ export class CourseConfigController {
 		description: "Updates the group settings of a course."
 	})
 	updateGroupSettings(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Body() update: GroupSettingsUpdateDto
 	): Promise<GroupSettingsDto> {
 		return this.configService.updateGroupSettings(courseId, update);
@@ -134,7 +135,7 @@ export class CourseConfigController {
 		description: "Updates the admission criteria of a course."
 	})
 	updateAdmissionCriteria(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Body() criteria: AdmissionCriteriaDto
 	): Promise<AdmissionCriteriaDto> {
 		return this.configService.updateAdmissionCriteria(courseId, criteria);
@@ -147,7 +148,7 @@ export class CourseConfigController {
 		description: "Updates the assignment template."
 	})
 	updateAssignmentTemplate(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Param("id") id: number,
 		@Body() template: AssignmentTemplateDto
 	): Promise<AssignmentTemplateDto> {
@@ -164,7 +165,7 @@ export class CourseConfigController {
 		summary: "Remove course config",
 		description: "Removes the complete configuration of a course. Includes group settings, admission criteria and templates."
 	})
-	deleteCourseConfig(@Param("courseId") courseId: string): Promise<void> {
+	deleteCourseConfig(@Param("courseId") courseId: CourseId): Promise<void> {
 		return this.configService.removeCourseConfig(courseId);
 	}
 
@@ -174,7 +175,7 @@ export class CourseConfigController {
 		summary: "Remove admssion criteria",
 		description: "Removes the admission criteria of a course."
 	})
-	deleteAdmissionCriteria(@Param("courseId") courseId: string): Promise<void> {
+	deleteAdmissionCriteria(@Param("courseId") courseId: CourseId): Promise<void> {
 		return this.configService.removeAdmissionCriteria(courseId);
 	}
 
@@ -185,7 +186,7 @@ export class CourseConfigController {
 		description: "Deletes the assignment template."
 	})
 	deleteAssignmentTemplate(
-		@Param("courseId") courseId: string,
+		@Param("courseId") courseId: CourseId,
 		@Param("id") id: number
 	): Promise<void> {
 		return this.configService.removeAssignmentTemplateFromCourse(courseId, id);

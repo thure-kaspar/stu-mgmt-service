@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { AssignmentState, AssignmentType, CollaborationType } from "../../shared/enums";
 import { Assessment } from "./assessment.entity";
-import { Course } from "./course.entity";
+import { Course, CourseId } from "./course.entity";
 
 @Entity("assignments")
 export class Assignment {
@@ -43,7 +43,7 @@ export class Assignment {
 	course: Course;
 
 	@Column()
-	courseId: string;
+	courseId: CourseId;
 
 	@OneToMany(type => Assessment, assessment => assessment.assignment)
     assessments: Assessment[];

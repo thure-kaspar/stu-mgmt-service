@@ -4,7 +4,7 @@ import { CourseDto } from "src/course/dto/course/course.dto";
 import { DtoFactory } from "../../shared/dto-factory";
 import { CourseCreateDto } from "../dto/course/course-create.dto";
 import { CourseFilter } from "../dto/course/course-filter.dto";
-import { Course } from "../entities/course.entity";
+import { Course, CourseId } from "../entities/course.entity";
 import { CourseRepository } from "../repositories/course.repository";
 
 @Injectable()
@@ -40,12 +40,12 @@ export class CourseService {
 		return DtoFactory.createCourseDto(course);
 	}
 
-	async updateCourse(courseId: string, courseDto: CourseDto): Promise<CourseDto> {
+	async updateCourse(courseId: CourseId, courseDto: CourseDto): Promise<CourseDto> {
 		const course = await this.courseRepository.updateCourse(courseId, courseDto);
 		return DtoFactory.createCourseDto(course);
 	}
 
-	async deleteCourse(courseId: string): Promise<boolean> {
+	async deleteCourse(courseId: CourseId): Promise<boolean> {
 		return this.courseRepository.deleteCourse(courseId);
 	}
 

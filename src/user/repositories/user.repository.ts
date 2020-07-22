@@ -1,7 +1,7 @@
 import { Repository, EntityRepository } from "typeorm";
 import { User } from "../../shared/entities/user.entity";
 import { UserDto } from "../../shared/dto/user.dto";
-import { Course } from "src/course/entities/course.entity";
+import { Course, CourseId } from "src/course/entities/course.entity";
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -42,7 +42,7 @@ export class UserRepository extends Repository<User> {
 	}
 
 	/** Determines, wether the user is a member of the course. */
-	async isMemberOfCourse(userId: string, courseId: string): Promise<boolean> {
+	async isMemberOfCourse(userId: string, courseId: CourseId): Promise<boolean> {
 		const user = await this.createQueryBuilder("user")
 			.where("user.id = :id", { id: userId })
 			.innerJoin("user.courseUserRelations", "courseRelation")

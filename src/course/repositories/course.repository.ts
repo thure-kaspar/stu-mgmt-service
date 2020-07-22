@@ -1,5 +1,5 @@
 import { Repository, EntityRepository } from "typeorm";
-import { Course } from "../entities/course.entity";
+import { Course, CourseId } from "../entities/course.entity";
 import { CourseDto } from "../dto/course/course.dto";
 import { CourseFilter } from "../dto/course/course-filter.dto";
 import { AdmissionCritera } from "../entities/admission-criteria.entity";
@@ -92,13 +92,13 @@ export class CourseRepository extends Repository<Course> {
 		return this.findOneOrFail(id, { relations: ["config", "config.groupSettings"] });
 	}
 
-	async getCourseWithGroups(courseId: string): Promise<Course> {
+	async getCourseWithGroups(courseId: CourseId): Promise<Course> {
 		return this.findOneOrFail(courseId, {
 			relations: ["groups"]
 		});
 	}
 
-	async updateCourse(courseId: string, courseDto: CourseDto): Promise<Course> {
+	async updateCourse(courseId: CourseId, courseDto: CourseDto): Promise<Course> {
 		const course = await this.getCourseById(courseId);
 
 		// TODO: Define Patch-Object or create method
@@ -111,7 +111,7 @@ export class CourseRepository extends Repository<Course> {
 		return this.save(course);
 	}
 
-	async deleteCourse(courseId: string): Promise<boolean> {
+	async deleteCourse(courseId: CourseId): Promise<boolean> {
 		const deleteResult = await this.delete({
 			id: courseId
 		});

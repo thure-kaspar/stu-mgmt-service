@@ -4,13 +4,14 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Assignment } from "../entities/assignment.entity";
 import { AssignmentRepository } from "../repositories/assignment.repository";
 import { DtoFactory } from "../../shared/dto-factory";
+import { CourseId } from "../entities/course.entity";
 
 @Injectable()
 export class AssignmentService {
 
 	constructor(@InjectRepository(Assignment) private assignmentRepository: AssignmentRepository) { }
 
-	async createAssignment(courseId: string, assignmentDto: AssignmentDto): Promise<AssignmentDto> {
+	async createAssignment(courseId: CourseId, assignmentDto: AssignmentDto): Promise<AssignmentDto> {
 		if (courseId !== assignmentDto.courseId) {
 			throw new BadRequestException("CourseId refers to a different course");
 		}
@@ -18,7 +19,7 @@ export class AssignmentService {
 		return DtoFactory.createAssignmentDto(createdAssignment);
 	}
 
-	async getAssignments(courseId: string): Promise<AssignmentDto[]> {
+	async getAssignments(courseId: CourseId): Promise<AssignmentDto[]> {
 		const assignments = await this.assignmentRepository.getAssignments(courseId);
 		const assignmentDtos = assignments.map(a => DtoFactory.createAssignmentDto(a));
 		return assignmentDtos;

@@ -4,11 +4,13 @@ import { CourseConfig } from "./course-config.entity";
 import { CourseUserRelation } from "./course-user-relation.entity";
 import { Group } from "./group.entity";
 
+export type CourseId = string;
+
 @Entity("courses")
 @Index("IDX_Shortname_Semester", ["shortname", "semester"], { unique: true })
 export class Course {
     @PrimaryColumn()
-    id: string;
+    id: CourseId;
 
     @Column()
     shortname: string;

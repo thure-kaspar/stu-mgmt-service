@@ -2,11 +2,12 @@ import { ConflictException } from "@nestjs/common";
 import { EntityRepository, Repository } from "typeorm";
 import { CourseUserRelation } from "../entities/course-user-relation.entity";
 import { CourseRole } from "../../shared/enums";
+import { CourseId } from "../entities/course.entity";
 
 @EntityRepository(CourseUserRelation)
 export class CourseUserRelationRepository extends Repository<CourseUserRelation> {
 	
-	async createCourseUserRelation(courseId: string, userId: string, role: CourseRole): Promise<CourseUserRelation> {
+	async createCourseUserRelation(courseId: CourseId, userId: string, role: CourseRole): Promise<CourseUserRelation> {
 		const courseUserRelation = new CourseUserRelation();
 		courseUserRelation.courseId = courseId;
 		courseUserRelation.userId = userId;
@@ -22,14 +23,14 @@ export class CourseUserRelationRepository extends Repository<CourseUserRelation>
 		return courseUserRelation;
 	}
 
-	async updateRole(courseId: string, userId: string, role: CourseRole): Promise<boolean> {
+	async updateRole(courseId: CourseId, userId: string, role: CourseRole): Promise<boolean> {
 		const relation = await this.findOneOrFail({ where: { courseId, userId } });
 		relation.role = role;
 		const updated = await this.save(relation);
 		return updated ? true : false;
 	}
 
-	async removeUser(courseId: string, userId: string): Promise<boolean> {
+	async removeUser(courseId: CourseId, userId: string): Promise<boolean> {
 		const relation = await this.findOneOrFail({ where: { courseId, userId } });
 		const result = await this.remove(relation);
 		return result ? true : false;

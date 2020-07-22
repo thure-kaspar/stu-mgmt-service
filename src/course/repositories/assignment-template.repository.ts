@@ -1,6 +1,7 @@
 import { EntityRepository, Repository } from "typeorm";
 import { AssignmentTemplate } from "../entities/assignment-template.entity";
 import { AssignmentTemplateDto } from "../dto/course-config/assignment-template.dto";
+import { CourseId } from "../entities/course.entity";
 
 @EntityRepository(AssignmentTemplate)
 export class AssignmentTemplateRepository extends Repository<AssignmentTemplate> {
@@ -18,7 +19,7 @@ export class AssignmentTemplateRepository extends Repository<AssignmentTemplate>
 	}
 
 	/** Retrieves all templates of a course. */
-	getTemplatesByCourseId(courseId: string): Promise<AssignmentTemplate[]> {
+	getTemplatesByCourseId(courseId: CourseId): Promise<AssignmentTemplate[]> {
 		return this.createQueryBuilder("template")
 			.innerJoin("template.courseConfig", "c")
 			.where("c.courseId = :courseId", { courseId })

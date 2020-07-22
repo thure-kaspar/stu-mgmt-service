@@ -9,7 +9,7 @@ import { copy, convertToEntity, convertToEntityNoRelations } from "../../utils/o
 import { COURSE_JAVA_1920 } from "../../mocks/courses.mock";
 import { UserGroupRelation } from "../../../src/course/entities/user-group-relation.entity";
 import { COURSE_CONFIG_JAVA_1920 } from "../../mocks/course-config/course-config.mock";
-import { Course } from "../../../src/course/entities/course.entity";
+import { Course, CourseId } from "../../../src/course/entities/course.entity";
 import { Group } from "../../../src/course/entities/group.entity";
 import { CourseConfig } from "../../../src/course/entities/course-config.entity";
 import { GroupSettings } from "../../../src/course/entities/group-settings.entity";
@@ -115,7 +115,7 @@ describe("GroupService", () => {
 	let courseRepository: CourseRepository;
 	let eventBus: EventBus;
 	let groupDto: GroupDto;
-	let courseId: string;
+	let courseId: CourseId;
 
 	beforeEach(async () => {
 		const module: TestingModule = await Test.createTestingModule({
