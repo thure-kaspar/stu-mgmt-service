@@ -12,7 +12,7 @@ import { CourseId } from "../entities/course.entity";
 @ApiBearerAuth()
 @ApiTags("assessments")
 @Controller("courses/:courseId/assignments/:assignmentId/assessments")
-@UseGuards(AuthGuard())
+//@UseGuards(AuthGuard()) -- temporarily disabled
 export class AssessmentController {
 
 	constructor(private assessmentService: AssessmentService) { }
@@ -94,6 +94,7 @@ export class AssessmentController {
 	}
 
 	@Patch(":assessmentId")
+	@UseGuards(AuthGuard())
 	@ApiOperation({
 		operationId: "updateAssessment",
 		summary: "Update assessment.",
