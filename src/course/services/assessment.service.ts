@@ -100,21 +100,17 @@ export class AssessmentService {
 	 * @param updatedBy UserId of the user, who triggered the update.
 	 * @returns Updated assessment.
 	 */
-	async updateAssessment(assessmentId: string, assessmentDto: AssessmentUpdateDto, updatedBy: string): Promise<AssessmentDto> {
+	async updateAssessment(assessmentId: string, update: AssessmentUpdateDto, updatedBy: string): Promise<AssessmentDto> {
 		// Check that assignment is in IN_REVIEW state
 		const original = await this.assessmentRepository.getAssessmentById(assessmentId);
 		if (original.assignment.state !== AssignmentState.IN_REVIEW) {
 			throw new BadRequestException("Assignment not IN_REVIEW state.");
 		}
 
-		// Check that partial assessment contain correct assessmentId
-		assessmentDto.partialAssessments?.forEach(partial => {
-			if (partial.assessmentId !== assessmentId) {
-				throw new BadRequestException("Partial assessments must containt corresponding assessmentId.");
-			}
-		});
+		// Ensure that update only includes valid values
+		this.validatePartialsForUpdate(update, assessmentId);
 
-		const updated = await this.assessmentRepository.updateAssessment(assessmentId, assessmentDto);
+		const updated = await this.assessmentRepository.updateAssessment(assessmentId, update);
 
 		// Store event, if achieved points changed
 		if (original.achievedPoints !== updated.achievedPoints) {
@@ -125,6 +121,43 @@ export class AssessmentService {
 		}
 
 		return DtoFactory.createAssessmentDto(updated);
+	}
+
+	/**
+	 * Ensures that `assessmentId` is correct (Throws `BadRequestException`).
+	 * Ensures that no partial is included in multiple times (Throws `BadRequestException`).
+	 * Ensures that `id` is undefined on new partials.
+	 */
+	private validatePartialsForUpdate(update: AssessmentUpdateDto, assessmentId: string): void {
+		const set = new Set<number>();
+		
+		update.updatePartialAssignments?.forEach(partial => {
+			this.throwErrorIfDifferentAssignmentId(assessmentId, partial);
+			this.throwErrorIfPartialIncludedTwice(set, partial);
+		});
+		update.removePartialAssignments?.forEach(partial => {
+			this.throwErrorIfDifferentAssignmentId(assessmentId, partial);
+			this.throwErrorIfPartialIncludedTwice(set, partial);
+		});
+
+		update.addPartialAssessments?.forEach(partial => {
+			this.throwErrorIfDifferentAssignmentId(assessmentId, partial);
+			partial.id = undefined;
+		});
+	}
+
+	private throwErrorIfDifferentAssignmentId(assessmentId: string, partial: PartialAssessmentDto): void {
+		if (partial.assessmentId !== assessmentId) {
+			throw new BadRequestException("PartialAssessment must did not contain the correct assessmentId: " + assessmentId);
+		}
+	}
+
+	private throwErrorIfPartialIncludedTwice(set: Set<number>, partial: PartialAssessmentDto): void {
+		if (set.has(partial.id)) {
+			throw new BadRequestException(`PartialAssessment (id: ${partial.id}) was included multiple times.`);
+		} else {
+			set.add(partial.id);
+		}
 	}
 
 	async deleteAssessment(assessmentId: string): Promise<boolean> {

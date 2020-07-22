@@ -39,7 +39,7 @@ export class AssessmentController {
 	@ApiOperation({
 		operationId: "addPartialAssessment",
 		summary: "Add partial assessment.",
-		description: "Adds a partial assessment for an exisiting assessment. Alternatively, partial assessments can be created together with the assessment."
+		description: "Adds a partial assessment for an existing assessment. Alternatively, partial assessments can be created together with the assessment."
 	})
 	addPartialAssessment(
 		@Param("courseId") courseId: CourseId,

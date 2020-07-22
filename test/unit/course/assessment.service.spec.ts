@@ -1,7 +1,7 @@
 import { EventBus } from "@nestjs/cqrs";
 import { Test, TestingModule } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { AssessmentDto } from "../../../src/course/dto/assessment/assessment.dto";
+import { AssessmentDto, AssessmentUpdateDto } from "../../../src/course/dto/assessment/assessment.dto";
 import { PartialAssessmentDto } from "../../../src/course/dto/assessment/partial-assessment.dto";
 import { GroupDto } from "../../../src/course/dto/group/group.dto";
 import { AssessmentEvent } from "../../../src/course/entities/assessment-event.entity";
@@ -320,10 +320,32 @@ describe("AssessmentService", () => {
 			const invalidAssessment = copy(assessmentDto);
 			const partial = copy(PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW);
 			partial.assessmentId = "some_other_id";
-			invalidAssessment.partialAssessments = [partial];
 
+			const invalidUpdate: AssessmentUpdateDto = {
+				updatePartialAssignments: [partial]
+			};
+		
 			try {
-				await service.updateAssessment(invalidAssessment.id, invalidAssessment, updatedBy);
+				await service.updateAssessment(invalidAssessment.id, invalidUpdate, updatedBy);
+				expect(true).toEqual(false);
+			} catch(error) {
+				expect(error).toBeTruthy();
+				expect(error.status).toEqual(400);
+			}
+		});
+
+		it("Partial included multiple times -> Throws exception", async () => {
+			const invalidAssessment = copy(assessmentDto);
+			const partial = copy(PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW);
+			partial.assessmentId = "some_other_id";
+
+			const invalidUpdate: AssessmentUpdateDto = {
+				updatePartialAssignments: [partial],
+				removePartialAssignments: [partial]
+			};
+		
+			try {
+				await service.updateAssessment(invalidAssessment.id, invalidUpdate, updatedBy);
 				expect(true).toEqual(false);
 			} catch(error) {
 				expect(error).toBeTruthy();

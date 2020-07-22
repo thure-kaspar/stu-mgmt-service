@@ -1,4 +1,4 @@
-import { Repository, EntityRepository } from "typeorm";
+import { Repository, EntityRepository, EntityManager } from "typeorm";
 import { Assessment } from "../entities/assessment.entity";
 import { AssessmentDto, AssessmentCreateDto, AssessmentUpdateDto } from "../dto/assessment/assessment.dto";
 import { AssessmentUserRelation } from "../entities/assessment-user-relation.entity";
@@ -88,58 +88,56 @@ export class AssessmentRepository extends Repository<Assessment> {
 	/**
 	 * Updates the assessment including its partial assessments.
 	 */
-	async updateAssessment(assessmentId: string, assessmentDto: AssessmentUpdateDto): Promise<Assessment> {
-		const partialRepo = this.manager.getRepository(PartialAssessment);
+	async updateAssessment(assessmentId: string, updateDto: AssessmentUpdateDto): Promise<Assessment> {
+		const { achievedPoints, comment } = updateDto;
 		const assessment = await this.findOneOrFail(assessmentId, { 
 			relations: ["partialAssessments"]
 		});
 
-		// Update native properties
-		assessment.achievedPoints = assessmentDto.achievedPoints;
-		assessment.comment = assessmentDto.comment;
+		// Update achievedPoints, if included
+		if (achievedPoints) {
+			assessment.achievedPoints = updateDto.achievedPoints;
+		}
 
-		// Find removed partial assessments
-		const deletedPartials = [];
-		assessment.partialAssessments.forEach(p => {
-			if (!assessmentDto.partialAssessments?.find(pDto => pDto.id === p.id)) {
-				deletedPartials.push(p.id);
-			}
-		});
+		// Update comment, if included (allow setting to null)
+		if (comment !== undefined) {
+			assessment.comment = updateDto.comment; 
+		} 
 
-		// Find updated partial assessments
-		const updatedPartials = [];
-		assessment.partialAssessments.forEach(existing => {
-			// If user didn't remove it, we should find the partial assessment in the dto
-			const updated = assessmentDto.partialAssessments?.find(partial => existing.id === partial.id);
-			// Update properties of edited partial assessment
-			Object.assign(existing, updated);
-			updatedPartials.push(existing);
-		});
-
-		// Find added partial assessments
-		const addedPartials = assessmentDto.partialAssessments?.filter(p => !p.id) ?? [];
-		
-		// Perform inserts, updated and deletes in transaction
+		// Perform insert/update/delete in one transaction
 		await this.manager.transaction(async transaction => {
+			// Update assessment itself
 			await transaction.save(assessment);
 			
-			if (deletedPartials.length > 0) {
-				await transaction.delete(PartialAssessment, deletedPartials);
-			}
-
-			if (addedPartials.length > 0) {
-				await transaction.insert(PartialAssessment, addedPartials);
-			}
-
-			if (updatedPartials.length > 0) {
-				updatedPartials.forEach(async update => {
-					await transaction.update(PartialAssessment, { id: update.id }, update);
-				});
-			}
-
+			// Insert/Update/Remove partials
+			await this.updatePartials(transaction, updateDto, assessment.partialAssessments);
 		});
 
 		return this.getAssessmentById(assessment.id);
+	}
+
+	private async updatePartials(transaction: EntityManager, updateDto: AssessmentUpdateDto, originalPartials: PartialAssessment[]): Promise<void> {
+		const { addPartialAssessments, updatePartialAssignments, removePartialAssignments } = updateDto;
+		
+		if (removePartialAssignments?.length > 0) {
+			const ids = removePartialAssignments.map(p => p.id);
+			await transaction.delete(PartialAssessment, ids);
+		}
+
+		// Insert new partials
+		if (addPartialAssessments?.length > 0) {
+			await transaction.insert(PartialAssessment, addPartialAssessments);
+		}
+
+		// Update partials
+		if (updatePartialAssignments?.length > 0) {
+			updatePartialAssignments.forEach(async (update) => {
+				// Ensure that partial actually existed in assessment
+				if (originalPartials.find(p => p.id == update.id)) {
+					await transaction.update(PartialAssessment, { id: update.id }, update);
+				}
+			});
+		}
 	}
 
 	async deleteAssessment(assessmentId: string): Promise<boolean> {

@@ -265,35 +265,38 @@ describe("PATCH-REQUESTS of AssessmentController (e2e)", () => {
 			console.assert(PARTIAL_ASSESSMENT_MOCK.filter(p => p.assessmentId === assessment.id).length == 0, 
 				"Assessment should not have partial assessments");
 
-			assessment.partialAssessments = [
-				{
-					assessmentId: assessment.id,
-					title: "Added partial assessment #1",
-					comment: "A comment...",
-					points: 11,
-					severity: Severity.INFORMATIONAL,
-					type: "???",
-				},
-				{
-					assessmentId: assessment.id,
-					title: "Added partial assessment #2",
-					comment: "A comment...",
-					points: 22,
-					severity: Severity.WARNING,
-					type: "???",
-				}
-			];
+			const update: AssessmentUpdateDto = {
+				addPartialAssessments: [
+					{
+						assessmentId: assessment.id,
+						title: "Added partial assessment #1",
+						comment: "A comment...",
+						points: 11,
+						severity: Severity.INFORMATIONAL,
+						type: "???",
+					},
+					{
+						assessmentId: assessment.id,
+						title: "Added partial assessment #2",
+						comment: "A comment...",
+						points: 22,
+						severity: Severity.WARNING,
+						type: "???",
+					}
+				]
+			};
 
 			const tmp = copy(assessment);
 			// Joined relations
 			tmp.creator = USER_STUDENT_3_JAVA_TUTOR;
 			tmp.assignment = ASSIGNMENT_JAVA_IN_REVIEW;
 			tmp.user = USER_STUDENT_3_JAVA_TUTOR;
+			tmp.partialAssessments = update.addPartialAssessments; // Add new partials
 			const expected = JSON.parse(JSON.stringify(tmp)); // Avoids issues with date types
 
 			return request(app.getHttpServer())
 				.patch(`/courses/${course.id}/assignments/${assessment.assignmentId}/assessments/${assessment.id}`)
-				.send(assessment)
+				.send(update)
 				.expect(200)
 				.expect(({ body }) => {
 					const result = body as AssessmentDto;
@@ -308,10 +311,14 @@ describe("PATCH-REQUESTS of AssessmentController (e2e)", () => {
 			assessment.partialAssessments = PARTIAL_ASSESSMENT_MOCK.filter(p => p.assessmentId === assessment.id);
 			console.assert(assessment.partialAssessments.length > 1, "Assessment should have multiple partial assessments.");
 
-			// Remove partial (by only taking first one)
+			// Update partial
 			assessment.partialAssessments[0].title = "Updated title";
 			assessment.partialAssessments[0].points = 42;
 
+			const update: AssessmentUpdateDto = {
+				updatePartialAssignments: [copy(assessment.partialAssessments[0])]
+			};
+			
 			const tmp = copy(assessment);
 			// Joined relations
 			tmp.creator = USER_STUDENT_3_JAVA_TUTOR;
@@ -322,7 +329,7 @@ describe("PATCH-REQUESTS of AssessmentController (e2e)", () => {
 
 			return request(app.getHttpServer())
 				.patch(`/courses/${course.id}/assignments/${assessment.assignmentId}/assessments/${assessment.id}`)
-				.send(assessment)
+				.send(update)
 				.expect(200)
 				.expect(({ body }) => {
 					const result = body as AssessmentDto;
@@ -336,8 +343,11 @@ describe("PATCH-REQUESTS of AssessmentController (e2e)", () => {
 			console.assert(assessment.partialAssessments.length > 1, "Assessment should have multiple partial assessments.");
 
 			// Remove partial (by only taking first one)
-			assessment.partialAssessments = [assessment.partialAssessments[0]];
-
+			const update: AssessmentUpdateDto = {
+				removePartialAssignments: assessment.partialAssessments.splice(1) // Take everything but the first partial
+			};
+			assessment.partialAssessments = [assessment.partialAssessments[0]]; // Only take the first partial
+			
 			const tmp = copy(assessment);
 			// Joined relations
 			tmp.creator = USER_STUDENT_3_JAVA_TUTOR;
@@ -348,7 +358,7 @@ describe("PATCH-REQUESTS of AssessmentController (e2e)", () => {
 
 			return request(app.getHttpServer())
 				.patch(`/courses/${course.id}/assignments/${assessment.assignmentId}/assessments/${assessment.id}`)
-				.send(assessment)
+				.send(update)
 				.expect(200)
 				.expect(({ body }) => {
 					const result = body as AssessmentDto;
