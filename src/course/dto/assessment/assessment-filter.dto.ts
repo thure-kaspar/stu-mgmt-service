@@ -4,6 +4,8 @@ import { ApiPropertyOptional } from "@nestjs/swagger";
 
 export class AssessmentFilter extends PaginationFilter {
 
+	@ApiPropertyOptional({ description: "Name of group or user. Matched with ILIKE %name%." })
+	name?: string;
 	@ApiPropertyOptional({ description: "Retrieves assessment of specific group." })
 	groupId?: string;
 	@ApiPropertyOptional({ description: "Retrieves assessment of specific user." })
@@ -15,6 +17,7 @@ export class AssessmentFilter extends PaginationFilter {
 
 	constructor(filter?: Partial<AssessmentFilter>) {
 		super(filter);
+		this.name = filter?.name;
 		this.groupId = filter?.groupId;
 		this.userId = filter?.userId;
 		this.minScore = transformNumber(filter?.minScore);

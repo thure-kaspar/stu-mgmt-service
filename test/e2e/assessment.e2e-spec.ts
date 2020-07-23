@@ -11,6 +11,7 @@ import { copy } from "../utils/object-helper";
 import { PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW, PARTIAL_ASSESSMENT_2_JAVA_IN_REVIEW, PARTIAL_ASSESSMENT_MOCK } from "../mocks/partial-assessments.mock";
 import { USER_STUDENT_JAVA, USER_STUDENT_3_JAVA_TUTOR } from "../mocks/users.mock";
 import { Severity } from "../../src/course/dto/assessment/partial-assessment.dto";
+import { GROUP_1_JAVA } from "../mocks/groups/groups.mock";
 
 let app: INestApplication;
 let dbMockService: DbMockService;
@@ -60,6 +61,48 @@ describe("GET-REQUESTS of AssessmentController (e2e)", () => {
 					expect(result[0].id).toEqual(assessment.id);
 					expect(result[0].creator).toBeTruthy();
 					expect(result[0].group).toBeTruthy();
+				});
+		});
+
+		it("Retrieves assessment with username", () => {
+			const assignment = ASSIGNMENT_JAVA_IN_REVIEW;
+			const assessment = ASSESSMENT_JAVA_IN_REVIEW;
+			const user = USER_STUDENT_JAVA;
+			console.assert(user.id === assessment.userId, "Should be the same user");
+			
+			const queryString = `name=${user.username}`;
+
+			return request(app.getHttpServer())
+				.get(`/courses/${course.id}/assignments/${assignment.id}/assessments?${queryString}`)
+				.expect(({ body }) => {
+					const result = body as AssessmentDto[];
+					expect(result.length).toEqual(1);
+					expect(result[0].id).toEqual(assessment.id);
+					expect(result[0].creator).toBeTruthy();
+					expect(result[0].user).toBeTruthy();
+					expect(result[0].user.username).toEqual(user.username);
+				});
+		});
+
+		it("Retrieves assessment with groupname", () => {
+			const assignment = ASSIGNMENT_JAVA_EVALUATED;
+			const assessment = ASSESSMENT_JAVA_EVALUATED_GROUP_1;
+			const group = GROUP_1_JAVA;
+			console.assert(assignment.id === assessment.assignmentId, "Assessment should belong to assignment.");
+			console.assert(assessment.groupId === group.id, "Should be the same group");
+
+			// If we specify groupId, we expect one assessment to be returned
+			const queryString = `name=${group.name}`;
+
+			return request(app.getHttpServer())
+				.get(`/courses/${course.id}/assignments/${assignment.id}/assessments?${queryString}`)
+				.expect(({ body }) => {
+					const result = body as AssessmentDto[];
+					expect(result.length).toEqual(1);
+					expect(result[0].id).toEqual(assessment.id);
+					expect(result[0].creator).toBeTruthy();
+					expect(result[0].group).toBeTruthy();
+					expect(result[0].group.name).toEqual(group.name);
 				});
 		});
 

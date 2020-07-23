@@ -1,4 +1,4 @@
-import { Repository, EntityRepository, EntityManager } from "typeorm";
+import { Repository, EntityRepository, EntityManager, Brackets } from "typeorm";
 import { Assessment } from "../entities/assessment.entity";
 import { AssessmentDto, AssessmentCreateDto, AssessmentUpdateDto } from "../dto/assessment/assessment.dto";
 import { AssessmentUserRelation } from "../entities/assessment-user-relation.entity";
@@ -28,6 +28,15 @@ export class AssessmentRepository extends Repository<Assessment> {
 		return partialRepo.save(partial);
 	}
 
+	/**
+	 * Returns the specified assessment.
+	 * Throws `EntityNotFoundError` if it does not exist.
+	 * Includes relations:
+	 * - Creator
+	 * - Partial assessments
+	 * - Group (is group assessment)
+	 * - User (if user assessment)
+	 */
 	async getAssessmentById(assessmentId: string): Promise<Assessment> {
 		const query = this.createQueryBuilder("assessment")
 			.where("assessment.id = :assessmentId", { assessmentId })
@@ -35,7 +44,7 @@ export class AssessmentRepository extends Repository<Assessment> {
 			.leftJoinAndSelect("assessment.assessmentUserRelations", "userRelation")
 			.leftJoinAndSelect("userRelation.user", "user")
 			.innerJoinAndSelect("assessment.assignment", "assignment")
-			.innerJoinAndSelect("assessment.creator", "creator")
+			.leftJoinAndSelect("assessment.creator", "creator")
 			.orderBy("partial.id", "ASC");
 
 		const result = await query.getOne();
@@ -43,25 +52,44 @@ export class AssessmentRepository extends Repository<Assessment> {
 		return result;
 	}
 
+	/**
+	 * Returns all assessments that match the given filter.
+	 * Ordered by assignment end date in ascending order.
+	 * Includes relations:
+	 * - Creator
+	 * - Partial assessments
+	 * - Group (is group assessment)
+	 * - User (if user assessment)
+	 */
 	async getAssessmentsForAssignment(assignmentId: string, filter?: AssessmentFilter): Promise<[Assessment[], number]> {
-		const { groupId, userId, creatorId, minScore, skip, take } = filter || { };
+		const { name, groupId, userId, creatorId, minScore, skip, take } = filter || { };
 
 		const query = this.createQueryBuilder("assessment")
 			.where("assessment.assignmentId = :assignmentId", { assignmentId })
-			.innerJoinAndSelect("assessment.creator", "creator")
+			.leftJoinAndSelect("assessment.creator", "creator")
 			.leftJoinAndSelect("assessment.group", "group") // Include group, if it exists
-			.leftJoinAndSelect("assessment.partialAssessments", "partials") // Include partial assessments, if they exist
+			.leftJoinAndSelect("assessment.assessmentUserRelations", "userRelation")
+			.leftJoinAndSelect("userRelation.user", "user")
+			.leftJoinAndSelect("assessment.partialAssessments", "partial") // Include partial assessments, if they exist
 			.innerJoin("assessment.assignment", "assignment")
 			.orderBy("assignment.endDate", "ASC")
+			.addOrderBy("partial.id", "ASC")
 			.skip(skip)
 			.take(take);
+
+		if (name) {
+			query.andWhere(new Brackets(qb => {
+				qb.where("group.name ILIKE :name", { name: `%${name}%` });
+				qb.orWhere("user.username ILIKE :name", { name: `%${name}%` });
+			}));
+		}
 
 		if (groupId) {
 			query.andWhere("assessment.groupId = :groupId", { groupId });
 		}
 
 		if (userId) {
-			query.leftJoin("assessment.assessmentUserRelations", "userRelation", "userRelation.userId = :userId", { userId });
+			query.andWhere("userRelation.userId = :userId", { userId });
 		}
 
 		if (creatorId) {
