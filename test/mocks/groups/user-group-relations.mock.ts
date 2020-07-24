@@ -1,5 +1,5 @@
 import { USER_STUDENT_JAVA, USER_STUDENT_2_JAVA, USER_ELSHAR, USER_KUNOLD } from "../users.mock";
-import { GROUP_1_JAVA, GROUP_3_JAVA2020 } from "./groups.mock";
+import { GROUP_1_JAVA, GROUP_3_JAVA2020, GROUP_4_JAVA } from "./groups.mock";
 
 export const UserGroupRelationsMock = [
 	{
@@ -22,6 +22,14 @@ export const UserGroupRelationsMock = [
 		userId: USER_KUNOLD.id,
 		groupId: GROUP_3_JAVA2020.id
 	},
-
-
+	{
+		id: 5,
+		userId: USER_ELSHAR.id,
+		groupId: GROUP_4_JAVA.id
+	},
+	{
+		id: 5,
+		userId: USER_KUNOLD.id,
+		groupId: GROUP_4_JAVA.id
+	}
 ];
