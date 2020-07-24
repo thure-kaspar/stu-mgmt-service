@@ -6,7 +6,7 @@ import { GroupDto } from "../../src/course/dto/group/group.dto";
 import { CoursesMock, COURSE_JAVA_1920 } from "../mocks/courses.mock";
 import { GroupsMock, GROUP_1_JAVA, GROUP_2_JAVA } from "../mocks/groups/groups.mock";
 import { UsersMock, USER_STUDENT_2_JAVA, USER_STUDENT_JAVA, USER_MGMT_ADMIN_JAVA_LECTURER } from "../mocks/users.mock";
-import { AssignmentsMock, ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA_EVALUATED, ASSIGNMENT_JAVA_INVISIBLE, ASSIGNMENT_JAVA_IN_REVIEW } from "../mocks/assignments.mock";
+import { AssignmentsMock, ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA_EVALUATED, ASSIGNMENT_JAVA_INVISIBLE, ASSIGNMENT_JAVA_IN_REVIEW_SINGLE } from "../mocks/assignments.mock";
 import { AssessmentsMock } from "../mocks/assessments.mock";
 import { createApplication } from "../mocks/application.mock";
 import { UserGroupRelationsMock } from "../mocks/groups/user-group-relations.mock";
@@ -126,7 +126,7 @@ describe("GET-REQUESTS of GroupController (e2e)", () => {
 	});
 
 	describe("(GET) /groups/assignments/{assignmentId}/with-assigned-evaluator", () => {
-		const assignment = ASSIGNMENT_JAVA_IN_REVIEW;
+		const assignment = ASSIGNMENT_JAVA_IN_REVIEW_SINGLE;
 
 		it("Returns groups with their assigned evaluator", () => {
 			return request(app.getHttpServer())

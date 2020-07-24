@@ -1,6 +1,6 @@
 import { AssessmentDto } from "../../src/course/dto/assessment/assessment.dto";
 import { GROUP_1_JAVA, GROUP_2_JAVA } from "./groups/groups.mock";
-import { ASSIGNMENT_JAVA_EVALUATED, ASSIGNMENT_JAVA_TESTAT_EVALUATED_SINGLE, ASSIGNMENT_JAVA_IN_REVIEW } from "./assignments.mock";
+import { ASSIGNMENT_JAVA_EVALUATED, ASSIGNMENT_JAVA_TESTAT_EVALUATED_SINGLE, ASSIGNMENT_JAVA_IN_REVIEW_SINGLE, ASSIGNMENT_JAVA_IN_REVIEW_GROUP } from "./assignments.mock";
 import { USER_STUDENT_JAVA, USER_STUDENT_3_JAVA_TUTOR } from "./users.mock";
 
 export const ASSESSMENT_JAVA_EVALUATED_GROUP_1: AssessmentDto = {
@@ -32,7 +32,7 @@ export const ASSESSMENT_JAVA_TESTAT_USER_1: AssessmentDto = {
 
 export const ASSESSMENT_JAVA_IN_REVIEW: AssessmentDto = {
 	id: "680dd44a-93b0-4d1c-a947-9b50a4bbb68e",
-	assignmentId: ASSIGNMENT_JAVA_IN_REVIEW.id,
+	assignmentId: ASSIGNMENT_JAVA_IN_REVIEW_SINGLE.id,
 	achievedPoints: 50,
 	comment: "ASSESSMENT_JAVA_IN_REVIEW",
 	userId: USER_STUDENT_JAVA.id,
@@ -41,10 +41,19 @@ export const ASSESSMENT_JAVA_IN_REVIEW: AssessmentDto = {
 
 export const ASSESSMENT_JAVA_IN_REVIEW_NO_PARTIALS: AssessmentDto = {
 	id: "08ea9724-fe3f-461c-9b3c-5d44ab9907e9",
-	assignmentId: ASSIGNMENT_JAVA_IN_REVIEW.id,
+	assignmentId: ASSIGNMENT_JAVA_IN_REVIEW_SINGLE.id,
 	achievedPoints: 42,
 	comment: "ASSESSMENT_JAVA_IN_REVIEW_WITH_PARTIALS",
 	userId: USER_STUDENT_3_JAVA_TUTOR.id,
+	creatorId: USER_STUDENT_3_JAVA_TUTOR.id,
+};
+
+export const ASSESSMENT_JAVA_IN_REVIEW_GROUP_PARTIALS: AssessmentDto = {
+	id: "0d365334-6cb3-4ac5-b0fe-0b1a5aa1fbf4",
+	assignmentId: ASSIGNMENT_JAVA_IN_REVIEW_GROUP.id,
+	achievedPoints: 75,
+	comment: "ASSIGNMENT_JAVA_IN_REVIEW_GROUP",
+	groupId: GROUP_1_JAVA.id,
 	creatorId: USER_STUDENT_3_JAVA_TUTOR.id,
 };
 
@@ -53,5 +62,6 @@ export const AssessmentsMock: AssessmentDto[] = [
 	ASSESSMENT_JAVA_EVALUATED_GROUP_2,
 	ASSESSMENT_JAVA_TESTAT_USER_1,
 	ASSESSMENT_JAVA_IN_REVIEW,
-	ASSESSMENT_JAVA_IN_REVIEW_NO_PARTIALS
+	ASSESSMENT_JAVA_IN_REVIEW_NO_PARTIALS,
+	ASSESSMENT_JAVA_IN_REVIEW_GROUP_PARTIALS
 ];

@@ -26,16 +26,28 @@ export const ASSIGNMENT_JAVA_CLOSED: AssignmentDto = {
 	endDate: new Date(2020, 1, 16)
 };
 
-export const ASSIGNMENT_JAVA_IN_REVIEW: AssignmentDto = {
+export const ASSIGNMENT_JAVA_IN_REVIEW_SINGLE: AssignmentDto = {
 	id: "993b3cd0-6207-11ea-bc55-0242ac130003",
 	courseId: COURSE_JAVA_1920.id,
-	name: "Test_Assignment 03 (Java)",
+	name: "Test_Assignment 03 (Java) - SINGLE - IN_REVIEW",
 	points: 100,
 	type: AssignmentType.HOMEWORK,
 	state: AssignmentState.IN_REVIEW,
 	collaboration: CollaborationType.SINGLE,
 	startDate: new Date(2020, 5, 11),
 	endDate: new Date(2020, 5, 18)
+};
+
+export const ASSIGNMENT_JAVA_IN_REVIEW_GROUP: AssignmentDto = {
+	id: "f50b8474-1fb9-4d69-85a2-76648d0fd3f9",
+	courseId: COURSE_JAVA_1920.id,
+	name: "Test_Assignment 08 (Java) - GROUP - IN_REVIEW",
+	points: 100,
+	type: AssignmentType.HOMEWORK,
+	state: AssignmentState.IN_REVIEW,
+	collaboration: CollaborationType.GROUP,
+	startDate: new Date(2020, 7, 21),
+	endDate: new Date(2020, 7, 22)
 };
 
 export const ASSIGNMENT_JAVA_EVALUATED: AssignmentDto = {
@@ -132,7 +144,7 @@ export const ASSIGNMENT_JAVA2020_GROUP_CLOSED: AssignmentDto = {
 export const AssignmentsMock: AssignmentDto[] = [
 	ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP,
 	ASSIGNMENT_JAVA_CLOSED,
-	ASSIGNMENT_JAVA_IN_REVIEW,
+	ASSIGNMENT_JAVA_IN_REVIEW_SINGLE,
 	ASSIGNMENT_JAVA_EVALUATED,
 	ASSIGNMENT_JAVA_INVISIBLE,
 	ASSIGNMENT_JAVA_TESTAT_IN_PROGRESS_SINGLE,
@@ -140,5 +152,6 @@ export const AssignmentsMock: AssignmentDto[] = [
 	ASSIGNMENT_JAVA2020_GROUP,
 	ASSIGNMENT_JAVA2020_SINGLE,
 	ASSIGNMENT_JAVA2020_SINGLE_2,
-	ASSIGNMENT_JAVA2020_GROUP_CLOSED
+	ASSIGNMENT_JAVA2020_GROUP_CLOSED,
+	ASSIGNMENT_JAVA_IN_REVIEW_GROUP
 ];

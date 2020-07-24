@@ -17,7 +17,7 @@ import { AssessmentService } from "../../../src/course/services/assessment.servi
 import { GroupService } from "../../../src/course/services/group.service";
 import { DtoFactory } from "../../../src/shared/dto-factory";
 import { ASSESSMENT_JAVA_EVALUATED_GROUP_1, ASSESSMENT_JAVA_EVALUATED_GROUP_2, ASSESSMENT_JAVA_IN_REVIEW, ASSESSMENT_JAVA_TESTAT_USER_1 } from "../../mocks/assessments.mock";
-import { ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA_EVALUATED, ASSIGNMENT_JAVA_IN_REVIEW } from "../../mocks/assignments.mock";
+import { ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA_EVALUATED, ASSIGNMENT_JAVA_IN_REVIEW_SINGLE } from "../../mocks/assignments.mock";
 import { GROUP_1_JAVA } from "../../mocks/groups/groups.mock";
 import { UserGroupRelationsMock } from "../../mocks/groups/user-group-relations.mock";
 import { PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW, PARTIAL_ASSESSMENT_MOCK } from "../../mocks/partial-assessments.mock";
@@ -48,7 +48,7 @@ const mock_AssessmentRepository = () => ({
 });
 
 const mock_AssignmentRepository = () => ({
-	getAssignmentById: jest.fn().mockResolvedValue(convertToEntity(Assignment, ASSIGNMENT_JAVA_IN_REVIEW))
+	getAssignmentById: jest.fn().mockResolvedValue(convertToEntity(Assignment, ASSIGNMENT_JAVA_IN_REVIEW_SINGLE))
 });
 
 function getGroupMock(): Group {
@@ -257,7 +257,7 @@ describe("AssessmentService", () => {
 
 		const assessmentBeforeUpdate = () => {
 			const assessment = convertToEntity(Assessment, ASSESSMENT_JAVA_IN_REVIEW);
-			assessment.assignment = convertToEntity(Assignment, ASSIGNMENT_JAVA_IN_REVIEW);
+			assessment.assignment = convertToEntity(Assignment, ASSIGNMENT_JAVA_IN_REVIEW_SINGLE);
 			assessment.partialAssessments = PARTIAL_ASSESSMENT_MOCK.filter(p => p.assessmentId === assessment.id)
 				.map(dto => convertToEntity(PartialAssessment, dto));
 			return assessment;
@@ -266,7 +266,7 @@ describe("AssessmentService", () => {
 		beforeEach(() => {
 			validAssessmentForUpdate = copy(ASSESSMENT_JAVA_IN_REVIEW);
 			validAssessmentForUpdate.partialAssessments = PARTIAL_ASSESSMENT_MOCK.filter(p => p.assessmentId === validAssessmentForUpdate.id);
-			validAssessmentForUpdate.assignment = copy(ASSIGNMENT_JAVA_IN_REVIEW);
+			validAssessmentForUpdate.assignment = copy(ASSIGNMENT_JAVA_IN_REVIEW_SINGLE);
 
 			assessmentRepository.getAssessmentById = jest.fn().mockImplementationOnce(assessmentBeforeUpdate);
 		});

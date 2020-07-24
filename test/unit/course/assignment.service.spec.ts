@@ -4,14 +4,14 @@ import { DtoFactory } from "../../../src/shared/dto-factory";
 import { AssignmentRepository } from "../../../src/course/repositories/assignment.repository";
 import { AssignmentDto } from "../../../src/course/dto/assignment/assignment.dto";
 import { copy, convertToEntity } from "../../utils/object-helper";
-import { ASSIGNMENT_JAVA_EVALUATED, ASSIGNMENT_JAVA_IN_REVIEW } from "../../mocks/assignments.mock";
+import { ASSIGNMENT_JAVA_EVALUATED, ASSIGNMENT_JAVA_IN_REVIEW_SINGLE } from "../../mocks/assignments.mock";
 import { Assignment } from "../../../src/course/entities/assignment.entity";
 
 const mock_AssignmentRepository = () => ({
 	createAssignment: jest.fn().mockResolvedValue(convertToEntity(Assignment, ASSIGNMENT_JAVA_EVALUATED)),
 	getAssignments: jest.fn().mockResolvedValue([
 		convertToEntity(Assignment, ASSIGNMENT_JAVA_EVALUATED),
-		convertToEntity(Assignment, ASSIGNMENT_JAVA_IN_REVIEW)
+		convertToEntity(Assignment, ASSIGNMENT_JAVA_IN_REVIEW_SINGLE)
 	]),
 	getAssignmentById: jest.fn().mockResolvedValue(convertToEntity(Assignment, ASSIGNMENT_JAVA_EVALUATED)),
 	updateAssignment: jest.fn().mockResolvedValue(convertToEntity(Assignment, ASSIGNMENT_JAVA_EVALUATED)),

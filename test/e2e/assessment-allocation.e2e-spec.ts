@@ -7,7 +7,7 @@ import { AssessmentAllocationDto } from "../../src/course/dto/assessment-allocat
 import { ASSESSMENT_ALLOCATION_1_ASSIGNMENT_JAVA_IN_REVIEW, ASSESSMENT_ALLOCATIONS_MOCK } from "../mocks/assessment-allocation.mock";
 import { GROUP_4_JAVA } from "../mocks/groups/groups.mock";
 import { COURSE_JAVA_1920 } from "../mocks/courses.mock";
-import { ASSIGNMENT_JAVA_IN_REVIEW, ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA2020_GROUP, ASSIGNMENT_JAVA2020_SINGLE, ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP } from "../mocks/assignments.mock";
+import { ASSIGNMENT_JAVA_IN_REVIEW_SINGLE, ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA2020_GROUP, ASSIGNMENT_JAVA2020_SINGLE, ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP } from "../mocks/assignments.mock";
 import { USER_STUDENT_2_JAVA, USER_MGMT_ADMIN_JAVA_LECTURER } from "../mocks/users.mock";
 import { copy } from "../utils/object-helper";
 
@@ -15,7 +15,7 @@ let app: INestApplication;
 let dbMockService: DbMockService;
 
 const course = COURSE_JAVA_1920;
-const assignment = ASSIGNMENT_JAVA_IN_REVIEW;
+const assignment = ASSIGNMENT_JAVA_IN_REVIEW_SINGLE;
 
 describe("POST-REQUESTS of AssessmentController (e2e)", () => {
 

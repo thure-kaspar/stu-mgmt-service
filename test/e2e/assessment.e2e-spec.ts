@@ -4,7 +4,7 @@ import { getConnection } from "typeorm";
 import { AssessmentDto, AssessmentUpdateDto } from "../../src/course/dto/assessment/assessment.dto";
 import { createApplication } from "../mocks/application.mock";
 import { ASSESSMENT_JAVA_EVALUATED_GROUP_1, ASSESSMENT_JAVA_TESTAT_USER_1, ASSESSMENT_JAVA_IN_REVIEW, ASSESSMENT_JAVA_IN_REVIEW_NO_PARTIALS, AssessmentsMock } from "../mocks/assessments.mock";
-import { ASSIGNMENT_JAVA_EVALUATED, ASSIGNMENT_JAVA_TESTAT_EVALUATED_SINGLE, ASSIGNMENT_JAVA_IN_REVIEW } from "../mocks/assignments.mock";
+import { ASSIGNMENT_JAVA_EVALUATED, ASSIGNMENT_JAVA_TESTAT_EVALUATED_SINGLE, ASSIGNMENT_JAVA_IN_REVIEW_SINGLE } from "../mocks/assignments.mock";
 import { COURSE_JAVA_1920 } from "../mocks/courses.mock";
 import { DbMockService } from "../mocks/db-mock.service";
 import { copy } from "../utils/object-helper";
@@ -65,7 +65,7 @@ describe("GET-REQUESTS of AssessmentController (e2e)", () => {
 		});
 
 		it("Retrieves assessment with username", () => {
-			const assignment = ASSIGNMENT_JAVA_IN_REVIEW;
+			const assignment = ASSIGNMENT_JAVA_IN_REVIEW_SINGLE;
 			const assessment = ASSESSMENT_JAVA_IN_REVIEW;
 			const user = USER_STUDENT_JAVA;
 			console.assert(user.id === assessment.userId, "Should be the same user");
@@ -162,12 +162,12 @@ describe("GET-REQUESTS of AssessmentController (e2e)", () => {
 	});
 
 	it("(GET) /courses/{courseId}/assignments/{assignmentId}/assessments/{assessmentId} Assessment with partial assessments -> Retrieves partials", () => {
-		const assignment = copy(ASSIGNMENT_JAVA_IN_REVIEW);
+		const assignment = copy(ASSIGNMENT_JAVA_IN_REVIEW_SINGLE);
 		const assessment = copy(ASSESSMENT_JAVA_IN_REVIEW);
 		assessment.partialAssessments = [PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW, PARTIAL_ASSESSMENT_2_JAVA_IN_REVIEW];
 		assessment.user = USER_STUDENT_JAVA;
 		assessment.userId = USER_STUDENT_JAVA.id;
-		assessment.assignment = ASSIGNMENT_JAVA_IN_REVIEW;
+		assessment.assignment = ASSIGNMENT_JAVA_IN_REVIEW_SINGLE;
 		assessment.creator = USER_STUDENT_3_JAVA_TUTOR;
 
 		const expected = JSON.parse(JSON.stringify(assessment));
@@ -235,7 +235,7 @@ describe("POST-REQUESTS of AssessmentController (e2e)", () => {
 	});
 
 	it("(POST) /courses/{courseId}/assignments/{assignmentId}/assessments Assessment with partial assessments -> Creates partial assessments", () => {
-		const assignment = copy(ASSIGNMENT_JAVA_IN_REVIEW);
+		const assignment = copy(ASSIGNMENT_JAVA_IN_REVIEW_SINGLE);
 		const assessment = copy(ASSESSMENT_JAVA_IN_REVIEW);
 		assessment.partialAssessments = [PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW, PARTIAL_ASSESSMENT_2_JAVA_IN_REVIEW];
 		const expected = copy(assessment);
@@ -252,7 +252,7 @@ describe("POST-REQUESTS of AssessmentController (e2e)", () => {
 
 	it("(POST) /courses/{courseId}/assignments/{assignmentId}/assessments/{assessmentId} Adds partial assignment", async () => {
 		await dbMockService.createAssessments();
-		const assignment = copy(ASSIGNMENT_JAVA_IN_REVIEW);
+		const assignment = copy(ASSIGNMENT_JAVA_IN_REVIEW_SINGLE);
 		const assessment = copy(ASSESSMENT_JAVA_IN_REVIEW);
 		const partialAssessment = copy(PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW);
 		console.assert(partialAssessment.assessmentId === assessment.id);		
@@ -339,7 +339,7 @@ describe("PATCH-REQUESTS of AssessmentController (e2e)", () => {
 			const tmp = copy(assessment);
 			// Joined relations
 			tmp.creator = USER_STUDENT_3_JAVA_TUTOR;
-			tmp.assignment = ASSIGNMENT_JAVA_IN_REVIEW;
+			tmp.assignment = ASSIGNMENT_JAVA_IN_REVIEW_SINGLE;
 			tmp.user = USER_STUDENT_3_JAVA_TUTOR;
 			tmp.partialAssessments = update.addPartialAssessments; // Add new partials
 			const expected = JSON.parse(JSON.stringify(tmp)); // Avoids issues with date types
@@ -373,7 +373,7 @@ describe("PATCH-REQUESTS of AssessmentController (e2e)", () => {
 			// Joined relations
 			tmp.creator = USER_STUDENT_3_JAVA_TUTOR;
 			tmp.user = USER_STUDENT_JAVA;
-			tmp.assignment = ASSIGNMENT_JAVA_IN_REVIEW;
+			tmp.assignment = ASSIGNMENT_JAVA_IN_REVIEW_SINGLE;
 
 			const expected = JSON.parse(JSON.stringify(tmp)); // Avoids issues with date types
 
@@ -402,7 +402,7 @@ describe("PATCH-REQUESTS of AssessmentController (e2e)", () => {
 			// Joined relations
 			tmp.creator = USER_STUDENT_3_JAVA_TUTOR;
 			tmp.user = USER_STUDENT_JAVA;
-			tmp.assignment = ASSIGNMENT_JAVA_IN_REVIEW;
+			tmp.assignment = ASSIGNMENT_JAVA_IN_REVIEW_SINGLE;
 
 			const expected = JSON.parse(JSON.stringify(tmp)); // Avoids issues with date types
 
