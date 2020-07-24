@@ -103,6 +103,8 @@ describe("GET-REQUESTS of AssessmentController (e2e)", () => {
 					expect(result[0].creator).toBeTruthy();
 					expect(result[0].group).toBeTruthy();
 					expect(result[0].group.name).toEqual(group.name);
+					expect(result[0].group).toBeTruthy();
+					expect(result[0].creator).toBeTruthy();
 				});
 		});
 
@@ -136,6 +138,9 @@ describe("GET-REQUESTS of AssessmentController (e2e)", () => {
 				expect(result.id).toEqual(assessment.id);
 				expect(result.assignmentId).toEqual(assessment.assignmentId);
 				expect(result.groupId).toEqual(assessment.groupId);
+				expect(result.group).toBeTruthy();
+				expect(result.group.users.length).toBeGreaterThanOrEqual(1);
+				expect(result.creator).toBeTruthy();
 			});
 	});
 
@@ -150,7 +155,9 @@ describe("GET-REQUESTS of AssessmentController (e2e)", () => {
 				expect(result.id).toEqual(assessment.id);
 				expect(result.assignmentId).toEqual(assessment.assignmentId);
 				expect(result.userId).toEqual(assessment.userId);
+				expect(result.user).toBeTruthy();
 				expect(result.user.id).toEqual(assessment.userId);
+				expect(result.creator).toBeTruthy();
 			});
 	});
 

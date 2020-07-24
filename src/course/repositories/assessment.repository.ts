@@ -42,6 +42,7 @@ export class AssessmentRepository extends Repository<Assessment> {
 			.where("assessment.id = :assessmentId", { assessmentId })
 			.leftJoinAndSelect("assessment.partialAssessments", "partial")
 			.leftJoinAndSelect("assessment.assessmentUserRelations", "userRelation")
+			.leftJoinAndSelect("assessment.group", "group")
 			.leftJoinAndSelect("userRelation.user", "user")
 			.innerJoinAndSelect("assessment.assignment", "assignment")
 			.leftJoinAndSelect("assessment.creator", "creator")
