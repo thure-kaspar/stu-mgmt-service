@@ -105,7 +105,7 @@ minScore - Only includes assessments, where achievedPoints >= minScore
 creatorId - Only includes assessments, that have been created by the specified user.
 ```
 The returned data should always include partial assessments, if they exist, the creator (`UserDto`) of the assessment
-and the group (without members), if it was a group-assessment. Here is an example:
+and the group (including members), if it was a group-assessment. Here is an example:
 ```json
 [
   {
