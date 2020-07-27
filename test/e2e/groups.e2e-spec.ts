@@ -117,9 +117,10 @@ describe("GET-REQUESTS of GroupController (e2e)", () => {
 				.expect(({ body }) => {
 					const result = body as GroupDto[];
 					expect(result).toBeTruthy();
-					expect(result.length).toEqual(2);
+					expect(result.length).toEqual(3);
 					expect(result[0].users.length).toEqual(2);
 					expect(result[1].users.length).toEqual(0);
+					expect(result[2].users.length).toEqual(2);
 				});
 		});
 	

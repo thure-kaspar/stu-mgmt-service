@@ -3,7 +3,7 @@ import * as request from "supertest";
 import { getConnection } from "typeorm";
 import { AssignmentDto } from "../../src/course/dto/assignment/assignment.dto";
 import { createApplication } from "../mocks/application.mock";
-import { ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP, ASSIGNMENT_JAVA_IN_REVIEW_SINGLE } from "../mocks/assignments.mock";
+import { ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP, ASSIGNMENT_JAVA_IN_REVIEW_SINGLE, AssignmentsMock } from "../mocks/assignments.mock";
 import { COURSE_JAVA_1920 } from "../mocks/courses.mock";
 import { DbMockService } from "../mocks/db-mock.service";
 
@@ -29,10 +29,13 @@ describe("GET-REQUESTS of AssignmentController (e2e)", () => {
 	});
 
 	it("(GET) /courses/{courseId}/assignments Retrieves all assignments of a course", () => {
+		const expected = AssignmentsMock.filter(a => a.courseId === course.id).length;
+		console.assert(expected > 1, "There should be multiple assignments");
+
 		return request(app.getHttpServer())
 			.get(`/courses/${course.id}/assignments`)
 			.expect(({ body }) => {
-				expect(body.length).toEqual(7); 
+				expect(body.length).toEqual(expected); 
 			});
 	});
 
