@@ -1,4 +1,5 @@
 import { Request } from "express";
+import { BadRequestException } from "@nestjs/common";
 
 /**
  * Sets the `X-TOTAL-COUNT` header of the response message.
@@ -92,4 +93,24 @@ export function transformNumber(value: unknown): number | undefined {
 
 	if (typeof value === "number") return value;
 	if (typeof value === "string") return parseFloat(value);
+}
+
+/**
+ * Throws `BadRequestException` if the promise returns `false`.
+ * Should be used when we want to let the client know that a request failed.
+ * Returning a boolean does not work well in this case, because the HTTP status will be 200 (OK) by default.
+ * @param promise - The method that should be executed.
+ * @param [errorMessage] - Error message that should be send to the client.
+ * @example deleteCourse(courseId: CourseId): Promise<void> {
+		return throwIfRequestFailed(
+			this.courseService.deleteCourse(courseId),
+			`Failed to delete course (${courseId}).`
+		);
+	}
+ */
+export async function throwIfRequestFailed(promise: Promise<boolean>, errorMessage?: string): Promise<void> {
+	const success = await promise;
+	if (!success) {
+		throw new BadRequestException(errorMessage);
+	}
 }

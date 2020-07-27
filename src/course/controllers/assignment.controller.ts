@@ -1,8 +1,9 @@
-import { Controller, Post, Param, Body, Get, Patch, Delete } from "@nestjs/common";
+import { Controller, Post, Param, Body, Get, Patch, Delete, BadRequestException } from "@nestjs/common";
 import { ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
 import { AssignmentService } from "../services/assignment.service";
 import { AssignmentDto } from "../dto/assignment/assignment.dto";
 import { CourseId } from "../entities/course.entity";
+import { throwIfRequestFailed } from "../../utils/http-utils";
 
 @ApiBearerAuth()
 @ApiTags("assignments")
@@ -72,12 +73,15 @@ export class AssignmentController {
 		summary: "Delete assignment.",
 		description: "Deletes the assignment. Returns true, if removal was successful."
 	})
-	deleteAssignment(
+	async deleteAssignment(
 		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string
-	): Promise<boolean> {
+	): Promise<void> {
 
-		return this.assignmentService.deleteAssignment(assignmentId);
+		return throwIfRequestFailed(
+			this.assignmentService.deleteAssignment(assignmentId),
+			`Failed to delete assignment (${assignmentId}).`
+		);
 	}
 
 }

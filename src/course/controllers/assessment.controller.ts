@@ -9,7 +9,7 @@ import { AuthGuard } from "@nestjs/passport";
 import { AssessmentEventDto } from "../dto/assessment/assessment-event.dto";
 import { CourseId } from "../entities/course.entity";
 import { AssessmentFilter } from "../dto/assessment/assessment-filter.dto";
-import { PaginatedResult } from "../../utils/http-utils";
+import { PaginatedResult, throwIfRequestFailed } from "../../utils/http-utils";
 import { Request } from "express";
 
 @ApiBearerAuth()
@@ -119,15 +119,18 @@ export class AssessmentController {
 	@ApiOperation({
 		operationId: "deleteAssessment",
 		summary: "Delete assessment.",
-		description: "Deletes the assessment. Returns true, if removal was successful."
+		description: "Deletes the assessment."
 	})
 	deleteAssessment(
 		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string,
 		@Param("assessmentId") assessmentId: string
-	): Promise<boolean> {
+	): Promise<void> {
 
-		return this.assessmentService.deleteAssessment(assessmentId);
+		return throwIfRequestFailed(
+			this.assessmentService.deleteAssessment(assessmentId),
+			`Failed to delete assessment (${assessmentId}) of assignment (${assignmentId}).`
+		);
 	}
 
 }

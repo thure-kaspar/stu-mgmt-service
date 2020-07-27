@@ -8,6 +8,7 @@ import { CourseDto } from "../dto/course/course.dto";
 import { CourseMemberGuard } from "../guards/course-member.guard";
 import { CourseService } from "../services/course.service";
 import { CourseId } from "../entities/course.entity";
+import { throwIfRequestFailed } from "../../utils/http-utils";
 
 @ApiBearerAuth()
 @ApiTags("courses") 
@@ -102,9 +103,12 @@ export class CourseController {
 	})
 	deleteCourse(
 		@Param("courseId") courseId: CourseId,
-	): Promise<boolean> {
+	): Promise<void> {
 
-		return this.courseService.deleteCourse(courseId);
+		return throwIfRequestFailed(
+			this.courseService.deleteCourse(courseId),
+			`Failed to delete course (${courseId}).`
+		);
 	}
 
 }

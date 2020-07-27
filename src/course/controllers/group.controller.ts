@@ -12,6 +12,7 @@ import { GroupsWithAssignedEvaluatorQuery } from "../queries/groups-with-assigne
 import { Request } from "express";
 import { setTotalCountHeader } from "../../../test/utils/http-utils";
 import { CourseId } from "../entities/course.entity";
+import { throwIfRequestFailed } from "../../utils/http-utils";
 
 @ApiBearerAuth()
 @ApiTags("groups")
@@ -204,9 +205,12 @@ export class GroupController {
 	deleteGroup(
 		@Param("courseId") courseId: CourseId,
 		@Param("groupId") groupId: string
-	): Promise<boolean> {
+	): Promise<void> {
 
-		return this.groupService.deleteGroup(groupId);
+		return throwIfRequestFailed(
+			this.groupService.deleteGroup(groupId),
+			`Failed to delete group (${groupId})`
+		);
 	}
 
 }

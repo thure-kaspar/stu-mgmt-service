@@ -17,7 +17,7 @@ import { CourseParticipantsService } from "../services/course-participants.servi
 import { ParticipantsComparisonDto } from "../queries/compare-participants-list/participants-comparison.dto";
 import { CourseId } from "../entities/course.entity";
 import { CompareParticipantsListQuery } from "../queries/compare-participants-list/compare-participants-list.query";
-import { transformArray } from "../../utils/http-utils";
+import { transformArray, throwIfRequestFailed } from "../../utils/http-utils";
 
 @ApiBearerAuth()
 @ApiTags("course-participants")
@@ -127,13 +127,16 @@ export class CourseParticipantsController {
 		summary: "Update user's role in course.",
 		description: "Assigns the given role to the user of this course."
 	})
-	updateUserRole(
+	async updateUserRole(
 		@Param("courseId") courseId: CourseId,
 		@Param("userId") userId: string,
 		@Body(ValidationPipe) dto: ChangeCourseRoleDto
-	): Promise<boolean> {
+	): Promise<void> {
 		
-		return this.courseParticipantsService.updateRole(courseId, userId, dto.role);
+		const updated = await this.courseParticipantsService.updateRole(courseId, userId, dto.role);
+		if (!updated) {
+			throw new BadRequestException("Update failed");
+		}
 	}
 
 	/**
@@ -145,12 +148,15 @@ export class CourseParticipantsController {
 		summary: "Remove user from course.",
 		description: "Removes the user from the course. Returns true, if removal was successful."
 	})
-	removeUser(
+	async removeUser(
 		@Param("courseId") courseId: CourseId,
 		@Param("userId") userId: string,
-	): Promise<boolean> {
+	): Promise<void> {
 
-		return this.courseParticipantsService.removeUser(courseId, userId);
+		return throwIfRequestFailed(
+			this.courseParticipantsService.removeUser(courseId, userId),
+			`Failed to remove user (${userId}) from course (${courseId}).`
+		);
 	}
 
 }

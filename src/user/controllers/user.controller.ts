@@ -9,6 +9,7 @@ import { GroupEventDto } from "../../course/dto/group/group-event.dto";
 import { AuthGuard } from "@nestjs/passport";
 import { AssignmentGroupTuple } from "../dto/assignment-group-tuple.dto";
 import { CourseId } from "../../course/entities/course.entity";
+import { throwIfRequestFailed } from "../../utils/http-utils";
 
 @ApiBearerAuth()
 @ApiTags("users")
@@ -157,7 +158,11 @@ export class UserController {
 		summary: "Delete user.",
 		description: "Deletes the user. Returns true, if removes was successful."
 	})
-	deleteUser(@Param("userId") userId: string): Promise<boolean> {
-		return this.userService.deleteUser(userId);
+	deleteUser(@Param("userId") userId: string): Promise<void> {
+		
+		return throwIfRequestFailed(
+			this.userService.deleteUser(userId),
+			`Failed to delete user (${userId})`
+		);
 	}
 }
