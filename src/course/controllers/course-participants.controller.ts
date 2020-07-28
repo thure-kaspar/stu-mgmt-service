@@ -65,7 +65,21 @@ export class CourseParticipantsController {
 		return users;
 	}
 
-	@Get("compare-participants-list")
+	@Get(":userId")
+	@ApiOperation({
+		operationId: "getParticipant",
+		summary: "Get participant.",
+		description: "Retrieves a specific participant and course related information about the participant."
+	})
+	getParticipant(
+		@Param("courseId") courseId: CourseId,
+		@Param("userId") userId: string
+	): Promise<UserDto> {
+
+		return this.courseParticipantsService.getParticipant(courseId, userId);
+	}
+
+	@Get("query/compare-participants-list")
 	@ApiOperation({
 		operationId: "compareParticipantsList",
 		summary: "Compare participants list..",

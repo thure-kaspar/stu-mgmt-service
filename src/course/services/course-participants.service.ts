@@ -43,6 +43,17 @@ export class CourseParticipantsService {
 		return [userDtos, count];
 	}
 
+	/**
+	 * Returns a specific participant of a course.
+	 * 
+	 * Includes relations:
+	 * - Group (if exists, includes members)
+	 */
+	async getParticipant(courseId: CourseId, userId: string): Promise<UserDto> {
+		const user = await this.courseUserRepo.getParticipant(courseId, userId);
+		return DtoFactory.createUserDto(user, user.courseUserRelations[0].role);
+	}
+
 	async updateRole(courseId: CourseId, userId: string, role: CourseRole): Promise<boolean> {
 		return this.courseUserRelationRepo.updateRole(courseId, userId, role);
 	}

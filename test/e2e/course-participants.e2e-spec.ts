@@ -2,9 +2,13 @@ import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
 import { getConnection } from "typeorm";
 import { ParticipantsComparisonDto } from "../../src/course/queries/compare-participants-list/participants-comparison.dto";
+import { UserDto } from "../../src/shared/dto/user.dto";
+import { CourseRole } from "../../src/shared/enums";
 import { createApplication } from "../mocks/application.mock";
 import { COURSE_JAVA_1819, COURSE_JAVA_1920, COURSE_JAVA_2020 } from "../mocks/courses.mock";
 import { DbMockService } from "../mocks/db-mock.service";
+import { CourseUserRelationsMock } from "../mocks/relations.mock";
+import { USER_NOT_IN_COURSE, USER_STUDENT_JAVA } from "../mocks/users.mock";
 
 let app: INestApplication;
 let dbMockService: DbMockService; // Should be initialized in every describe-block that requires data in db
@@ -26,13 +30,38 @@ describe("GET-REQUESTS of CourseController (e2e)", () => {
 		await getConnection().close(); // Close Db-Connection after all tests have been executed
 	});
 
-	describe("/courses/{courseId}/users/compare-participants-list", () => {
+	describe("/courses/{courseId}/users/{userId}", () => {
+		const user = USER_STUDENT_JAVA;
+
+		it("User is participant -> Returns user incl. course related data", () => {
+			return request(app.getHttpServer())
+				.get(`/courses/${course.id}/users/${user.id}`)
+				.expect(({ body }) => {
+					const result = body as UserDto;
+					expect(result.id).toEqual(user.id);
+					expect(result.courseRole).toEqual(CourseRole.STUDENT);
+				});
+		});
+
+		it("User is not a participant -> Throws 404", () => {
+			const notParticipant = USER_NOT_IN_COURSE;
+			console.assert(!CourseUserRelationsMock.find(x => x.courseId === course.id && x.userId === notParticipant.id),
+				"User should not be participant of this course");
+
+			return request(app.getHttpServer())
+				.get(`/courses/${course.id}/users/${notParticipant.id}`)
+				.expect(404);
+		});
+	
+	});
+
+	describe("/courses/{courseId}/users/query/compare-participants-list", () => {
 	
 		it("Returns a comparison of participants", () => {
 			const queryString = `compareToCourseIds=${COURSE_JAVA_2020.id}&compareToCourseIds=${COURSE_JAVA_1819.id}`;
 
 			return request(app.getHttpServer())
-				.get(`/courses/${course.id}/users/compare-participants-list?${queryString}`)
+				.get(`/courses/${course.id}/users/query/compare-participants-list?${queryString}`)
 				.expect(200)
 				.expect(({ body }) => {
 					const result = body as ParticipantsComparisonDto;
@@ -43,7 +72,7 @@ describe("GET-REQUESTS of CourseController (e2e)", () => {
 
 		it("Throws 404 if no courseIds for comparison were specified", () => {
 			return request(app.getHttpServer())
-				.get(`/courses/${course.id}/users/compare-participants-list?compareToCourseIds=`)
+				.get(`/courses/${course.id}/users/query/compare-participants-list?compareToCourseIds=`)
 				.expect(400);
 		});
 	

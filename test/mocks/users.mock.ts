@@ -75,6 +75,14 @@ export const USER_KUNOLD: UserDto = {
 	role: UserRole.SYSTEM_ADMIN
 };
 
+export const USER_NOT_IN_COURSE: UserDto = {
+	id: "57951d37-df30-4133-990f-fd12cee5f1bd",
+	email: "not.in.course@test.com",
+	username: "notInCourse",
+	rzName: "notInCourse",
+	role: UserRole.USER
+};
+
 export const UsersMock: UserDto[] = [
 	USER_STUDENT_JAVA, 
 	USER_STUDENT_2_JAVA,
@@ -84,6 +92,7 @@ export const UsersMock: UserDto[] = [
 	USER_FROM_AUTH_SYSTEM,
 	USER_ELSHAR,
 	USER_KUNOLD,
+	USER_NOT_IN_COURSE
 	//USER_KLING_AUTH_SYSTEM
 ];
 
