@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
 import { AssessmentAllocation } from "./assessment-allocation.entity";
 import { Assessment } from "./assessment.entity";
 import { Course, CourseId } from "./course.entity";
@@ -6,6 +6,7 @@ import { GroupEvent } from "./group-event.entity";
 import { UserGroupRelation } from "./user-group-relation.entity";
 
 @Entity("groups")
+@Unique("Unique_Name_CourseId", ["name", "courseId"]) // Enforce unique group names in course
 export class Group {
     @PrimaryGeneratedColumn("uuid")
     id: string;
