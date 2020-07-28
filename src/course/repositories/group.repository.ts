@@ -6,6 +6,7 @@ import { ConflictException } from "@nestjs/common";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
 import { User } from "../../shared/entities/user.entity";
 import { CourseId } from "../entities/course.entity";
+import { GroupFilter } from "../dto/group/group-filter.dto";
 
 @EntityRepository(Group)
 export class GroupRepository extends Repository<Group> {
@@ -100,17 +101,31 @@ export class GroupRepository extends Repository<Group> {
 	}
 
 	/**
-	 * Returns all groups, that belong to the given course.
-	 *
-	 * @param {string} courseId
-	 * @returns
-	 * @memberof GroupRepository
+	 * Returns all groups that belong to the given course and match the specified filter.
+	 * 
+	 * Includes relations:
+	 * - Group members
 	 */
-	async getGroupsOfCourse(courseId: CourseId): Promise<Group[]> {
-		return this.find({
-			where: { courseId },
-			relations: ["userGroupRelations", "userGroupRelations.user"],
-		});
+	async getGroupsOfCourse(courseId: CourseId, filter?: GroupFilter): Promise<[Group[], number]> {
+		const { name, isClosed, skip, take } = filter || { };
+
+		const query = this.createQueryBuilder("group")
+			.where("group.courseId = :courseId", { courseId })
+			.leftJoinAndSelect("group.userGroupRelations", "userRelation")
+			.leftJoinAndSelect("userRelation.user", "user")
+			.skip(skip)
+			.take(take);
+		
+		if (name) {
+			query.andWhere("group.name ILIKE :name", { name: `%${name}%` });
+		}
+
+		// Allow filtering with isClosed set to TRUE or FALSE
+		if (isClosed !== undefined) {
+			query.andWhere("group.isClosed = :isClosed", { isClosed });
+		}
+
+		return query.getManyAndCount();
 	}
 
 	/**
@@ -126,6 +141,20 @@ export class GroupRepository extends Repository<Group> {
 		
 		if (!group) throw new EntityNotFoundError(Group, null);
 		return group;
+	}
+
+	/**
+	 * Returns an available group name.
+	 * Assumes that the course is using a name schema.
+	 */
+	async getAvailableGroupNameForSchema(courseId: CourseId, schema: string): Promise<string> {
+		const query = await this.createQueryBuilder("group")
+			.where("group.courseId = :courseId", { courseId })
+			.andWhere("group.name ILIKE :schema", { schema })
+			.orderBy("group.createdAt", "DESC")
+			.getMany();
+		
+		return "TODO"; // TODO;
 	}
 
 	/**

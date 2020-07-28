@@ -82,17 +82,6 @@ describe("GET-REQUESTS of CourseController (e2e)", () => {
 			});
 	});
 
-	it("(GET) /courses/{courseId}/groups Retrieves all groups of a course", () => {
-		const expectedLength = GroupsMock.filter(g => g.courseId === course.id).length;
-		console.assert(expectedLength > 1, "Course should have multiple groups");
-
-		return request(app.getHttpServer())
-			.get(`/courses/${course.id}/groups`)
-			.expect(({ body }) => {
-				expect(body.length).toEqual(expectedLength);
-			});
-	});
-
 });
 
 describe("POST-REQUESTS of CourseController (empty db) (e2e)", () => {

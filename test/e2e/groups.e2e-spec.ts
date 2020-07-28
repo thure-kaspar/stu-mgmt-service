@@ -43,6 +43,75 @@ describe("GET-REQUESTS of GroupController (e2e)", () => {
 		await getConnection().close(); // Close Db-Connection after all tests have been executed
 	});
 
+	describe("(GET) /courses/{courseId}/groups", () => {
+	
+		it("Retrieves all groups of a course", () => {
+			const expectedLength = GroupsMock.filter(g => g.courseId === course.id).length;
+			console.assert(expectedLength > 1, "Course should have multiple groups");
+	
+			return request(app.getHttpServer())
+				.get(`/courses/${course.id}/groups`)
+				.expect(({ body }) => {
+					expect(body.length).toEqual(expectedLength);
+					expect(body[0].users).toBeTruthy();
+				});
+		});
+	
+		it("Retrieves groups matching a name", () => {
+			const name = "group 1";
+			const expectedLength = GroupsMock.filter(g => g.name.includes(name) && g.courseId === course.id).length;
+			console.assert(expectedLength >= 1, "At least one group name should match.");
+	
+			const queryString = `name=${name}`;
+	
+			return request(app.getHttpServer())
+				.get(`/courses/${course.id}/groups?${queryString}`)
+				.expect(({ body }) => {
+					const result = body as GroupDto[];
+					expect(body.length).toEqual(expectedLength);
+					expect(result[0].users).toBeTruthy();
+					expect(result[0].users.length).toBeGreaterThan(0);
+				});
+		});
+	
+		it("Only retrieves groups that are closed", () => {
+			const expectedLength = GroupsMock.filter(g => g.isClosed && g.courseId === course.id).length;
+			console.assert(expectedLength >= 1, "At least one group name should match.");
+	
+			const queryString = "isClosed=true";
+	
+			return request(app.getHttpServer())
+				.get(`/courses/${course.id}/groups?${queryString}`)
+				.expect(({ body }) => {
+					const result = body as GroupDto[];
+					expect(body.length).toEqual(expectedLength);
+	
+					result.forEach(group => {
+						expect(group.isClosed).toEqual(true);
+					});
+				});
+		});
+	
+		it("Only retrieves groups that are NOT closed", () => {
+			const expectedLength = GroupsMock.filter(g => !g.isClosed && g.courseId === course.id).length;
+			console.assert(expectedLength >= 1, "At least one group name should match.");
+	
+			const queryString = "isClosed=false";
+	
+			return request(app.getHttpServer())
+				.get(`/courses/${course.id}/groups?${queryString}`)
+				.expect(({ body }) => {
+					const result = body as GroupDto[];
+					expect(body.length).toEqual(expectedLength);
+	
+					result.forEach(group => {
+						expect(group.isClosed).toEqual(false);
+					});
+				});
+		});
+	
+	});
+
 	// TODO: Adapt to code changes (new relations, changed history)
 	it.skip("(GET) /groups/{groupId} Retrieves the group with all relations", () => {
 		const group = copy(GROUP_1_JAVA);
