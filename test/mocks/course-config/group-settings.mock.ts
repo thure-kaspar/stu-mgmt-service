@@ -24,8 +24,17 @@ export const GROUP_SETTINGS_GROUPS_ALLOWED_NOT_SELF: GroupSettingsDto = {
 	selfmanaged: false,
 };
 
+export const GROUP_SETTINGS_NO_SCHEMA_SELF: GroupSettingsDto = {
+	allowGroups: true,
+	nameSchema: null,
+	sizeMin: 2,
+	sizeMax: 3,
+	selfmanaged: true,
+};
+
 export const GROUP_SETTINGS_MOCK: GroupSettingsDto[] = [
 	GROUP_SETTINGS_GROUPS_ALLOWED_MIN2_MAX3_SELF,
 	GROUP_SETTINGS_NO_GROUPS,
-	GROUP_SETTINGS_GROUPS_ALLOWED_NOT_SELF
+	GROUP_SETTINGS_GROUPS_ALLOWED_NOT_SELF,
+	GROUP_SETTINGS_NO_SCHEMA_SELF
 ];
