@@ -48,10 +48,21 @@ This will cause the API-client or your native HTTP-library to throw an Exception
 and deal with them accordingly. Invalid requests (status 4XX) also include an error message in the response, which should
 tell you why your request failed. Additionally, the Student-Management-System API-Specification includes and exports an enum
 containing the names of existing domain exceptions (i.e. `NotACourseMemberException`). This enum can be found in the client 
-as `StudentMgmtException`. TODO: Refine exception handling with custom exceptions.
+as `StudentMgmtException`.
+
+The example below shows the error message that you would receive, if you try to access a course without being a member of it.
+```json
+{
+  "statusCode": 403,
+  "message": "User (USER_ID_123) is not a member of course (java-wise1920).",
+  "error": "NotACourseMemberException"
+}
+```
+
+As you can see, the `error` property maps to the exceptions found in the `StudentMgmtException` enum.
 
 Requests that don't return data (return type `void`), such as DELETE requests, use errors to indicate the success of their
-operation.
+operation. If your request did not throw an exception, it was successful.
 
 
 
