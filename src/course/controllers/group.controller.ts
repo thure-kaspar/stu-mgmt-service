@@ -1,21 +1,22 @@
-import { Controller, Get, Param, Post, Delete, Patch, Body, Query, Req, UseGuards } from "@nestjs/common";
-import { GroupService } from "../services/group.service";
-import { UserDto } from "../../shared/dto/user.dto";
-import { ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
-import { GroupDto } from "../dto/group/group.dto";
-import { GroupCreateBulkDto } from "../dto/group/group-create-bulk.dto";
-import { PasswordDto } from "../../shared/dto/password.dto";
-import { GroupEventDto } from "../dto/group/group-event.dto";
-import { GroupWithAssignedEvaluatorDto, AssignedEvaluatorFilter } from "../queries/groups-with-assigned-evaluator/group-with-assigned-evaluator.dto";
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards } from "@nestjs/common";
 import { QueryBus } from "@nestjs/cqrs";
-import { GroupsWithAssignedEvaluatorQuery } from "../queries/groups-with-assigned-evaluator/groups-with-assigned-evaluator.query";
+import { AuthGuard } from "@nestjs/passport";
+import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 import { setTotalCountHeader } from "../../../test/utils/http-utils";
-import { CourseId } from "../entities/course.entity";
-import { throwIfRequestFailed, PaginatedResult } from "../../utils/http-utils";
-import { GetUser } from "../../auth/decorators/get-user.decorator";
-import { AuthGuard } from "@nestjs/passport";
+import { PasswordDto } from "../../shared/dto/password.dto";
+import { UserDto } from "../../shared/dto/user.dto";
+import { PaginatedResult, throwIfRequestFailed } from "../../utils/http-utils";
+import { GetParticipant } from "../decorators/get-participant.decorator";
+import { GroupCreateBulkDto } from "../dto/group/group-create-bulk.dto";
+import { GroupEventDto } from "../dto/group/group-event.dto";
 import { GroupFilter } from "../dto/group/group-filter.dto";
+import { GroupDto } from "../dto/group/group.dto";
+import { CourseId } from "../entities/course.entity";
+import { CourseMemberGuard } from "../guards/course-member.guard";
+import { AssignedEvaluatorFilter, GroupWithAssignedEvaluatorDto } from "../queries/groups-with-assigned-evaluator/group-with-assigned-evaluator.dto";
+import { GroupsWithAssignedEvaluatorQuery } from "../queries/groups-with-assigned-evaluator/groups-with-assigned-evaluator.query";
+import { GroupService } from "../services/group.service";
 
 @ApiBearerAuth()
 @ApiTags("groups")
@@ -25,7 +26,7 @@ export class GroupController {
 				private queryBus: QueryBus) { }
 
 	@Post()
-	@UseGuards(AuthGuard())
+	@UseGuards(AuthGuard(), CourseMemberGuard)
 	@ApiOperation({
 		operationId: "createGroup",
 		summary: "Create group.",
@@ -34,10 +35,10 @@ export class GroupController {
 	createGroup(
 		@Param("courseId") courseId: CourseId,
 		@Body() groupDto: GroupDto,
-		@GetUser() user: UserDto
+		@GetParticipant() participant: UserDto
 	): Promise<GroupDto> {
 
-		return this.groupService.createGroup(courseId, groupDto, user.id);
+		return this.groupService.createGroup(courseId, groupDto, participant);
 	}
 
 	@Post("bulk")

@@ -1,8 +1,8 @@
 import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
 import { UserDto } from "../../shared/dto/user.dto";
-import { CourseRole } from "../../shared/enums";
-import { CourseParticipantsService } from "../services/course-participants.service";
+import { isLecturer, isTutor } from "../../shared/enums";
 import { NotATeachingStaffMember } from "../exceptions/custom-exceptions";
+import { CourseParticipantsService } from "../services/course-participants.service";
 
 /**
  * Only allows requests for users, that are either `LECTURER` or `TUTOR`. // TODO: Include tools ?
@@ -19,7 +19,7 @@ export class TeachingStaffGuard implements CanActivate {
 		const request = context.switchToHttp().getRequest();
 		const participant: UserDto = request.participant;
 
-		if (participant?.courseRole === CourseRole.LECTURER || participant?.courseRole === CourseRole.TUTOR) {
+		if (isLecturer(participant) || isTutor(participant)) {
 			return true;
 		} else {
 			throw new NotATeachingStaffMember(request.params.courseId, participant.id);

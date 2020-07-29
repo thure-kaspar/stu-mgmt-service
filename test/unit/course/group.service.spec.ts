@@ -25,6 +25,10 @@ import { USER_STUDENT_JAVA, USER_MGMT_ADMIN_JAVA_LECTURER } from "../../mocks/us
 import { CourseRole } from "../../../src/shared/enums";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
 import { User } from "../../../src/shared/entities/user.entity";
+import { UserDto } from "../../../src/shared/dto/user.dto";
+import { AuthModule } from "../../../src/auth/auth.module";
+import { getImports } from "../../mocks/application.mock";
+import { GroupFilter } from "../../../src/course/dto/group/group-filter.dto";
 
 function getGroupWithUsersMock_JoiningPossible(passwordRequired = true) {
 	const group = convertToEntity(Group, GROUP_1_JAVA);
@@ -86,10 +90,15 @@ const mock_GroupRepository = () => ({
 	createGroup: jest.fn().mockResolvedValue(convertToEntity(Group, GROUP_1_JAVA)),
 	getGroupWithUsers: jest.fn().mockResolvedValue(getGroupWithUsersMock_JoiningPossible()),
 	addUserToGroup: jest.fn().mockResolvedValue(true),
-	getGroupsOfCourse: jest.fn().mockResolvedValue([
-		convertToEntity(Group, GROUP_1_JAVA),
-		convertToEntity(Group, GROUP_2_JAVA),
-	]),
+	getGroupsOfCourse: jest.fn().mockResolvedValue(
+		[
+			[ // groups
+				convertToEntity(Group, GROUP_1_JAVA),
+				convertToEntity(Group, GROUP_2_JAVA)
+			],
+			2 // count
+		]
+	),
 	getGroupForAddUserToGroup: jest.fn().mockResolvedValue(mock_getGroupForAddUserToGroup(false, false, GROUP_1_JAVA.password)),
 	updateGroup: jest.fn(),
 	removeUser: jest.fn().mockResolvedValue(true),
@@ -162,7 +171,16 @@ describe("GroupService", () => {
 
 	describe("createGroup", () => {
 
-		const userId = "user_id";
+		let student: UserDto;
+		let lecturer: UserDto;
+
+		beforeEach(() => {
+			student = copy(USER_STUDENT_JAVA);
+			student.courseRole = CourseRole.STUDENT;
+
+			lecturer = copy(USER_MGMT_ADMIN_JAVA_LECTURER);
+			lecturer.courseRole = CourseRole.LECTURER;
+		});
 
 		it("User is STUDENT + no name schema -> Creates group and adds student", async () => {
 			courseRepository.getCourseWithConfigAndGroupSettings = jest.fn().mockImplementationOnce(() => {
@@ -174,9 +192,9 @@ describe("GroupService", () => {
 				// Do nothing
 			});
 
-			await service.createGroup(courseId, groupDto, userId);
+			await service.createGroup(courseId, groupDto, student);
 
-			expect(service.addUserToGroup_Force).toHaveBeenCalledWith(expect.anything(), userId);
+			expect(service.addUserToGroup_Force).toHaveBeenCalledWith(expect.anything(), student.id);
 			expect(DtoFactory.createGroupDto).toHaveBeenCalled();
 		});
 
@@ -191,22 +209,9 @@ describe("GroupService", () => {
 				return user;
 			});
 
-			await service.createGroup(courseId, groupDto, userId);
+			await service.createGroup(courseId, groupDto, lecturer);
 
 			expect(DtoFactory.createGroupDto).toHaveBeenCalled();
-		});
-
-		it("User is not a course participants -> Throws 404", async () => {
-			courseParticipants.getParticipant = jest.fn().mockImplementationOnce(() => {
-				throw new EntityNotFoundError(User, null);
-			});
-
-			try {
-				await service.createGroup(courseId, groupDto, userId);
-				expect(true).toEqual(false);
-			} catch(error) {
-				expect(error).toBeTruthy();
-			}
 		});
 
 		it("Course is closed -> Throws CourseClosedException", async () => {
@@ -217,7 +222,7 @@ describe("GroupService", () => {
 			});
 
 			try {
-				await service.createGroup(groupDto.courseId, groupDto, userId);
+				await service.createGroup(groupDto.courseId, groupDto, lecturer);
 				expect(true).toEqual(false);
 			} catch(error) {
 				expect(error).toBeTruthy();
@@ -233,7 +238,7 @@ describe("GroupService", () => {
 			});
 
 			try {
-				await service.createGroup(groupDto.courseId, groupDto, userId);
+				await service.createGroup(groupDto.courseId, groupDto, lecturer);
 				expect(true).toEqual(false);
 			} catch(error) {
 				expect(error).toBeTruthy();
@@ -329,8 +334,11 @@ describe("GroupService", () => {
 	describe("getGroupsOfCourse", () => {
 	
 		it("Calls repository for retrieval", async () => {
-			await service.getGroupsOfCourse(groupDto.courseId);
-			expect(groupRepository.getGroupsOfCourse).toHaveBeenCalledWith(groupDto.courseId);
+			const filter: GroupFilter = {
+				name: "group name"
+			};
+			await service.getGroupsOfCourse(groupDto.courseId, filter);
+			expect(groupRepository.getGroupsOfCourse).toHaveBeenCalledWith(groupDto.courseId, filter);
 		});
 
 		it("Returns Dtos", async () => {

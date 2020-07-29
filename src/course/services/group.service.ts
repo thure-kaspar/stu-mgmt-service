@@ -4,12 +4,15 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { DtoFactory } from "../../shared/dto-factory";
 import { UserDto } from "../../shared/dto/user.dto";
 import { User } from "../../shared/entities/user.entity";
+import { isStudent } from "../../shared/enums";
 import { GroupCreateBulkDto } from "../dto/group/group-create-bulk.dto";
 import { GroupEventDto } from "../dto/group/group-event.dto";
+import { GroupFilter } from "../dto/group/group-filter.dto";
 import { GroupDto } from "../dto/group/group.dto";
 import { Assignment } from "../entities/assignment.entity";
 import { Course, CourseId } from "../entities/course.entity";
 import { GroupEvent, replayEvents } from "../entities/group-event.entity";
+import { GroupSettings } from "../entities/group-settings.entity";
 import { Group } from "../entities/group.entity";
 import { UserJoinedGroupEvent } from "../events/user-joined-group.event";
 import { UserLeftGroupEvent } from "../events/user-left-group.event";
@@ -19,9 +22,6 @@ import { CourseRepository } from "../repositories/course.repository";
 import { GroupEventRepository } from "../repositories/group-event.repository";
 import { GroupRepository } from "../repositories/group.repository";
 import { CourseParticipantsService } from "./course-participants.service";
-import { CourseRole } from "../../shared/enums";
-import { GroupSettings } from "../entities/group-settings.entity";
-import { GroupFilter } from "../dto/group/group-filter.dto";
 
 @Injectable()
 export class GroupService {
@@ -39,11 +39,8 @@ export class GroupService {
 	 * @param groupDto - The group that should be created
 	 * @param userId - 
 	 */
-	async createGroup(courseId: CourseId, groupDto: GroupDto, userId: string): Promise<GroupDto> {
-		const [course, participant] = await Promise.all([
-			await this.courseRepository.getCourseWithConfigAndGroupSettings(courseId),
-			await this.courseParticipants.getParticipant(courseId, userId)
-		]);
+	async createGroup(courseId: CourseId, groupDto: GroupDto, participant: UserDto): Promise<GroupDto> {
+		const course = await this.courseRepository.getCourseWithConfigAndGroupSettings(courseId);
 		const groupSettings = course.config.groupSettings;
 		
 		// Only proceed, if group creation is allowed
@@ -53,9 +50,9 @@ export class GroupService {
 		groupDto.courseId = courseId;
 		
 		// Determine, if requesting user is student
-		if (participant.courseRole === CourseRole.STUDENT) {
+		if (isStudent(participant)) {
 			// Create group according to group settings and automatically add student
-			group = await this.createGroupAsStudent(courseId, groupDto, userId, groupSettings);
+			group = await this.createGroupAsStudent(courseId, groupDto, participant.id, groupSettings);
 		} else {
 			// Create group without checking constraints and adding user
 			group = await this.createGroup_Force(groupDto);
