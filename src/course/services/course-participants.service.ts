@@ -26,7 +26,7 @@ export class CourseParticipantsService {
 	async addUser(courseId: CourseId, userId: string, password?: string): Promise<any> { // TODO: don't return any
 		const course = await this.courseRepo.getCourseWithConfig(courseId);
 
-		if (course.isClosed) throw new CourseClosedException();
+		if (course.isClosed) throw new CourseClosedException(course.id);
 
 		// Check if password is required + matches
 		const requiredPassword = course.config.password;

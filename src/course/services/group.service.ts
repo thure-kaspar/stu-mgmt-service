@@ -69,10 +69,10 @@ export class GroupService {
 	 */
 	private failIfGroupCreationIsNotAllowed(course: Course, groupSettings: GroupSettings): void {
 		if (course.isClosed) {
-			throw new CourseClosedException();
+			throw new CourseClosedException(course.id);
 		}
 		if (!groupSettings.allowGroups) {
-			throw new GroupsForbiddenException();
+			throw new GroupsForbiddenException(course.id);
 		}
 	}
 
