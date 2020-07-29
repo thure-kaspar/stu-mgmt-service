@@ -1,21 +1,22 @@
 import { ForbiddenException } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger";
+import { CourseId } from "../entities/course.entity";
 
 export class CourseClosedException extends ForbiddenException {
-	constructor() {
-		super("CourseClosedException");
+	constructor(courseId: CourseId) {
+		super(`Course (${courseId}) is closed.`, "CourseClosedException");
 	}
 }
 
 export class NotACourseMemberException extends ForbiddenException {
-	constructor() {
-		super("NotACourseMemberException");
+	constructor(courseId: CourseId, userId: string) {
+		super(`User (${userId}) is not a member of course (${courseId}).`, "NotACourseMemberException");
 	}
 }
 
 export class GroupsForbiddenException extends ForbiddenException {
-	constructor() {
-		super("GroupsForbiddenException");
+	constructor(courseId: CourseId) {
+		super(`Course (${courseId}) does not allow group creation.`, "GroupsForbiddenException");
 	}
 }
 
