@@ -148,13 +148,28 @@ export class GroupRepository extends Repository<Group> {
 	 * Assumes that the course is using a name schema.
 	 */
 	async getAvailableGroupNameForSchema(courseId: CourseId, schema: string): Promise<string> {
-		const query = await this.createQueryBuilder("group")
+		const groups = await this.createQueryBuilder("group")
 			.where("group.courseId = :courseId", { courseId })
-			.andWhere("group.name ILIKE :schema", { schema })
+			.andWhere("group.name ILIKE :schema", { schema: `%${schema}%` })
 			.orderBy("group.createdAt", "DESC")
 			.getMany();
 		
-		return "TODO"; // TODO;
+		return this.tryFindAvailableName(groups, schema);
+	}
+
+	/**
+	 * TODO: Implement something better, this is a temporary solution
+	 * Tries to add number from 1-9999 to group schema. Returns first available name. If no name is available, throws Error.
+	 */
+	private tryFindAvailableName(groups: Group[], schema: string): string {
+		for (let i = 1; i <= 9999; i++) {
+			const suggestion = schema + i.toString();
+			if (!groups.find(group => group.name === suggestion)) {
+				return suggestion;
+			}
+		}
+
+		throw Error("No available group name.");
 	}
 
 	/**
