@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Delete, Patch, Body, Query, Req } from "@nestjs/common";
+import { Controller, Get, Param, Post, Delete, Patch, Body, Query, Req, UseGuards } from "@nestjs/common";
 import { GroupService } from "../services/group.service";
 import { UserDto } from "../../shared/dto/user.dto";
 import { ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
@@ -12,7 +12,10 @@ import { GroupsWithAssignedEvaluatorQuery } from "../queries/groups-with-assigne
 import { Request } from "express";
 import { setTotalCountHeader } from "../../../test/utils/http-utils";
 import { CourseId } from "../entities/course.entity";
-import { throwIfRequestFailed } from "../../utils/http-utils";
+import { throwIfRequestFailed, PaginatedResult } from "../../utils/http-utils";
+import { GetUser } from "../../auth/decorators/get-user.decorator";
+import { AuthGuard } from "@nestjs/passport";
+import { GroupFilter } from "../dto/group/group-filter.dto";
 
 @ApiBearerAuth()
 @ApiTags("groups")
@@ -22,17 +25,19 @@ export class GroupController {
 				private queryBus: QueryBus) { }
 
 	@Post()
+	@UseGuards(AuthGuard())
 	@ApiOperation({
 		operationId: "createGroup",
 		summary: "Create group.",
-		description: "Creates a new group, if course allows group creation."
+		description: "Creates a new group, if course allows group creation. If request was triggered by student, student is automatically joining the group."
 	})
 	createGroup(
 		@Param("courseId") courseId: CourseId,
-		@Body() groupDto: GroupDto
+		@Body() groupDto: GroupDto,
+		@GetUser() user: UserDto
 	): Promise<GroupDto> {
 
-		return this.groupService.createGroup(courseId, groupDto);
+		return this.groupService.createGroup(courseId, groupDto, user.id);
 	}
 
 	@Post("bulk")
@@ -72,10 +77,12 @@ export class GroupController {
 		description: "Retrieves all groups that belong to the course."
 	})
 	getGroupsOfCourse(
+		@Req() request: Request,
 		@Param("courseId") courseId: CourseId,
+		@Query() filter?: GroupFilter
 	): Promise<GroupDto[]> {
 		
-		return this.groupService.getGroupsOfCourse(courseId);
+		return PaginatedResult(this.groupService.getGroupsOfCourse(courseId, filter), request);
 	}
 
 	@Get("history")

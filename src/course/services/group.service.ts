@@ -1,23 +1,27 @@
-import { Injectable, BadRequestException, ConflictException } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { GroupRepository } from "../repositories/group.repository";
-import { CourseRepository } from "../repositories/course.repository";
-import { Course, CourseId } from "../entities/course.entity";
-import { Group } from "../entities/group.entity";
-import { GroupDto } from "../dto/group/group.dto";
-import { UserDto } from "../../shared/dto/user.dto";
-import { DtoFactory } from "../../shared/dto-factory";
-import { CourseClosedException, GroupsForbiddenException } from "../exceptions/custom-exceptions";
-import { GroupCreateBulkDto } from "../dto/group/group-create-bulk.dto";
+import { BadRequestException, ConflictException, Injectable } from "@nestjs/common";
 import { EventBus } from "@nestjs/cqrs";
+import { InjectRepository } from "@nestjs/typeorm";
+import { DtoFactory } from "../../shared/dto-factory";
+import { UserDto } from "../../shared/dto/user.dto";
+import { User } from "../../shared/entities/user.entity";
+import { GroupCreateBulkDto } from "../dto/group/group-create-bulk.dto";
+import { GroupEventDto } from "../dto/group/group-event.dto";
+import { GroupDto } from "../dto/group/group.dto";
+import { Assignment } from "../entities/assignment.entity";
+import { Course, CourseId } from "../entities/course.entity";
+import { GroupEvent, replayEvents } from "../entities/group-event.entity";
+import { Group } from "../entities/group.entity";
 import { UserJoinedGroupEvent } from "../events/user-joined-group.event";
 import { UserLeftGroupEvent } from "../events/user-left-group.event";
-import { GroupEvent, replayEvents } from "../entities/group-event.entity";
-import { GroupEventRepository } from "../repositories/group-event.repository";
-import { Assignment } from "../entities/assignment.entity";
+import { CourseClosedException, GroupsForbiddenException } from "../exceptions/custom-exceptions";
 import { AssignmentRepository } from "../repositories/assignment.repository";
-import { User } from "../../shared/entities/user.entity";
-import { GroupEventDto } from "../dto/group/group-event.dto";
+import { CourseRepository } from "../repositories/course.repository";
+import { GroupEventRepository } from "../repositories/group-event.repository";
+import { GroupRepository } from "../repositories/group.repository";
+import { CourseParticipantsService } from "./course-participants.service";
+import { CourseRole } from "../../shared/enums";
+import { GroupSettings } from "../entities/group-settings.entity";
+import { GroupFilter } from "../dto/group/group-filter.dto";
 
 @Injectable()
 export class GroupService {
@@ -26,21 +30,95 @@ export class GroupService {
 				@InjectRepository(Course) private courseRepository: CourseRepository,
 				@InjectRepository(GroupEvent) private groupEventRepository: GroupEventRepository,
 				@InjectRepository(Assignment) private assignmentRepository: AssignmentRepository, 
+				private courseParticipants: CourseParticipantsService,
 				private events: EventBus) { }
 
 	/**
-	 * Creates a group, if the course allows groups.
+	 * Creates a group, if the course allows group creation.
+	 * @param courseId - The course, where the group should be created
+	 * @param groupDto - The group that should be created
+	 * @param userId - 
 	 */
-	async createGroup(courseId: CourseId, groupDto: GroupDto): Promise<GroupDto> {
-		if (courseId !== groupDto.courseId) throw new BadRequestException("CourseId refers to a different course");
-
-		// Check if group creation is allowed
-		const course = await this.courseRepository.getCourseWithConfigAndGroupSettings(courseId);
-		if (course.isClosed) throw new CourseClosedException();
-		if (!course.config.groupSettings.allowGroups) throw new GroupsForbiddenException();
+	async createGroup(courseId: CourseId, groupDto: GroupDto, userId: string): Promise<GroupDto> {
+		const [course, participant] = await Promise.all([
+			await this.courseRepository.getCourseWithConfigAndGroupSettings(courseId),
+			await this.courseParticipants.getParticipant(courseId, userId)
+		]);
+		const groupSettings = course.config.groupSettings;
 		
+		// Only proceed, if group creation is allowed
+		this.failIfGroupCreationIsNotAllowed(course, groupSettings);
+
+		let group: GroupDto;
+		groupDto.courseId = courseId;
+		
+		// Determine, if requesting user is student
+		if (participant.courseRole === CourseRole.STUDENT) {
+			// Create group according to group settings and automatically add student
+			group = await this.createGroupAsStudent(courseId, groupDto, userId, groupSettings);
+		} else {
+			// Create group without checking constraints and adding user
+			group = await this.createGroup_Force(groupDto);
+		}
+		
+		return group;
+	}
+
+	/**
+	 * Throws an appropriate domain exception, if group creation is not allowed. 
+	 */
+	private failIfGroupCreationIsNotAllowed(course: Course, groupSettings: GroupSettings): void {
+		if (course.isClosed) {
+			throw new CourseClosedException();
+		}
+		if (!groupSettings.allowGroups) {
+			throw new GroupsForbiddenException();
+		}
+	}
+
+	/**
+	 * Creates a group without checking any constraints.
+	 */
+	private async createGroup_Force(groupDto: GroupDto): Promise<GroupDto> {
 		const createdGroup = await this.groupRepository.createGroup(groupDto);
 		return DtoFactory.createGroupDto(createdGroup);
+	}
+
+	/**
+	 * Creates a new group and adds the user to this group.
+	 * Supposed to be called when a student creates the group.
+	 * If the course enforces a defined prefix for group names, the group name will be set automatically.
+	 * @param courseId
+	 * @param groupDto
+	 * @param userId
+	 * @returns The created group.
+	 */
+	private async createGroupAsStudent(courseId: CourseId, groupDto: GroupDto, userId: string, groupSettings: GroupSettings): Promise<GroupDto> {
+		groupDto.name = await this.determineName(courseId, groupSettings, groupDto);
+		const group = await this.groupRepository.createGroup(groupDto);
+		await this.addUserToGroup_Force(group.id, userId);
+		return DtoFactory.createGroupDto(group);
+	}
+
+	/**
+	 * Returns a group name.
+	 * If course uses a name schema the name will use the schema, otherwise it will return the specified name from the dto.
+	 * @throws `Error` if name is empty or undefined.
+	 */
+	private async determineName(courseId: CourseId, groupSettings: GroupSettings, groupDto: GroupDto): Promise<string> {
+		let name: string;
+
+		if (groupSettings.nameSchema) {
+			name = await this.groupRepository.getAvailableGroupNameForSchema(courseId, groupSettings.nameSchema);
+		} else {
+			name = groupDto.name;
+		}
+
+		if (!name || name === "") {
+			throw new Error("Name was empty");
+		}
+
+		return name;
 	}
 
 	/**
@@ -93,7 +171,7 @@ export class GroupService {
 	 * Adds the user to the group without checking any constraints. 
 	 */
 	async addUserToGroup_Force(groupId: string, userId: string): Promise<void> {
-		const added = this.groupRepository.addUserToGroup(groupId, userId);
+		const added = await this.groupRepository.addUserToGroup(groupId, userId);
 		if (added) {
 			this.events.publish(new UserJoinedGroupEvent(groupId, userId));
 		} else {
@@ -101,9 +179,10 @@ export class GroupService {
 		}
 	}
 
-	async getGroupsOfCourse(courseId: CourseId): Promise<GroupDto[]> {
-		const groups = await this.groupRepository.getGroupsOfCourse(courseId);
-		return groups.map(group => DtoFactory.createGroupDto(group));
+	async getGroupsOfCourse(courseId: CourseId, filter?: GroupFilter): Promise<[GroupDto[], number]> {
+		const [groups, count] = await this.groupRepository.getGroupsOfCourse(courseId, filter);
+		const dtos = groups.map(group => DtoFactory.createGroupDto(group));
+		return [dtos, count];
 	}
 
 	/**
@@ -173,7 +252,7 @@ export class GroupService {
 
 		// If assignment has no end date, return current groups with their members
 		if (!assignment.endDate) {
-			return this.getGroupsOfCourse(courseId);
+			return (await this.getGroupsOfCourse(courseId)[0]);
 		}
 
 		// Get all events that happened before the assignment end
