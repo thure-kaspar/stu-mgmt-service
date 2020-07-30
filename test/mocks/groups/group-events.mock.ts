@@ -24,7 +24,7 @@ export const GROUP_EVENT_STUDENT_2_JOINED_GROUP: GroupEventDto = {
 export const GROUP_EVENT_TUTOR_LEFT_GROUP: GroupEventDto = {
 	event: UserLeftGroupEvent.name,
 	timestamp: new Date(2020, 1, 4),
-	userId: USER_STUDENT_2_JAVA.id,
+	userId: USER_STUDENT_3_JAVA_TUTOR.id,
 	groupId: GROUP_1_JAVA.id,
 	payload: { reason: "Kicked" }
 };
