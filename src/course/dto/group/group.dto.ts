@@ -4,6 +4,7 @@ import { ApiPropertyOptional, ApiProperty } from "@nestjs/swagger";
 import { GroupEventDto } from "./group-event.dto";
 import { AssessmentDto } from "../assessment/assessment.dto";
 import { CourseId } from "../../entities/course.entity";
+import { IsNotEmpty } from "class-validator";
 
 export class GroupDto {
 	/** Unique identifier of this group. */
@@ -20,6 +21,7 @@ export class GroupDto {
 
 	/** Name of the group. */
 	@ApiProperty({ description: "Name of the group." })
+	@IsNotEmpty()
 	name: string;
 	
 	/** Password required to enter the group. */

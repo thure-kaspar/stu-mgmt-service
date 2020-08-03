@@ -24,6 +24,7 @@ import { COURSE_JAVA_1920 } from "../../mocks/courses.mock";
 import { GROUP_1_JAVA, GROUP_2_JAVA } from "../../mocks/groups/groups.mock";
 import { PARTICIPANT_JAVA_1920_LECTURER, PARTICIPANT_JAVA_1920_STUDENT } from "../../mocks/participants/participants.mock";
 import { convertToEntity, convertToEntityNoRelations, copy } from "../../utils/object-helper";
+import { AlreadyInGroupException } from "../../../src/course/exceptions/custom-exceptions";
 
 function getGroupWithUsersMock_JoiningPossible(passwordRequired = true) {
 	const group = convertToEntity(Group, GROUP_1_JAVA);
@@ -113,13 +114,6 @@ const mock_AssignmentRepository = () => ({
 	
 });
 
-const mock_CourseParticipantsService = () => ({
-	getParticipant: jest.fn().mockImplementation(() => {
-		// Return a student by default
-		return copy(PARTICIPANT_JAVA_1920_STUDENT);
-	})
-});
-
 const mock_EventBus = () => ({
 	publish: jest.fn()
 });
@@ -129,7 +123,6 @@ describe("GroupService", () => {
 	let service: GroupService;
 	let groupRepository: GroupRepository;
 	let courseRepository: CourseRepository;
-	let courseParticipants: CourseParticipantsService;
 	let eventBus: EventBus;
 	let groupDto: GroupDto;
 	let courseId: CourseId;
@@ -142,7 +135,6 @@ describe("GroupService", () => {
 				{ provide: CourseRepository, useFactory: mock_CourseRepository },
 				{ provide: GroupEventRepository, useFactory: mock_GroupEventRepository },
 				{ provide: AssignmentRepository, useFactory: mock_AssignmentRepository },
-				{ provide: CourseParticipantsService, useFactory: mock_CourseParticipantsService },
 				{ provide: EventBus, useFactory: mock_EventBus }
 			],
 		}).compile();
@@ -152,7 +144,6 @@ describe("GroupService", () => {
 		service = module.get(GroupService);
 		groupRepository = module.get(GroupRepository);
 		courseRepository = module.get(CourseRepository);
-		courseParticipants = module.get(CourseParticipantsService);
 		eventBus = module.get(EventBus);
 		groupDto = copy(GROUP_1_JAVA);
 		courseId = copy(GROUP_1_JAVA).courseId;
@@ -169,6 +160,8 @@ describe("GroupService", () => {
 
 		beforeEach(() => {
 			student = copy(PARTICIPANT_JAVA_1920_STUDENT);
+			student.group = undefined;
+			student.groupId = undefined;
 			lecturer = copy(PARTICIPANT_JAVA_1920_LECTURER);
 		});
 
@@ -193,10 +186,6 @@ describe("GroupService", () => {
 		// });
 
 		it("User is LECTURER -> Creates group", async () => {
-			courseParticipants.getParticipant = jest.fn().mockImplementationOnce(()=> {
-				return copy(PARTICIPANT_JAVA_1920_LECTURER);
-			});
-
 			await service.createGroup(courseId, groupDto, lecturer);
 
 			expect(DtoFactory.createGroupDto).toHaveBeenCalled();
@@ -231,6 +220,21 @@ describe("GroupService", () => {
 			} catch(error) {
 				expect(error).toBeTruthy();
 				expect(error.status).toEqual(403);
+			}
+		});
+
+		it("User already has a group -> Throws AlreadyInGroupException", async () => {
+			const studentWithGroup = copy(PARTICIPANT_JAVA_1920_STUDENT);
+			studentWithGroup.groupId = GROUP_1_JAVA.id;
+			studentWithGroup.group = GROUP_1_JAVA;
+			
+			try {
+				await service.createGroup(groupDto.courseId, groupDto, studentWithGroup);
+				expect(true).toEqual(false);
+			} catch(error) {
+				expect(error).toBeTruthy();
+				expect(error.status).toEqual(409);
+				expect(error).toBeInstanceOf(AlreadyInGroupException);
 			}
 		});
 	

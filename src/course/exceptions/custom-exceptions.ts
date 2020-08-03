@@ -1,4 +1,4 @@
-import { ForbiddenException } from "@nestjs/common";
+import { ConflictException, ForbiddenException } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger";
 import { CourseId } from "../entities/course.entity";
 
@@ -26,12 +26,19 @@ export class GroupsForbiddenException extends ForbiddenException {
 	}
 }
 
+export class AlreadyInGroupException extends ConflictException {
+	constructor(userId: string, groupId: string) {
+		super(`User (${userId}) is already member of a group (${groupId}).`, "AlreadyInGroupException");
+	}
+}
+
 // ### Export for swagger ###
 enum StudentMgmtExceptions {
 	CourseClosedException = "CourseClosedException",
 	NotACourseMemberException = "NotACourseMemberException",
 	NotATeachingStaffMember = "NotATeachingStaffMember",
-	GroupsForbiddenException = "GroupsForbiddenException"
+	GroupsForbiddenException = "GroupsForbiddenException",
+	AlreadyInGroupException = "AlreadyInGroupException"
 }
 
 export class StudentMgmtException {

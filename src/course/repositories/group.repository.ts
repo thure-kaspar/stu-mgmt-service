@@ -238,7 +238,7 @@ export class GroupRepository extends Repository<Group> {
 		group.courseId = groupDto.courseId;
 		group.name = groupDto.name;
 		group.password = groupDto.password?.length > 0 ? groupDto.password : null;
-		group.isClosed = groupDto.isClosed;
+		group.isClosed = groupDto.isClosed ? true : false;
 		return group;
 	}
 

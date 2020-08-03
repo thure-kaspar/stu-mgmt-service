@@ -17,12 +17,11 @@ import { GroupSettings } from "../entities/group-settings.entity";
 import { Group } from "../entities/group.entity";
 import { UserJoinedGroupEvent } from "../events/user-joined-group.event";
 import { UserLeftGroupEvent } from "../events/user-left-group.event";
-import { CourseClosedException, GroupsForbiddenException } from "../exceptions/custom-exceptions";
+import { AlreadyInGroupException, CourseClosedException, GroupsForbiddenException } from "../exceptions/custom-exceptions";
 import { AssignmentRepository } from "../repositories/assignment.repository";
 import { CourseRepository } from "../repositories/course.repository";
 import { GroupEventRepository } from "../repositories/group-event.repository";
 import { GroupRepository } from "../repositories/group.repository";
-import { CourseParticipantsService } from "./course-participants.service";
 
 @Injectable()
 export class GroupService {
@@ -31,7 +30,6 @@ export class GroupService {
 				@InjectRepository(Course) private courseRepository: CourseRepository,
 				@InjectRepository(GroupEvent) private groupEventRepository: GroupEventRepository,
 				@InjectRepository(Assignment) private assignmentRepository: AssignmentRepository, 
-				private courseParticipants: CourseParticipantsService,
 				private events: EventBus) { }
 
 	/**
@@ -45,7 +43,7 @@ export class GroupService {
 		const groupSettings = course.config.groupSettings;
 		
 		// Only proceed, if group creation is allowed
-		this.failIfGroupCreationIsNotAllowed(course, groupSettings);
+		this.failIfGroupCreationIsNotAllowed(course, groupSettings, participant);
 
 		let group: GroupDto;
 		groupDto.courseId = courseId;
@@ -65,12 +63,16 @@ export class GroupService {
 	/**
 	 * Throws an appropriate domain exception, if group creation is not allowed. 
 	 */
-	private failIfGroupCreationIsNotAllowed(course: Course, groupSettings: GroupSettings): void {
+	private failIfGroupCreationIsNotAllowed(course: Course, groupSettings: GroupSettings, participant: ParticipantDto): void {
 		if (course.isClosed) {
 			throw new CourseClosedException(course.id);
 		}
 		if (!groupSettings.allowGroups) {
 			throw new GroupsForbiddenException(course.id);
+		}
+		// Disallow group creation, if student already has a group
+		if (isStudent(participant) && participant.groupId) {
+			throw new AlreadyInGroupException(participant.userId, participant.groupId);
 		}
 	}
 
@@ -128,19 +130,37 @@ export class GroupService {
 		let groups: GroupDto[] = [];
 
 		if (names?.length > 0) {
-			// Create groups using given names
-			groups = names.map(name => ({ courseId, isClosed: false, name }));
-		} else if (nameSchema && count) {
-			// Create group with schema and count
-			for (let i = 1; i <= count; i++) {
-				groups.push({ courseId, isClosed: false, name: nameSchema + i });
-			}
+			groups = this.createGroupsFromNameList(courseId, names);
+		} else if (nameSchema?.length > 0 && count) {
+			groups = this.createGroupsWithSchemaAndCount(courseId, nameSchema, count);
 		} else {
 			throw new BadRequestException("GroupCreateBulkDto was invalid.");
 		}
 
 		const createdGroups = await this.groupRepository.createMultipleGroups(groups);
 		return createdGroups.map(g => DtoFactory.createGroupDto(g));
+	}
+
+	private createGroupsWithSchemaAndCount(courseId: string, nameSchema: string, count: number): GroupDto[] {
+		const groups: GroupDto[] = [];
+		for (let i = 1; i <= count; i++) {
+			groups.push({ courseId, isClosed: false, name: nameSchema + i });
+		}
+		return groups;
+	}
+
+	/**
+	 * Creates `GroupDtos` from given name list.
+	 * @throws `BadRequestException` if name list contains duplicates.
+	 */
+	private createGroupsFromNameList(courseId: CourseId, names: string[]): GroupDto[] {
+		// Check for duplicates
+		if (new Set(names).size !== names.length) {
+			throw new BadRequestException("Duplicated group names are not allowed.");
+		}
+		
+		// Create groups using given names
+		return names.map(name => ({ courseId, isClosed: false, name }));
 	}
 	
 	/**

@@ -1,21 +1,21 @@
 import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
 import { getConnection } from "typeorm";
-import { DbMockService } from "../mocks/db-mock.service";
-import { GroupDto } from "../../src/course/dto/group/group.dto";
-import { CoursesMock, COURSE_JAVA_1920 } from "../mocks/courses.mock";
-import { GroupsMock, GROUP_1_JAVA, GROUP_2_JAVA } from "../mocks/groups/groups.mock";
-import { UsersMock, USER_STUDENT_2_JAVA, USER_STUDENT_JAVA, USER_MGMT_ADMIN_JAVA_LECTURER } from "../mocks/users.mock";
-import { AssignmentsMock, ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA_EVALUATED, ASSIGNMENT_JAVA_INVISIBLE, ASSIGNMENT_JAVA_IN_REVIEW_SINGLE } from "../mocks/assignments.mock";
-import { AssessmentsMock } from "../mocks/assessments.mock";
-import { createApplication } from "../mocks/application.mock";
-import { UserGroupRelationsMock } from "../mocks/groups/user-group-relations.mock";
-import { copy } from "../utils/object-helper";
-import { GROUP_EVENTS_MOCK } from "../mocks/groups/group-events.mock";
+import { GroupCreateBulkDto } from "../../src/course/dto/group/group-create-bulk.dto";
 import { GroupEventDto } from "../../src/course/dto/group/group-event.dto";
+import { GroupDto } from "../../src/course/dto/group/group.dto";
 import { GroupWithAssignedEvaluatorDto } from "../../src/course/queries/groups-with-assigned-evaluator/group-with-assigned-evaluator.dto";
+import { createApplication } from "../mocks/application.mock";
 import { ASSESSMENT_ALLOCATIONS_MOCK } from "../mocks/assessment-allocation.mock";
-import { Group } from "../../src/course/entities/group.entity";
+import { AssessmentsMock } from "../mocks/assessments.mock";
+import { AssignmentsMock, ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA_IN_REVIEW_SINGLE } from "../mocks/assignments.mock";
+import { CoursesMock, COURSE_JAVA_1920 } from "../mocks/courses.mock";
+import { DbMockService } from "../mocks/db-mock.service";
+import { GROUP_EVENTS_MOCK } from "../mocks/groups/group-events.mock";
+import { GroupsMock, GROUP_1_JAVA, GROUP_2_JAVA } from "../mocks/groups/groups.mock";
+import { UserGroupRelationsMock } from "../mocks/groups/user-group-relations.mock";
+import { UsersMock, USER_MGMT_ADMIN_JAVA_LECTURER, USER_STUDENT_2_JAVA, USER_STUDENT_JAVA } from "../mocks/users.mock";
+import { copy } from "../utils/object-helper";
 
 let app: INestApplication;
 let dbMockService: DbMockService; // Should be initialized in every describe-block
@@ -289,6 +289,145 @@ describe("POST-REQUESTS for relations (Db contains data) of GroupController (e2e
 			.post(`/courses/${course.id}/groups/${groups[1].id}/users/${users[0].id}`)
 			.send({ password: groups[1].password })
 			.expect(409);
+	});
+
+	describe("courses/{courseId}/groups - createGroup", () => {
+
+		const route = `/courses/${course.id}/groups`;
+	
+		describe("Valid", () => {
+		
+			it("As LECTURER -> Creates Group", () => {
+				const group: GroupDto = {
+					courseId: course.id,
+					name: "New group",
+					password: "123"
+				};
+
+				return request(app.getHttpServer())
+					.post(route)
+					.send(group)
+					.expect(201)
+					.expect(({ body }) => {
+						const result = body as GroupDto;
+						expect(result.name).toEqual(group.name);
+						expect(result.courseId).toEqual(group.courseId);
+					});
+			});
+		
+		});
+
+		describe("Invalid", () => {
+		
+			it("Empty name -> 400 BadRequest", () => {
+				const group = {
+					...GROUP_1_JAVA,
+					name: ""
+				};
+
+				return request(app.getHttpServer())
+					.post(route)
+					.send(group)
+					.expect(400);
+			});
+		
+		});
+	
+	});
+
+	describe("courses/{courseId}/groups/bulk - createMultipleGroups", () => {
+	
+		const route = `/courses/${course.id}/groups/bulk`;
+
+		describe("Valid", () => {
+		
+			it("Creates multiple groups via name list", () => {
+				const groups: GroupCreateBulkDto = {
+					names: [
+						"Group 1",
+						"Group 2",
+						"Group 3"
+					]
+				};
+
+				return request(app.getHttpServer())
+					.post(route)
+					.expect(201)
+					.send(groups)
+					.expect(({ body }) => {
+						const result = body as GroupDto[];
+						expect(result.length).toEqual(groups.names.length);
+						expect(result[0].name).toEqual(groups.names[0]);
+						expect(result[1].name).toEqual(groups.names[1]);
+						expect(result[2].name).toEqual(groups.names[2]);
+					});
+			});
+
+			it("Creates multiple groups via name schema and count", () => {
+				const groups: GroupCreateBulkDto = {
+					nameSchema: "JAVA",
+					count: 10
+				};
+
+				return request(app.getHttpServer())
+					.post(route)
+					.send(groups)
+					.expect(201)
+					.expect(({ body }) => {
+						const result = body as GroupDto[];
+						expect(result.length).toEqual(groups.count);
+
+						result.forEach(group => {
+							// Group name uses schema
+							expect(group.name.includes(groups.nameSchema)).toBeTruthy();
+						});
+					});
+			});
+		
+		});
+
+		describe("Invalid", () => {
+			
+			it("Name list contains duplicate -> 400 Bad Request", () => {
+				const groups: GroupCreateBulkDto = {
+					names: [
+						"Duplicate",
+						"Group 1",
+						"Duplicate"
+					]
+				};
+
+				return request(app.getHttpServer())
+					.post(route)
+					.send(groups)
+					.expect(400);
+			});
+
+			it("Name schema with missing count -> 400 Bad Request", () => {
+				const groups: GroupCreateBulkDto = {
+					nameSchema: "JAVA-Group",
+					count: undefined // Count is missing!
+				};
+
+				return request(app.getHttpServer())
+					.post(route)
+					.send()
+					.expect(400);
+			});
+
+			it("No names or name schema defined -> 400 Bad Request", () => {
+				const groups: GroupCreateBulkDto = {
+					count: 10
+				};
+
+				return request(app.getHttpServer())
+					.post(route)
+					.send(groups)
+					.expect(400);
+			});
+		
+		});
+	
 	});
 
 });
