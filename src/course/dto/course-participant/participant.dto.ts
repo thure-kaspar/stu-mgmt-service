@@ -1,5 +1,5 @@
 import { CourseRole } from "../../../shared/enums";
-import { Assessment } from "../../entities/assessment.entity";
+import { AssessmentDto } from "../assessment/assessment.dto";
 import { GroupDto } from "../group/group.dto";
 
 export class ParticipantDto {
@@ -9,5 +9,5 @@ export class ParticipantDto {
 	role: CourseRole;
 	groupId?: string;
 	group?: GroupDto;
-	assessments?: Assessment[];
+	assessments?: AssessmentDto[];
 }
