@@ -31,9 +31,9 @@ export abstract class DtoFactory {
 		};
 		
 		// Add relational data, if available
-		if (course.courseUserRelations && course.courseUserRelations[0].user) {
-			courseDto.users = course.courseUserRelations.map(courseUserRelation => 
-				this.createUserDto(courseUserRelation.user, courseUserRelation.role));
+		if (course.participants && course.participants[0].user) {
+			courseDto.users = course.participants.map(participant => 
+				this.createUserDto(participant.user, participant.role));
 		}
 		
 		if (course.assignments) {
@@ -103,16 +103,13 @@ export abstract class DtoFactory {
 			rzName: user.rzName,
 			role: user.role,
 		};
- 
-		// If users of a course a loaded, assign course role (i.e Student)
-		if (courseRole) userDto.courseRole = courseRole;
     
 		// Add relational data, if available
-		if (user.courseUserRelations) {
-			if (user.courseUserRelations.length == 0) {
+		if (user.participations) {
+			if (user.participations.length == 0) {
 				userDto.courses = [];
-			} else if (user.courseUserRelations[0].course) {
-				userDto.courses = user.courseUserRelations.map(rel => this.createCourseDto(rel.course));
+			} else if (user.participations[0].course) {
+				userDto.courses = user.participations.map(rel => this.createCourseDto(rel.course));
 			}
 		}
     

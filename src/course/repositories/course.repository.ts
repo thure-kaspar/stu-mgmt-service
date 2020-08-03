@@ -7,7 +7,7 @@ import { CourseConfig } from "../entities/course-config.entity";
 import { GroupSettings } from "../entities/group-settings.entity";
 import { AssignmentTemplate } from "../entities/assignment-template.entity";
 import { CourseCreateDto } from "../dto/course/course-create.dto";
-import { CourseUserRelation } from "../entities/course-user-relation.entity";
+import { Participant } from "../entities/participant.entity";
 import { CourseRole } from "../../shared/enums";
 import { User } from "../../shared/entities/user.entity";
 
@@ -16,7 +16,7 @@ export class CourseRepository extends Repository<Course> {
 
 	/**
 	 * Inserts a new course in the database. Includes the CourseConfig (with child-entities).
-	 * If lecturers are included in the Dto, the CourseUserRelations will also be created.
+	 * If lecturers are included in the Dto, the Participants will also be created.
 	 */
 	async createCourse(courseDto: CourseCreateDto): Promise<Course> {
 		const course = this.createInsertableEntity(courseDto);
@@ -28,14 +28,14 @@ export class CourseRepository extends Repository<Course> {
 				where: courseDto.lecturers.map(username => ({ username: username }))
 			});
 
-			const courseUserRelations = lecturers.map(lecturer => {
-				const relation = new CourseUserRelation();
+			const participants = lecturers.map(lecturer => {
+				const relation = new Participant();
 				relation.userId = lecturer.id;
 				relation.role = CourseRole.LECTURER;
 				return relation;
 			});
 
-			course.courseUserRelations = courseUserRelations;
+			course.participants = participants;
 		}
 
 		return this.save(course);
@@ -75,7 +75,7 @@ export class CourseRepository extends Repository<Course> {
 	}
 
 	async getCourseWithUsers(id: string): Promise<Course> {
-		return this.findOneOrFail(id, { relations: ["courseUserRelations", "courseUserRelations.user"] });
+		return this.findOneOrFail(id, { relations: ["participants", "participants.user"] });
 	}
 
 	/**

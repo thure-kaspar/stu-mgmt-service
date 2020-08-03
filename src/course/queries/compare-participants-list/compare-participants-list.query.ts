@@ -1,9 +1,9 @@
 import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DtoFactory } from "../../../shared/dto-factory";
-import { CourseUserRelation } from "../../entities/course-user-relation.entity";
+import { Participant } from "../../entities/participant.entity";
 import { CourseId } from "../../entities/course.entity";
-import { CourseUserRelationRepository } from "../../repositories/course-user-relation.repository";
+import { ParticipantRepository } from "../../repositories/participant.repository";
 import { ParticipantsComparisonDto } from "./participants-comparison.dto";
 
 export class CompareParticipantsListQuery {
@@ -16,25 +16,25 @@ export class CompareParticipantsListQuery {
 @QueryHandler(CompareParticipantsListQuery)
 export class CompareParticipantsListHandler implements IQueryHandler<CompareParticipantsListQuery> {
 
-	constructor(@InjectRepository(CourseUserRelation) private repo: CourseUserRelationRepository) { }
+	constructor(@InjectRepository(Participant) private repo: ParticipantRepository) { }
 
 	async execute(query: CompareParticipantsListQuery): Promise<ParticipantsComparisonDto> {
 		const { courseId, compareToCourseIds } = query;
 
 		// Get all participants that were in at least one of the compared courses
-		const inComparedCourses = await this.repo.createQueryBuilder("courseUserRelation")
-			.where("courseUserRelation.courseId = :courseId", { courseId })
-			.leftJoinAndSelect("courseUserRelation.user", "user")
-			.innerJoin("user.courseUserRelations", "userCourseUserRelations", 
-				"userCourseUserRelations.courseId IN (:...compareToCourseIds)", { compareToCourseIds })
+		const inComparedCourses = await this.repo.createQueryBuilder("participant")
+			.where("participant.courseId = :courseId", { courseId })
+			.leftJoinAndSelect("participant.user", "user")
+			.innerJoin("user.participations", "userParticipants", 
+				"userParticipants.courseId IN (:...compareToCourseIds)", { compareToCourseIds })
 			.getMany();
 
 		// Find all participants that were NOT in the result of the first query
 		const inIds = inComparedCourses.map(rel => rel.id);
-		const notIn = await this.repo.createQueryBuilder("courseUserRelation")
-			.where("courseUserRelation.courseId = :courseId", { courseId })
-			.andWhere("courseUserRelation.id NOT IN (:...inIds)", { inIds })
-			.innerJoinAndSelect("courseUserRelation.user", "user")
+		const notIn = await this.repo.createQueryBuilder("participant")
+			.where("participant.courseId = :courseId", { courseId })
+			.andWhere("participant.id NOT IN (:...inIds)", { inIds })
+			.innerJoinAndSelect("participant.user", "user")
 			.getMany();
 			
 		return {

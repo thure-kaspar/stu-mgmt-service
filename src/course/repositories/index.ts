@@ -5,12 +5,11 @@ import { AssessmentRepository } from "./assessment.repository";
 import { AssignmentTemplateRepository } from "./assignment-template.repository";
 import { AssignmentRepository } from "./assignment.repository";
 import { CourseConfigRepository } from "./course-config.repository";
-import { CourseUserRelationRepository } from "./course-user-relation.repository";
+import { ParticipantRepository } from "./participant.repository";
 import { CourseRepository } from "./course.repository";
 import { GroupEventRepository } from "./group-event.repository";
 import { GroupSettingsRepository } from "./group-settings.repository";
 import { GroupRepository } from "./group.repository";
-import { CourseUserRepository } from "./course-user-repository";
 
 export const Repositories = [
 	AdmissionCriteraRepository,
@@ -20,8 +19,7 @@ export const Repositories = [
 	AssignmentTemplateRepository,
 	AssignmentRepository,
 	CourseConfigRepository,
-	CourseUserRepository,
-	CourseUserRelationRepository,
+	ParticipantRepository,
 	CourseRepository,
 	GroupEventRepository,
 	GroupSettingsRepository,

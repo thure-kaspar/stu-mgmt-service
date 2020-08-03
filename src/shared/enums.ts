@@ -1,4 +1,4 @@
-import { UserDto } from "./dto/user.dto";
+import { ParticipantDto } from "../course/dto/course-participant/participant.dto";
 
 export enum AssignmentState {
 	INVISIBLE = "INVISIBLE", // Assigment is not opened for submissions. Students can't see it.
@@ -39,22 +39,22 @@ export enum CourseRole {
  * Checks, if `courseRole` of a user is `STUDENT`.
  * @returns `true`, if user is `STUDENT`.
  */
-export function isStudent(user: UserDto): boolean {
-	return user.courseRole === CourseRole.STUDENT;
+export function isStudent(participant: ParticipantDto): boolean {
+	return participant.role === CourseRole.STUDENT;
 }
 
 /**
  * Checks, if `courseRole` of a user is `TUTOR`.
  * @returns `true`, if user is `TUTOR`.
  */
-export function isTutor(user: UserDto): boolean {
-	return user.courseRole === CourseRole.TUTOR;
+export function isTutor(participant: ParticipantDto): boolean {
+	return participant.role === CourseRole.TUTOR;
 }
 
 /**
  * Checks, if `courseRole` of a user is `LECTURER`.
  * @returns `true`, if user is `LECTURER`.
  */
-export function isLecturer(user: UserDto): boolean {
-	return user.courseRole === CourseRole.LECTURER;
+export function isLecturer(participant: ParticipantDto): boolean {
+	return participant.role === CourseRole.LECTURER;
 }

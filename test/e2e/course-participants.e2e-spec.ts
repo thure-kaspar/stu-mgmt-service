@@ -1,14 +1,14 @@
 import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
 import { getConnection } from "typeorm";
+import { ParticipantDto } from "../../src/course/dto/course-participant/participant.dto";
 import { ParticipantsComparisonDto } from "../../src/course/queries/compare-participants-list/participants-comparison.dto";
-import { UserDto } from "../../src/shared/dto/user.dto";
 import { CourseRole } from "../../src/shared/enums";
 import { createApplication } from "../mocks/application.mock";
 import { COURSE_JAVA_1819, COURSE_JAVA_1920, COURSE_JAVA_2020 } from "../mocks/courses.mock";
 import { DbMockService } from "../mocks/db-mock.service";
-import { CourseUserRelationsMock } from "../mocks/relations.mock";
 import { USER_NOT_IN_COURSE, USER_STUDENT_JAVA } from "../mocks/users.mock";
+import { COURSE_PARTICIPANTS_ALL } from "../mocks/participants/participants.mock";
 
 let app: INestApplication;
 let dbMockService: DbMockService; // Should be initialized in every describe-block that requires data in db
@@ -37,15 +37,15 @@ describe("GET-REQUESTS of CourseController (e2e)", () => {
 			return request(app.getHttpServer())
 				.get(`/courses/${course.id}/users/${user.id}`)
 				.expect(({ body }) => {
-					const result = body as UserDto;
-					expect(result.id).toEqual(user.id);
-					expect(result.courseRole).toEqual(CourseRole.STUDENT);
+					const result = body as ParticipantDto;
+					expect(result.userId).toEqual(user.id);
+					expect(result.role).toEqual(CourseRole.STUDENT);
 				});
 		});
 
 		it("User is not a participant -> Throws 404", () => {
 			const notParticipant = USER_NOT_IN_COURSE;
-			console.assert(!CourseUserRelationsMock.find(x => x.courseId === course.id && x.userId === notParticipant.id),
+			console.assert(!COURSE_PARTICIPANTS_ALL.find(x => x.courseId === course.id && x.participant.userId === notParticipant.id),
 				"User should not be participant of this course");
 
 			return request(app.getHttpServer())

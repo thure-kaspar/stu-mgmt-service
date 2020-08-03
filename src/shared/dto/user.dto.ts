@@ -1,6 +1,6 @@
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { CourseDto } from "../../course/dto/course/course.dto";
-import { UserRole, CourseRole } from "../enums";
-import { ApiPropertyOptional, ApiProperty } from "@nestjs/swagger";
+import { UserRole } from "../enums";
 
 export class UserDto {
 	/** Unique identifier of this user. */
@@ -18,8 +18,4 @@ export class UserDto {
 	/** Courses that the user has signed up for. */
 	//@ApiPropertyOptional({ description: "Courses that the user has signed up for.", type: () => CourseDto })
 	courses?: CourseDto[];
-
-	/** If loaded within the context of a course: The role of the user in this course, i.e student. */
-	@ApiPropertyOptional({ description: "If loaded within the context of a course: The role of the user in this course, i.e student." })
-	courseRole?: CourseRole;
 }

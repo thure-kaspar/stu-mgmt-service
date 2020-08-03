@@ -16,37 +16,37 @@ export class UserRepository extends Repository<User> {
 	}
 
 	async getUserById(id: string): Promise<User> {
-		return this.findOneOrFail(id, { relations: ["courseUserRelations", "courseUserRelations.course"] });
+		return this.findOneOrFail(id, { relations: ["participations", "participations.course"] });
 	}
 
 	async getUserByEmail(email: string): Promise<User> {
 		return this.findOneOrFail({
 			where: { email },
-			relations: ["courseUserRelations", "courseUserRelations.course"]
+			relations: ["participations", "participations.course"]
 		});
 	}
 
 	async getUserByUsername(username: string): Promise<User> {
 		return this.findOneOrFail({
 			where: { username },
-			relations: ["courseUserRelations", "courseUserRelations.course"]
+			relations: ["participations", "participations.course"]
 		});
 	}
 
 	async getCoursesOfUser(userId: string): Promise<Course[]> {
 		const user = await this.findOneOrFail(userId, { 
-			relations: ["courseUserRelations", "courseUserRelations.course"] 
+			relations: ["participations", "participations.course"] 
 		});
 
-		return user.courseUserRelations.map(relation => relation.course);
+		return user.participations.map(relation => relation.course);
 	}
 
 	/** Determines, wether the user is a member of the course. */
 	async isMemberOfCourse(userId: string, courseId: CourseId): Promise<boolean> {
 		const user = await this.createQueryBuilder("user")
 			.where("user.id = :id", { id: userId })
-			.innerJoin("user.courseUserRelations", "courseRelation")
-			.andWhere("courseRelation.courseId = :courseId", { courseId })
+			.innerJoin("user.participations", "participation")
+			.andWhere("participation.courseId = :courseId", { courseId })
 			.getOne();
 			
 		return !!user;

@@ -5,11 +5,11 @@ import { Group } from "../../src/course/entities/group.entity";
 import { Course } from "../../src/course/entities/course.entity";
 import { Assignment } from "../../src/course/entities/assignment.entity";
 import { Assessment } from "../../src/course/entities/assessment.entity";
-import { CourseUserRelation } from "../../src/course/entities/course-user-relation.entity";
+import { Participant } from "../../src/course/entities/participant.entity";
 import { AssessmentUserRelation } from "../../src/course/entities/assessment-user-relation.entity";
 import { UserGroupRelation } from "../../src/course/entities/user-group-relation.entity";
 import { CoursesMock } from "./courses.mock";
-import { AssessmentUserRelationsMock, CourseUserRelationsMock } from "./relations.mock";
+import { AssessmentUserRelationsMock } from "./relations.mock";
 import { AssessmentsMock } from "./assessments.mock";
 import { AssignmentsMock } from "./assignments.mock";
 import { UsersMock } from "./users.mock";
@@ -30,6 +30,7 @@ import { getGroupEventEntities } from "./groups/group-events.mock";
 import { GroupEvent } from "../../src/course/entities/group-event.entity";
 import { ASSESSMENT_ALLOCATIONS_MOCK } from "./assessment-allocation.mock";
 import { AssessmentAllocation } from "../../src/course/entities/assessment-allocation.entity";
+import { COURSE_PARTICIPANTS_ALL } from "./participants/participants.mock";
 
 //@Injectable() Not a "real" (injectable) service for now
 export class DbMockService {
@@ -42,7 +43,6 @@ export class DbMockService {
 	assignments = AssignmentsMock;
 	assessments = AssessmentsMock;
 	partialAssessments = PARTIAL_ASSESSMENT_MOCK;
-	courseUserRelations = CourseUserRelationsMock;
 	userGroupRelations = UserGroupRelationsMock;
 	assessmentUserRelations = AssessmentUserRelationsMock;
 	assignmentTemplates = ASSIGNMENT_TEMPLATES_MOCK;
@@ -71,7 +71,7 @@ export class DbMockService {
 		await this.createAssignments();
 		await this.createAssessments();
 		await this.createPartialAssessments();
-		await this.createCourseUserRelations();
+		await this.createParticipants();
 		await this.createUserGroupRelations();
 		await this.createAssessmentUserRelations();
 		await this.createAssessmentAllocations();
@@ -163,8 +163,16 @@ export class DbMockService {
 			.catch(error => console.error(error));
 	}
 
-	async createCourseUserRelations(): Promise<void> {
-		await this.con.getRepository(CourseUserRelation).insert(this.courseUserRelations)
+	async createParticipants(): Promise<void> {
+		const allParticipants: Partial<Participant>[] = COURSE_PARTICIPANTS_ALL.map(p => {
+			return {
+				id: p.id,
+				courseId: p.courseId,
+				userId: p.participant.userId,
+			};
+		});
+
+		await this.con.getRepository(Participant).insert(allParticipants)
 			.catch(error => console.error(error));
 	}
 

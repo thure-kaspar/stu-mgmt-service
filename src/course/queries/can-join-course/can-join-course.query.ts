@@ -22,12 +22,12 @@ export class CanJoinCourseHandler implements IQueryHandler<CanJoinCourseQuery> {
 		const course = await this.courseRepo.createQueryBuilder("course")
 			.where("course.id = :courseId", { courseId: query.courseId })
 			.innerJoinAndSelect("course.config", "config", "config.courseId = :courseId", { courseId: query.courseId })
-			.leftJoinAndSelect("course.courseUserRelations", "userRelation", "userRelation.userId = :userId", { userId: query.userId })
+			.leftJoinAndSelect("course.participants", "userRelation", "userRelation.userId = :userId", { userId: query.userId })
 			.getOne();
 
 		if (!course) throw new EntityNotFoundError(Course, null);
 		
-		if (course.courseUserRelations.length == 1) {
+		if (course.participants.length == 1) {
 			// User is already a member of the course
 			return {
 				canJoin: false,

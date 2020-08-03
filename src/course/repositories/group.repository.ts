@@ -1,12 +1,13 @@
-import { Repository, EntityRepository } from "typeorm";
-import { Group } from "../entities/group.entity";
-import { GroupDto } from "../dto/group/group.dto";
-import { UserGroupRelation } from "../entities/user-group-relation.entity";
 import { ConflictException } from "@nestjs/common";
+import { EntityRepository, Repository } from "typeorm";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
 import { User } from "../../shared/entities/user.entity";
-import { CourseId } from "../entities/course.entity";
 import { GroupFilter } from "../dto/group/group-filter.dto";
+import { GroupDto } from "../dto/group/group.dto";
+import { CourseId } from "../entities/course.entity";
+import { Group } from "../entities/group.entity";
+import { UserGroupRelation } from "../entities/user-group-relation.entity";
+import { ParticipantRepository } from "./participant.repository";
 
 @EntityRepository(Group)
 export class GroupRepository extends Repository<Group> {
@@ -30,11 +31,16 @@ export class GroupRepository extends Repository<Group> {
 	/**
 	 * Adds the given user to the group.
 	 */
-	async addUserToGroup(groupId: string, userId: string): Promise<boolean> {
+	async addUserToGroup(courseId: CourseId, groupId: string, userId: string): Promise<boolean> {
 		const userGroupRelationRepo = this.manager.getRepository(UserGroupRelation);
+		const participantRepo = this.manager.getCustomRepository(ParticipantRepository);
+
+		const participant = await participantRepo.getParticipant(courseId, userId);
+
 		const userGroupRelation = new UserGroupRelation();
 		userGroupRelation.groupId = groupId;
 		userGroupRelation.userId = userId;
+		userGroupRelation.participantId = participant.id;
 		await userGroupRelationRepo.save(userGroupRelation)
 			.catch((error) => {
 				if (error.code === "23505")
@@ -93,7 +99,7 @@ export class GroupRepository extends Repository<Group> {
 			.leftJoinAndSelect("group.course", "course") // Load course
 			.leftJoinAndSelect("course.config", "config") // Load course config
 			.innerJoinAndSelect("config.groupSettings", "groupSettings") // Load group settings (of course config)
-			.innerJoinAndSelect("course.courseUserRelations", "relation", "relation.userId = :userId", { userId }) // Load specific course-user, error if not a member of course
+			.innerJoinAndSelect("course.participants", "relation", "relation.userId = :userId", { userId }) // Load specific course-user, error if not a member of course
 			.getOne();
 		
 		if (!group) throw new EntityNotFoundError(Group, null);
@@ -107,7 +113,7 @@ export class GroupRepository extends Repository<Group> {
 	 * - Group members
 	 */
 	async getGroupsOfCourse(courseId: CourseId, filter?: GroupFilter): Promise<[Group[], number]> {
-		const { name, isClosed, skip, take } = filter || { };
+		const { name, isClosed, minSize, maxSize, skip, take } = filter || { };
 
 		const query = this.createQueryBuilder("group")
 			.where("group.courseId = :courseId", { courseId })
@@ -123,6 +129,16 @@ export class GroupRepository extends Repository<Group> {
 		// Allow filtering with isClosed set to TRUE or FALSE
 		if (isClosed !== undefined) {
 			query.andWhere("group.isClosed = :isClosed", { isClosed });
+		}
+
+		if (minSize || maxSize) {
+			query.loadRelationCountAndMap("group.size", "group.userGroupRelations");
+			if (minSize) {
+				query.andWhere("size >= :minSize", { minSize });
+			}
+			if (maxSize) {
+				query.andWhere("size <= :maxSize", { maxSize });
+			}
 		}
 
 		return query.getManyAndCount();

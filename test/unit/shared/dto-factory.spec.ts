@@ -7,7 +7,7 @@ import { UserDto } from "../../../src/shared/dto/user.dto";
 import { AssessmentUserRelation } from "../../../src/course/entities/assessment-user-relation.entity";
 import { Assessment } from "../../../src/course/entities/assessment.entity";
 import { Assignment } from "../../../src/course/entities/assignment.entity";
-import { CourseUserRelation } from "../../../src/course/entities/course-user-relation.entity";
+import { Participant } from "../../../src/course/entities/participant.entity";
 import { Course } from "../../../src/course/entities/course.entity";
 import { Group } from "../../../src/course/entities/group.entity";
 import { User } from "../../../src/shared/entities/user.entity";
@@ -37,26 +37,26 @@ describe("DtoFactory", () => {
 			expect(result).toEqual(expected);
 		});
 
-		it("CourseUserRelations loaded -> Returns Dto with users", () => {
-			// Mock CourseUserRelations (including loaded User)
-			const rel1 = new CourseUserRelation();
+		it("Participants loaded -> Returns Dto with users", () => {
+			// Mock Participants (including loaded User)
+			const rel1 = new Participant();
 			rel1.id = 1;
 			rel1.user = convertToEntity(User, USER_STUDENT_JAVA);
 			rel1.courseId = course.id,
 			rel1.userId = rel1.user.id;
 			rel1.role = CourseRole.STUDENT;
 
-			const rel2 = new CourseUserRelation();
+			const rel2 = new Participant();
 			rel2.id = 2;
 			rel2.user = convertToEntity(User, USER_STUDENT_2_JAVA);
 			rel2.userId = rel2.user.id;
 			rel2.courseId = course.id,
 			rel2.role = CourseRole.STUDENT;
 			
-			course.courseUserRelations = [rel1, rel2];
+			course.participants = [rel1, rel2];
 
 			// Extend expected with users
-			expected.users = [{ ...USER_STUDENT_JAVA, courseRole: rel1.role }, {...USER_STUDENT_2_JAVA, courseRole: rel2.role }];
+			expected.users = [{ ...USER_STUDENT_JAVA }, {...USER_STUDENT_2_JAVA }];
 			const result = DtoFactory.createCourseDto(course);
 			
 			expect(result).toEqual(expected);
@@ -103,35 +103,25 @@ describe("DtoFactory", () => {
 			expect(result).toEqual(expected);
 		});
 
-		it("With courseRole -> Assigns courseRole to Dto", () => {
-			const courseRole = CourseRole.STUDENT;
-			expected.courseRole = courseRole;
-
-			const result = DtoFactory.createUserDto(user, courseRole);
-
-			expect(result).toEqual(expected);
-			expect(result.courseRole).toEqual(courseRole);
-		});
-
-		it("CourseUserRelation loaded -> Returns Dto with courses", () => {
+		it("Participant loaded -> Returns Dto with courses", () => {
 			const course1 = convertToEntity(Course, COURSE_JAVA_1920);
 			const course2 = convertToEntity(Course, COURSE_INFO_2_2020);		
 
-			const rel1 = new CourseUserRelation();
+			const rel1 = new Participant();
 			rel1.user = user;
 			rel1.userId = user.id;
 			rel1.course = course1;
 			rel1.courseId = course1.id;
 			rel1.role = CourseRole.STUDENT;
 
-			const rel2 = new CourseUserRelation();
+			const rel2 = new Participant();
 			rel2.user = user;
 			rel2.userId = user.id;
 			rel2.course = course2;
 			rel2.courseId = course2.id;
 			rel2.role = CourseRole.TUTOR;
 
-			user.courseUserRelations = [rel1, rel2];
+			user.participations = [rel1, rel2];
 			expected.courses = [copy(COURSE_JAVA_1920), copy(COURSE_INFO_2_2020)];
 
 			const result = DtoFactory.createUserDto(user);

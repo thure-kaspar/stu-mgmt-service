@@ -256,7 +256,7 @@ describe("POST-REQUESTS for relations (Db contains data) of GroupController (e2e
 		await dbMockService.createGroupSettings();
 		await dbMockService.createUsers();
 		await dbMockService.createGroups();
-		await dbMockService.createCourseUserRelations();
+		await dbMockService.createParticipants();
 	});
 
 	afterEach(async () => {

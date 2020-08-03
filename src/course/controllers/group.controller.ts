@@ -8,6 +8,7 @@ import { PasswordDto } from "../../shared/dto/password.dto";
 import { UserDto } from "../../shared/dto/user.dto";
 import { PaginatedResult, throwIfRequestFailed } from "../../utils/http-utils";
 import { GetParticipant } from "../decorators/get-participant.decorator";
+import { ParticipantDto } from "../dto/course-participant/participant.dto";
 import { GroupCreateBulkDto } from "../dto/group/group-create-bulk.dto";
 import { GroupEventDto } from "../dto/group/group-event.dto";
 import { GroupFilter } from "../dto/group/group-filter.dto";
@@ -35,7 +36,7 @@ export class GroupController {
 	createGroup(
 		@Param("courseId") courseId: CourseId,
 		@Body() groupDto: GroupDto,
-		@GetParticipant() participant: UserDto
+		@GetParticipant() participant: ParticipantDto
 	): Promise<GroupDto> {
 
 		return this.groupService.createGroup(courseId, groupDto, participant);
@@ -68,7 +69,7 @@ export class GroupController {
 		@Body() password?: PasswordDto,
 	): Promise<any> {
 
-		return this.groupService.addUserToGroup(groupId, userId, password.password);
+		return this.groupService.addUserToGroup(courseId, groupId, userId, password.password);
 	}
 
 	@Get()

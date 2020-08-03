@@ -192,7 +192,7 @@ describe("POST-REQUESTS of AssessmentController (e2e)", () => {
 		await dbMockService.createCourses();
 		await dbMockService.createUsers();
 		await dbMockService.createGroups();
-		await dbMockService.createCourseUserRelations();
+		await dbMockService.createParticipants();
 		await dbMockService.createUserGroupRelations();
 		await dbMockService.createAssignments();
 	});

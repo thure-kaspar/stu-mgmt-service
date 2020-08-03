@@ -5,6 +5,7 @@ import { DtoFactory } from "../../shared/dto-factory";
 import { UserDto } from "../../shared/dto/user.dto";
 import { User } from "../../shared/entities/user.entity";
 import { isStudent } from "../../shared/enums";
+import { ParticipantDto } from "../dto/course-participant/participant.dto";
 import { GroupCreateBulkDto } from "../dto/group/group-create-bulk.dto";
 import { GroupEventDto } from "../dto/group/group-event.dto";
 import { GroupFilter } from "../dto/group/group-filter.dto";
@@ -39,7 +40,7 @@ export class GroupService {
 	 * @param groupDto - The group that should be created
 	 * @param userId - 
 	 */
-	async createGroup(courseId: CourseId, groupDto: GroupDto, participant: UserDto): Promise<GroupDto> {
+	async createGroup(courseId: CourseId, groupDto: GroupDto, participant: ParticipantDto): Promise<GroupDto> {
 		const course = await this.courseRepository.getCourseWithConfigAndGroupSettings(courseId);
 		const groupSettings = course.config.groupSettings;
 		
@@ -52,7 +53,7 @@ export class GroupService {
 		// Determine, if requesting user is student
 		if (isStudent(participant)) {
 			// Create group according to group settings and automatically add student
-			group = await this.createGroupAsStudent(courseId, groupDto, participant.id, groupSettings);
+			group = await this.createGroupAsStudent(courseId, groupDto, participant.userId, groupSettings);
 		} else {
 			// Create group without checking constraints and adding user
 			group = await this.createGroup_Force(groupDto);
@@ -94,7 +95,7 @@ export class GroupService {
 		groupDto.name = await this.determineName(courseId, groupSettings, groupDto);
 		groupDto.isClosed = false;
 		const group = await this.groupRepository.createGroup(groupDto);
-		await this.addUserToGroup_Force(group.id, userId);
+		await this.addUserToGroup_Force(courseId, group.id, userId);
 		return DtoFactory.createGroupDto(group);
 	}
 
@@ -148,7 +149,7 @@ export class GroupService {
 	 *   - Group has not reached the allowed maximum capacity
 	 *   - Given password matches the group's password
 	 */
-	async addUserToGroup(groupId: string, userId: string, password?: string): Promise<void> {
+	async addUserToGroup(courseId: CourseId, groupId: string, userId: string, password?: string): Promise<void> {
 		const group = await this.groupRepository.getGroupForAddUserToGroup(groupId, userId);
 		const sizeMax = group.course.config.groupSettings.sizeMax;
 		const sizeCurrent  = group.userGroupRelations.length;
@@ -157,7 +158,7 @@ export class GroupService {
 		if (sizeCurrent >= sizeMax) throw new ConflictException("Group is full.");
 		if (group.password && group.password !== password) throw new BadRequestException("The given password was incorrect.");
 
-		const added = await this.groupRepository.addUserToGroup(groupId, userId);
+		const added = await this.groupRepository.addUserToGroup(courseId, groupId, userId);
 		if (added) {
 			this.events.publish(new UserJoinedGroupEvent(groupId, userId));
 		} else {
@@ -168,8 +169,8 @@ export class GroupService {
 	/**
 	 * Adds the user to the group without checking any constraints. 
 	 */
-	async addUserToGroup_Force(groupId: string, userId: string): Promise<void> {
-		const added = await this.groupRepository.addUserToGroup(groupId, userId);
+	async addUserToGroup_Force(courseId: CourseId, groupId: string, userId: string): Promise<void> {
+		const added = await this.groupRepository.addUserToGroup(courseId, groupId, userId);
 		if (added) {
 			this.events.publish(new UserJoinedGroupEvent(groupId, userId));
 		} else {

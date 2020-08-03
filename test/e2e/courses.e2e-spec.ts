@@ -2,13 +2,13 @@ import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
 import { getConnection } from "typeorm";
 import { CourseFilter } from "../../src/course/dto/course/course-filter.dto";
-import { CoursesMock, COURSE_JAVA_1920, COURSE_INFO_2_2020 } from "../mocks/courses.mock";
-import { DbMockService } from "../mocks/db-mock.service";
-import { GROUP_1_JAVA, GROUP_2_JAVA, GroupsMock } from "../mocks/groups/groups.mock";
-import { USER_STUDENT_JAVA } from "../mocks/users.mock";
 import { createApplication } from "../mocks/application.mock";
+import { COURSE_CONFIG_COURSE_INFO_2_2020, COURSE_CONFIG_JAVA_1920 } from "../mocks/course-config/course-config.mock";
+import { CoursesMock, COURSE_INFO_2_2020, COURSE_JAVA_1920 } from "../mocks/courses.mock";
+import { DbMockService } from "../mocks/db-mock.service";
+import { GROUP_1_JAVA, GROUP_2_JAVA } from "../mocks/groups/groups.mock";
+import { USER_STUDENT_JAVA } from "../mocks/users.mock";
 import { copy } from "../utils/object-helper";
-import { COURSE_CONFIG_JAVA_1920, COURSE_CONFIG_COURSE_INFO_2_2020 } from "../mocks/course-config/course-config.mock";
 
 let app: INestApplication;
 let dbMockService: DbMockService; // Should be initialized in every describe-block that requires data in db
@@ -175,7 +175,7 @@ describe("POST-REQUESTS for relations (db contains data) of CourseController (e2
 
 		return request(app.getHttpServer())
 			.post(`/courses/${group.courseId}/groups`)
-			.send(group) 
+			.send(group)
 			.expect(201)
 			.expect(({ body }) => {
 				expect(body.courseId).toEqual(group.courseId);

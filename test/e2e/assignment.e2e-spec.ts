@@ -63,7 +63,7 @@ describe("POST-REQUESTS of AssignmentController (e2e)", () => {
 		dbMockService = new DbMockService(getConnection());
 		await dbMockService.createCourses();
 		await dbMockService.createUsers();
-		await dbMockService.createCourseUserRelations();
+		await dbMockService.createParticipants();
 	});
 
 	afterEach(async () => {

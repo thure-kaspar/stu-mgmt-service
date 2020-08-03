@@ -2,7 +2,7 @@ import { TypeOrmModuleOptions } from "@nestjs/typeorm";
 import { Course } from "../course/entities/course.entity";
 import { User } from "../shared/entities/user.entity";
 import * as config from "config";
-import { CourseUserRelation } from "../course/entities/course-user-relation.entity";
+import { Participant } from "../course/entities/participant.entity";
 import { Group } from "../course/entities/group.entity";
 import { UserGroupRelation } from "../course/entities/user-group-relation.entity";
 import { Assignment } from "../course/entities/assignment.entity";
@@ -31,7 +31,7 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
 	synchronize: process.env.TYPEORM_SYNC || dbConfig.synchronize,
 	dropSchema: dbConfig.dropSchema || false,
 	keepConnectionAlive: true, // prevents AlreadyHasActiveConnectionError, needed for testing // TODO: Check if it should be disabled in production
-	entities: [Course, User, Group, CourseUserRelation, UserGroupRelation, Assignment, Assessment, AssessmentUserRelation, MailTemplate,
+	entities: [Course, User, Group, Participant, UserGroupRelation, Assignment, Assessment, AssessmentUserRelation, MailTemplate,
 		CourseConfig, AssignmentTemplate, GroupSettings, AdmissionCritera, PartialAssessment, GroupEvent, AssessmentAllocation, AssessmentEvent
 	],
 	logging: loggingConfig.dbErrors ? ["error"] : undefined
