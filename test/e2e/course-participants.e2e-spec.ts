@@ -8,7 +8,7 @@ import { createApplication } from "../mocks/application.mock";
 import { COURSE_JAVA_1819, COURSE_JAVA_1920, COURSE_JAVA_2020 } from "../mocks/courses.mock";
 import { DbMockService } from "../mocks/db-mock.service";
 import { USER_NOT_IN_COURSE, USER_STUDENT_JAVA } from "../mocks/users.mock";
-import { COURSE_PARTICIPANTS_ALL } from "../mocks/participants/participants.mock";
+import { COURSE_PARTICIPANTS_ALL, COURSE_JAVA_1920_PARTICIPANTS } from "../mocks/participants/participants.mock";
 
 let app: INestApplication;
 let dbMockService: DbMockService; // Should be initialized in every describe-block that requires data in db
@@ -28,6 +28,135 @@ describe("GET-REQUESTS of CourseController (e2e)", () => {
 	afterAll(async () => {
 		await getConnection().dropDatabase(); // Drop database with all tables and data
 		await getConnection().close(); // Close Db-Connection after all tests have been executed
+	});
+
+	describe("/courses/{courseId}/users - getUsersOfCourse", () => {
+	
+		const route = `/courses/${course.id}/users`;
+		const expected = COURSE_JAVA_1920_PARTICIPANTS;
+
+		it("Retrieves all participants", () => {
+			return request(app.getHttpServer())
+				.get(route)
+				.expect(200)
+				.expect(({ body }) => {
+					const result = body as ParticipantDto[];
+					expect(result.length).toEqual(expected.length);
+					expect(result[0].userId).toBeTruthy();
+					expect(result[0].username).toBeTruthy();
+					expect(result[0].rzName).toBeTruthy();
+					expect(result[0].role).toBeTruthy();
+				});
+		});
+
+		it("Filters STUDENTs", () => {
+			const role = CourseRole.STUDENT;
+			const expected = COURSE_JAVA_1920_PARTICIPANTS.filter(p => p.participant.role === role);
+			console.assert(expected.length > 0, "Expecting >1 STUDENT.");
+
+			const queryString = `courseRole=${role}`;
+
+			return request(app.getHttpServer())
+				.get(`${route}?${queryString}`)
+				.expect(200)
+				.expect(({ body }) => {
+					const result = body as ParticipantDto[];
+					expect(result.length).toEqual(expected.length);
+
+					result.forEach(participant => {
+						expect(participant.role).toEqual(role);
+					});
+				});
+		});
+
+		it("Filters TUTORs", () => {
+			const role = CourseRole.TUTOR;
+			const expected = COURSE_JAVA_1920_PARTICIPANTS.filter(p => p.participant.role === role);
+			console.assert(expected.length > 0, "Expecting >1 TUTOR.");
+
+			const queryString = `courseRole=${role}`;
+
+			return request(app.getHttpServer())
+				.get(`${route}?${queryString}`)
+				.expect(200)
+				.expect(({ body }) => {
+					const result = body as ParticipantDto[];
+					expect(result.length).toEqual(expected.length);
+
+					result.forEach(participant => {
+						expect(participant.role).toEqual(role);
+					});
+				});
+		});
+
+		
+		it("Filters LECTURERs", () => {
+			const role = CourseRole.LECTURER;
+			const expected = COURSE_JAVA_1920_PARTICIPANTS.filter(p => p.participant.role === role);
+			console.assert(expected.length > 0, "Expecting >1 LECTURER.");
+
+			const queryString = `courseRole=${role}`;
+
+			return request(app.getHttpServer())
+				.get(`${route}?${queryString}`)
+				.expect(200)
+				.expect(({ body }) => {
+					const result = body as ParticipantDto[];
+					expect(result.length).toEqual(expected.length);
+
+					result.forEach(participant => {
+						expect(participant.role).toEqual(role);
+					});
+				});
+		});
+
+		it("Filters LECTURERs and TUTORs at once", () => {
+			const role1 = CourseRole.LECTURER;
+			const role2 = CourseRole.TUTOR;
+			const expected = COURSE_JAVA_1920_PARTICIPANTS.filter(p => p.participant.role === role1 || p.participant.role === role2);
+
+			const queryString = `courseRole=${role1}&courseRole=${role2}`;
+
+			return request(app.getHttpServer())
+				.get(`${route}?${queryString}`)
+				.expect(200)
+				.expect(({ body }) => {
+					const result = body as ParticipantDto[];
+					expect(result.length).toEqual(expected.length);
+				});
+		});
+
+		it("Filters by username", () => {
+			const username = "m";
+			const expected = COURSE_JAVA_1920_PARTICIPANTS.filter(p => p.participant.username.includes(username));
+			console.assert(expected.length > 1, "Expecting >1 participants to match username");
+
+			const queryString = `username=${username}`;
+
+			return request(app.getHttpServer())
+				.get(`${route}?${queryString}`)
+				.expect(200)
+				.expect(({ body }) => {
+					const result = body as ParticipantDto[];
+					expect(result.length).toEqual(expected.length);
+				});
+		});
+
+		it("Uses pagination", () => {
+			const skip = 2;
+			const take = 2;
+
+			const queryString = `skip=${skip}&take=${take}`;
+
+			return request(app.getHttpServer())
+				.get(`${route}?${queryString}`)
+				.expect(200)
+				.expect(({ body }) => {
+					const result = body as ParticipantDto[];
+					expect(result.length).toEqual(2);
+				});
+		});
+	
 	});
 
 	describe("/courses/{courseId}/users/{userId}", () => {
