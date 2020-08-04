@@ -21,7 +21,7 @@ import { ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA_EVALUATED, ASSIGNMENT_JAVA_IN_R
 import { GROUP_1_JAVA } from "../../mocks/groups/groups.mock";
 import { UserGroupRelationsMock } from "../../mocks/groups/user-group-relations.mock";
 import { PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW, PARTIAL_ASSESSMENT_MOCK } from "../../mocks/partial-assessments.mock";
-import { USER_STUDENT_2_JAVA, USER_STUDENT_JAVA } from "../../mocks/users.mock";
+import { PARTICIPANT_JAVA_1920_STUDENT, PARTICIPANT_JAVA_1920_STUDENT_2 } from "../../mocks/participants/participants.mock";
 import { convertToEntity, copy } from "../../utils/object-helper";
 
 const mock_AssessmentRepository = () => ({
@@ -68,8 +68,8 @@ function getGroupMock(): Group {
 function getGroupFromAssignmentMock(): GroupDto {
 	const group = copy(GROUP_1_JAVA);
 	group.users = [
-		USER_STUDENT_JAVA,
-		USER_STUDENT_2_JAVA
+		PARTICIPANT_JAVA_1920_STUDENT,
+		PARTICIPANT_JAVA_1920_STUDENT_2
 	];
 	return group;
 }
@@ -130,7 +130,7 @@ describe("AssessmentService", () => {
 		});
 
 		it("Assessment for group -> Loads group members and extracts userIds", async () => {
-			const expectedUserIds = getGroupFromAssignmentMock().users.map(u => u.id);
+			const expectedUserIds = getGroupFromAssignmentMock().users.map(u => u.userId);
 
 			await service.createAssessment(assessmentDto.assignmentId, assessmentDto);
 

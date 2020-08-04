@@ -65,7 +65,8 @@ export class ParticipantRepository extends Repository<Participant> {
 			.leftJoinAndSelect("participant.groupRelation", "groupRelation")
 			.leftJoinAndSelect("groupRelation.group", "group")
 			.leftJoinAndSelect("group.userGroupRelations", "userGroupRelation")
-			.leftJoinAndSelect("userGroupRelation.user", "groupmember")
+			.leftJoinAndSelect("userGroupRelation.participant", "member")
+			.leftJoinAndSelect("member.user", "member_user")
 			.getOne();
 
 		if (!query) {

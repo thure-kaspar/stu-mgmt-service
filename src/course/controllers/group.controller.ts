@@ -169,7 +169,7 @@ export class GroupController {
 	getUsersOfGroup(
 		@Param("courseId") courseId: CourseId,
 		@Param("groupId") groupId: string
-	): Promise<UserDto[]> {
+	): Promise<ParticipantDto[]> {
 
 		return this.groupService.getUsersOfGroup(groupId);
 	}

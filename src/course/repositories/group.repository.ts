@@ -8,6 +8,8 @@ import { CourseId } from "../entities/course.entity";
 import { Group } from "../entities/group.entity";
 import { UserGroupRelation } from "../entities/user-group-relation.entity";
 import { ParticipantRepository } from "./participant.repository";
+import { Participant } from "../entities/participant.entity";
+import { CourseRole } from "../../shared/enums";
 
 @EntityRepository(Group)
 export class GroupRepository extends Repository<Group> {
@@ -61,7 +63,8 @@ export class GroupRepository extends Repository<Group> {
 			.leftJoinAndSelect("group.assessments", "assessment")
 			.leftJoinAndSelect("assessment.assignment", "assignment")
 			.leftJoinAndSelect("group.userGroupRelations", "userGroupRelation")
-			.leftJoinAndSelect("userGroupRelation.user", "user")
+			.leftJoinAndSelect("userGroupRelation.participant", "participant")
+			.leftJoinAndSelect("participant.user", "user")
 			.leftJoinAndSelect("group.history", "history")
 			.leftJoinAndSelect("history.user", "history_user")
 			.orderBy("history.timestamp", "DESC")
@@ -83,7 +86,7 @@ export class GroupRepository extends Repository<Group> {
 	 */
 	async getGroupWithUsers(groupId: string): Promise<Group> {
 		return this.findOneOrFail(groupId, {
-			relations: ["course", "userGroupRelations", "userGroupRelations.user"]
+			relations: ["course", "userGroupRelations", "userGroupRelations.participant", "userGroupRelations.participant.user"]
 		});
 	}
 
@@ -118,7 +121,8 @@ export class GroupRepository extends Repository<Group> {
 		const query = this.createQueryBuilder("group")
 			.where("group.courseId = :courseId", { courseId })
 			.leftJoinAndSelect("group.userGroupRelations", "userRelation")
-			.leftJoinAndSelect("userRelation.user", "user")
+			.leftJoinAndSelect("userRelation.participant", "participant")
+			.leftJoinAndSelect("participant.user", "user")
 			.skip(skip)
 			.take(take);
 		
@@ -200,6 +204,15 @@ export class GroupRepository extends Repository<Group> {
 				relation.user = member;
 				relation.userId = member.id;
 				relation.groupId = group.id;
+				// Add necessary information for ParticipantDto creation
+				relation.participant = new Participant({
+					userId: member.id,
+					role: CourseRole.STUDENT,
+					user: new User({
+						username: member.username,
+						rzName: member.rzName,
+					}),
+				});
 				group.userGroupRelations.push(relation);
 			});
 		});

@@ -37,7 +37,7 @@ export class AssessmentService {
 		if (assessmentDto.groupId) {
 			// Get ids of members that were in this group for the assignment
 			const group = await this.groupService.getGroupFromAssignment(assessmentDto.groupId, assignmentId);
-			userIds = group.users.map(x => x.id);
+			userIds = group.users.map(x => x.userId);
 		// If assessment should apply to single user
 		} else if (assessmentDto.userId) {
 			userIds = [assessmentDto.userId];

@@ -17,6 +17,8 @@ import { AdmissionCritera } from "../course/entities/admission-criteria.entity";
 import { AdmissionCriteriaDto } from "../course/dto/course-config/admission-criteria.dto";
 import { AssignmentTemplate } from "../course/entities/assignment-template.entity";
 import { AssignmentTemplateDto } from "../course/dto/course-config/assignment-template.dto";
+import { toDtos } from "./interfaces/to-dto.interface";
+import { ParticipantDto } from "../course/dto/course-participant/participant.dto";
 
 export abstract class DtoFactory {
 
@@ -129,8 +131,8 @@ export abstract class DtoFactory {
 		if (group.userGroupRelations) {
 			groupDto.users = [];
 
-			if (group.userGroupRelations.length && group.userGroupRelations[0].user) {
-				groupDto.users = group.userGroupRelations.map(rel => this.createUserDto(rel.user));
+			if (group.userGroupRelations.length && group.userGroupRelations[0].participant) {
+				groupDto.users = toDtos(group.userGroupRelations.map(x => x.participant));
 			}
 		}
 
@@ -192,7 +194,15 @@ export abstract class DtoFactory {
 
 		if (assessment.group) {
 			assessmentDto.group = this.createGroupDto(assessment.group);
-			assessmentDto.group.users = assessment.assessmentUserRelations?.map(rel => this.createUserDto(rel.user));
+			assessmentDto.group.users = assessment.assessmentUserRelations?.map(rel => {
+				const participant: ParticipantDto = { // TODO: GroupId missing
+					role: CourseRole.STUDENT,
+					userId: rel.userId,
+					username: rel.user.username,
+					rzName: rel.user.rzName,
+				};
+				return participant;
+			});
 		}
 
 		return assessmentDto;

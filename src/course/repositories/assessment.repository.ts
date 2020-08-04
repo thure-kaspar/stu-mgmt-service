@@ -73,7 +73,7 @@ export class AssessmentRepository extends Repository<Assessment> {
 			.leftJoinAndSelect("userRelation.user", "user")
 			.leftJoinAndSelect("assessment.partialAssessments", "partial") // Include partial assessments, if they exist
 			.innerJoin("assessment.assignment", "assignment")
-			.orderBy("assignment.endDate", "ASC")
+			.orderBy("assessment.creationDate", "DESC")
 			.addOrderBy("partial.id", "ASC")
 			.skip(skip)
 			.take(take);

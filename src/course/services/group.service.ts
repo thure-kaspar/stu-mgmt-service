@@ -212,10 +212,10 @@ export class GroupService {
 		return DtoFactory.createGroupDto(group);
 	}
 
-	async getUsersOfGroup(groupId: string): Promise<UserDto[]> {
+	async getUsersOfGroup(groupId: string): Promise<ParticipantDto[]> {
 		const group = await this.groupRepository.getGroupWithUsers(groupId);
-		const userDtos = group.userGroupRelations.map(userGroupRelation => DtoFactory.createUserDto(userGroupRelation.user));
-		return userDtos;
+		const participants = group.userGroupRelations.map(x => x.participant.toDto());
+		return participants;
 	}
 
 	/** Returns all group events of the course. */

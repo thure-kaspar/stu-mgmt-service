@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, CreateDateColumn } from "typeorm";
 import { User } from "../../shared/entities/user.entity";
 import { AssessmentUserRelation } from "./assessment-user-relation.entity";
 import { Assignment } from "./assignment.entity";
@@ -33,6 +33,9 @@ export class Assessment {
 
 	@Column({ nullable: false })
 	creatorId: string;
+
+	@CreateDateColumn()
+	creationDate: Date;
 
 	@OneToMany(type => PartialAssessment, partialAssessment => partialAssessment.assessment, { cascade: ["insert"] })
 	partialAssessments: PartialAssessment[];

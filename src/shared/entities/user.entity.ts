@@ -33,4 +33,9 @@ export class User {
 	
 	@OneToMany(type => AssessmentAllocation, allocation => allocation.user)
 	assessmentAllocations: AssessmentAllocation[];
+
+	constructor(partial?: Partial<User>) {
+		if (partial) Object.assign(this, partial);
+	}
+
 }

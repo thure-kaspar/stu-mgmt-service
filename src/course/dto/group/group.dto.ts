@@ -1,10 +1,10 @@
-import { CourseDto } from "../course/course.dto";
-import { UserDto } from "../../../shared/dto/user.dto";
-import { ApiPropertyOptional, ApiProperty } from "@nestjs/swagger";
-import { GroupEventDto } from "./group-event.dto";
-import { AssessmentDto } from "../assessment/assessment.dto";
-import { CourseId } from "../../entities/course.entity";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsNotEmpty } from "class-validator";
+import { CourseId } from "../../entities/course.entity";
+import { AssessmentDto } from "../assessment/assessment.dto";
+import { ParticipantDto } from "../course-participant/participant.dto";
+import { CourseDto } from "../course/course.dto";
+import { GroupEventDto } from "./group-event.dto";
 
 export class GroupDto {
 	/** Unique identifier of this group. */
@@ -33,8 +33,7 @@ export class GroupDto {
 	isClosed?: boolean;
 	
 	/** The members of this group. */
-	//@ApiPropertyOptional({ description: "The members of this group.", type: UserDto, isArray: true })
-    users?: UserDto[];
+    users?: ParticipantDto[];
 	history?: GroupEventDto[];
 	assessments?: AssessmentDto[];
 }

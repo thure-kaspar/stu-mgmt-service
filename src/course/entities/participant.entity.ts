@@ -29,7 +29,6 @@ export class Participant implements ToDto<ParticipantDto> {
 	userId: string;
 
 	@OneToOne(type => UserGroupRelation, userGroupRelation => userGroupRelation.participant, { nullable: true })
-	//@JoinColumn()
 	groupRelation?: UserGroupRelation;
 
 	// @Column({ nullable: true })

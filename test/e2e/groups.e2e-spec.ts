@@ -112,24 +112,25 @@ describe("GET-REQUESTS of GroupController (e2e)", () => {
 	
 	});
 
-	// TODO: Adapt to code changes (new relations, changed history)
-	it.skip("(GET) /groups/{groupId} Retrieves the group with all relations", () => {
+	it("(GET) /groups/{groupId} Retrieves the group with all relations", () => {
 		const group = copy(GROUP_1_JAVA);
 		group.course = COURSE_JAVA_1920;
 		group.history = GROUP_EVENTS_MOCK;
-		group.users = [USER_STUDENT_JAVA, USER_STUDENT_2_JAVA];
-
-		const expected = copy(group);
-		expected.password = undefined; // Remove password due to it never being included in reponse
-		expected.history.forEach(h => h.timestamp = undefined); // Remove timespamp due to it being a data instance instead of string
 
 		return request(app.getHttpServer())
 			.get(`/courses/${course.id}/groups/${group.id}`)
 			.expect(({ body }) => {
 				const result = body as GroupDto;
-				expect(result.history[0].timestamp).toBeTruthy();
-				result.history.forEach(h => h.timestamp = undefined); // Remove timespamp due to it being a data instance instead of string
-				expect(result).toEqual(expected);
+				expect(result.id).toEqual(group.id);
+				expect(result.users.length).toEqual(2);
+				expect(result.history).toBeTruthy();
+				expect(result.history.length).toBeGreaterThan(1);
+				expect(result.password).toBeUndefined();
+
+				result.history.forEach(event => {
+					expect(event.groupId).toEqual(group.id);
+				});
+
 			});
 	});
 
