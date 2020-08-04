@@ -1,15 +1,14 @@
-import { BadRequestException, ConflictException, Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { EventBus } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DtoFactory } from "../../shared/dto-factory";
-import { UserDto } from "../../shared/dto/user.dto";
 import { User } from "../../shared/entities/user.entity";
 import { isStudent } from "../../shared/enums";
 import { ParticipantDto } from "../dto/course-participant/participant.dto";
 import { GroupCreateBulkDto } from "../dto/group/group-create-bulk.dto";
 import { GroupEventDto } from "../dto/group/group-event.dto";
 import { GroupFilter } from "../dto/group/group-filter.dto";
-import { GroupDto } from "../dto/group/group.dto";
+import { GroupDto, GroupUpdateDto } from "../dto/group/group.dto";
 import { Assignment } from "../entities/assignment.entity";
 import { Course, CourseId } from "../entities/course.entity";
 import { GroupEvent, replayEvents } from "../entities/group-event.entity";
@@ -17,7 +16,9 @@ import { GroupSettings } from "../entities/group-settings.entity";
 import { Group } from "../entities/group.entity";
 import { UserJoinedGroupEvent } from "../events/user-joined-group.event";
 import { UserLeftGroupEvent } from "../events/user-left-group.event";
-import { AlreadyInGroupException, CourseClosedException, GroupsForbiddenException } from "../exceptions/custom-exceptions";
+import { CourseModel } from "../models/course.model";
+import { GroupModel } from "../models/group.model";
+import { ParticipantModel } from "../models/participant.model";
 import { AssignmentRepository } from "../repositories/assignment.repository";
 import { CourseRepository } from "../repositories/course.repository";
 import { GroupEventRepository } from "../repositories/group-event.repository";
@@ -39,11 +40,17 @@ export class GroupService {
 	 * @param userId - 
 	 */
 	async createGroup(courseId: CourseId, groupDto: GroupDto, participant: ParticipantDto): Promise<GroupDto> {
-		const course = await this.courseRepository.getCourseWithConfigAndGroupSettings(courseId);
-		const groupSettings = course.config.groupSettings;
+		const courseEntity = await this.courseRepository.getCourseWithConfigAndGroupSettings(courseId);
+		const groupSettings = courseEntity.config.groupSettings;
 		
-		// Only proceed, if group creation is allowed
-		this.failIfGroupCreationIsNotAllowed(course, groupSettings, participant);
+		new CourseModel(courseEntity)
+			.isNotClosed()
+			.allowsGroupCreation();
+		
+		if (isStudent(participant)) {
+			new ParticipantModel(participant)
+				.hasNoGroup();
+		}
 
 		let group: GroupDto;
 		groupDto.courseId = courseId;
@@ -58,22 +65,6 @@ export class GroupService {
 		}
 		
 		return group;
-	}
-
-	/**
-	 * Throws an appropriate domain exception, if group creation is not allowed. 
-	 */
-	private failIfGroupCreationIsNotAllowed(course: Course, groupSettings: GroupSettings, participant: ParticipantDto): void {
-		if (course.isClosed) {
-			throw new CourseClosedException(course.id);
-		}
-		if (!groupSettings.allowGroups) {
-			throw new GroupsForbiddenException(course.id);
-		}
-		// Disallow group creation, if student already has a group
-		if (isStudent(participant) && participant.groupId) {
-			throw new AlreadyInGroupException(participant.userId, participant.groupId);
-		}
 	}
 
 	/**
@@ -172,11 +163,11 @@ export class GroupService {
 	async addUserToGroup(courseId: CourseId, groupId: string, userId: string, password?: string): Promise<void> {
 		const group = await this.groupRepository.getGroupForAddUserToGroup(groupId, userId);
 		const sizeMax = group.course.config.groupSettings.sizeMax;
-		const sizeCurrent  = group.userGroupRelations.length;
 		
-		if (group.isClosed) throw new ConflictException("Group is closed.");
-		if (sizeCurrent >= sizeMax) throw new ConflictException("Group is full.");
-		if (group.password && group.password !== password) throw new BadRequestException("The given password was incorrect.");
+		new GroupModel(group)
+			.isNotClosed()
+			.hasCapacity(sizeMax)
+			.acceptsPassword(password);
 
 		const added = await this.groupRepository.addUserToGroup(courseId, groupId, userId);
 		if (added) {
@@ -306,12 +297,32 @@ export class GroupService {
 		return groups.map(g => DtoFactory.createGroupDto(g));
 	}
 
-	async updateGroup(groupId: string, groupDto: GroupDto): Promise<GroupDto> {
-		if (groupId !== groupDto.id) {
-			throw new BadRequestException("GroupId refers to a different group.");
+	/**
+	 * Updates the group partially with values from the given `GroupUpdateDto`.
+	 * Returns the updated groups without relations.
+	 * @throws Exception, if any constraint is violated.
+	 */
+	async updateGroup(courseId: CourseId, groupId: string, update: GroupUpdateDto): Promise<GroupDto> {
+		const { name, password, isClosed } = update;
+		const [courseEntity, group] = await Promise.all([
+			this.courseRepository.getCourseWithConfigAndGroupSettings(courseId),
+			this.groupRepository.getGroupWithUsers(groupId)
+		]);
+
+		const course = new CourseModel(courseEntity)
+			.isNotClosed();
+		
+		if (name && (name !== group.name)) {
+			course.allowsSelfManagedGroups();
+			course.allowsGroupToRename();
 		}
-		const group = await this.groupRepository.updateGroup(groupId, groupDto);
-		return DtoFactory.createGroupDto(group);
+
+		if (isClosed === true && !group.isClosed) {
+			course.allowsGroupToClose(group);
+		}
+
+		const updated = await this.groupRepository.updateGroup(groupId, update);
+		return DtoFactory.createGroupDto(updated);
 	}
 
 	async removeUser(groupId: string, userId: string, reason?: string): Promise<void> {

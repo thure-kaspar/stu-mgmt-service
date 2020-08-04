@@ -274,22 +274,22 @@ describe("POST-REQUESTS for relations (Db contains data) of GroupController (e2e
 			.expect(201);
 	});
 
-	it("(POST) /groups/{groupId}/users/{userId} Incorrect password -> 400 BadRequest", () => {
+	it("(POST) /groups/{groupId}/users/{userId} Incorrect password -> 403 BadRequest", () => {
 		const group = GROUP_1_JAVA;
 
 		return request(app.getHttpServer())
 			.post(`/courses/${course.id}/groups/${group.id}/users/${users[0].id}`)
 			.send({ password: "wrong_password" })
-			.expect(400);
+			.expect(403);
 	});
 
-	it("(POST) /groups/{groupId}/users/{userId} Group is closed -> 409 Conflict", () => {
+	it("(POST) /groups/{groupId}/users/{userId} Group is closed -> 403 Forbidden", () => {
 		const group = GROUP_1_JAVA;
 
 		return request(app.getHttpServer())
 			.post(`/courses/${course.id}/groups/${groups[1].id}/users/${users[0].id}`)
 			.send({ password: groups[1].password })
-			.expect(409);
+			.expect(403);
 	});
 
 	describe("courses/{courseId}/groups - createGroup", () => {
@@ -441,8 +441,7 @@ describe("PATCH-REQUESTS (Db contains data) of GroupController (e2e)", () => {
 
 		// Setup mocks - these tests require a filled db
 		dbMockService = new DbMockService(getConnection());
-		await dbMockService.createCourses();
-		await dbMockService.createGroups();
+		await dbMockService.createAll();
 	});
 
 	afterEach(async () => {
@@ -450,26 +449,42 @@ describe("PATCH-REQUESTS (Db contains data) of GroupController (e2e)", () => {
 		await getConnection().close(); // Close Db-Connection after all tests have been executed
 	});
 
-	it("(PATCH) /groups/{groupId} Updates the group", () => {
-		const group = GROUP_1_JAVA;
-
-		// Create clone of original data and then perform some changes
-		const changedGroup = new GroupDto();
-		Object.assign(changedGroup, group);
-
-		changedGroup.name = "new name";
-		changedGroup.isClosed = !group.isClosed;
-		changedGroup.password = "new password";
-
-		return request(app.getHttpServer())
-			.patch(`/courses/${course.id}/groups/${group.id}`)
-			.send(changedGroup)
-			.expect(({ body }) => {
-				expect(body.name).toEqual(changedGroup.name);
-				expect(body.isClosed).toEqual(changedGroup.isClosed);
-				// expect(body.password).toEqual(changedGroup.password) Can't check password, since it's not send to clients
+	describe("courses/{courseId}/groups/{groupId} - updateGroup", () => {
+	
+		describe("Valid", () => {
+		
+			it("Updates the group", () => {
+				const group = GROUP_1_JAVA;
+		
+				// Create clone of original data and then perform some changes
+				const changedGroup = new GroupDto();
+				Object.assign(changedGroup, group);
+		
+				changedGroup.name = "new name";
+				changedGroup.isClosed = !group.isClosed;
+				changedGroup.password = "new password";
+		
+				return request(app.getHttpServer())
+					.patch(`/courses/${course.id}/groups/${group.id}`)
+					.send(changedGroup)
+					.expect(({ body }) => {
+						expect(body.name).toEqual(changedGroup.name);
+						expect(body.isClosed).toEqual(changedGroup.isClosed);
+						// expect(body.password).toEqual(changedGroup.password) Can't check password, since it's not send to clients
+					});
 			});
+		
+		});
+
+		describe("Invalid", () => {
+		
+			
+		
+		});
+	
 	});
+
+
 
 });
 

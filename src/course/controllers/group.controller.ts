@@ -5,14 +5,13 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 import { setTotalCountHeader } from "../../../test/utils/http-utils";
 import { PasswordDto } from "../../shared/dto/password.dto";
-import { UserDto } from "../../shared/dto/user.dto";
 import { PaginatedResult, throwIfRequestFailed } from "../../utils/http-utils";
 import { GetParticipant } from "../decorators/get-participant.decorator";
 import { ParticipantDto } from "../dto/course-participant/participant.dto";
 import { GroupCreateBulkDto } from "../dto/group/group-create-bulk.dto";
 import { GroupEventDto } from "../dto/group/group-event.dto";
 import { GroupFilter } from "../dto/group/group-filter.dto";
-import { GroupDto } from "../dto/group/group.dto";
+import { GroupDto, GroupUpdateDto } from "../dto/group/group.dto";
 import { CourseId } from "../entities/course.entity";
 import { CourseMemberGuard } from "../guards/course-member.guard";
 import { AssignedEvaluatorFilter, GroupWithAssignedEvaluatorDto } from "../queries/groups-with-assigned-evaluator/group-with-assigned-evaluator.dto";
@@ -178,15 +177,15 @@ export class GroupController {
 	@ApiOperation({
 		operationId: "updateGroup",
 		summary: "Update group.",
-		description: "Updates the group"
+		description: "Updates the group partially."
 	})
 	updateGroup(
 		@Param("courseId") courseId: CourseId,
 		@Param("groupId") groupId: string,
-		@Body() groupDto: GroupDto
+		@Body() update: GroupUpdateDto
 	): Promise<GroupDto> {
 
-		return this.groupService.updateGroup(groupId, groupDto);
+		return this.groupService.updateGroup(courseId, groupId, update);
 	}
 
 	@Delete(":groupId/users/:userId")

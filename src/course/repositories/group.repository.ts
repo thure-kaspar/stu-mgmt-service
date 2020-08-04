@@ -3,7 +3,7 @@ import { EntityRepository, Repository } from "typeorm";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
 import { User } from "../../shared/entities/user.entity";
 import { GroupFilter } from "../dto/group/group-filter.dto";
-import { GroupDto } from "../dto/group/group.dto";
+import { GroupDto, GroupUpdateDto } from "../dto/group/group.dto";
 import { CourseId } from "../entities/course.entity";
 import { Group } from "../entities/group.entity";
 import { UserGroupRelation } from "../entities/user-group-relation.entity";
@@ -222,13 +222,12 @@ export class GroupRepository extends Repository<Group> {
 	/**
 	 * Updates the group. Does not update any included relations.
 	 */
-	async updateGroup(groupId: string, groupDto: GroupDto): Promise<Group> {
+	async updateGroup(groupId: string, update: GroupUpdateDto): Promise<Group> {
 		const group = await this.getGroupById(groupId);
 		
-		// TODO: Define Patch-Object or create method
-		group.name = groupDto.name;
-		group.isClosed = groupDto.isClosed;
-		group.password = groupDto.password;
+		group.name = update.name ?? group.name;
+		group.password = update.password ?? group.password;
+		group.isClosed = update.isClosed ?? group.isClosed;
 		
 		return this.save(group);
 	}

@@ -20,6 +20,12 @@ export class NotATeachingStaffMember extends ForbiddenException {
 	}
 }
 
+export class GroupClosedException extends ForbiddenException {
+	constructor(groupId: string) {
+		super(`Group (${groupId}) is closed.`, "GroupClosedException");
+	}
+}
+
 export class GroupsForbiddenException extends ForbiddenException {
 	constructor(courseId: CourseId) {
 		super(`Course (${courseId}) does not allow group creation.`, "GroupsForbiddenException");
@@ -32,11 +38,24 @@ export class AlreadyInGroupException extends ConflictException {
 	}
 }
 
+export class GroupFullException extends ConflictException {
+	constructor(groupId: string) {
+		super(`Group (${groupId}) is full.`, "GroupFullException");
+	}
+}
+
+export class InvalidPasswordException extends ForbiddenException {
+	constructor() {
+		super("The given password was invalid.", "InvalidPasswordException");
+	}
+}
+
 // ### Export for swagger ###
 enum StudentMgmtExceptions {
 	CourseClosedException = "CourseClosedException",
 	NotACourseMemberException = "NotACourseMemberException",
 	NotATeachingStaffMember = "NotATeachingStaffMember",
+	GroupClosedException = "GroupClosedException",
 	GroupsForbiddenException = "GroupsForbiddenException",
 	AlreadyInGroupException = "AlreadyInGroupException"
 }
