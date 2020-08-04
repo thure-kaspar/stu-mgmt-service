@@ -44,7 +44,7 @@ export class ParticipantRepository extends Repository<Participant> {
 		}
 	
 		if (courseRole?.length > 0) {
-			query.andWhere("participation.role IN (:...courseRole)", { courseRole });
+			query.andWhere("participant.role IN (:...courseRole)", { courseRole });
 		}
 
 		return query.getManyAndCount();
