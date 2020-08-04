@@ -34,6 +34,8 @@ export class ParticipantRepository extends Repository<Participant> {
 		const query = this.createQueryBuilder("participant")
 			.where("participant.courseId = :courseId", { courseId })
 			.innerJoinAndSelect("participant.user", "user")
+			.orderBy("participant.role", "ASC")
+			.addOrderBy("user.username", "ASC")
 			.skip(skip)
 			.take(take);
 
