@@ -169,6 +169,7 @@ export class DbMockService {
 				id: p.id,
 				courseId: p.courseId,
 				userId: p.participant.userId,
+				role: p.participant.role
 			};
 		});
 
