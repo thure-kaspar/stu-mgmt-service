@@ -224,9 +224,15 @@ export class GroupRepository extends Repository<Group> {
 	 */
 	async updateGroup(groupId: string, update: GroupUpdateDto): Promise<Group> {
 		const group = await this.getGroupById(groupId);
+
+		// ALlow removal of password by setting it to empty string / don't change if undefined or null
+		if (update.password === "") {
+			group.password = null;
+		} else if (update.password) {
+			group.password = update.password;
+		}
 		
 		group.name = update.name ?? group.name;
-		group.password = update.password ?? group.password;
 		group.isClosed = update.isClosed ?? group.isClosed;
 		
 		return this.save(group);

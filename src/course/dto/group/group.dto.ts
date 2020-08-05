@@ -1,5 +1,5 @@
-import { ApiProperty, ApiPropertyOptional, PickType } from "@nestjs/swagger";
-import { IsNotEmpty, ValidateIf, MinLength } from "class-validator";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { IsNotEmpty, IsOptional, MinLength, IsBoolean } from "class-validator";
 import { CourseId } from "../../entities/course.entity";
 import { AssessmentDto } from "../assessment/assessment.dto";
 import { ParticipantDto } from "../course-participant/participant.dto";
@@ -39,13 +39,14 @@ export class GroupDto {
 }
 
 export class GroupUpdateDto {
-	@ValidateIf(o => o.name)
-	@MinLength(1)
+	@IsOptional()
+	@IsNotEmpty()
 	name?: string;
 
-	@ValidateIf(o => o.password)
-	@MinLength(1)
+	@IsOptional()
 	password?: string;
 	
+	@IsOptional()
+	@IsBoolean()
 	isClosed?: boolean; 
 }

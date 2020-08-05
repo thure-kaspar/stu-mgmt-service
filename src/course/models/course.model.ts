@@ -36,7 +36,7 @@ export class CourseModel {
 	 */
 	allowsSelfManagedGroups(): CourseModel {
 		if (!this.getGroupSettings().selfmanaged) {
-			throw new BadRequestException(`Course (${this.course.id}) has disabled selfmanaged groups.`)
+			throw new BadRequestException(`Course (${this.course.id}) has disabled selfmanaged groups.`);
 		}
 		return this;
 	}
@@ -47,7 +47,7 @@ export class CourseModel {
 	 */
 	allowsGroupToRename(): CourseModel {
 		if (this.getGroupSettings().nameSchema) {
-			throw new BadRequestException(`$Course (${this.course.id}) enforces a name schema`);
+			throw new BadRequestException(`Course (${this.course.id}) enforces a name schema.`);
 		}
 		return this;
 	}
