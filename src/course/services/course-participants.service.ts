@@ -5,7 +5,7 @@ import { toDtos } from "../../shared/interfaces/to-dto.interface";
 import { CourseParticipantsFilter } from "../dto/course-participant/course-participants.filter";
 import { ParticipantDto } from "../dto/course-participant/participant.dto";
 import { Course, CourseId } from "../entities/course.entity";
-import { Participant } from "../entities/participant.entity";
+import { ParticipantEntity } from "../entities/participant.entity";
 import { CourseClosedException } from "../exceptions/custom-exceptions";
 import { CourseRepository } from "../repositories/course.repository";
 import { ParticipantRepository } from "../repositories/participant.repository";
@@ -14,7 +14,7 @@ import { ParticipantRepository } from "../repositories/participant.repository";
 export class CourseParticipantsService {
 	
 	constructor(@InjectRepository(Course) private courseRepo: CourseRepository,
-				@InjectRepository(Participant) private participantRepo: ParticipantRepository) { }
+				@InjectRepository(ParticipantEntity) private participantRepo: ParticipantRepository) { }
 
 	/**
 	 * Adds the user to the course. 

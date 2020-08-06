@@ -1,8 +1,7 @@
-import { GroupDto } from "../group/group.dto";
+import { ApiProperty, ApiPropertyOptional, OmitType } from "@nestjs/swagger";
 import { UserDto } from "../../../shared/dto/user.dto";
-import { ApiPropertyOptional, ApiProperty, OmitType } from "@nestjs/swagger";
+import { GroupDto } from "../group/group.dto";
 import { PartialAssessmentDto } from "./partial-assessment.dto";
-import { AssignmentDto } from "../assignment/assignment.dto";
 
 export class AssessmentDto {
 	/** Unique identifier of this assessment. */
@@ -44,12 +43,11 @@ export class AssessmentDto {
 	/** The creator of this assessment. */
 	//@ApiPropertyOptional({ description: "The creator of this assessment.", type: () => UserDto })
 	creator?: UserDto;
-	assignment?: AssignmentDto;
 	partialAssessments?: PartialAssessmentDto[];
 }
 
 /** Version of AssessmentDto containing only properties that can used for creation. */
-export class AssessmentCreateDto extends OmitType(AssessmentDto, ["group", "user", "creator", "id", "assignment"]) { }
+export class AssessmentCreateDto extends OmitType(AssessmentDto, ["group", "user", "creator", "id"]) { }
 /** Version of AssessmentDto containing only properties that can be updated. */
 export class AssessmentUpdateDto {
 	

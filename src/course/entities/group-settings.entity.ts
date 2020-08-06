@@ -32,7 +32,7 @@ export class GroupSettings {
 	toDto(): GroupSettingsDto {
 		return {
 			allowGroups: this.allowGroups,
-			nameSchema: this.nameSchema,
+			nameSchema: this.nameSchema ?? undefined,
 			sizeMin: this.sizeMin,
 			sizeMax: this.sizeMax,
 			selfmanaged: this.selfmanaged

@@ -10,15 +10,15 @@ import { GroupEventDto } from "../dto/group/group-event.dto";
 import { GroupFilter } from "../dto/group/group-filter.dto";
 import { GroupDto, GroupUpdateDto } from "../dto/group/group.dto";
 import { Assignment } from "../entities/assignment.entity";
-import { Course, CourseId } from "../entities/course.entity";
+import { Course as CourseEntity, CourseId } from "../entities/course.entity";
 import { GroupEvent, replayEvents } from "../entities/group-event.entity";
 import { GroupSettings } from "../entities/group-settings.entity";
 import { Group } from "../entities/group.entity";
 import { UserJoinedGroupEvent } from "../events/user-joined-group.event";
 import { UserLeftGroupEvent } from "../events/user-left-group.event";
-import { CourseModel } from "../models/course.model";
+import { Course } from "../models/course.model";
 import { GroupModel } from "../models/group.model";
-import { ParticipantModel } from "../models/participant.model";
+import { Participant } from "../models/participant.model";
 import { AssignmentRepository } from "../repositories/assignment.repository";
 import { CourseRepository } from "../repositories/course.repository";
 import { GroupEventRepository } from "../repositories/group-event.repository";
@@ -28,40 +28,34 @@ import { GroupRepository } from "../repositories/group.repository";
 export class GroupService {
 
 	constructor(@InjectRepository(Group) private groupRepository: GroupRepository,
-				@InjectRepository(Course) private courseRepository: CourseRepository,
+				@InjectRepository(CourseEntity) private courseRepository: CourseRepository,
 				@InjectRepository(GroupEvent) private groupEventRepository: GroupEventRepository,
 				@InjectRepository(Assignment) private assignmentRepository: AssignmentRepository, 
 				private events: EventBus) { }
 
 	/**
-	 * Creates a group, if the course allows group creation.
-	 * @param courseId - The course, where the group should be created
-	 * @param groupDto - The group that should be created
-	 * @param userId - 
+	 * Creates a new group in the specified course.  
+	 * Students will automatically join the group.
 	 */
-	async createGroup(courseId: CourseId, groupDto: GroupDto, participant: ParticipantDto): Promise<GroupDto> {
-		const courseEntity = await this.courseRepository.getCourseWithConfigAndGroupSettings(courseId);
+	async createGroup(course: Course, participant: Participant, groupDto: GroupDto): Promise<GroupDto> {
+		const courseEntity = await this.courseRepository.getCourseWithConfigAndGroupSettings(course.id);
 		const groupSettings = courseEntity.config.groupSettings;
 		
-		new CourseModel(courseEntity)
-			.isNotClosed()
-			.allowsGroupCreation();
+		course.isNotClosed().and().allowsGroupCreation();
 		
-		if (isStudent(participant)) {
-			new ParticipantModel(participant)
-				.hasNoGroup();
+		if (participant.isStudent()) {
+			participant.hasNoGroup();
 		}
 
 		let group: GroupDto;
-		groupDto.courseId = courseId;
 		
 		// Determine, if requesting user is student
 		if (isStudent(participant)) {
 			// Create group according to group settings and automatically add student
-			group = await this.createGroupAsStudent(courseId, groupDto, participant.userId, groupSettings);
+			group = await this.createGroupAsStudent(course, groupDto, participant.userId, groupSettings);
 		} else {
 			// Create group without checking constraints and adding user
-			group = await this.createGroup_Force(groupDto);
+			group = await this.createGroup_Force(course, groupDto);
 		}
 		
 		return group;
@@ -70,7 +64,7 @@ export class GroupService {
 	/**
 	 * Creates a group without checking any constraints.
 	 */
-	private async createGroup_Force(groupDto: GroupDto): Promise<GroupDto> {
+	private async createGroup_Force(course: Course, groupDto: GroupDto): Promise<GroupDto> {
 		const createdGroup = await this.groupRepository.createGroup(groupDto);
 		return DtoFactory.createGroupDto(createdGroup);
 	}
@@ -84,15 +78,15 @@ export class GroupService {
 	 * @param userId
 	 * @returns The created group.
 	 */
-	private async createGroupAsStudent(courseId: CourseId, groupDto: GroupDto, userId: string, groupSettings: GroupSettings): Promise<GroupDto> {
-		groupDto.name = await this.determineName(courseId, groupSettings, groupDto);
+	private async createGroupAsStudent(course: Course, groupDto: GroupDto, userId: string, groupSettings: GroupSettings): Promise<GroupDto> {
+		groupDto.name = await this.determineName(course, groupSettings, groupDto);
 
 		if (groupSettings.sizeMin > 1) {
 			groupDto.isClosed = false;
 		}
 
 		const group = await this.groupRepository.createGroup(groupDto);
-		await this.addUserToGroup_Force(courseId, group.id, userId);
+		await this.addUserToGroup_Force(course.id, group.id, userId);
 		return DtoFactory.createGroupDto(group);
 	}
 
@@ -101,11 +95,11 @@ export class GroupService {
 	 * If course uses a name schema the name will use the schema, otherwise it will return the specified name from the dto.
 	 * @throws `Error` if name is empty or undefined.
 	 */
-	private async determineName(courseId: CourseId, groupSettings: GroupSettings, groupDto: GroupDto): Promise<string> {
+	private async determineName(course: Course, groupSettings: GroupSettings, groupDto: GroupDto): Promise<string> {
 		let name: string;
 
 		if (groupSettings.nameSchema) {
-			name = await this.groupRepository.getAvailableGroupNameForSchema(courseId, groupSettings.nameSchema);
+			name = await this.groupRepository.getAvailableGroupNameForSchema(course.id, groupSettings.nameSchema);
 		} else {
 			name = groupDto.name;
 		}
@@ -139,7 +133,7 @@ export class GroupService {
 	private createGroupsWithSchemaAndCount(courseId: string, nameSchema: string, count: number): GroupDto[] {
 		const groups: GroupDto[] = [];
 		for (let i = 1; i <= count; i++) {
-			groups.push({ courseId, isClosed: false, name: nameSchema + i });
+			groups.push({ isClosed: false, name: nameSchema + i });
 		}
 		return groups;
 	}
@@ -313,12 +307,13 @@ export class GroupService {
 			this.groupRepository.getGroupWithUsers(groupId)
 		]);
 
-		const course = new CourseModel(courseEntity)
+		const course = new Course(courseEntity)
 			.isNotClosed();
 		
 		if (name && (name !== group.name)) {
-			course.allowsSelfManagedGroups();
-			course.allowsGroupToRename();
+			course
+				.allowsSelfManagedGroups()
+				.allowsGroupToRename();
 		}
 
 		if (isClosed === true && !group.isClosed) {

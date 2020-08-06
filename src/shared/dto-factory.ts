@@ -13,7 +13,7 @@ import { CourseConfig } from "../course/entities/course-config.entity";
 import { CourseConfigDto } from "../course/dto/course-config/course-config.dto";
 import { GroupSettings } from "../course/entities/group-settings.entity";
 import { GroupSettingsDto } from "../course/dto/course-config/group-settings.dto";
-import { AdmissionCritera } from "../course/entities/admission-criteria.entity";
+import { AdmissionCriteria } from "../course/entities/admission-criteria.entity";
 import { AdmissionCriteriaDto } from "../course/dto/course-config/admission-criteria.dto";
 import { AssignmentTemplate } from "../course/entities/assignment-template.entity";
 import { AssignmentTemplateDto } from "../course/dto/course-config/assignment-template.dto";
@@ -31,25 +31,7 @@ export abstract class DtoFactory {
 			isClosed: course.isClosed,
 			link: course.link ?? undefined
 		};
-		
-		// Add relational data, if available
-		if (course.participants && course.participants[0].user) {
-			courseDto.users = course.participants.map(participant => 
-				this.createUserDto(participant.user, participant.role));
-		}
-		
-		if (course.assignments) {
-			courseDto.assignments = course.assignments.map(assignment => this.createAssignmentDto(assignment));
-		}
 
-		if (course.groups) {
-			courseDto.groups = course.groups.map(group => this.createGroupDto(group));
-		}
-
-		if (course.config) {
-			courseDto.config = this.createCourseConfigDto(course.config);
-		}
-    
 		return courseDto;
 	}
 
@@ -81,7 +63,7 @@ export abstract class DtoFactory {
 		};
 	}
 
-	static createAdmissionCriteriaDto(criteria: AdmissionCritera): AdmissionCriteriaDto {
+	static createAdmissionCriteriaDto(criteria: AdmissionCriteria): AdmissionCriteriaDto {
 		const criteriaDto: AdmissionCriteriaDto = criteria.admissionCriteria;
 		return criteriaDto;
 	}
@@ -121,12 +103,9 @@ export abstract class DtoFactory {
 	static createGroupDto(group: Group): GroupDto {
 		const groupDto: GroupDto = {
 			id: group.id,
-			courseId: group.courseId,
 			name: group.name,
 			isClosed:group.isClosed,
 		};
-
-		if (group.course) groupDto.course = this.createCourseDto(group.course);
 
 		if (group.userGroupRelations) {
 			groupDto.users = [];
@@ -169,7 +148,6 @@ export abstract class DtoFactory {
 		const assessmentDto: AssessmentDto = {
 			id: assessment.id,
 			assignmentId: assessment.assignmentId,
-			assignment: assessment.assignment ? this.createAssignmentDto(assessment.assignment) : undefined,
 			groupId: assessment.groupId ?? undefined,
 			achievedPoints: assessment.achievedPoints,
 			comment: assessment.comment ?? undefined,

@@ -8,7 +8,7 @@ import { CourseId } from "../entities/course.entity";
 import { Group } from "../entities/group.entity";
 import { UserGroupRelation } from "../entities/user-group-relation.entity";
 import { ParticipantRepository } from "./participant.repository";
-import { Participant } from "../entities/participant.entity";
+import { ParticipantEntity } from "../entities/participant.entity";
 import { CourseRole } from "../../shared/enums";
 
 @EntityRepository(Group)
@@ -205,7 +205,7 @@ export class GroupRepository extends Repository<Group> {
 				relation.userId = member.id;
 				relation.groupId = group.id;
 				// Add necessary information for ParticipantDto creation
-				relation.participant = new Participant({
+				relation.participant = new ParticipantEntity({
 					userId: member.id,
 					role: CourseRole.STUDENT,
 					user: new User({
@@ -253,7 +253,6 @@ export class GroupRepository extends Repository<Group> {
 
 	private createEntityFromDto(groupDto: GroupDto): Group {
 		const group = new Group();
-		group.courseId = groupDto.courseId;
 		group.name = groupDto.name;
 		group.password = groupDto.password?.length > 0 ? groupDto.password : null;
 		group.isClosed = groupDto.isClosed ? true : false;

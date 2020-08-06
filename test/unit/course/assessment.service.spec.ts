@@ -266,8 +266,6 @@ describe("AssessmentService", () => {
 		beforeEach(() => {
 			validAssessmentForUpdate = copy(ASSESSMENT_JAVA_IN_REVIEW);
 			validAssessmentForUpdate.partialAssessments = PARTIAL_ASSESSMENT_MOCK.filter(p => p.assessmentId === validAssessmentForUpdate.id);
-			validAssessmentForUpdate.assignment = copy(ASSIGNMENT_JAVA_IN_REVIEW_SINGLE);
-
 			assessmentRepository.getAssessmentById = jest.fn().mockImplementationOnce(assessmentBeforeUpdate);
 		});
 

@@ -9,7 +9,7 @@ import { DtoFactory } from "../../shared/dto-factory";
 
 @Entity()
 @Index("IDX_CourseId_UserId", ["courseId", "userId"], { unique: true }) // Unique index to prevent user from joining same course multiple times
-export class Participant implements ToDto<ParticipantDto> {
+export class ParticipantEntity implements ToDto<ParticipantDto> {
 
 	@PrimaryGeneratedColumn()
 	id: number;
@@ -40,7 +40,7 @@ export class Participant implements ToDto<ParticipantDto> {
 	@CreateDateColumn()
 	joinedAt: Date;
 
-	constructor(partial?: Partial<Participant>) {
+	constructor(partial?: Partial<ParticipantEntity>) {
 		if (partial) Object.assign(this, partial);
 	}
 

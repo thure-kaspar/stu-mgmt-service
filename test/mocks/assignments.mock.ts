@@ -1,6 +1,7 @@
 import { AssignmentDto } from "../../src/course/dto/assignment/assignment.dto";
 import { AssignmentType, CollaborationType, AssignmentState } from "../../src/shared/enums";
 import { COURSE_JAVA_1920, COURSE_JAVA_2020 } from "./courses.mock";
+import { CourseId } from "../../src/course/entities/course.entity";
 
 export const ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP: AssignmentDto = {
 	id: "b2f6c008-b9f7-477f-9e8b-ff34ce339077",
@@ -139,9 +140,7 @@ export const ASSIGNMENT_JAVA2020_GROUP_CLOSED: AssignmentDto = {
 	startDate: new Date(2020, 5, 27),
 };
 
-
-
-export const AssignmentsMock: AssignmentDto[] = [
+export const ASSIGNMENTS_JAVA_1920: AssignmentDto[] = [
 	ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP,
 	ASSIGNMENT_JAVA_CLOSED,
 	ASSIGNMENT_JAVA_IN_REVIEW_SINGLE,
@@ -149,9 +148,17 @@ export const AssignmentsMock: AssignmentDto[] = [
 	ASSIGNMENT_JAVA_INVISIBLE,
 	ASSIGNMENT_JAVA_TESTAT_IN_PROGRESS_SINGLE,
 	ASSIGNMENT_JAVA_TESTAT_EVALUATED_SINGLE,
+	ASSIGNMENT_JAVA_IN_REVIEW_GROUP
+];
+
+export const ASSIGNMENTS_JAVA_2020: AssignmentDto[] = [
 	ASSIGNMENT_JAVA2020_GROUP,
 	ASSIGNMENT_JAVA2020_SINGLE,
 	ASSIGNMENT_JAVA2020_SINGLE_2,
-	ASSIGNMENT_JAVA2020_GROUP_CLOSED,
-	ASSIGNMENT_JAVA_IN_REVIEW_GROUP
+	ASSIGNMENT_JAVA2020_GROUP_CLOSED
+];
+
+export const ASSIGNMENTS_ALL: { assignments: AssignmentDto[]; courseId: CourseId }[] = [
+	{ assignments: ASSIGNMENTS_JAVA_1920, courseId: COURSE_JAVA_1920.id },
+	{ assignments: ASSIGNMENTS_JAVA_2020, courseId: COURSE_JAVA_2020.id },
 ];

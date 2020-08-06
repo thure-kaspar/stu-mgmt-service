@@ -1,46 +1,45 @@
 // import { Injectable } from "@nestjs/common";
 import { Connection, EntityManager } from "typeorm";
-import { User } from "../../src/shared/entities/user.entity";
-import { Group } from "../../src/course/entities/group.entity";
-import { Course } from "../../src/course/entities/course.entity";
-import { Assignment } from "../../src/course/entities/assignment.entity";
-import { Assessment } from "../../src/course/entities/assessment.entity";
-import { Participant } from "../../src/course/entities/participant.entity";
-import { AssessmentUserRelation } from "../../src/course/entities/assessment-user-relation.entity";
-import { UserGroupRelation } from "../../src/course/entities/user-group-relation.entity";
-import { CoursesMock } from "./courses.mock";
-import { AssessmentUserRelationsMock } from "./relations.mock";
-import { AssessmentsMock } from "./assessments.mock";
-import { AssignmentsMock } from "./assignments.mock";
-import { UsersMock } from "./users.mock";
-import { GroupsMock } from "./groups/groups.mock";
-import { ASSIGNMENT_TEMPLATES_MOCK } from "./course-config/assignment-templates.mock";
-import { GROUP_SETTINGS_MOCK } from "./course-config/group-settings.mock";
-import { ADMISSION_CRITERIA_JAVA } from "./course-config/admission-criteria.mock";
-import { GroupSettings } from "../../src/course/entities/group-settings.entity";
-import { AdmissionCritera } from "../../src/course/entities/admission-criteria.entity";
-import { AssignmentTemplate } from "../../src/course/entities/assignment-template.entity";
-import { CourseConfig } from "../../src/course/entities/course-config.entity";
-import { COURSE_CONFIGS_MOCK } from "./course-config/course-config.mock";
-import { convertToEntityNoRelations, convertToEntity } from "../utils/object-helper";
-import { PARTIAL_ASSESSMENT_MOCK } from "./partial-assessments.mock";
-import { PartialAssessment } from "../../src/course/entities/partial-assessment.entity";
-import { UserGroupRelationsMock } from "./groups/user-group-relations.mock";
-import { getGroupEventEntities } from "./groups/group-events.mock";
-import { GroupEvent } from "../../src/course/entities/group-event.entity";
-import { ASSESSMENT_ALLOCATIONS_MOCK } from "./assessment-allocation.mock";
+import { AdmissionCriteria } from "../../src/course/entities/admission-criteria.entity";
 import { AssessmentAllocation } from "../../src/course/entities/assessment-allocation.entity";
+import { AssessmentUserRelation } from "../../src/course/entities/assessment-user-relation.entity";
+import { Assessment } from "../../src/course/entities/assessment.entity";
+import { AssignmentTemplate } from "../../src/course/entities/assignment-template.entity";
+import { Assignment } from "../../src/course/entities/assignment.entity";
+import { CourseConfig } from "../../src/course/entities/course-config.entity";
+import { Course } from "../../src/course/entities/course.entity";
+import { GroupEvent } from "../../src/course/entities/group-event.entity";
+import { GroupSettings } from "../../src/course/entities/group-settings.entity";
+import { Group } from "../../src/course/entities/group.entity";
+import { PartialAssessment } from "../../src/course/entities/partial-assessment.entity";
+import { ParticipantEntity } from "../../src/course/entities/participant.entity";
+import { UserGroupRelation } from "../../src/course/entities/user-group-relation.entity";
+import { User } from "../../src/shared/entities/user.entity";
+import { convertToEntity, convertToEntityNoRelations } from "../utils/object-helper";
+import { ASSESSMENT_ALLOCATIONS_MOCK } from "./assessment-allocation.mock";
+import { AssessmentsMock } from "./assessments.mock";
+import { ASSIGNMENTS_ALL } from "./assignments.mock";
+import { ADMISSION_CRITERIA_JAVA } from "./course-config/admission-criteria.mock";
+import { ASSIGNMENT_TEMPLATES_MOCK } from "./course-config/assignment-templates.mock";
+import { COURSE_CONFIGS_MOCK } from "./course-config/course-config.mock";
+import { GROUP_SETTINGS_MOCK } from "./course-config/group-settings.mock";
+import { CoursesMock } from "./courses.mock";
+import { getGroupEventEntities } from "./groups/group-events.mock";
+import { GROUPS_ALL } from "./groups/groups.mock";
+import { UserGroupRelationsMock } from "./groups/user-group-relations.mock";
+import { PARTIAL_ASSESSMENT_MOCK } from "./partial-assessments.mock";
 import { COURSE_PARTICIPANTS_ALL } from "./participants/participants.mock";
+import { AssessmentUserRelationsMock } from "./relations.mock";
+import { UsersMock } from "./users.mock";
 
-//@Injectable() Not a "real" (injectable) service for now
 export class DbMockService {
 
 	private con: EntityManager;
 	courses = CoursesMock
-	groups = GroupsMock;
+	groups = GROUPS_ALL;
 	groupEvents = getGroupEventEntities();
 	users = UsersMock;
-	assignments = AssignmentsMock;
+	assignments = ASSIGNMENTS_ALL;
 	assessments = AssessmentsMock;
 	partialAssessments = PARTIAL_ASSESSMENT_MOCK;
 	userGroupRelations = UserGroupRelationsMock;
@@ -57,7 +56,6 @@ export class DbMockService {
 
 	/**
 	 * Fills the database with test data.
-	 * @memberof DbMockService
 	 */
 	async createAll(): Promise<void> {
 		await this.createCourses();
@@ -111,8 +109,8 @@ export class DbMockService {
 	}
 
 	async createAdmissionCriteria(): Promise<void> {
-		const repo = this.con.getRepository(AdmissionCritera);
-		const criteria = new AdmissionCritera();
+		const repo = this.con.getRepository(AdmissionCriteria);
+		const criteria = new AdmissionCriteria();
 		criteria.admissionCriteria = this.admissionCriteria;
 		criteria.courseConfigId = this.configs[0].id;
 
@@ -135,7 +133,14 @@ export class DbMockService {
 	}
 
 	async createGroups(): Promise<void> {
-		const groups = this.groups.map(g => convertToEntityNoRelations(Group, g));
+		// Convert GroupDtos to entities and assign courseId
+		const groups: Group[] = [];
+		this.groups.forEach(groupsWithCourseId => {
+			const _groups = groupsWithCourseId.groups.map(g => convertToEntity(Group, g));
+			_groups.forEach(g => g.courseId = groupsWithCourseId.courseId);
+			groups.push(..._groups);
+		});
+
 		await this.con.getRepository(Group).insert(groups)
 			.catch(error => console.error(error));
 	}
@@ -146,7 +151,14 @@ export class DbMockService {
 	}
 
 	async createAssignments(): Promise<void> {
-		await this.con.getRepository(Assignment).insert(this.assignments)
+		const assignments: Assignment[] = [];
+		this.assignments.forEach(assignmentsWithCourseId => {
+			const _assignments = assignmentsWithCourseId.assignments.map(a => convertToEntity(Assignment, a));
+			_assignments.forEach(a => a.courseId = assignmentsWithCourseId.courseId);
+			assignments.push(..._assignments);
+		});
+
+		await this.con.getRepository(Assignment).insert(assignments)
 			.catch(error => console.error(error));
 	}
 
@@ -164,7 +176,7 @@ export class DbMockService {
 	}
 
 	async createParticipants(): Promise<void> {
-		const allParticipants: Partial<Participant>[] = COURSE_PARTICIPANTS_ALL.map(p => {
+		const allParticipants: Partial<ParticipantEntity>[] = COURSE_PARTICIPANTS_ALL.map(p => {
 			return {
 				id: p.id,
 				courseId: p.courseId,
@@ -173,7 +185,7 @@ export class DbMockService {
 			};
 		});
 
-		await this.con.getRepository(Participant).insert(allParticipants)
+		await this.con.getRepository(ParticipantEntity).insert(allParticipants)
 			.catch(error => console.error(error));
 	}
 

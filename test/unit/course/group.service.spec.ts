@@ -7,7 +7,7 @@ import { CourseConfig } from "../../../src/course/entities/course-config.entity"
 import { Course, CourseId } from "../../../src/course/entities/course.entity";
 import { GroupSettings } from "../../../src/course/entities/group-settings.entity";
 import { Group } from "../../../src/course/entities/group.entity";
-import { Participant } from "../../../src/course/entities/participant.entity";
+import { ParticipantEntity } from "../../../src/course/entities/participant.entity";
 import { UserGroupRelation } from "../../../src/course/entities/user-group-relation.entity";
 import { UserJoinedGroupEvent } from "../../../src/course/events/user-joined-group.event";
 import { UserLeftGroupEvent } from "../../../src/course/events/user-left-group.event";
@@ -25,13 +25,12 @@ import { GROUP_1_JAVA, GROUP_2_JAVA } from "../../mocks/groups/groups.mock";
 import { PARTICIPANT_JAVA_1920_LECTURER, PARTICIPANT_JAVA_1920_STUDENT } from "../../mocks/participants/participants.mock";
 import { convertToEntity, convertToEntityNoRelations, copy } from "../../utils/object-helper";
 
-function getGroupWithUsersMock_JoiningPossible(passwordRequired = true): Group
- {
+function getGroupWithUsersMock_JoiningPossible(passwordRequired = true): Group {
 	const group = convertToEntity(Group, GROUP_1_JAVA);
 	const userRelation1 = new UserGroupRelation();
 	userRelation1.groupId = group.id;
 	userRelation1.userId = "user_id_1";
-	userRelation1.participant = new Participant(PARTICIPANT_JAVA_1920_STUDENT);
+	userRelation1.participant = new ParticipantEntity(PARTICIPANT_JAVA_1920_STUDENT);
 	group.userGroupRelations = [userRelation1];
 	
 	const course = convertToEntity(Course, COURSE_JAVA_1920);
@@ -55,7 +54,7 @@ function mock_getGroupForAddUserToGroup(groupClosed: boolean, capacityReached: b
 	group.password = password;
 	group.userGroupRelations = []; // default: empty group
 	group.course = convertToEntityNoRelations(Course, COURSE_JAVA_1920);
-	group.course.participants = [convertToEntityNoRelations(Participant, { courseId: group.courseId, userId: "some_id" })];
+	group.course.participants = [convertToEntityNoRelations(ParticipantEntity, { courseId: group.courseId, userId: "some_id" })];
 	group.course.config = convertToEntityNoRelations(CourseConfig, COURSE_CONFIG_JAVA_1920);
 	group.course.config.groupSettings = convertToEntityNoRelations(GroupSettings, GROUP_SETTINGS_GROUPS_ALLOWED_MIN2_MAX3_SELF);
 
@@ -132,7 +131,7 @@ describe("GroupService", () => {
 		courseRepository = module.get(CourseRepository);
 		eventBus = module.get(EventBus);
 		groupDto = copy(GROUP_1_JAVA);
-		courseId = copy(GROUP_1_JAVA).courseId;
+		courseId = COURSE_JAVA_1920.id;
 	});
 
 	it("Should be defined", () => {
@@ -355,9 +354,9 @@ describe("GroupService", () => {
 				});
 
 				courseRepository.getCourseWithConfigAndGroupSettings = jest.fn().mockImplementationOnce(() => {
-					const course = copy(COURSE_JAVA_1920);
+					const course = convertToEntity(Course, copy(COURSE_JAVA_1920));
 					course.isClosed = false;
-					course.config = copy(COURSE_CONFIG_JAVA_1920);
+					course.config = convertToEntity(CourseConfig, copy(COURSE_CONFIG_JAVA_1920));
 					course.config.groupSettings.sizeMin = 0;
 					course.config.groupSettings.selfmanaged = true;
 					course.config.groupSettings.nameSchema = undefined;
@@ -397,9 +396,9 @@ describe("GroupService", () => {
 
 			it("Name changed + Does not allow selfmanaged groups", async () => {
 				courseRepository.getCourseWithConfigAndGroupSettings = jest.fn().mockImplementationOnce(() => {
-					const course = copy(COURSE_JAVA_1920);
+					const course = convertToEntity(Course, copy(COURSE_JAVA_1920));
 					course.isClosed = false;
-					course.config = copy(COURSE_CONFIG_JAVA_1920);
+					course.config = convertToEntity(CourseConfig, copy(COURSE_CONFIG_JAVA_1920));
 					course.config.groupSettings.selfmanaged = false;
 					return course;
 				});
@@ -415,9 +414,9 @@ describe("GroupService", () => {
 
 			it("Name changed + Enforces name schema", async () => {
 				courseRepository.getCourseWithConfigAndGroupSettings = jest.fn().mockImplementationOnce(() => {
-					const course = copy(COURSE_JAVA_1920);
+					const course = convertToEntity(Course, copy(COURSE_JAVA_1920));
 					course.isClosed = false;
-					course.config = copy(COURSE_CONFIG_JAVA_1920);
+					course.config = convertToEntity(CourseConfig, copy(COURSE_CONFIG_JAVA_1920));
 					course.config.groupSettings.selfmanaged = true;
 					course.config.groupSettings.nameSchema = "JAVA";
 					return course;
@@ -434,9 +433,9 @@ describe("GroupService", () => {
 
 			it("Closing group + Min capacity not reached", async () => {
 				courseRepository.getCourseWithConfigAndGroupSettings = jest.fn().mockImplementationOnce(() => {
-					const course = copy(COURSE_JAVA_1920);
+					const course = convertToEntity(Course, copy(COURSE_JAVA_1920));
 					course.isClosed = false;
-					course.config = copy(COURSE_CONFIG_JAVA_1920);
+					course.config = convertToEntity(CourseConfig, copy(COURSE_CONFIG_JAVA_1920));
 					course.config.groupSettings.selfmanaged = true;
 					course.config.groupSettings.nameSchema = undefined;
 					course.config.groupSettings.sizeMin = 99; // Min capacity not reached

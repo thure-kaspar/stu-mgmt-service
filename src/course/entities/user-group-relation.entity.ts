@@ -1,6 +1,6 @@
 import { Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "../../shared/entities/user.entity";
-import { Participant } from "./participant.entity";
+import { ParticipantEntity } from "./participant.entity";
 import { Group } from "./group.entity";
 
 @Entity("user_group_relations")
@@ -20,9 +20,9 @@ export class UserGroupRelation {
 	@JoinColumn()
 	group?: Group;
 
-	@OneToOne(type => Participant, participant => participant.groupRelation, { onDelete: "CASCADE" })
+	@OneToOne(type => ParticipantEntity, participant => participant.groupRelation, { onDelete: "CASCADE" })
 	@JoinColumn()
-	participant?: Participant;
+	participant?: ParticipantEntity;
 
 	@Column({ unique: true }) // User can only have one group per course
 	participantId: number;

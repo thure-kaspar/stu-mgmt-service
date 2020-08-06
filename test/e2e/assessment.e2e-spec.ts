@@ -167,7 +167,6 @@ describe("GET-REQUESTS of AssessmentController (e2e)", () => {
 		assessment.partialAssessments = [PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW, PARTIAL_ASSESSMENT_2_JAVA_IN_REVIEW];
 		assessment.user = USER_STUDENT_JAVA;
 		assessment.userId = USER_STUDENT_JAVA.id;
-		assessment.assignment = ASSIGNMENT_JAVA_IN_REVIEW_SINGLE;
 		assessment.creator = USER_STUDENT_3_JAVA_TUTOR;
 
 		const expected = JSON.parse(JSON.stringify(assessment));
@@ -339,7 +338,6 @@ describe("PATCH-REQUESTS of AssessmentController (e2e)", () => {
 			const tmp = copy(assessment);
 			// Joined relations
 			tmp.creator = USER_STUDENT_3_JAVA_TUTOR;
-			tmp.assignment = ASSIGNMENT_JAVA_IN_REVIEW_SINGLE;
 			tmp.user = USER_STUDENT_3_JAVA_TUTOR;
 			tmp.partialAssessments = update.addPartialAssessments; // Add new partials
 			const expected = JSON.parse(JSON.stringify(tmp)); // Avoids issues with date types
@@ -373,7 +371,6 @@ describe("PATCH-REQUESTS of AssessmentController (e2e)", () => {
 			// Joined relations
 			tmp.creator = USER_STUDENT_3_JAVA_TUTOR;
 			tmp.user = USER_STUDENT_JAVA;
-			tmp.assignment = ASSIGNMENT_JAVA_IN_REVIEW_SINGLE;
 
 			const expected = JSON.parse(JSON.stringify(tmp)); // Avoids issues with date types
 
@@ -402,7 +399,6 @@ describe("PATCH-REQUESTS of AssessmentController (e2e)", () => {
 			// Joined relations
 			tmp.creator = USER_STUDENT_3_JAVA_TUTOR;
 			tmp.user = USER_STUDENT_JAVA;
-			tmp.assignment = ASSIGNMENT_JAVA_IN_REVIEW_SINGLE;
 
 			const expected = JSON.parse(JSON.stringify(tmp)); // Avoids issues with date types
 

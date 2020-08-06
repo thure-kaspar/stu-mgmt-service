@@ -27,11 +27,6 @@ export class AssessmentService {
 	) { }
 
 	async createAssessment(assignmentId: string, assessmentDto: AssessmentCreateDto): Promise<AssessmentDto> {
-		// assignmentId from the path must be equal to the dto's assignmentId
-		if (assignmentId !== assessmentDto.assignmentId) {
-			throw new BadRequestException("AssessmentDto refers to a different Assignment.");
-		}
-
 		let userIds: string[];
 		// If assessment should apply to a group
 		if (assessmentDto.groupId) {

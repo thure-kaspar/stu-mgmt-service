@@ -17,6 +17,9 @@ import { CourseMemberGuard } from "../guards/course-member.guard";
 import { AssignedEvaluatorFilter, GroupWithAssignedEvaluatorDto } from "../queries/groups-with-assigned-evaluator/group-with-assigned-evaluator.dto";
 import { GroupsWithAssignedEvaluatorQuery } from "../queries/groups-with-assigned-evaluator/groups-with-assigned-evaluator.query";
 import { GroupService } from "../services/group.service";
+import { GetCourse } from "../decorators/get-course.decorator";
+import { Course } from "../models/course.model";
+import { Participant } from "../models/participant.model";
 
 @ApiBearerAuth()
 @ApiTags("groups")
@@ -33,12 +36,12 @@ export class GroupController {
 		description: "Creates a new group, if course allows group creation. If request was triggered by student, student is automatically joining the group."
 	})
 	createGroup(
-		@Param("courseId") courseId: CourseId,
+		@GetCourse() course: Course, 
+		@GetParticipant() participant: Participant,
 		@Body() groupDto: GroupDto,
-		@GetParticipant() participant: ParticipantDto
 	): Promise<GroupDto> {
 
-		return this.groupService.createGroup(courseId, groupDto, participant);
+		return this.groupService.createGroup(course, participant, groupDto);
 	}
 
 	@Post("bulk")

@@ -1,20 +1,20 @@
 import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
 import { getConnection } from "typeorm";
-import { DbMockService } from "../mocks/db-mock.service";
-import { UserDto } from "../../src/shared/dto/user.dto";
-import { UserRole, CollaborationType } from "../../src/shared/enums";
-import { UsersMock, USER_STUDENT_JAVA, USER_MGMT_ADMIN_JAVA_LECTURER } from "../mocks/users.mock";
-import { createApplication } from "../mocks/application.mock";
-import { copy } from "../utils/object-helper";
 import { CourseDto } from "../../src/course/dto/course/course.dto";
-import { COURSE_JAVA_1920 } from "../mocks/courses.mock";
-import { GROUP_1_JAVA } from "../mocks/groups/groups.mock";
-import { GroupDto } from "../../src/course/dto/group/group.dto";
-import { GROUP_EVENT_REJOIN_SCENARIO } from "../mocks/groups/group-events.mock";
-import { ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA_TESTAT_IN_PROGRESS_SINGLE, ASSIGNMENT_JAVA_INVISIBLE } from "../mocks/assignments.mock";
 import { GroupEventDto } from "../../src/course/dto/group/group-event.dto";
+import { GroupDto } from "../../src/course/dto/group/group.dto";
+import { UserDto } from "../../src/shared/dto/user.dto";
+import { CollaborationType, UserRole } from "../../src/shared/enums";
 import { AssignmentGroupTuple } from "../../src/user/dto/assignment-group-tuple.dto";
+import { createApplication } from "../mocks/application.mock";
+import { ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA_INVISIBLE } from "../mocks/assignments.mock";
+import { COURSE_JAVA_1920 } from "../mocks/courses.mock";
+import { DbMockService } from "../mocks/db-mock.service";
+import { GROUP_EVENT_REJOIN_SCENARIO } from "../mocks/groups/group-events.mock";
+import { GROUP_1_JAVA } from "../mocks/groups/groups.mock";
+import { UsersMock, USER_MGMT_ADMIN_JAVA_LECTURER, USER_STUDENT_JAVA } from "../mocks/users.mock";
+import { copy } from "../utils/object-helper";
 
 let app: INestApplication;
 let dbMockService: DbMockService; // Should be initialized in every describe-block
@@ -89,7 +89,6 @@ describe("GET-REQUESTS of UserController (e2e)", () => {
 			.expect(({ body }) => {
 				const result = body as GroupDto;
 				expect(result.id).toEqual(expected.id);
-				expect(result.courseId).toEqual(expected.courseId);
 				expect(result.name).toEqual(expected.name);
 			});
 	});
@@ -125,7 +124,6 @@ describe("GET-REQUESTS of UserController (e2e)", () => {
 				.expect(({ body }) => {
 					const result = body as GroupDto;
 					expect(result.id).toEqual(expected.id);
-					expect(result.courseId).toEqual(expected.courseId);
 					expect(result.name).toEqual(expected.name);
 				});
 		});
@@ -141,7 +139,6 @@ describe("GET-REQUESTS of UserController (e2e)", () => {
 				.expect(({ body }) => {
 					const result = body as GroupDto;
 					expect(result.id).toEqual(expected.id);
-					expect(result.courseId).toEqual(expected.courseId);
 					expect(result.name).toEqual(expected.name);
 				});
 		});

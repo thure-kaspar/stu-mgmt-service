@@ -1,7 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { CourseDto } from "../../../src/course/dto/course/course.dto";
 import { CourseConfig } from "../../../src/course/entities/course-config.entity";
-import { Participant } from "../../../src/course/entities/participant.entity";
+import { ParticipantEntity } from "../../../src/course/entities/participant.entity";
 import { Course } from "../../../src/course/entities/course.entity";
 import { ParticipantRepository } from "../../../src/course/repositories/participant.repository";
 import { CourseRepository } from "../../../src/course/repositories/course.repository";
@@ -14,6 +14,7 @@ import { COURSE_INFO_2_2020, COURSE_JAVA_1920 } from "../../mocks/courses.mock";
 import { USER_STUDENT_2_JAVA, USER_STUDENT_JAVA } from "../../mocks/users.mock";
 import { convertToEntity, copy } from "../../utils/object-helper";
 import { COURSE_JAVA_1920_PARTICIPANTS } from "../../mocks/participants/participants.mock";
+import { CourseConfigDto } from "../../../src/course/dto/course-config/course-config.dto";
 
 const mock_CourseRepository = () => ({
 	createCourse: jest.fn().mockResolvedValue(convertToEntity(Course, COURSE_JAVA_1920)),
@@ -41,7 +42,7 @@ const mock_ParticipantRepository = () => ({
 	createParticipant: jest.fn(),
 	updateRole: jest.fn(),
 	getParticipants: jest.fn().mockImplementation(() => {
-		const participants = COURSE_JAVA_1920_PARTICIPANTS.map(p => new Participant(p));
+		const participants = COURSE_JAVA_1920_PARTICIPANTS.map(p => new ParticipantEntity(p));
 		return [participants, participants.length];
 	})
 });
@@ -80,17 +81,18 @@ describe("CourseParticipantsService", () => {
 	});
 
 	describe("addUser", () => {
+		let config: CourseConfigDto;
 
 		beforeEach(() => {
-			courseDto.config = copy(COURSE_CONFIG_JAVA_1920);
+			config = copy(COURSE_CONFIG_JAVA_1920);
 		});
 
 		it("Correct password -> Calls repository for relation creation", async () => {
-			console.assert(courseDto.config.password.length > 0, "Course should have a password");
+			console.assert(config.password.length > 0, "Course should have a password");
 			const userId = "user_id";
 			const role = CourseRole.STUDENT;
 
-			await service.addParticipant(courseDto.id, userId, courseDto.config.password);
+			await service.addParticipant(courseDto.id, userId, config.password);
 
 			expect(participantRepository.createParticipant).toBeCalledWith(courseDto.id, userId, role);
 		});
@@ -113,7 +115,7 @@ describe("CourseParticipantsService", () => {
 		});
 
 		it("Incorrect password -> Throws Exception", async () => {
-			console.assert(courseDto.config.password.length > 0, "Course should have a password");
+			console.assert(config.password.length > 0, "Course should have a password");
 			const userId = "user_id";
 			const password = "incorrect";
 

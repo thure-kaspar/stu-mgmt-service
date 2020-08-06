@@ -1,16 +1,16 @@
 import { ConflictException } from "@nestjs/common";
 import { EntityRepository, Repository } from "typeorm";
-import { Participant } from "../entities/participant.entity";
+import { ParticipantEntity } from "../entities/participant.entity";
 import { CourseRole } from "../../shared/enums";
 import { CourseId } from "../entities/course.entity";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
 import { CourseParticipantsFilter } from "../dto/course-participant/course-participants.filter";
 
-@EntityRepository(Participant)
-export class ParticipantRepository extends Repository<Participant> {
+@EntityRepository(ParticipantEntity)
+export class ParticipantRepository extends Repository<ParticipantEntity> {
 	
-	async createParticipant(courseId: CourseId, userId: string, role: CourseRole): Promise<Participant> {
-		const participant = new Participant();
+	async createParticipant(courseId: CourseId, userId: string, role: CourseRole): Promise<ParticipantEntity> {
+		const participant = new ParticipantEntity();
 		participant.courseId = courseId;
 		participant.userId = userId;
 		participant.role = role;
@@ -28,7 +28,7 @@ export class ParticipantRepository extends Repository<Participant> {
 	/**
 	 * Returns the participants of a course.
 	 */
-	async getParticipants(courseId: CourseId, filter?: CourseParticipantsFilter): Promise<[Participant[], number]> {
+	async getParticipants(courseId: CourseId, filter?: CourseParticipantsFilter): Promise<[ParticipantEntity[], number]> {
 		const { courseRole, username, skip, take } = filter || { };
 
 		const query = this.createQueryBuilder("participant")
@@ -57,7 +57,7 @@ export class ParticipantRepository extends Repository<Participant> {
 	 * Includes relations:
 	 * - Group (if exists, includes members)
 	 */
-	async getParticipant(courseId: CourseId, userId: string): Promise<Participant> {
+	async getParticipant(courseId: CourseId, userId: string): Promise<ParticipantEntity> {
 		const query = await this.createQueryBuilder("participant")
 			.where("participant.userId = :userId", { userId })
 			.andWhere("participant.courseId = :courseId", { courseId })
@@ -70,7 +70,7 @@ export class ParticipantRepository extends Repository<Participant> {
 			.getOne();
 
 		if (!query) {
-			throw new EntityNotFoundError(Participant, { courseId, userId });
+			throw new EntityNotFoundError(ParticipantEntity, { courseId, userId });
 		}
 		return query;
 	}

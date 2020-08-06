@@ -8,22 +8,22 @@ import { GroupWithAssignedEvaluatorDto } from "../../src/course/queries/groups-w
 import { createApplication } from "../mocks/application.mock";
 import { ASSESSMENT_ALLOCATIONS_MOCK } from "../mocks/assessment-allocation.mock";
 import { AssessmentsMock } from "../mocks/assessments.mock";
-import { AssignmentsMock, ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA_IN_REVIEW_SINGLE } from "../mocks/assignments.mock";
+import { ASSIGNMENTS_ALL, ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA_IN_REVIEW_SINGLE } from "../mocks/assignments.mock";
 import { CoursesMock, COURSE_JAVA_1920 } from "../mocks/courses.mock";
 import { DbMockService } from "../mocks/db-mock.service";
 import { GROUP_EVENTS_MOCK } from "../mocks/groups/group-events.mock";
-import { GroupsMock, GROUP_1_JAVA, GROUP_2_JAVA } from "../mocks/groups/groups.mock";
+import { GROUPS_ALL, GROUP_1_JAVA, GROUP_2_JAVA, GROUPS_JAVA_1920 } from "../mocks/groups/groups.mock";
 import { UserGroupRelationsMock } from "../mocks/groups/user-group-relations.mock";
-import { UsersMock, USER_MGMT_ADMIN_JAVA_LECTURER, USER_STUDENT_2_JAVA, USER_STUDENT_JAVA } from "../mocks/users.mock";
+import { UsersMock, USER_MGMT_ADMIN_JAVA_LECTURER, USER_STUDENT_JAVA } from "../mocks/users.mock";
 import { copy } from "../utils/object-helper";
 
 let app: INestApplication;
 let dbMockService: DbMockService; // Should be initialized in every describe-block
 
 const courses = CoursesMock;
-const groups = GroupsMock;
+const groups = GROUPS_ALL;
 const users = UsersMock;
-const assignments = AssignmentsMock;
+const assignments = ASSIGNMENTS_ALL;
 const assessments = AssessmentsMock;
 
 const course = COURSE_JAVA_1920; // The course that will be used for testing
@@ -46,7 +46,7 @@ describe("GET-REQUESTS of GroupController (e2e)", () => {
 	describe("(GET) /courses/{courseId}/groups", () => {
 	
 		it("Retrieves all groups of a course", () => {
-			const expectedLength = GroupsMock.filter(g => g.courseId === course.id).length;
+			const expectedLength = GROUPS_JAVA_1920.length;
 			console.assert(expectedLength > 1, "Course should have multiple groups");
 	
 			return request(app.getHttpServer())
@@ -59,7 +59,7 @@ describe("GET-REQUESTS of GroupController (e2e)", () => {
 	
 		it("Retrieves groups matching a name", () => {
 			const name = "group 1";
-			const expectedLength = GroupsMock.filter(g => g.name.includes(name) && g.courseId === course.id).length;
+			const expectedLength = GROUPS_JAVA_1920.filter(g => g.name.includes(name)).length;
 			console.assert(expectedLength >= 1, "At least one group name should match.");
 	
 			const queryString = `name=${name}`;
@@ -75,7 +75,7 @@ describe("GET-REQUESTS of GroupController (e2e)", () => {
 		});
 	
 		it("Only retrieves groups that are closed", () => {
-			const expectedLength = GroupsMock.filter(g => g.isClosed && g.courseId === course.id).length;
+			const expectedLength = GROUPS_JAVA_1920.filter(g => g.isClosed).length;
 			console.assert(expectedLength >= 1, "At least one group name should match.");
 	
 			const queryString = "isClosed=true";
@@ -93,7 +93,7 @@ describe("GET-REQUESTS of GroupController (e2e)", () => {
 		});
 	
 		it("Only retrieves groups that are NOT closed", () => {
-			const expectedLength = GroupsMock.filter(g => !g.isClosed && g.courseId === course.id).length;
+			const expectedLength = GROUPS_JAVA_1920.filter(g => !g.isClosed).length;
 			console.assert(expectedLength >= 1, "At least one group name should match.");
 	
 			const queryString = "isClosed=false";
@@ -114,7 +114,6 @@ describe("GET-REQUESTS of GroupController (e2e)", () => {
 
 	it("(GET) /groups/{groupId} Retrieves the group with all relations", () => {
 		const group = copy(GROUP_1_JAVA);
-		group.course = COURSE_JAVA_1920;
 		group.history = GROUP_EVENTS_MOCK;
 
 		return request(app.getHttpServer())
@@ -284,11 +283,11 @@ describe("POST-REQUESTS for relations (Db contains data) of GroupController (e2e
 	});
 
 	it("(POST) /groups/{groupId}/users/{userId} Group is closed -> 403 Forbidden", () => {
-		const group = GROUP_1_JAVA;
+		const group = GROUP_2_JAVA;
 
 		return request(app.getHttpServer())
-			.post(`/courses/${course.id}/groups/${groups[1].id}/users/${users[0].id}`)
-			.send({ password: groups[1].password })
+			.post(`/courses/${course.id}/groups/${group.id}/users/${users[0].id}`)
+			.send({ password: group.password })
 			.expect(403);
 	});
 
@@ -300,7 +299,6 @@ describe("POST-REQUESTS for relations (Db contains data) of GroupController (e2e
 		
 			it("As LECTURER -> Creates Group", () => {
 				const group: GroupDto = {
-					courseId: course.id,
 					name: "New group",
 					password: "123"
 				};
@@ -312,7 +310,6 @@ describe("POST-REQUESTS for relations (Db contains data) of GroupController (e2e
 					.expect(({ body }) => {
 						const result = body as GroupDto;
 						expect(result.name).toEqual(group.name);
-						expect(result.courseId).toEqual(group.courseId);
 					});
 			});
 		
@@ -483,8 +480,6 @@ describe("PATCH-REQUESTS (Db contains data) of GroupController (e2e)", () => {
 		});
 	
 	});
-
-
 
 });
 

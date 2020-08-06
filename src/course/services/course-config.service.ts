@@ -3,7 +3,7 @@ import { CourseConfigDto, CourseConfigUpdateDto } from "../dto/course-config/cou
 import { InjectRepository } from "@nestjs/typeorm";
 import { CourseConfig } from "../entities/course-config.entity";
 import { GroupSettings } from "../entities/group-settings.entity";
-import { AdmissionCritera } from "../entities/admission-criteria.entity";
+import { AdmissionCriteria } from "../entities/admission-criteria.entity";
 import { AdmissionCriteriaDto } from "../dto/course-config/admission-criteria.dto";
 import { GroupSettingsDto, GroupSettingsUpdateDto } from "../dto/course-config/group-settings.dto";
 import { AssignmentTemplate } from "../entities/assignment-template.entity";
@@ -11,7 +11,7 @@ import { AssignmentTemplateDto } from "../dto/course-config/assignment-template.
 import { CourseConfigRepository } from "../repositories/course-config.repository";
 import { GroupSettingsRepository } from "../repositories/group-settings.repository";
 import { AssignmentTemplateRepository } from "../repositories/assignment-template.repository";
-import { AdmissionCriteraRepository } from "../repositories/admission-criteria.repository";
+import { AdmissionCriteriaRepository } from "../repositories/admission-criteria.repository";
 import { CourseId } from "../entities/course.entity";
 
 @Injectable()
@@ -19,7 +19,7 @@ export class CourseConfigService {
 
 	constructor(@InjectRepository(CourseConfig) private configRepo: CourseConfigRepository,
 				@InjectRepository(GroupSettings) private groupSettingsRepo: GroupSettingsRepository,
-				@InjectRepository(AdmissionCritera) private admissionCriteriaRepo: AdmissionCriteraRepository,
+				@InjectRepository(AdmissionCriteria) private admissionCriteriaRepo: AdmissionCriteriaRepository,
 				@InjectRepository(AssignmentTemplate) private templateRepo: AssignmentTemplateRepository) { }
 
 	/** Creates the configuration for a course. */

@@ -3,7 +3,7 @@ import { AdmissionCriteriaDto } from "../dto/course-config/admission-criteria.dt
 import { CourseConfig } from "./course-config.entity";
 
 @Entity()
-export class AdmissionCritera {
+export class AdmissionCriteria {
 	@PrimaryGeneratedColumn()
 	id: number;
 

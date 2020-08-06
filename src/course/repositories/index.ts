@@ -1,4 +1,4 @@
-import { AdmissionCriteraRepository } from "./admission-criteria.repository";
+import { AdmissionCriteriaRepository } from "./admission-criteria.repository";
 import { AssessmentAllocationRepository } from "./assessment-allocation.repository";
 import { AssessmentUserRelationRepository } from "./assessment-user-relation.repository";
 import { AssessmentRepository } from "./assessment.repository";
@@ -12,7 +12,7 @@ import { GroupSettingsRepository } from "./group-settings.repository";
 import { GroupRepository } from "./group.repository";
 
 export const Repositories = [
-	AdmissionCriteraRepository,
+	AdmissionCriteriaRepository,
 	AssessmentAllocationRepository,
 	AssessmentUserRelationRepository,
 	AssessmentRepository,
