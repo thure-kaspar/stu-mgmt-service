@@ -4,6 +4,7 @@ import { AssessmentAllocationDto } from "../dto/assessment-allocation/assessment
 import { AssessmentAllocationService } from "../services/assessment-allocation.service";
 import { CourseId } from "../entities/course.entity";
 import { GroupId } from "../entities/group.entity";
+import { UserId } from "../../shared/entities/user.entity";
 
 @ApiBearerAuth()
 @ApiTags("assessment-allocation")
@@ -80,7 +81,7 @@ export class AssessmentAllocationController {
 		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string,
 		@Query("groupId") groupId: GroupId,
-		@Query("userId") userId: string,
+		@Query("userId") userId: UserId,
 	): Promise<void> {
 		const allocation: Partial<AssessmentAllocationDto> = {
 			assignmentId: assignmentId,

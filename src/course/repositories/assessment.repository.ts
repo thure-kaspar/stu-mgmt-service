@@ -7,6 +7,7 @@ import { PartialAssessment } from "../entities/partial-assessment.entity";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
 import { CourseId } from "../entities/course.entity";
 import { AssessmentFilter } from "../dto/assessment/assessment-filter.dto";
+import { UserId } from "../../shared/entities/user.entity";
 
 @EntityRepository(Assessment)
 export class AssessmentRepository extends Repository<Assessment> {
@@ -104,7 +105,7 @@ export class AssessmentRepository extends Repository<Assessment> {
 		return query.getManyAndCount();
 	}
 
-	async getAssessmentsOfUserForCourse(courseId: CourseId, userId: string): Promise<Assessment[]> {
+	async getAssessmentsOfUserForCourse(courseId: CourseId, userId: UserId): Promise<Assessment[]> {
 		return this.createQueryBuilder("assessment")
 			.innerJoinAndSelect("assessment.creator", "creator")
 			.leftJoinAndSelect("assessment.partialAssessments", "partials") // Include partial assessments, if they exist

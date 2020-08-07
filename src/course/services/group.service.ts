@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import { EventBus } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DtoFactory } from "../../shared/dto-factory";
-import { User } from "../../shared/entities/user.entity";
+import { User, UserId } from "../../shared/entities/user.entity";
 import { ParticipantDto } from "../dto/course-participant/participant.dto";
 import { GroupCreateBulkDto } from "../dto/group/group-create-bulk.dto";
 import { GroupEventDto } from "../dto/group/group-event.dto";
@@ -74,7 +74,7 @@ export class GroupService {
 	 * @param userId
 	 * @returns The created group.
 	 */
-	private async createGroupAsStudent(course: Course, groupDto: GroupDto, userId: string, groupSettings: GroupSettings): Promise<GroupDto> {
+	private async createGroupAsStudent(course: Course, groupDto: GroupDto, userId: UserId, groupSettings: GroupSettings): Promise<GroupDto> {
 		groupDto.name = await this.determineName(course, groupSettings, groupDto);
 
 		if (groupSettings.sizeMin > 1) {
@@ -178,7 +178,7 @@ export class GroupService {
 	/**
 	 * Adds the user to the group without checking any constraints. 
 	 */
-	async addUserToGroup_Force(courseId: CourseId, groupId: GroupId, userId: string): Promise<void> {
+	async addUserToGroup_Force(courseId: CourseId, groupId: GroupId, userId: UserId): Promise<void> {
 		const added = await this.groupRepository.addUserToGroup(courseId, groupId, userId);
 		if (added) {
 			this.events.publish(new UserJoinedGroupEvent(groupId, userId));
@@ -320,7 +320,7 @@ export class GroupService {
 		return DtoFactory.createGroupDto(updated);
 	}
 
-	async removeUser(groupId: GroupId, userId: string, reason?: string): Promise<void> {
+	async removeUser(groupId: GroupId, userId: UserId, reason?: string): Promise<void> {
 		const removed = await this.groupRepository.removeUser(groupId, userId);
 		if (removed) {
 			this.events.publish(new UserLeftGroupEvent(groupId, userId, reason));

@@ -8,6 +8,7 @@ import { Course as CourseEntity } from "../../src/course/entities/course.entity"
 import { COURSE_JAVA_1920 } from "./courses.mock";
 import { Course } from "../../src/course/models/course.model";
 import { Participant } from "../../src/course/models/participant.model";
+import { UserGroupRelation } from "../../src/course/entities/user-group-relation.entity";
 
 export class AuthGuardMock { 
 	canActivate(context: ExecutionContext): boolean {

@@ -5,6 +5,8 @@ import { Participant } from "../../course/entities/participant.entity";
 import { UserGroupRelation } from "../../course/entities/user-group-relation.entity";
 import { UserRole } from "../enums";
 
+export type UserId = string;
+
 @Entity()
 export class User {
     @PrimaryGeneratedColumn("uuid")

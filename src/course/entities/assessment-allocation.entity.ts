@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, Unique } from "typeorm";
-import { User } from "../../shared/entities/user.entity";
+import { User, UserId } from "../../shared/entities/user.entity";
 import { AssessmentAllocationDto } from "../dto/assessment-allocation/assessment-allocation.dto";
 import { Assignment } from "./assignment.entity";
 import { Group, GroupId } from "./group.entity";
@@ -23,7 +23,7 @@ export class AssessmentAllocation {
 	user: User;
 
 	@Column({ nullable: true })
-	userId: string;
+	userId: UserId;
 
 	/** The group, whose solution should be evaluated. */
 	@ManyToOne(type => Group, { nullable: true, onDelete: "CASCADE" })

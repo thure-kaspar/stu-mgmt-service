@@ -9,7 +9,7 @@ import { AssignmentTemplate } from "../entities/assignment-template.entity";
 import { CourseCreateDto } from "../dto/course/course-create.dto";
 import { Participant } from "../entities/participant.entity";
 import { CourseRole } from "../../shared/enums";
-import { User } from "../../shared/entities/user.entity";
+import { User, UserId } from "../../shared/entities/user.entity";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
 import { CourseConfigDto } from "../dto/course-config/course-config.dto";
 
@@ -87,7 +87,7 @@ export class CourseRepository extends Repository<Course> {
 	 * - Participant.User
 	 * @throws `EntityNotFoundError` if course or participant does not exist.
 	 */
-	async getCourseWithParticipant(id: CourseId, userId: string): Promise<Course> {
+	async getCourseWithParticipant(id: CourseId, userId: UserId): Promise<Course> {
 		const query = this.createQueryBuilder("course")
 			.where("course.id = :id", { id })
 			.innerJoinAndSelect("course.participants", "participant", "participant.userId = :userId", { userId })

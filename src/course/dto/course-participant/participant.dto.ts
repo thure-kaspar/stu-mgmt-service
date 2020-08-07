@@ -1,8 +1,9 @@
 import { CourseRole } from "../../../shared/enums";
 import { GroupDto } from "../group/group.dto";
+import { UserId } from "../../../shared/entities/user.entity";
 
 export class ParticipantDto {
-	userId: string;
+	userId: UserId;
 	username: string;
 	rzName: string;
 	role: CourseRole;

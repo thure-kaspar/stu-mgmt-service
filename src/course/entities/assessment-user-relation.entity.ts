@@ -1,5 +1,5 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
-import { User } from "../../shared/entities/user.entity";
+import { User, UserId } from "../../shared/entities/user.entity";
 import { Assessment } from "./assessment.entity";
 import { Assignment } from "./assignment.entity";
 
@@ -25,5 +25,5 @@ export class AssessmentUserRelation {
 	user: User;
 
 	@PrimaryColumn()
-	userId: string;
+	userId: UserId;
 }

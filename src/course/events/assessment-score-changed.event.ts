@@ -2,11 +2,12 @@ import { EventsHandler, IEventHandler } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
 import { AssessmentEvent } from "../entities/assessment-event.entity";
 import { Repository } from "typeorm";
+import { UserId } from "../../shared/entities/user.entity";
 
 export class AssessmentScoreChangedEvent {
 	constructor(
 		public assessmentId: string,
-		public userId: string,
+		public userId: UserId,
 		public payload: { oldScore: number; newScore: number }
 	) { }
 }

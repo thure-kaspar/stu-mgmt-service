@@ -7,11 +7,12 @@ import { Course } from "../entities/course.entity";
 import { CourseRepository } from "../repositories/course.repository";
 import { AffectedObject, EventType } from "../../shared/dto/update-message.dto";
 import { GroupId } from "../entities/group.entity";
+import { UserId } from "../../shared/entities/user.entity";
 
 export class UserLeftGroupEvent {
 	constructor(
 		public readonly groupId: GroupId,
-		public readonly userId: string, 
+		public readonly userId: UserId, 
 		public readonly reason?: string
 	) { }
 }

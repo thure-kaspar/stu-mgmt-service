@@ -18,6 +18,7 @@ import { AssignedEvaluatorFilter } from "../queries/groups-with-assigned-evaluat
 import { UserWithAssignedEvaluatorDto } from "../queries/users-with-assigned-evaluator/user-with-assigned-evaluator.dto";
 import { UsersWithAssignedEvaluatorQuery } from "../queries/users-with-assigned-evaluator/users-with-assigned-evaluator.query";
 import { CourseParticipantsService } from "../services/course-participants.service";
+import { UserId } from "../../shared/entities/user.entity";
 
 @ApiBearerAuth()
 @ApiTags("course-participants")
@@ -38,7 +39,7 @@ export class CourseParticipantsController {
 		description: "Adds a user to the course. If the course requires a password, the correct password needs to be included in the request body."
 	})
 	addUser(@Param("courseId") courseId: CourseId,
-			@Param("userId") userId: string,
+			@Param("userId") userId: UserId,
 			@Body() password?: PasswordDto,
 	): Promise<any> {
 		return this.courseParticipantsService.addParticipant(courseId, userId, password.password);
@@ -73,7 +74,7 @@ export class CourseParticipantsController {
 	})
 	getParticipant(
 		@Param("courseId") courseId: CourseId,
-		@Param("userId") userId: string
+		@Param("userId") userId: UserId
 	): Promise<ParticipantDto> {
 
 		return this.courseParticipantsService.getParticipant(courseId, userId);
@@ -107,7 +108,7 @@ export class CourseParticipantsController {
 	})
 	canUserJoinCourse(
 		@Param("courseId") courseId: CourseId,
-		@Param("userId") userId: string,
+		@Param("userId") userId: UserId,
 	): Promise<CanJoinCourseDto> {
 
 		return this.queryBus.execute(new CanJoinCourseQuery(courseId, userId));
@@ -143,7 +144,7 @@ export class CourseParticipantsController {
 	})
 	async updateUserRole(
 		@Param("courseId") courseId: CourseId,
-		@Param("userId") userId: string,
+		@Param("userId") userId: UserId,
 		@Body(ValidationPipe) dto: ChangeCourseRoleDto
 	): Promise<void> {
 		
@@ -164,7 +165,7 @@ export class CourseParticipantsController {
 	})
 	async removeUser(
 		@Param("courseId") courseId: CourseId,
-		@Param("userId") userId: string,
+		@Param("userId") userId: UserId,
 	): Promise<void> {
 
 		return throwIfRequestFailed(

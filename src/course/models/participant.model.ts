@@ -2,12 +2,13 @@ import { CourseRole } from "../../shared/enums";
 import { AlreadyInGroupException } from "../exceptions/custom-exceptions";
 import { Participant as ParticipantEntity } from "../entities/participant.entity";
 import { GroupId } from "../entities/group.entity";
+import { UserId } from "../../shared/entities/user.entity";
 
 export class Participant {
 
 	readonly username: string;
 	readonly rzName: string;
-	readonly userId: string;
+	readonly userId: UserId;
 	readonly groupId: GroupId;
 	readonly role: CourseRole;
 

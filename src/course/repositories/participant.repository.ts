@@ -5,11 +5,12 @@ import { CourseRole } from "../../shared/enums";
 import { CourseId } from "../entities/course.entity";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
 import { CourseParticipantsFilter } from "../dto/course-participant/course-participants.filter";
+import { UserId } from "../../shared/entities/user.entity";
 
 @EntityRepository(Participant)
 export class ParticipantRepository extends Repository<Participant> {
 	
-	async createParticipant(courseId: CourseId, userId: string, role: CourseRole): Promise<Participant> {
+	async createParticipant(courseId: CourseId, userId: UserId, role: CourseRole): Promise<Participant> {
 		const participant = new Participant();
 		participant.courseId = courseId;
 		participant.userId = userId;
@@ -57,7 +58,7 @@ export class ParticipantRepository extends Repository<Participant> {
 	 * Includes relations:
 	 * - Group (if exists, includes members)
 	 */
-	async getParticipant(courseId: CourseId, userId: string): Promise<Participant> {
+	async getParticipant(courseId: CourseId, userId: UserId): Promise<Participant> {
 		const query = await this.createQueryBuilder("participant")
 			.where("participant.userId = :userId", { userId })
 			.andWhere("participant.courseId = :courseId", { courseId })
@@ -75,14 +76,14 @@ export class ParticipantRepository extends Repository<Participant> {
 		return query;
 	}
 
-	async updateRole(courseId: CourseId, userId: string, role: CourseRole): Promise<boolean> {
+	async updateRole(courseId: CourseId, userId: UserId, role: CourseRole): Promise<boolean> {
 		const relation = await this.findOneOrFail({ where: { courseId, userId } });
 		relation.role = role;
 		const updated = await this.save(relation);
 		return updated ? true : false;
 	}
 
-	async removeUser(courseId: CourseId, userId: string): Promise<boolean> {
+	async removeUser(courseId: CourseId, userId: UserId): Promise<boolean> {
 		const relation = await this.findOneOrFail({ where: { courseId, userId } });
 		const result = await this.remove(relation);
 		return result ? true : false;

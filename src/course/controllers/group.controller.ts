@@ -23,6 +23,7 @@ import { Group } from "../models/group.model";
 import { GroupGuard } from "../guards/group.guard";
 import { SelectedParticipantGuard } from "../guards/selected-participant.guard";
 import { GroupId } from "../entities/group.entity";
+import { UserId } from "../../shared/entities/user.entity";
 
 @ApiBearerAuth()
 @ApiTags("groups")
@@ -206,7 +207,7 @@ export class GroupController {
 	removeUserFromGroup(
 		@Param("courseId") courseId: CourseId,
 		@Param("groupId") groupId: GroupId,
-		@Param("userId") userId: string,
+		@Param("userId") userId: UserId,
 		@Body("reason") reason?: string
 	): Promise<void> {
 

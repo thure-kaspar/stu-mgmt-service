@@ -1,5 +1,5 @@
 import { Repository, EntityRepository } from "typeorm";
-import { User } from "../../shared/entities/user.entity";
+import { User, UserId } from "../../shared/entities/user.entity";
 import { UserDto } from "../../shared/dto/user.dto";
 import { Course, CourseId } from "src/course/entities/course.entity";
 
@@ -33,7 +33,7 @@ export class UserRepository extends Repository<User> {
 		});
 	}
 
-	async getCoursesOfUser(userId: string): Promise<Course[]> {
+	async getCoursesOfUser(userId: UserId): Promise<Course[]> {
 		const user = await this.findOneOrFail(userId, { 
 			relations: ["participations", "participations.course"] 
 		});
@@ -42,7 +42,7 @@ export class UserRepository extends Repository<User> {
 	}
 
 	/** Determines, wether the user is a member of the course. */
-	async isMemberOfCourse(userId: string, courseId: CourseId): Promise<boolean> {
+	async isMemberOfCourse(userId: UserId, courseId: CourseId): Promise<boolean> {
 		const user = await this.createQueryBuilder("user")
 			.where("user.id = :id", { id: userId })
 			.innerJoin("user.participations", "participation")
@@ -52,7 +52,7 @@ export class UserRepository extends Repository<User> {
 		return !!user;
 	} 
 
-	async updateUser(userId: string, userDto: UserDto): Promise<User> {
+	async updateUser(userId: UserId, userDto: UserDto): Promise<User> {
 		const user = await this.getUserById(userId);
 
 		// TODO: Define Patch-Object or create method
@@ -62,7 +62,7 @@ export class UserRepository extends Repository<User> {
 		return this.save(user);
 	}
 
-	async deleteUser(userId: string): Promise<boolean> {
+	async deleteUser(userId: UserId): Promise<boolean> {
 		const deleted = await this.remove(this.create({ id: userId }));
 		return deleted ? true : false;
 	}

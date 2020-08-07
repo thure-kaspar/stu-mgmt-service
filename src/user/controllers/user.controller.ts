@@ -10,6 +10,7 @@ import { AuthGuard } from "@nestjs/passport";
 import { AssignmentGroupTuple } from "../dto/assignment-group-tuple.dto";
 import { CourseId } from "../../course/entities/course.entity";
 import { throwIfRequestFailed } from "../../utils/http-utils";
+import { UserId } from "../../shared/entities/user.entity";
 
 @ApiBearerAuth()
 @ApiTags("users")
@@ -45,7 +46,7 @@ export class UserController {
 		summary: "Get user.",
 		description: "Retrieves the user."
 	})
-	getUserById(@Param("userId") userId: string): Promise<UserDto> {
+	getUserById(@Param("userId") userId: UserId): Promise<UserDto> {
 		return this.userService.getUserById(userId);
 	}
 
@@ -65,7 +66,7 @@ export class UserController {
 		summary: "Get courses of user.",
 		description: "Retrieves all courses that the user is a member of."
 	})
-	getCoursesOfUser(@Param("userId") userId: string): Promise<CourseDto[]> {
+	getCoursesOfUser(@Param("userId") userId: UserId): Promise<CourseDto[]> {
 		return this.userService.getCoursesOfUser(userId);
 	}
 
@@ -76,7 +77,7 @@ export class UserController {
 		description: "Retrieves the user's current group in a course."
 	})
 	getGroupOfUserForCourse(
-		@Param("userId") userId: string,
+		@Param("userId") userId: UserId,
 		@Param("courseId") courseId: CourseId,
 	): Promise<GroupDto> {
 
@@ -90,7 +91,7 @@ export class UserController {
 		description: "Retrieves the group history of a user in a course. Events are sorted by timestamp in descending order (new to old)."
 	})
 	getGroupHistoryOfUser(
-		@Param("userId") userId: string,
+		@Param("userId") userId: UserId,
 		@Param("courseId") courseId: CourseId,
 	): Promise<GroupEventDto[]> {
 
@@ -104,7 +105,7 @@ export class UserController {
 		description: "Retrieves the group that the user was a member of when the assignment closed or the current group, if it hasn't closed yet. Returns null, if user was not in a group."
 	})
 	getGroupOfAssignment(
-		@Param("userId") userId: string,
+		@Param("userId") userId: UserId,
 		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string
 	): Promise<GroupDto> {
@@ -119,7 +120,7 @@ export class UserController {
 		description: "Maps all assignments of a course to the user's group for the corresponding assignment."
 	})
 	getGroupOfAllAssignments(
-		@Param("userId") userId: string,
+		@Param("userId") userId: UserId,
 		@Param("courseId") courseId: CourseId
 	): Promise<AssignmentGroupTuple[]> {
 		return this.userService.getGroupOfAllAssignments(userId, courseId);
@@ -132,7 +133,7 @@ export class UserController {
 		description: "Returns all assessments of the user in the given course. Includes the group, if assessment specified a group."
 	})
 	getAssessmentsOfUserForCourse(
-		@Param("userId") userId: string,
+		@Param("userId") userId: UserId,
 		@Param("courseId") courseId: CourseId,
 	): Promise<AssessmentDto[]> {
 
@@ -146,7 +147,7 @@ export class UserController {
 		description: "Updates the user"
 	})
 	updateUser(
-		@Param("userId") userId: string,
+		@Param("userId") userId: UserId,
 		@Body() userDto: UserDto
 	): Promise<UserDto> {
 		return this.userService.updateUser(userId, userDto);
@@ -158,7 +159,7 @@ export class UserController {
 		summary: "Delete user.",
 		description: "Deletes the user. Returns true, if removes was successful."
 	})
-	deleteUser(@Param("userId") userId: string): Promise<void> {
+	deleteUser(@Param("userId") userId: UserId): Promise<void> {
 		
 		return throwIfRequestFailed(
 			this.userService.deleteUser(userId),

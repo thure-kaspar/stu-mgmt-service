@@ -1,7 +1,7 @@
 import { Injectable, BadRequestException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UserRepository } from "../repositories/user.repository";
-import { User } from "../../shared/entities/user.entity";
+import { User, UserId } from "../../shared/entities/user.entity";
 import { UserDto } from "../../shared/dto/user.dto";
 import { CourseDto } from "src/course/dto/course/course.dto";
 import { GroupDto } from "../../course/dto/group/group.dto";
@@ -52,7 +52,7 @@ export class UserService {
 		return DtoFactory.createUserDto(user);
 	}
 
-	async getCoursesOfUser(userId: string): Promise<CourseDto[]> {
+	async getCoursesOfUser(userId: UserId): Promise<CourseDto[]> {
 		const courses = await this.userRepository.getCoursesOfUser(userId);
 		const courseDtos: CourseDto[] = [];
 		courses.forEach(course => courseDtos.push(DtoFactory.createCourseDto(course)));
@@ -62,7 +62,7 @@ export class UserService {
 	/**
 	 * Returns the current group of a user in a course.
 	 */
-	async getGroupOfUserForCourse(userId: string, courseId: CourseId): Promise<GroupDto> {
+	async getGroupOfUserForCourse(userId: UserId, courseId: CourseId): Promise<GroupDto> {
 		const group = await this.groupRepository.getGroupOfUserForCourse(courseId, userId);
 		return DtoFactory.createGroupDto(group);
 	}
@@ -71,7 +71,7 @@ export class UserService {
 	 * Returns all group events of the user in the course.
 	 * Events are sorted by their timestamp in descending order (new to old). 
 	 */
-	async getGroupHistoryOfUser(userId: string, courseId: CourseId): Promise<GroupEventDto[]> {
+	async getGroupHistoryOfUser(userId: UserId, courseId: CourseId): Promise<GroupEventDto[]> {
 		const history = await this.groupEventRepository.getGroupHistoryOfUser(userId, courseId);
 		return history.map(event => event.toDto());
 	}
@@ -79,7 +79,7 @@ export class UserService {
 	/**
 	 * Returns the group that the user was a member of when the assignment submission closed.
 	 */
-	async getGroupOfAssignment(userId: string, courseId: CourseId, assignmentId: string): Promise<GroupDto> {
+	async getGroupOfAssignment(userId: UserId, courseId: CourseId, assignmentId: string): Promise<GroupDto> {
 		const [groupHistory, assignment] = await Promise.all([
 			this.groupEventRepository.getGroupHistoryOfUser(userId, courseId),
 			this.assignmentRepository.getAssignmentById(assignmentId)
@@ -98,7 +98,7 @@ export class UserService {
 	 * Returns the groups that the user was a member of when the assignment submission closed 
 	 * or the current group, if no end date is specified, for all assignments of a course.
 	 */
-	async getGroupOfAllAssignments(userId: string, courseId: CourseId): Promise<AssignmentGroupTuple[]> {
+	async getGroupOfAllAssignments(userId: UserId, courseId: CourseId): Promise<AssignmentGroupTuple[]> {
 		const [groupHistory, assignments] = await Promise.all([
 			this.groupEventRepository.getGroupHistoryOfUser(userId, courseId),
 			this.assignmentRepository.getAssignments(courseId)
@@ -157,12 +157,12 @@ export class UserService {
 		return groupId;
 	}
 
-	async getAssessmentsOfUserForCourse(userId: string, courseId: CourseId): Promise<AssessmentDto[]> {
+	async getAssessmentsOfUserForCourse(userId: UserId, courseId: CourseId): Promise<AssessmentDto[]> {
 		const assessments = await this.assessmentRepository.getAssessmentsOfUserForCourse(courseId, userId);
 		return assessments.map(a => DtoFactory.createAssessmentDto(a));
 	}
 
-	async updateUser(userId: string, userDto: UserDto): Promise<UserDto> {
+	async updateUser(userId: UserId, userDto: UserDto): Promise<UserDto> {
 		if (userId !== userDto.id) {
 			throw new BadRequestException("UserId refers to a different user.");
 		}
@@ -170,7 +170,7 @@ export class UserService {
 		return DtoFactory.createUserDto(user);
 	}
 	
-	async deleteUser(userId: string): Promise<boolean> {
+	async deleteUser(userId: UserId): Promise<boolean> {
 		return this.userRepository.deleteUser(userId);
 	}
     

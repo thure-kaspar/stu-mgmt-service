@@ -3,11 +3,12 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { GroupEvent } from "../entities/group-event.entity";
 import { Repository } from "typeorm";
 import { GroupId } from "../entities/group.entity";
+import { UserId } from "../../shared/entities/user.entity";
 
 export class UserJoinedGroupEvent {
 	constructor(
 		public readonly groupId: GroupId,
-		public readonly userId: string
+		public readonly userId: UserId
 	) { }
 }
 

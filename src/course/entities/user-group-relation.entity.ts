@@ -1,5 +1,5 @@
 import { Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { User } from "../../shared/entities/user.entity";
+import { User, UserId } from "../../shared/entities/user.entity";
 import { Participant } from "./participant.entity";
 import { Group, GroupId } from "./group.entity";
 
@@ -14,7 +14,7 @@ export class UserGroupRelation {
 	user?: User;	
 
     @Column()
-    userId: string;
+    userId: UserId;
 
 	@ManyToOne(type => Group, group => group.userGroupRelations, { onDelete: "CASCADE" })
 	@JoinColumn()

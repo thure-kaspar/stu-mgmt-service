@@ -6,6 +6,7 @@ import { NotACourseMemberException } from "../exceptions/custom-exceptions";
 import { Participant } from "../models/participant.model";
 import { Participant as ParticipantEntity } from "../entities/participant.entity";
 import { ParticipantRepository } from "../repositories/participant.repository";
+import { UserId } from "../../shared/entities/user.entity";
 
 /**
  * Attaches the `selectedParticipant` to the `request`, meaning the participant that was specified
@@ -20,7 +21,7 @@ export class SelectedParticipantGuard implements CanActivate {
 	async canActivate(context: ExecutionContext): Promise<boolean> {	
 		const request = context.switchToHttp().getRequest();
 		const courseId: CourseId = request.params.courseId;
-		const userId: string = request.params.userId;
+		const userId: UserId = request.params.userId;
 
 		try {
 			const participant = await this.participants.getParticipant(courseId, userId);

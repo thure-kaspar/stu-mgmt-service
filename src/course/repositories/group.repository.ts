@@ -1,7 +1,7 @@
 import { ConflictException } from "@nestjs/common";
 import { EntityRepository, Repository } from "typeorm";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
-import { User } from "../../shared/entities/user.entity";
+import { User, UserId } from "../../shared/entities/user.entity";
 import { GroupFilter } from "../dto/group/group-filter.dto";
 import { GroupDto, GroupUpdateDto } from "../dto/group/group.dto";
 import { CourseId } from "../entities/course.entity";
@@ -33,7 +33,7 @@ export class GroupRepository extends Repository<Group> {
 	/**
 	 * Adds the given user to the group.
 	 */
-	async addUserToGroup(courseId: CourseId, groupId: GroupId, userId: string): Promise<boolean> {
+	async addUserToGroup(courseId: CourseId, groupId: GroupId, userId: UserId): Promise<boolean> {
 		const userGroupRelationRepo = this.manager.getRepository(UserGroupRelation);
 		const participantRepo = this.manager.getCustomRepository(ParticipantRepository);
 
@@ -95,7 +95,7 @@ export class GroupRepository extends Repository<Group> {
 	 * Returns the group including all data that needed by "addUserToGroup" (i.e group members and course settings).
 	 * Throws error, if user is not a member of the group's course.
 	 */
-	async getGroupForAddUserToGroup(groupId: GroupId, userId: string): Promise<Group> {
+	async getGroupForAddUserToGroup(groupId: GroupId, userId: UserId): Promise<Group> {
 		const group = await this.createQueryBuilder("group")
 			.where("group.id = :groupId", { groupId }) // Load group
 			.leftJoinAndSelect("group.userGroupRelations", "userGroupRelations") // Load userGroupRelations
@@ -152,7 +152,7 @@ export class GroupRepository extends Repository<Group> {
 	 * Returns the current group of a user in a course. 
 	 * Throws EntityNotFoundError, if no group is found.
 	 */
-	async getGroupOfUserForCourse(courseId: CourseId, userId: string): Promise<Group> {
+	async getGroupOfUserForCourse(courseId: CourseId, userId: UserId): Promise<Group> {
 		const group = await this.createQueryBuilder("group")
 			.where("group.courseId = :courseId", { courseId })
 			.innerJoin("group.userGroupRelations", "userRelation")
@@ -238,7 +238,7 @@ export class GroupRepository extends Repository<Group> {
 		return this.save(group);
 	}
 
-	async removeUser(groupId: GroupId, userId: string): Promise<boolean> {
+	async removeUser(groupId: GroupId, userId: UserId): Promise<boolean> {
 		const removed = await this.manager.getRepository(UserGroupRelation).delete({ groupId, userId });
 		return removed.affected == 1;
 	}

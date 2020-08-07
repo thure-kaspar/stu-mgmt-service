@@ -1,5 +1,5 @@
 import { Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn, OneToOne } from "typeorm";
-import { User } from "../../shared/entities/user.entity";
+import { User, UserId } from "../../shared/entities/user.entity";
 import { CourseRole } from "../../shared/enums";
 import { Course, CourseId } from "./course.entity";
 import { UserGroupRelation } from "./user-group-relation.entity";
@@ -26,7 +26,7 @@ export class Participant implements ToDto<ParticipantDto> {
 	user?: User;
 
 	@Column()
-	userId: string;
+	userId: UserId;
 
 	@OneToOne(type => UserGroupRelation, userGroupRelation => userGroupRelation.participant, { nullable: true })
 	groupRelation?: UserGroupRelation;

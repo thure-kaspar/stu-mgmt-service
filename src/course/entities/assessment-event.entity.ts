@@ -1,5 +1,5 @@
 import { Entity, ManyToOne, Column } from "typeorm";
-import { User } from "../../shared/entities/user.entity";
+import { User, UserId } from "../../shared/entities/user.entity";
 import { DtoFactory } from "../../shared/dto-factory";
 import { Assessment } from "./assessment.entity";
 import { AssessmentEventDto } from "../dto/assessment/assessment-event.dto";
@@ -18,9 +18,9 @@ export class AssessmentEvent extends EventEntity {
 	user: User;
 
 	@Column()
-	userId: string;
+	userId: UserId;
 
-	constructor(event: string, assessmentId: string, userId: string, payload?: object) {
+	constructor(event: string, assessmentId: string, userId: UserId, payload?: object) {
 		super();
 		this.event = event;
 		this.assessmentId = assessmentId;

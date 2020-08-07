@@ -1,6 +1,6 @@
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinTable } from "typeorm";
 import { Group, GroupId } from "./group.entity";
-import { User } from "../../shared/entities/user.entity";
+import { User, UserId } from "../../shared/entities/user.entity";
 import { GroupEventDto } from "../dto/group/group-event.dto";
 import { DtoFactory } from "../../shared/dto-factory";
 import { EventEntity } from "../../shared/entities/event.entity";
@@ -17,7 +17,7 @@ export class GroupEvent extends EventEntity {
 	user: User;
 
 	@Column()
-	userId: string;
+	userId: UserId;
 
 	toDto(): GroupEventDto {
 		return {

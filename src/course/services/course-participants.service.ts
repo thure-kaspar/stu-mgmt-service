@@ -9,6 +9,7 @@ import { Participant } from "../entities/participant.entity";
 import { CourseClosedException } from "../exceptions/custom-exceptions";
 import { CourseRepository } from "../repositories/course.repository";
 import { ParticipantRepository } from "../repositories/participant.repository";
+import { UserId } from "../../shared/entities/user.entity";
 
 @Injectable()
 export class CourseParticipantsService {
@@ -21,7 +22,7 @@ export class CourseParticipantsService {
 	 * If the course requires a password, the given password must match the specified password.
 	 * Throws exception, if course is closed or password does not match.
 	 */
-	async addParticipant(courseId: CourseId, userId: string, password?: string): Promise<any> { // TODO: don't return any
+	async addParticipant(courseId: CourseId, userId: UserId, password?: string): Promise<any> { // TODO: don't return any
 		const course = await this.courseRepo.getCourseWithConfig(courseId);
 
 		if (course.isClosed) throw new CourseClosedException(course.id);
@@ -46,16 +47,16 @@ export class CourseParticipantsService {
 	 * Includes relations:
 	 * - Group (if exists, includes members)
 	 */
-	async getParticipant(courseId: CourseId, userId: string): Promise<ParticipantDto> {
+	async getParticipant(courseId: CourseId, userId: UserId): Promise<ParticipantDto> {
 		const participant = await this.participantRepo.getParticipant(courseId, userId);
 		return participant.toDto();
 	}
 
-	async updateRole(courseId: CourseId, userId: string, role: CourseRole): Promise<boolean> {
+	async updateRole(courseId: CourseId, userId: UserId, role: CourseRole): Promise<boolean> {
 		return this.participantRepo.updateRole(courseId, userId, role);
 	}
 
-	async removeUser(courseId: CourseId, userId: string): Promise<boolean> {
+	async removeUser(courseId: CourseId, userId: UserId): Promise<boolean> {
 		return await this.participantRepo.removeUser(courseId, userId);
 	}
 
