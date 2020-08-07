@@ -1,7 +1,7 @@
 import { Column, Entity, Index, OneToMany, OneToOne, PrimaryColumn } from "typeorm";
 import { Assignment } from "./assignment.entity";
 import { CourseConfig } from "./course-config.entity";
-import { ParticipantEntity } from "./participant.entity";
+import { Participant } from "./participant.entity";
 import { Group } from "./group.entity";
 
 export type CourseId = string;
@@ -27,8 +27,8 @@ export class Course {
     @Column({ nullable: true })
 	link?: string;
 
-    @OneToMany(type => ParticipantEntity, participants => participants.course, { cascade: ["insert"] })
-	participants: ParticipantEntity[];
+    @OneToMany(type => Participant, participants => participants.course, { cascade: ["insert"] })
+	participants: Participant[];
 	
 	@OneToMany(type => Group, group => group.course)
     groups: Group[];

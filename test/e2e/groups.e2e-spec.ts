@@ -464,6 +464,7 @@ describe("PATCH-REQUESTS (Db contains data) of GroupController (e2e)", () => {
 				return request(app.getHttpServer())
 					.patch(`/courses/${course.id}/groups/${group.id}`)
 					.send(changedGroup)
+					.expect(200)
 					.expect(({ body }) => {
 						expect(body.name).toEqual(changedGroup.name);
 						expect(body.isClosed).toEqual(changedGroup.isClosed);

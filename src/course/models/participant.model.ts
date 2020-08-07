@@ -1,6 +1,6 @@
 import { CourseRole } from "../../shared/enums";
 import { AlreadyInGroupException } from "../exceptions/custom-exceptions";
-import { ParticipantEntity } from "../entities/participant.entity";
+import { Participant as ParticipantEntity } from "../entities/participant.entity";
 
 export class Participant {
 
@@ -15,7 +15,7 @@ export class Participant {
 		this.rzName = this.participant.user.rzName;
 		this.username = this.participant.user.username;
 		this.role = this.participant.role;
-		//this.groupId = this.participant.groupId;
+		this.groupId = this.participant.groupRelation.groupId;
 	}
 
 	isStudent(): boolean {

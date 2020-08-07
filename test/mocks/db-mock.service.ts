@@ -12,7 +12,7 @@ import { GroupEvent } from "../../src/course/entities/group-event.entity";
 import { GroupSettings } from "../../src/course/entities/group-settings.entity";
 import { Group } from "../../src/course/entities/group.entity";
 import { PartialAssessment } from "../../src/course/entities/partial-assessment.entity";
-import { ParticipantEntity } from "../../src/course/entities/participant.entity";
+import { Participant } from "../../src/course/entities/participant.entity";
 import { UserGroupRelation } from "../../src/course/entities/user-group-relation.entity";
 import { User } from "../../src/shared/entities/user.entity";
 import { convertToEntity, convertToEntityNoRelations } from "../utils/object-helper";
@@ -176,7 +176,7 @@ export class DbMockService {
 	}
 
 	async createParticipants(): Promise<void> {
-		const allParticipants: Partial<ParticipantEntity>[] = COURSE_PARTICIPANTS_ALL.map(p => {
+		const allParticipants: Partial<Participant>[] = COURSE_PARTICIPANTS_ALL.map(p => {
 			return {
 				id: p.id,
 				courseId: p.courseId,
@@ -185,7 +185,7 @@ export class DbMockService {
 			};
 		});
 
-		await this.con.getRepository(ParticipantEntity).insert(allParticipants)
+		await this.con.getRepository(Participant).insert(allParticipants)
 			.catch(error => console.error(error));
 	}
 

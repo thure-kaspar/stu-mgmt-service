@@ -1,7 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { CourseDto } from "../../../src/course/dto/course/course.dto";
 import { CourseConfig } from "../../../src/course/entities/course-config.entity";
-import { ParticipantEntity } from "../../../src/course/entities/participant.entity";
+import { Participant } from "../../../src/course/entities/participant.entity";
 import { Course } from "../../../src/course/entities/course.entity";
 import { ParticipantRepository } from "../../../src/course/repositories/participant.repository";
 import { CourseRepository } from "../../../src/course/repositories/course.repository";
@@ -42,7 +42,7 @@ const mock_ParticipantRepository = () => ({
 	createParticipant: jest.fn(),
 	updateRole: jest.fn(),
 	getParticipants: jest.fn().mockImplementation(() => {
-		const participants = COURSE_JAVA_1920_PARTICIPANTS.map(p => new ParticipantEntity(p));
+		const participants = COURSE_JAVA_1920_PARTICIPANTS.map(p => new Participant(p));
 		return [participants, participants.length];
 	})
 });

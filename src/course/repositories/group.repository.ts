@@ -8,7 +8,7 @@ import { CourseId } from "../entities/course.entity";
 import { Group } from "../entities/group.entity";
 import { UserGroupRelation } from "../entities/user-group-relation.entity";
 import { ParticipantRepository } from "./participant.repository";
-import { ParticipantEntity } from "../entities/participant.entity";
+import { Participant } from "../entities/participant.entity";
 import { CourseRole } from "../../shared/enums";
 
 @EntityRepository(Group)
@@ -17,16 +17,16 @@ export class GroupRepository extends Repository<Group> {
 	/**
 	 * Inserts the given group into the database.
 	 */
-	async createGroup(groupDto: GroupDto): Promise<Group> {
-		const group = this.createEntityFromDto(groupDto);
+	async createGroup(courseId: CourseId, groupDto: GroupDto): Promise<Group> {
+		const group = this.createEntityFromDto(courseId, groupDto);
 		return this.save(group);
 	}
 
 	/**
 	 * Inserts the given groups into the database.
 	 */
-	async createMultipleGroups(groupDtos: GroupDto[]): Promise<Group[]> {
-		const groups = groupDtos.map(g => this.createEntityFromDto(g));
+	async createMultipleGroups(courseId: CourseId, groupDtos: GroupDto[]): Promise<Group[]> {
+		const groups = groupDtos.map(g => this.createEntityFromDto(courseId, g));
 		return this.save(groups);
 	}
 
@@ -205,7 +205,7 @@ export class GroupRepository extends Repository<Group> {
 				relation.userId = member.id;
 				relation.groupId = group.id;
 				// Add necessary information for ParticipantDto creation
-				relation.participant = new ParticipantEntity({
+				relation.participant = new Participant({
 					userId: member.id,
 					role: CourseRole.STUDENT,
 					user: new User({
@@ -251,8 +251,9 @@ export class GroupRepository extends Repository<Group> {
 		return deleteResult.affected == 1;
 	}
 
-	private createEntityFromDto(groupDto: GroupDto): Group {
+	private createEntityFromDto(courseId: CourseId, groupDto: GroupDto): Group {
 		const group = new Group();
+		group.courseId = courseId;
 		group.name = groupDto.name;
 		group.password = groupDto.password?.length > 0 ? groupDto.password : null;
 		group.isClosed = groupDto.isClosed ? true : false;

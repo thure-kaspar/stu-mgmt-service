@@ -7,7 +7,7 @@ import { CourseConfig } from "../entities/course-config.entity";
 import { GroupSettings } from "../entities/group-settings.entity";
 import { AssignmentTemplate } from "../entities/assignment-template.entity";
 import { CourseCreateDto } from "../dto/course/course-create.dto";
-import { ParticipantEntity } from "../entities/participant.entity";
+import { Participant } from "../entities/participant.entity";
 import { CourseRole } from "../../shared/enums";
 import { User } from "../../shared/entities/user.entity";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
@@ -31,7 +31,7 @@ export class CourseRepository extends Repository<Course> {
 			});
 
 			const participants = lecturers.map(lecturer => {
-				const relation = new ParticipantEntity();
+				const relation = new Participant();
 				relation.userId = lecturer.id;
 				relation.role = CourseRole.LECTURER;
 				return relation;
@@ -90,8 +90,10 @@ export class CourseRepository extends Repository<Course> {
 	async getCourseWithParticipant(id: CourseId, userId: string): Promise<Course> {
 		const query = this.createQueryBuilder("course")
 			.where("course.id = :id", { id })
-			.innerJoinAndSelect("course.participants", "participant", "participant")
-			.innerJoinAndSelect("participant.user", "user", "user.id = :userId", { userId });
+			.innerJoinAndSelect("course.participants", "participant", "participant.userId = :userId", { userId })
+			.innerJoinAndSelect("participant.user", "user")
+			.leftJoinAndSelect("participant.groupRelation", "groupRelation")
+			.leftJoinAndSelect("groupRelation.group", "group");
 		
 		const course = await query.getOne();
 

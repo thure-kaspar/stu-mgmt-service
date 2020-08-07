@@ -7,7 +7,7 @@ import { Assessment } from "../../../src/course/entities/assessment.entity";
 import { Assignment } from "../../../src/course/entities/assignment.entity";
 import { Course } from "../../../src/course/entities/course.entity";
 import { Group } from "../../../src/course/entities/group.entity";
-import { ParticipantEntity } from "../../../src/course/entities/participant.entity";
+import { Participant } from "../../../src/course/entities/participant.entity";
 import { DtoFactory } from "../../../src/shared/dto-factory";
 import { UserDto } from "../../../src/shared/dto/user.dto";
 import { User } from "../../../src/shared/entities/user.entity";
@@ -58,14 +58,14 @@ describe("DtoFactory", () => {
 			const course1 = convertToEntity(Course, COURSE_JAVA_1920);
 			const course2 = convertToEntity(Course, COURSE_INFO_2_2020);		
 
-			const rel1 = new ParticipantEntity();
+			const rel1 = new Participant();
 			rel1.user = user;
 			rel1.userId = user.id;
 			rel1.course = course1;
 			rel1.courseId = course1.id;
 			rel1.role = CourseRole.STUDENT;
 
-			const rel2 = new ParticipantEntity();
+			const rel2 = new Participant();
 			rel2.user = user;
 			rel2.userId = user.id;
 			rel2.course = course2;

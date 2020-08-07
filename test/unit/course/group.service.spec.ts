@@ -7,7 +7,7 @@ import { CourseConfig } from "../../../src/course/entities/course-config.entity"
 import { Course, CourseId } from "../../../src/course/entities/course.entity";
 import { GroupSettings } from "../../../src/course/entities/group-settings.entity";
 import { Group } from "../../../src/course/entities/group.entity";
-import { ParticipantEntity } from "../../../src/course/entities/participant.entity";
+import { Participant } from "../../../src/course/entities/participant.entity";
 import { UserGroupRelation } from "../../../src/course/entities/user-group-relation.entity";
 import { UserJoinedGroupEvent } from "../../../src/course/events/user-joined-group.event";
 import { UserLeftGroupEvent } from "../../../src/course/events/user-left-group.event";
@@ -30,7 +30,7 @@ function getGroupWithUsersMock_JoiningPossible(passwordRequired = true): Group {
 	const userRelation1 = new UserGroupRelation();
 	userRelation1.groupId = group.id;
 	userRelation1.userId = "user_id_1";
-	userRelation1.participant = new ParticipantEntity(PARTICIPANT_JAVA_1920_STUDENT);
+	userRelation1.participant = new Participant(PARTICIPANT_JAVA_1920_STUDENT);
 	group.userGroupRelations = [userRelation1];
 	
 	const course = convertToEntity(Course, COURSE_JAVA_1920);
@@ -54,7 +54,7 @@ function mock_getGroupForAddUserToGroup(groupClosed: boolean, capacityReached: b
 	group.password = password;
 	group.userGroupRelations = []; // default: empty group
 	group.course = convertToEntityNoRelations(Course, COURSE_JAVA_1920);
-	group.course.participants = [convertToEntityNoRelations(ParticipantEntity, { courseId: group.courseId, userId: "some_id" })];
+	group.course.participants = [convertToEntityNoRelations(Participant, { courseId: group.courseId, userId: "some_id" })];
 	group.course.config = convertToEntityNoRelations(CourseConfig, COURSE_CONFIG_JAVA_1920);
 	group.course.config.groupSettings = convertToEntityNoRelations(GroupSettings, GROUP_SETTINGS_GROUPS_ALLOWED_MIN2_MAX3_SELF);
 

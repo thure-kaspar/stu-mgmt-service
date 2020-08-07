@@ -1,7 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { AssessmentAllocation } from "../../course/entities/assessment-allocation.entity";
 import { AssessmentUserRelation } from "../../course/entities/assessment-user-relation.entity";
-import { ParticipantEntity } from "../../course/entities/participant.entity";
+import { Participant } from "../../course/entities/participant.entity";
 import { UserGroupRelation } from "../../course/entities/user-group-relation.entity";
 import { UserRole } from "../enums";
 
@@ -22,8 +22,8 @@ export class User {
     @Column({ type: "enum", enum: UserRole, default: UserRole.USER })
     role: UserRole;
     
-    @OneToMany(type => ParticipantEntity, participants => participants.user)
-	participations: ParticipantEntity[];
+    @OneToMany(type => Participant, participants => participants.user)
+	participations: Participant[];
 	
 	@OneToMany(type => UserGroupRelation, userGroupRelation => userGroupRelation.user)
     userGroupRelations: UserGroupRelation[];

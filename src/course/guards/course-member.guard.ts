@@ -28,8 +28,7 @@ export class CourseMemberGuard implements CanActivate {
 
 		try {
 			const course = await this.courses.getCourseWithParticipant(courseId, user.id);
-			const participant = course.participants[0];
-			request.participant = new Participant(participant);
+			request.participant = new Participant(course.participants[0]);
 			course.participants = undefined;
 			request.course = new Course(course);
 			return true;
