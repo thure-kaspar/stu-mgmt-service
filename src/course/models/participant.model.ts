@@ -17,7 +17,7 @@ export class Participant {
 		this.rzName = this.participant.user.rzName;
 		this.username = this.participant.user.username;
 		this.role = this.participant.role;
-		this.groupId = this.participant.groupRelation.groupId;
+		this.groupId = this.participant.groupRelation?.groupId;
 	}
 
 	isStudent(): boolean {
