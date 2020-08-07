@@ -23,7 +23,7 @@ export class GroupDto {
 	isClosed?: boolean;
 	
 	/** The members of this group. */
-    users?: ParticipantDto[];
+    members?: ParticipantDto[];
 	history?: GroupEventDto[];
 	assessments?: AssessmentDto[];
 }

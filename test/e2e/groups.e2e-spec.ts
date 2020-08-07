@@ -69,8 +69,8 @@ describe("GET-REQUESTS of GroupController (e2e)", () => {
 				.expect(({ body }) => {
 					const result = body as GroupDto[];
 					expect(body.length).toEqual(expectedLength);
-					expect(result[0].users).toBeTruthy();
-					expect(result[0].users.length).toBeGreaterThan(0);
+					expect(result[0].members).toBeTruthy();
+					expect(result[0].members.length).toBeGreaterThan(0);
 				});
 		});
 	
@@ -121,7 +121,7 @@ describe("GET-REQUESTS of GroupController (e2e)", () => {
 			.expect(({ body }) => {
 				const result = body as GroupDto;
 				expect(result.id).toEqual(group.id);
-				expect(result.users.length).toEqual(2);
+				expect(result.members.length).toEqual(2);
 				expect(result.history).toBeTruthy();
 				expect(result.history.length).toBeGreaterThan(1);
 				expect(result.password).toBeUndefined();
@@ -170,7 +170,7 @@ describe("GET-REQUESTS of GroupController (e2e)", () => {
 				.expect(({ body }) => {
 					const result = body as GroupDto;
 					expect(result).toBeTruthy();
-					expect(result.users.length).toEqual(2);
+					expect(result.members.length).toEqual(2);
 				});
 		});
 	
@@ -187,9 +187,9 @@ describe("GET-REQUESTS of GroupController (e2e)", () => {
 					const result = body as GroupDto[];
 					expect(result).toBeTruthy();
 					expect(result.length).toEqual(3);
-					expect(result[0].users.length).toEqual(2);
-					expect(result[1].users.length).toEqual(0);
-					expect(result[2].users.length).toEqual(2);
+					expect(result[0].members.length).toEqual(2);
+					expect(result[1].members.length).toEqual(0);
+					expect(result[2].members.length).toEqual(2);
 				});
 		});
 	

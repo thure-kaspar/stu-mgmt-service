@@ -139,7 +139,7 @@ describe("GET-REQUESTS of AssessmentController (e2e)", () => {
 				expect(result.assignmentId).toEqual(assessment.assignmentId);
 				expect(result.groupId).toEqual(assessment.groupId);
 				expect(result.group).toBeTruthy();
-				expect(result.group.users.length).toBeGreaterThanOrEqual(1);
+				expect(result.group.members.length).toBeGreaterThanOrEqual(1);
 				expect(result.creator).toBeTruthy();
 			});
 	});

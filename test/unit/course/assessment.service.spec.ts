@@ -67,7 +67,7 @@ function getGroupMock(): Group {
 
 function getGroupFromAssignmentMock(): GroupDto {
 	const group = copy(GROUP_1_JAVA);
-	group.users = [
+	group.members = [
 		PARTICIPANT_JAVA_1920_STUDENT,
 		PARTICIPANT_JAVA_1920_STUDENT_2
 	];
@@ -130,7 +130,7 @@ describe("AssessmentService", () => {
 		});
 
 		it("Assessment for group -> Loads group members and extracts userIds", async () => {
-			const expectedUserIds = getGroupFromAssignmentMock().users.map(u => u.userId);
+			const expectedUserIds = getGroupFromAssignmentMock().members.map(u => u.userId);
 
 			await service.createAssessment(assessmentDto.assignmentId, assessmentDto);
 

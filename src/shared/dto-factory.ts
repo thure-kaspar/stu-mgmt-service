@@ -108,10 +108,10 @@ export abstract class DtoFactory {
 		};
 
 		if (group.userGroupRelations) {
-			groupDto.users = [];
+			groupDto.members = [];
 
 			if (group.userGroupRelations.length && group.userGroupRelations[0].participant) {
-				groupDto.users = toDtos(group.userGroupRelations.map(x => x.participant));
+				groupDto.members = toDtos(group.userGroupRelations.map(x => x.participant));
 			}
 		}
 
@@ -172,7 +172,7 @@ export abstract class DtoFactory {
 
 		if (assessment.group) {
 			assessmentDto.group = this.createGroupDto(assessment.group);
-			assessmentDto.group.users = assessment.assessmentUserRelations?.map(rel => {
+			assessmentDto.group.members = assessment.assessmentUserRelations?.map(rel => {
 				const participant: ParticipantDto = { // TODO: GroupId missing
 					role: CourseRole.STUDENT,
 					userId: rel.userId,
