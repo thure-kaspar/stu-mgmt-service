@@ -1,5 +1,5 @@
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinTable } from "typeorm";
-import { Group } from "./group.entity";
+import { Group, GroupId } from "./group.entity";
 import { User } from "../../shared/entities/user.entity";
 import { GroupEventDto } from "../dto/group/group-event.dto";
 import { DtoFactory } from "../../shared/dto-factory";
@@ -11,7 +11,7 @@ export class GroupEvent extends EventEntity {
 	group: Group;
 
 	@Column()
-	groupId: string;
+	groupId: GroupId;
 
 	@ManyToOne(type => User, { eager: true, onDelete: "CASCADE" })
 	user: User;

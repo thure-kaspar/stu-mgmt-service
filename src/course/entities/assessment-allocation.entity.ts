@@ -2,7 +2,7 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, Unique } from "typeo
 import { User } from "../../shared/entities/user.entity";
 import { AssessmentAllocationDto } from "../dto/assessment-allocation/assessment-allocation.dto";
 import { Assignment } from "./assignment.entity";
-import { Group } from "./group.entity";
+import { Group, GroupId } from "./group.entity";
 
 @Entity()
 @Unique("Unique_AssignmentId_GroupId", ["assignmentId", "groupId"]) // A Group can only be assigned once for every assessment
@@ -30,7 +30,7 @@ export class AssessmentAllocation {
 	group: Group;
 
 	@Column({ nullable: true })
-	groupId: string;
+	groupId: GroupId;
 
 	@ManyToOne(type => User, { onDelete: "CASCADE" })
 	assignedEvaluator: User;

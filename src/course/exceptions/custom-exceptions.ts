@@ -1,6 +1,7 @@
 import { ConflictException, ForbiddenException } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger";
 import { CourseId } from "../entities/course.entity";
+import { GroupId } from "../entities/group.entity";
 
 export class CourseClosedException extends ForbiddenException {
 	constructor(courseId: CourseId) {
@@ -21,7 +22,7 @@ export class NotATeachingStaffMember extends ForbiddenException {
 }
 
 export class GroupClosedException extends ForbiddenException {
-	constructor(groupId: string) {
+	constructor(groupId: GroupId) {
 		super(`Group (${groupId}) is closed.`, "GroupClosedException");
 	}
 }
@@ -33,13 +34,13 @@ export class GroupsForbiddenException extends ForbiddenException {
 }
 
 export class AlreadyInGroupException extends ConflictException {
-	constructor(userId: string, groupId: string) {
+	constructor(userId: string, groupId: GroupId) {
 		super(`User (${userId}) is already member of a group (${groupId}).`, "AlreadyInGroupException");
 	}
 }
 
 export class GroupFullException extends ConflictException {
-	constructor(groupId: string) {
+	constructor(groupId: GroupId) {
 		super(`Group (${groupId}) is full.`, "GroupFullException");
 	}
 }

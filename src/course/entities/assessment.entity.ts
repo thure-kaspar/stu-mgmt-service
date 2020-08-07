@@ -2,7 +2,7 @@ import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, CreateDat
 import { User } from "../../shared/entities/user.entity";
 import { AssessmentUserRelation } from "./assessment-user-relation.entity";
 import { Assignment } from "./assignment.entity";
-import { Group } from "./group.entity";
+import { Group, GroupId } from "./group.entity";
 import { PartialAssessment } from "./partial-assessment.entity";
 
 @Entity("assessments")
@@ -26,7 +26,7 @@ export class Assessment {
 	group: Group;
 
 	@Column({ nullable: true })
-	groupId: string;
+	groupId: GroupId;
 
 	@ManyToOne(type => User)
 	creator: User;

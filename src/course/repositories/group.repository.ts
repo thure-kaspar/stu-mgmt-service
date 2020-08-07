@@ -5,7 +5,7 @@ import { User } from "../../shared/entities/user.entity";
 import { GroupFilter } from "../dto/group/group-filter.dto";
 import { GroupDto, GroupUpdateDto } from "../dto/group/group.dto";
 import { CourseId } from "../entities/course.entity";
-import { Group } from "../entities/group.entity";
+import { Group, GroupId } from "../entities/group.entity";
 import { UserGroupRelation } from "../entities/user-group-relation.entity";
 import { ParticipantRepository } from "./participant.repository";
 import { Participant } from "../entities/participant.entity";
@@ -33,7 +33,7 @@ export class GroupRepository extends Repository<Group> {
 	/**
 	 * Adds the given user to the group.
 	 */
-	async addUserToGroup(courseId: CourseId, groupId: string, userId: string): Promise<boolean> {
+	async addUserToGroup(courseId: CourseId, groupId: GroupId, userId: string): Promise<boolean> {
 		const userGroupRelationRepo = this.manager.getRepository(UserGroupRelation);
 		const participantRepo = this.manager.getCustomRepository(ParticipantRepository);
 
@@ -51,12 +51,12 @@ export class GroupRepository extends Repository<Group> {
 		return userGroupRelation ? true : false;
 	}
 
-	async getGroupById(groupId: string): Promise<Group> {
+	async getGroupById(groupId: GroupId): Promise<Group> {
 		return this.findOneOrFail(groupId);
 	}
 
 	/** Returns the group with all relations loaded. */
-	async getGroupById_All(groupId: string): Promise<Group> {
+	async getGroupById_All(groupId: GroupId): Promise<Group> {
 		const query = await this.createQueryBuilder("group")
 			.where("group.id = :groupId", { groupId })
 			.leftJoinAndSelect("group.course", "course")
@@ -84,7 +84,7 @@ export class GroupRepository extends Repository<Group> {
 	/**
 	 * Returns the group with its members.
 	 */
-	async getGroupWithUsers(groupId: string): Promise<Group> {
+	async getGroupWithUsers(groupId: GroupId): Promise<Group> {
 		return this.findOneOrFail(groupId, {
 			relations: ["course", "userGroupRelations", "userGroupRelations.participant", "userGroupRelations.participant.user"]
 		});
@@ -95,7 +95,7 @@ export class GroupRepository extends Repository<Group> {
 	 * Returns the group including all data that needed by "addUserToGroup" (i.e group members and course settings).
 	 * Throws error, if user is not a member of the group's course.
 	 */
-	async getGroupForAddUserToGroup(groupId: string, userId: string): Promise<Group> {
+	async getGroupForAddUserToGroup(groupId: GroupId, userId: string): Promise<Group> {
 		const group = await this.createQueryBuilder("group")
 			.where("group.id = :groupId", { groupId }) // Load group
 			.leftJoinAndSelect("group.userGroupRelations", "userGroupRelations") // Load userGroupRelations
@@ -222,7 +222,7 @@ export class GroupRepository extends Repository<Group> {
 	/**
 	 * Updates the group. Does not update any included relations.
 	 */
-	async updateGroup(groupId: string, update: GroupUpdateDto): Promise<Group> {
+	async updateGroup(groupId: GroupId, update: GroupUpdateDto): Promise<Group> {
 		const group = await this.getGroupById(groupId);
 
 		// ALlow removal of password by setting it to empty string / don't change if undefined or null
@@ -238,7 +238,7 @@ export class GroupRepository extends Repository<Group> {
 		return this.save(group);
 	}
 
-	async removeUser(groupId: string, userId: string): Promise<boolean> {
+	async removeUser(groupId: GroupId, userId: string): Promise<boolean> {
 		const removed = await this.manager.getRepository(UserGroupRelation).delete({ groupId, userId });
 		return removed.affected == 1;
 	}
@@ -246,7 +246,7 @@ export class GroupRepository extends Repository<Group> {
 	/**
 	 * Deletes the group from the database.
 	 */
-	async deleteGroup(groupId: string): Promise<boolean> {
+	async deleteGroup(groupId: GroupId): Promise<boolean> {
 		const deleteResult = await this.delete(groupId);
 		return deleteResult.affected == 1;
 	}

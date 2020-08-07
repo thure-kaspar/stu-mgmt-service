@@ -1,13 +1,14 @@
 import { CourseRole } from "../../shared/enums";
 import { AlreadyInGroupException } from "../exceptions/custom-exceptions";
 import { Participant as ParticipantEntity } from "../entities/participant.entity";
+import { GroupId } from "../entities/group.entity";
 
 export class Participant {
 
 	readonly username: string;
 	readonly rzName: string;
 	readonly userId: string;
-	readonly groupId: string;
+	readonly groupId: GroupId;
 	readonly role: CourseRole;
 
 	constructor(private participant: ParticipantEntity) {

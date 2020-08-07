@@ -1,7 +1,7 @@
 import { Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "../../shared/entities/user.entity";
 import { Participant } from "./participant.entity";
-import { Group } from "./group.entity";
+import { Group, GroupId } from "./group.entity";
 
 @Entity("user_group_relations")
 @Index("IDX_UserId_GroupId", ["userId", "groupId"], { unique: true })
@@ -28,7 +28,7 @@ export class UserGroupRelation {
 	participantId: number;
 
     @Column()
-	groupId: string;
+	groupId: GroupId;
 	
 	@CreateDateColumn()
 	joinedAt: Date;

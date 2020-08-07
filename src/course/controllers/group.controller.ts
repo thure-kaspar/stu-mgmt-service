@@ -22,6 +22,7 @@ import { GetGroup, GetCourse, GetParticipant, GetSelectedParticipant } from "../
 import { Group } from "../models/group.model";
 import { GroupGuard } from "../guards/group.guard";
 import { SelectedParticipantGuard } from "../guards/selected-participant.guard";
+import { GroupId } from "../entities/group.entity";
 
 @ApiBearerAuth()
 @ApiTags("groups")
@@ -112,7 +113,7 @@ export class GroupController {
 	})
 	getGroupFromAssignment(
 		@Param("courseId") courseId: CourseId,
-		@Param("groupId") groupId: string,
+		@Param("groupId") groupId: GroupId,
 		@Param("assignmentId") assignmentId: string
 	): Promise<GroupDto> {
 		
@@ -160,7 +161,7 @@ export class GroupController {
 	})
 	getGroup(
 			@Param("courseId") courseId: CourseId,
-			@Param("groupId") groupId: string
+			@Param("groupId") groupId: GroupId
 	): Promise<GroupDto> {
 		return this.groupService.getGroup(groupId);
 	}
@@ -174,7 +175,7 @@ export class GroupController {
 	})
 	getUsersOfGroup(
 		@Param("courseId") courseId: CourseId,
-		@Param("groupId") groupId: string
+		@Param("groupId") groupId: GroupId
 	): Promise<ParticipantDto[]> {
 
 		return this.groupService.getUsersOfGroup(groupId);
@@ -204,7 +205,7 @@ export class GroupController {
 	})
 	removeUserFromGroup(
 		@Param("courseId") courseId: CourseId,
-		@Param("groupId") groupId: string,
+		@Param("groupId") groupId: GroupId,
 		@Param("userId") userId: string,
 		@Body("reason") reason?: string
 	): Promise<void> {
@@ -220,7 +221,7 @@ export class GroupController {
 	})
 	deleteGroup(
 		@Param("courseId") courseId: CourseId,
-		@Param("groupId") groupId: string
+		@Param("groupId") groupId: GroupId
 	): Promise<void> {
 
 		return throwIfRequestFailed(

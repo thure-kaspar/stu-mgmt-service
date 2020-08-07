@@ -12,7 +12,7 @@ import { Assignment } from "../entities/assignment.entity";
 import { CourseId } from "../entities/course.entity";
 import { GroupEvent, replayEvents } from "../entities/group-event.entity";
 import { GroupSettings } from "../entities/group-settings.entity";
-import { Group as GroupEntity } from "../entities/group.entity";
+import { Group as GroupEntity, GroupId } from "../entities/group.entity";
 import { UserJoinedGroupEvent } from "../events/user-joined-group.event";
 import { UserLeftGroupEvent } from "../events/user-left-group.event";
 import { CourseWithGroupSettings } from "../models/course-with-group-settings.model";
@@ -178,7 +178,7 @@ export class GroupService {
 	/**
 	 * Adds the user to the group without checking any constraints. 
 	 */
-	async addUserToGroup_Force(courseId: CourseId, groupId: string, userId: string): Promise<void> {
+	async addUserToGroup_Force(courseId: CourseId, groupId: GroupId, userId: string): Promise<void> {
 		const added = await this.groupRepository.addUserToGroup(courseId, groupId, userId);
 		if (added) {
 			this.events.publish(new UserJoinedGroupEvent(groupId, userId));
@@ -196,12 +196,12 @@ export class GroupService {
 	/**
 	 * Returns the group with its users, assessments and history.
 	 */
-	async getGroup(groupId: string): Promise<GroupDto> {
+	async getGroup(groupId: GroupId): Promise<GroupDto> {
 		const group = await this.groupRepository.getGroupById_All(groupId);
 		return DtoFactory.createGroupDto(group);
 	}
 
-	async getUsersOfGroup(groupId: string): Promise<ParticipantDto[]> {
+	async getUsersOfGroup(groupId: GroupId): Promise<ParticipantDto[]> {
 		const group = await this.groupRepository.getGroupWithUsers(groupId);
 		const participants = group.userGroupRelations.map(x => x.participant.toDto());
 		return participants;
@@ -217,7 +217,7 @@ export class GroupService {
 	 * Returns the group and its members for an assignment.
 	 * If assignment has no end date, returns the group with current members.
 	 */
-	async getGroupFromAssignment(groupId: string, assignmentId: string): Promise<GroupDto> {
+	async getGroupFromAssignment(groupId: GroupId, assignmentId: string): Promise<GroupDto> {
 		const assignment = await this.assignmentRepository.getAssignmentById(assignmentId);
 		
 		// If assignment has no end date, return the group with its current members
@@ -320,7 +320,7 @@ export class GroupService {
 		return DtoFactory.createGroupDto(updated);
 	}
 
-	async removeUser(groupId: string, userId: string, reason?: string): Promise<void> {
+	async removeUser(groupId: GroupId, userId: string, reason?: string): Promise<void> {
 		const removed = await this.groupRepository.removeUser(groupId, userId);
 		if (removed) {
 			this.events.publish(new UserLeftGroupEvent(groupId, userId, reason));
@@ -329,7 +329,7 @@ export class GroupService {
 		}
 	}
 
-	async deleteGroup(groupId: string): Promise<boolean> {
+	async deleteGroup(groupId: GroupId): Promise<boolean> {
 		return this.groupRepository.deleteGroup(groupId);
 	}
 
