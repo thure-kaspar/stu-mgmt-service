@@ -3,6 +3,8 @@ import { AssignmentState, AssignmentType, CollaborationType } from "../../shared
 import { Assessment } from "./assessment.entity";
 import { Course, CourseId } from "./course.entity";
 
+export type AssignmentId = string;
+
 @Entity("assignments")
 export class Assignment {
 	@PrimaryGeneratedColumn("uuid")
@@ -15,16 +17,16 @@ export class Assignment {
 	state: AssignmentState;
 
 	@Column({ nullable: true })
-	startDate: Date;
+	startDate?: Date;
 
 	@Column({ nullable: true })
-	endDate: Date;
+	endDate?: Date;
 
 	@Column({ nullable: true })
-	comment: string;
+	comment?: string;
 
 	@Column({ nullable: true })
-	link: string;
+	link?: string;
 
 	@Column({ type: "enum", enum: AssignmentType, default: AssignmentType.HOMEWORK })
 	type: AssignmentType;
