@@ -5,7 +5,7 @@ import { GroupCreateBulkDto } from "../../src/course/dto/group/group-create-bulk
 import { GroupEventDto } from "../../src/course/dto/group/group-event.dto";
 import { GroupDto } from "../../src/course/dto/group/group.dto";
 import { GroupWithAssignedEvaluatorDto } from "../../src/course/queries/groups-with-assigned-evaluator/group-with-assigned-evaluator.dto";
-import { createApplication } from "../mocks/application.mock";
+import { createApplication, createApplication_STUDENT } from "../mocks/application.mock";
 import { ASSESSMENT_ALLOCATIONS_MOCK } from "../mocks/assessment-allocation.mock";
 import { AssessmentsMock } from "../mocks/assessments.mock";
 import { ASSIGNMENTS_ALL, ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA_IN_REVIEW_SINGLE } from "../mocks/assignments.mock";
@@ -52,8 +52,9 @@ describe("GET-REQUESTS of GroupController (e2e)", () => {
 			return request(app.getHttpServer())
 				.get(`/courses/${course.id}/groups`)
 				.expect(({ body }) => {
-					expect(body.length).toEqual(expectedLength);
-					expect(body[0].users).toBeTruthy();
+					const result = body as GroupDto[];
+					expect(result.length).toEqual(expectedLength);
+					expect(result[0].members).toBeTruthy();
 				});
 		});
 	
@@ -243,13 +244,10 @@ describe("GET-REQUESTS of GroupController (e2e)", () => {
 
 });
 
-describe("POST-REQUESTS for relations (Db contains data) of GroupController (e2e)", () => {
+describe("POST-REQUESTS for relations of GroupController (e2e)", () => {
 	let app: INestApplication;
 
-	beforeEach(async () => {
-		app = await createApplication();
-
-		// Setup mocks - these tests require a filled db
+	const setupMocks = async () => {
 		dbMockService = new DbMockService(getConnection());
 		await dbMockService.createCourses();
 		await dbMockService.createCourseConfig();
@@ -257,171 +255,215 @@ describe("POST-REQUESTS for relations (Db contains data) of GroupController (e2e
 		await dbMockService.createUsers();
 		await dbMockService.createGroups();
 		await dbMockService.createParticipants();
-	});
+	};
 
 	afterEach(async () => {
 		await getConnection().dropDatabase(); // Drop database with all tables and data
 		await getConnection().close(); // Close Db-Connection after all tests have been executed
 	});
 
-	it("(POST) /groups/{groupId}/users/{userId} Correct password, joining is possible -> Adds the user to the group", () => {
-		const group = GROUP_1_JAVA;
-
-		return request(app.getHttpServer())
-			.post(`/courses/${course.id}/groups/${group.id}/users/${users[0].id}`)
-			.send({ password: group.password })
-			.expect(201);
-	});
-
-	it("(POST) /groups/{groupId}/users/{userId} Incorrect password -> 403 BadRequest", () => {
-		const group = GROUP_1_JAVA;
-
-		return request(app.getHttpServer())
-			.post(`/courses/${course.id}/groups/${group.id}/users/${users[0].id}`)
-			.send({ password: "wrong_password" })
-			.expect(403);
-	});
-
-	it("(POST) /groups/{groupId}/users/{userId} Group is closed -> 403 Forbidden", () => {
-		const group = GROUP_2_JAVA;
-
-		return request(app.getHttpServer())
-			.post(`/courses/${course.id}/groups/${group.id}/users/${users[0].id}`)
-			.send({ password: group.password })
-			.expect(403);
-	});
-
-	describe("courses/{courseId}/groups - createGroup", () => {
-
-		const route = `/courses/${course.id}/groups`;
+	describe("As LECTURER", () => {
 	
-		describe("Valid", () => {
-		
-			it("As LECTURER -> Creates Group", () => {
-				const group: GroupDto = {
-					name: "New group",
-					password: "123"
-				};
-
-				return request(app.getHttpServer())
-					.post(route)
-					.send(group)
-					.expect(201)
-					.expect(({ body }) => {
-						const result = body as GroupDto;
-						expect(result.name).toEqual(group.name);
-					});
-			});
-		
+		beforeEach(async () => {
+			app = await createApplication();
+			await setupMocks();
 		});
 
-		describe("Invalid", () => {
+		describe("courses/{courseId}/groups - createGroup", () => {
+
+			const route = `/courses/${course.id}/groups`;
 		
-			it("Empty name -> 400 BadRequest", () => {
-				const group = {
-					...GROUP_1_JAVA,
-					name: ""
-				};
-
-				return request(app.getHttpServer())
-					.post(route)
-					.send(group)
-					.expect(400);
-			});
-		
-		});
-	
-	});
-
-	describe("courses/{courseId}/groups/bulk - createMultipleGroups", () => {
-	
-		const route = `/courses/${course.id}/groups/bulk`;
-
-		describe("Valid", () => {
-		
-			it("Creates multiple groups via name list", () => {
-				const groups: GroupCreateBulkDto = {
-					names: [
-						"Group 1",
-						"Group 2",
-						"Group 3"
-					]
-				};
-
-				return request(app.getHttpServer())
-					.post(route)
-					.expect(201)
-					.send(groups)
-					.expect(({ body }) => {
-						const result = body as GroupDto[];
-						expect(result.length).toEqual(groups.names.length);
-						expect(result[0].name).toEqual(groups.names[0]);
-						expect(result[1].name).toEqual(groups.names[1]);
-						expect(result[2].name).toEqual(groups.names[2]);
-					});
-			});
-
-			it("Creates multiple groups via name schema and count", () => {
-				const groups: GroupCreateBulkDto = {
-					nameSchema: "JAVA",
-					count: 10
-				};
-
-				return request(app.getHttpServer())
-					.post(route)
-					.send(groups)
-					.expect(201)
-					.expect(({ body }) => {
-						const result = body as GroupDto[];
-						expect(result.length).toEqual(groups.count);
-
-						result.forEach(group => {
-							// Group name uses schema
-							expect(group.name.includes(groups.nameSchema)).toBeTruthy();
-						});
-					});
-			});
-		
-		});
-
-		describe("Invalid", () => {
+			describe("Valid", () => {
 			
-			it("Name list contains duplicate -> 400 Bad Request", () => {
-				const groups: GroupCreateBulkDto = {
-					names: [
-						"Duplicate",
-						"Group 1",
-						"Duplicate"
-					]
-				};
-
-				return request(app.getHttpServer())
-					.post(route)
-					.send(groups)
-					.expect(400);
+				it("As LECTURER -> Creates Group", () => {
+					const group: GroupDto = {
+						name: "New group",
+						password: "123"
+					};
+	
+					return request(app.getHttpServer())
+						.post(route)
+						.send(group)
+						.expect(201)
+						.expect(({ body }) => {
+							const result = body as GroupDto;
+							expect(result.name).toEqual(group.name);
+						});
+				});
+			
 			});
-
-			it("Name schema with missing count -> 400 Bad Request", () => {
-				const groups: GroupCreateBulkDto = {
-					nameSchema: "JAVA-Group",
-					count: undefined // Count is missing!
-				};
-
-				return request(app.getHttpServer())
-					.post(route)
-					.send()
-					.expect(400);
+	
+			describe("Invalid", () => {
+		
+				it("Empty name -> 400 BadRequest", () => {
+					const group = {
+						...GROUP_1_JAVA,
+						name: ""
+					};
+	
+					return request(app.getHttpServer())
+						.post(route)
+						.send(group)
+						.expect(400);
+				});
 			});
+		
+		});
+	
+		describe("courses/{courseId}/groups/bulk - createMultipleGroups", () => {
+	
+			const route = `/courses/${course.id}/groups/bulk`;
+	
+			describe("Valid", () => {
+			
+				it("Creates multiple groups via name list", () => {
+					const groups: GroupCreateBulkDto = {
+						names: [
+							"Group 1",
+							"Group 2",
+							"Group 3"
+						]
+					};
+	
+					return request(app.getHttpServer())
+						.post(route)
+						.expect(201)
+						.send(groups)
+						.expect(({ body }) => {
+							const result = body as GroupDto[];
+							expect(result.length).toEqual(groups.names.length);
+							expect(result[0].name).toEqual(groups.names[0]);
+							expect(result[1].name).toEqual(groups.names[1]);
+							expect(result[2].name).toEqual(groups.names[2]);
+						});
+				});
+	
+				it("Creates multiple groups via name schema and count", () => {
+					const groups: GroupCreateBulkDto = {
+						nameSchema: "JAVA",
+						count: 10
+					};
+	
+					return request(app.getHttpServer())
+						.post(route)
+						.send(groups)
+						.expect(201)
+						.expect(({ body }) => {
+							const result = body as GroupDto[];
+							expect(result.length).toEqual(groups.count);
+	
+							result.forEach(group => {
+								// Group name uses schema
+								expect(group.name.includes(groups.nameSchema)).toBeTruthy();
+							});
+						});
+				});
+			
+			});
+	
+			describe("Invalid", () => {
+				
+				it("Name list contains duplicate -> 400 Bad Request", () => {
+					const groups: GroupCreateBulkDto = {
+						names: [
+							"Duplicate",
+							"Group 1",
+							"Duplicate"
+						]
+					};
+	
+					return request(app.getHttpServer())
+						.post(route)
+						.send(groups)
+						.expect(400);
+				});
+	
+				it("Name schema with missing count -> 400 Bad Request", () => {
+					const groups: GroupCreateBulkDto = {
+						nameSchema: "JAVA-Group",
+						count: undefined // Count is missing!
+					};
+	
+					return request(app.getHttpServer())
+						.post(route)
+						.send()
+						.expect(400);
+				});
+	
+				it("No names or name schema defined -> 400 Bad Request", () => {
+					const groups: GroupCreateBulkDto = {
+						count: 10
+					};
+	
+					return request(app.getHttpServer())
+						.post(route)
+						.send(groups)
+						.expect(400);
+				});
+			
+			});
+		
+		});
 
-			it("No names or name schema defined -> 400 Bad Request", () => {
-				const groups: GroupCreateBulkDto = {
-					count: 10
-				};
-
+		describe("courses/{courseId}/groups/{groupId}/users/{userId} - addUserToGroup", () => {
+		
+			it("No password -> Adds user", () => {
+				const group = GROUP_1_JAVA;
+				console.assert(group.password, "Expecting group to have a password.");
+		
 				return request(app.getHttpServer())
-					.post(route)
-					.send(groups)
-					.expect(400);
+					.post(`/courses/${course.id}/groups/${group.id}/users/${users[0].id}`)
+					.expect(201);
+			});
+		
+			it("Group is closed -> Adds user", () => {
+				const group = GROUP_2_JAVA;
+				console.assert(group.isClosed, "Expecting group to be closed.");
+		
+				return request(app.getHttpServer())
+					.post(`/courses/${course.id}/groups/${group.id}/users/${users[0].id}`)
+					.expect(201);
+			});
+		
+		});
+	});
+
+	describe("As STUDENT", () => {
+	
+		beforeEach(async () => {
+			app = await createApplication_STUDENT();
+			await setupMocks();
+		});
+
+		describe("courses/{courseId}/groups/{groupId}/users/{userId} - addUserToGroup", () => {
+	
+			it("Correct password -> Adds the user to the group", () => {
+				const group = GROUP_1_JAVA;
+		
+				return request(app.getHttpServer())
+					.post(`/courses/${course.id}/groups/${group.id}/users/${users[0].id}`)
+					.send({ password: group.password })
+					.expect(201);
+			});
+		
+			it("Incorrect password -> 403 BadRequest", () => {
+				const group = GROUP_1_JAVA;
+				console.assert(group.password, "Expecting group to have a password.");
+		
+				return request(app.getHttpServer())
+					.post(`/courses/${course.id}/groups/${group.id}/users/${users[0].id}`)
+					.send({ password: "wrong_password" })
+					.expect(403);
+			});
+		
+			it("Group is closed -> 403 Forbidden", () => {
+				const group = GROUP_2_JAVA;
+				console.assert(group.isClosed, "Expecting group to be closed.");
+		
+				return request(app.getHttpServer())
+					.post(`/courses/${course.id}/groups/${group.id}/users/${users[0].id}`)
+					.send({ password: group.password })
+					.expect(403);
 			});
 		
 		});
