@@ -13,8 +13,8 @@ import { CourseId } from "../entities/course.entity";
 import { GroupEvent, replayEvents } from "../entities/group-event.entity";
 import { GroupSettings } from "../entities/group-settings.entity";
 import { Group as GroupEntity, GroupId } from "../entities/group.entity";
-import { UserJoinedGroupEvent } from "../events/user-joined-group.event";
-import { UserLeftGroupEvent } from "../events/user-left-group.event";
+import { UserJoinedGroupEvent } from "../events/group/user-joined-group.event";
+import { UserLeftGroupEvent } from "../events/group/user-left-group.event";
 import { CourseWithGroupSettings } from "../models/course-with-group-settings.model";
 import { Course } from "../models/course.model";
 import { Group } from "../models/group.model";
@@ -23,6 +23,7 @@ import { AssignmentRepository } from "../repositories/assignment.repository";
 import { GroupEventRepository } from "../repositories/group-event.repository";
 import { GroupSettingsRepository } from "../repositories/group-settings.repository";
 import { GroupRepository } from "../repositories/group.repository";
+import { AssignmentRegistrationService } from "./assignment-registration.service";
 
 @Injectable()
 export class GroupService {
@@ -31,6 +32,7 @@ export class GroupService {
 				@InjectRepository(GroupSettings) private groupSettingsRepository: GroupSettingsRepository,
 				@InjectRepository(GroupEvent) private groupEventRepository: GroupEventRepository,
 				@InjectRepository(Assignment) private assignmentRepository: AssignmentRepository, 
+				private registrations: AssignmentRegistrationService,
 				private events: EventBus) { }
 
 	/**
@@ -215,84 +217,16 @@ export class GroupService {
 
 	/**
 	 * Returns the group and its members for an assignment.
-	 * If assignment has no end date, returns the group with current members.
 	 */
 	async getGroupFromAssignment(groupId: GroupId, assignmentId: string): Promise<GroupDto> {
-		const assignment = await this.assignmentRepository.getAssignmentById(assignmentId);
-		
-		// If assignment has no end date, return the group with its current members
-		if (!assignment.endDate) {
-			return this.getGroup(groupId); 
-		}
-
-		// Get all events that happened before the assignment end
-		const history = await this.groupEventRepository.getGroupHistoryOfGroup(groupId, assignment.endDate);
-		
-		// Replay group event and recreate group
-		const userIdUserMap = new Map<string, User>();
-
-		replayEvents(history, (groupEvent) => {
-			const { event, user } = groupEvent;
-			switch (event) {
-			case UserJoinedGroupEvent.name:
-				userIdUserMap.set(user.id, user);
-				break;
-			case UserLeftGroupEvent.name:
-				userIdUserMap.delete(user.id);
-				break;
-			default:
-				break;
-			}
-		});
-
-		// Load recreated group with users
-		const groups = await this.groupRepository.getRecreatedGroups(
-			new Map([[groupId, Array.from(userIdUserMap.values())]])
-		);
-		return DtoFactory.createGroupDto(groups[0]);
+		return this.registrations.getRegisteredGroupWithMembers(assignmentId, groupId);
 	}
 
 	/**
-	 * Returns a snapshot of the group constellations at the time of the assignment's end.
+	 * Returns all groups and their members that are registered for this assignment.
 	 */
 	async getGroupsFromAssignment(courseId: CourseId, assignmentId: string): Promise<GroupDto[]> {
-		const assignment = await this.assignmentRepository.getAssignmentById(assignmentId);
-
-		// If assignment has no end date, return current groups with their members
-		if (!assignment.endDate) {
-			return (await this.getGroupsOfCourse(courseId)[0]);
-		}
-
-		// Get all events that happened before the assignment end
-		const history = await this.groupEventRepository.getGroupHistoryOfCourse(courseId, assignment.endDate);
-
-		// Replay the events to recreate the group constellations
-		const groupIdUsersMap = new Map<string, User[]>();
-
-		replayEvents(history, (groupEvent) => {
-			const { event, user, groupId } = groupEvent;
-			switch (event) {
-			case UserJoinedGroupEvent.name:
-				// Add user to group
-				if (groupIdUsersMap.has(groupId)) {
-					groupIdUsersMap.get(groupId).push(user);
-				} else {
-					groupIdUsersMap.set(groupId, [user]);
-				}
-				break;
-			case UserLeftGroupEvent.name:
-				// Remove user from group
-				const groupWithoutUser = groupIdUsersMap.get(groupId).filter(u => u.id !== user.id);
-				groupIdUsersMap.set(groupId, groupWithoutUser);
-				break;
-			default:
-				break;
-			}
-		});
-
-		// Generate groups from the group constellation map
-		const groups = await this.groupRepository.getRecreatedGroups(groupIdUsersMap);
-		return groups.map(g => DtoFactory.createGroupDto(g));
+		return this.registrations.getRegisteredGroupsWithMembers(assignmentId);
 	}
 
 	/**

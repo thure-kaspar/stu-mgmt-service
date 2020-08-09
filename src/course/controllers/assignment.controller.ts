@@ -1,12 +1,18 @@
-import { Controller, Post, Param, Body, Get, Patch, Delete, BadRequestException } from "@nestjs/common";
-import { ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
-import { AssignmentService } from "../services/assignment.service";
-import { AssignmentDto } from "../dto/assignment/assignment.dto";
-import { CourseId } from "../entities/course.entity";
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from "@nestjs/common";
+import { AuthGuard } from "@nestjs/passport";
+import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { throwIfRequestFailed } from "../../utils/http-utils";
+import { AssignmentDto, AssignmentUpdateDto } from "../dto/assignment/assignment.dto";
+import { CourseId } from "../entities/course.entity";
+import { CourseMemberGuard } from "../guards/course-member.guard";
+import { AssignmentService } from "../services/assignment.service";
+import { GetCourse, GetAssignment } from "../decorators/decorators";
+import { Course } from "../models/course.model";
+import { Assignment } from "../models/assignment.model";
 
 @ApiBearerAuth()
 @ApiTags("assignments")
+@UseGuards(AuthGuard(), CourseMemberGuard)
 @Controller("courses/:courseId/assignments")
 export class AssignmentController {
 	constructor(private assignmentService: AssignmentService) { }
@@ -52,19 +58,20 @@ export class AssignmentController {
 		return this.assignmentService.getAssignmentById(assignmentId);
 	}
 
-	@Patch(":assignmentId")
 	@ApiOperation({
 		operationId: "updateAssignment",
 		summary: "Update assignment.",
 		description: "Updates the assignment."
 	})
+	@Patch(":assignmentId")
+	@UseGuards()
 	updateAssignment(
-		@Param("courseId") courseId: CourseId,
-		@Param("assignmentId") assignmentId: string,
-		@Body() assignmentDto: AssignmentDto
+		@GetCourse() course: Course,
+		@GetAssignment() assignment: Assignment,
+		@Body() update: AssignmentUpdateDto
 	): Promise<AssignmentDto> {
 
-		return this.assignmentService.updateAssignment(assignmentId, assignmentDto);
+		return this.assignmentService.updateAssignment(course, assignment, update);
 	}
 
 	@Delete(":assignmentId")

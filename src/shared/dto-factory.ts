@@ -1,24 +1,24 @@
-import { Course } from "../course/entities/course.entity";
+import { AssessmentDto } from "../course/dto/assessment/assessment.dto";
+import { AssignmentDto } from "../course/dto/assignment/assignment.dto";
+import { AdmissionCriteriaDto } from "../course/dto/course-config/admission-criteria.dto";
+import { AssignmentTemplateDto } from "../course/dto/course-config/assignment-template.dto";
+import { CourseConfigDto } from "../course/dto/course-config/course-config.dto";
+import { GroupSettingsDto } from "../course/dto/course-config/group-settings.dto";
+import { ParticipantDto } from "../course/dto/course-participant/participant.dto";
 import { CourseDto } from "../course/dto/course/course.dto";
+import { GroupDto } from "../course/dto/group/group.dto";
+import { AdmissionCriteria } from "../course/entities/admission-criteria.entity";
+import { Assessment } from "../course/entities/assessment.entity";
+import { AssignmentTemplate } from "../course/entities/assignment-template.entity";
+import { Assignment } from "../course/entities/assignment.entity";
+import { CourseConfig } from "../course/entities/course-config.entity";
+import { Course } from "../course/entities/course.entity";
+import { GroupSettings } from "../course/entities/group-settings.entity";
+import { Group } from "../course/entities/group.entity";
 import { UserDto } from "./dto/user.dto";
 import { User } from "./entities/user.entity";
-import { GroupDto } from "../course/dto/group/group.dto";
-import { Group } from "../course/entities/group.entity";
-import { AssignmentDto } from "../course/dto/assignment/assignment.dto";
-import { Assignment } from "../course/entities/assignment.entity";
-import { Assessment } from "../course/entities/assessment.entity";
-import { AssessmentDto } from "../course/dto/assessment/assessment.dto";
 import { CourseRole } from "./enums";
-import { CourseConfig } from "../course/entities/course-config.entity";
-import { CourseConfigDto } from "../course/dto/course-config/course-config.dto";
-import { GroupSettings } from "../course/entities/group-settings.entity";
-import { GroupSettingsDto } from "../course/dto/course-config/group-settings.dto";
-import { AdmissionCriteria } from "../course/entities/admission-criteria.entity";
-import { AdmissionCriteriaDto } from "../course/dto/course-config/admission-criteria.dto";
-import { AssignmentTemplate } from "../course/entities/assignment-template.entity";
-import { AssignmentTemplateDto } from "../course/dto/course-config/assignment-template.dto";
 import { toDtos } from "./interfaces/to-dto.interface";
-import { ParticipantDto } from "../course/dto/course-participant/participant.dto";
 
 export abstract class DtoFactory {
 
@@ -115,10 +115,6 @@ export abstract class DtoFactory {
 			}
 		}
 
-		if (group.assessments) {
-			groupDto.assessments = group.assessments.map(a => this.createAssessmentDto(a));
-		}
-
 		if (group.history) {
 			groupDto.history = group.history.map(event => event.toDto());
 		}
@@ -129,7 +125,6 @@ export abstract class DtoFactory {
 	static createAssignmentDto(assignment: Assignment): AssignmentDto {
 		const assignmentDto: AssignmentDto = {
 			id: assignment.id,
-			courseId: assignment.courseId,
 			name: assignment.name,
 			state: assignment.state,
 			startDate: assignment.startDate ?? undefined,

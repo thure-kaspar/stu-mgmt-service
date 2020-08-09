@@ -9,8 +9,8 @@ import { GroupSettings } from "../../../src/course/entities/group-settings.entit
 import { Group } from "../../../src/course/entities/group.entity";
 import { Participant } from "../../../src/course/entities/participant.entity";
 import { UserGroupRelation } from "../../../src/course/entities/user-group-relation.entity";
-import { UserJoinedGroupEvent } from "../../../src/course/events/user-joined-group.event";
-import { UserLeftGroupEvent } from "../../../src/course/events/user-left-group.event";
+import { UserJoinedGroupEvent } from "../../../src/course/events/group/user-joined-group.event";
+import { UserLeftGroupEvent } from "../../../src/course/events/group/user-left-group.event";
 import { AlreadyInGroupException, CourseClosedException } from "../../../src/course/exceptions/custom-exceptions";
 import { AssignmentRepository } from "../../../src/course/repositories/assignment.repository";
 import { CourseRepository } from "../../../src/course/repositories/course.repository";

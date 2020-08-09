@@ -1,6 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsBoolean, IsNotEmpty, IsOptional } from "class-validator";
-import { AssessmentDto } from "../assessment/assessment.dto";
 import { ParticipantDto } from "../course-participant/participant.dto";
 import { GroupEventDto } from "./group-event.dto";
 
@@ -25,7 +24,6 @@ export class GroupDto {
 	/** The members of this group. */
     members?: ParticipantDto[];
 	history?: GroupEventDto[];
-	assessments?: AssessmentDto[];
 }
 
 export class GroupUpdateDto {

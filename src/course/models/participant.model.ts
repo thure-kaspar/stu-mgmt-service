@@ -6,6 +6,7 @@ import { UserId } from "../../shared/entities/user.entity";
 
 export class Participant {
 
+	readonly id: number;
 	readonly username: string;
 	readonly rzName: string;
 	readonly userId: UserId;
@@ -13,6 +14,7 @@ export class Participant {
 	readonly role: CourseRole;
 
 	constructor(private participant: ParticipantEntity) {
+		this.id = participant.id;
 		this.userId = this.participant.userId;
 		this.rzName = this.participant.user.rzName;
 		this.username = this.participant.user.username;

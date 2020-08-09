@@ -5,7 +5,7 @@ import { AuthModule } from "../auth/auth.module";
 import { UserRepository } from "../user/repositories/user.repository";
 import { Controllers } from "./controllers";
 import { AssessmentEvent } from "./entities/assessment-event.entity";
-import { EventHandlers } from "./events";
+import { EventHandlers, EventNotificationHandlers } from "./events";
 import { Guards } from "./guards";
 import { QueryHandlers } from "./queries";
 import { Repositories } from "./repositories";
@@ -23,6 +23,7 @@ import { Services } from "./services";
 		...Services,
 		...Guards,
 		...EventHandlers,
+		...EventNotificationHandlers,
 		...QueryHandlers
 	]
 })

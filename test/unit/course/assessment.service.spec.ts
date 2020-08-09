@@ -10,7 +10,7 @@ import { Assignment } from "../../../src/course/entities/assignment.entity";
 import { Group } from "../../../src/course/entities/group.entity";
 import { PartialAssessment } from "../../../src/course/entities/partial-assessment.entity";
 import { UserGroupRelation } from "../../../src/course/entities/user-group-relation.entity";
-import { AssessmentScoreChangedEvent } from "../../../src/course/events/assessment-score-changed.event";
+import { AssessmentScoreChanged } from "../../../src/course/events/assessment/assessment-score-changed.event";
 import { AssessmentRepository } from "../../../src/course/repositories/assessment.repository";
 import { AssignmentRepository } from "../../../src/course/repositories/assignment.repository";
 import { AssessmentService } from "../../../src/course/services/assessment.service";
@@ -307,7 +307,7 @@ describe("AssessmentService", () => {
 			assessmentRepository.updateAssessment = jest.fn().mockImplementationOnce(() => withChangedScore);
 
 			await service.updateAssessment(withChangedScore.id, withChangedScore, updatedBy);
-			expect(events.publish).toHaveBeenCalledWith(new AssessmentScoreChangedEvent(
+			expect(events.publish).toHaveBeenCalledWith(new AssessmentScoreChanged(
 				validAssessmentForUpdate.id, 
 				updatedBy, 
 				{ newScore: withChangedScore.achievedPoints, oldScore: assessmentBeforeUpdate().achievedPoints }

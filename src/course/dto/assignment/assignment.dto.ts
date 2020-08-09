@@ -1,15 +1,10 @@
+import { ApiProperty, ApiPropertyOptional, OmitType, PartialType } from "@nestjs/swagger";
 import { AssignmentState, AssignmentType, CollaborationType } from "../../../shared/enums";
-import { ApiPropertyOptional, ApiProperty } from "@nestjs/swagger";
-import { CourseId } from "../../entities/course.entity";
 
 export class AssignmentDto {
 	/** Unique identifier of this assignment. */
 	@ApiPropertyOptional({ description: "Unique identifier of this assignment." })
 	id?: string;
-
-	/** Identifier of the course that this assignment belongs to. */
-	@ApiProperty({ description: "Identifier of the course that this assignment belongs to." })
-	courseId: CourseId;
 
 	/** The title of this assignment. */
 	@ApiProperty({ description: "The title of this assignment." })
@@ -51,3 +46,5 @@ export class AssignmentDto {
 	@ApiPropertyOptional({ description: "Additional link to a .pdf or website." })
 	link?: string;
 }
+
+export class AssignmentUpdateDto extends OmitType(PartialType(AssignmentDto), ["id"]) { }

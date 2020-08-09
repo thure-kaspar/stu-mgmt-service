@@ -10,7 +10,7 @@ import { Assignment } from "../entities/assignment.entity";
 import { AssignmentState } from "../../shared/enums";
 import { GroupService } from "./group.service";
 import { EventBus } from "@nestjs/cqrs";
-import { AssessmentScoreChangedEvent } from "../events/assessment-score-changed.event";
+import { AssessmentScoreChanged } from "../events/assessment/assessment-score-changed.event";
 import { AssessmentEvent } from "../entities/assessment-event.entity";
 import { Repository } from "typeorm";
 import { AssessmentEventDto } from "../dto/assessment/assessment-event.dto";
@@ -109,7 +109,7 @@ export class AssessmentService {
 
 		// Store event, if achieved points changed
 		if (original.achievedPoints !== updated.achievedPoints) {
-			this.events.publish(new AssessmentScoreChangedEvent(assessmentId, updatedBy, {
+			this.events.publish(new AssessmentScoreChanged(assessmentId, updatedBy, {
 				oldScore: original.achievedPoints,
 				newScore: updated.achievedPoints
 			}));

@@ -42,5 +42,9 @@ export class Group {
 	history: GroupEvent[];
 
 	@OneToMany(type => AssessmentAllocation, allocation => allocation.group)
-	assessmentAllocations: AssessmentAllocation[]; 
+	assessmentAllocations: AssessmentAllocation[];
+
+	constructor(partial?: Partial<Group>) {
+		if (partial) Object.assign(this, partial);
+	}
 }

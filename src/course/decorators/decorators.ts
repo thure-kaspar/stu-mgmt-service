@@ -42,3 +42,13 @@ export const GetGroup = createParamDecorator((data: unknown, ctx: ExecutionConte
 	const request = ctx.switchToHttp().getRequest();
 	return request.group;
 });
+
+/**
+ * Retrieves the `assignment` property of the `request`.
+ * This property is set by the following guards:  
+ * - `AssignmentGuard`
+ */
+export const GetAssignment = createParamDecorator((data: unknown, ctx: ExecutionContext) => {
+	const request = ctx.switchToHttp().getRequest();
+	return request.assignment;
+});

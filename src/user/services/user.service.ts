@@ -16,7 +16,7 @@ import { AssignmentRepository } from "../../course/repositories/assignment.repos
 import { GroupEvent } from "../../course/entities/group-event.entity";
 import { GroupEventDto } from "../../course/dto/group/group-event.dto";
 import { GroupEventRepository } from "../../course/repositories/group-event.repository";
-import { UserJoinedGroupEvent } from "../../course/events/user-joined-group.event";
+import { UserJoinedGroupEvent } from "../../course/events/group/user-joined-group.event";
 import { CollaborationType } from "../../shared/enums";
 import { AssignmentDto } from "../../course/dto/assignment/assignment.dto";
 import { AssignmentGroupTuple } from "../dto/assignment-group-tuple.dto";

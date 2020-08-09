@@ -32,4 +32,9 @@ export class UserGroupRelation {
 	
 	@CreateDateColumn()
 	joinedAt: Date;
+
+	constructor(partial?: Partial<UserGroupRelation>) {
+		if (partial) Object.assign(this, partial);
+	}
+
 }
