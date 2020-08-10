@@ -141,7 +141,7 @@ export class AssignmentGroupRegistrationRepository extends Repository<Assignment
 	 * Returns `true`, if any there exist any `AssignmentGroupRegistration` for this assignment.
 	 */
 	async hasRegistrations(assignmentId: AssignmentId): Promise<boolean> {
-		const exists = await this.findOne(assignmentId);
+		const exists = await this.findOne({ where: { assignmentId }});
 		return !!exists;
 	}
 
