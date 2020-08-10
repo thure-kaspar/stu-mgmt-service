@@ -190,6 +190,8 @@ export class GroupController {
 	@Patch(":groupId")
 	@UseGuards(GroupGuard)
 	updateGroup(
+		@Param("courseId") courseId: CourseId,
+		@Param("groupId") groupId: GroupId,
 		@GetCourse() course: Course,
 		@GetGroup() group: Group,
 		@Body() update: GroupUpdateDto

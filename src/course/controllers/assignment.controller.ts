@@ -9,6 +9,8 @@ import { AssignmentService } from "../services/assignment.service";
 import { GetCourse, GetAssignment } from "../decorators/decorators";
 import { Course } from "../models/course.model";
 import { Assignment } from "../models/assignment.model";
+import { AssignmentGuard } from "../guards/assignment.guard";
+import { AssignmentId } from "../entities/assignment.entity";
 
 @ApiBearerAuth()
 @ApiTags("assignments")
@@ -64,8 +66,10 @@ export class AssignmentController {
 		description: "Updates the assignment."
 	})
 	@Patch(":assignmentId")
-	@UseGuards()
+	@UseGuards(AssignmentGuard)
 	updateAssignment(
+		@Param("courseId") courseId: CourseId,
+		@Param("assignmentId") assignmentId: AssignmentId,
 		@GetCourse() course: Course,
 		@GetAssignment() assignment: Assignment,
 		@Body() update: AssignmentUpdateDto
