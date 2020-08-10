@@ -6,7 +6,7 @@ import { Participant } from "./participant.entity";
 
 @Entity()
 @Unique("UNIQUE_ASSIGNMENT_USER", ["assignmentId", "userId"]) // User can only be registered for one group per assignment 
-export class AssignmentGroupRegistration {
+export class AssignmentRegistration {
 
 	@PrimaryGeneratedColumn()
 	id: number;
@@ -38,7 +38,7 @@ export class AssignmentGroupRegistration {
 	@Column()
 	groupId: GroupId;
 
-	constructor(partial: Partial<AssignmentGroupRegistration>) {
+	constructor(partial: Partial<AssignmentRegistration>) {
 		Object.assign(this, partial);
 	}
 

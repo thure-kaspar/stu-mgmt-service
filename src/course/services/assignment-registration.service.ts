@@ -1,11 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UserId } from "../../shared/entities/user.entity";
-import { AssignmentGroupRegistration } from "../entities/assignment-group-registration.entity";
+import { AssignmentRegistration } from "../entities/assignment-group-registration.entity";
 import { AssignmentId } from "../entities/assignment.entity";
 import { CourseId } from "../entities/course.entity";
 import { Group, GroupId } from "../entities/group.entity";
-import { AssignmentGroupRegistrationRepository } from "../repositories/assignment-group-registration.repository";
+import { AssignmentRegistrationRepository } from "../repositories/assignment-group-registration.repository";
 import { GroupRepository } from "../repositories/group.repository";
 import { EventBus } from "@nestjs/cqrs";
 import { UserRegistered } from "../events/assignment/user-registered.event";
@@ -19,7 +19,7 @@ import { GroupDto } from "../dto/group/group.dto";
 @Injectable()
 export class AssignmentRegistrationService {
 
-	constructor(@InjectRepository(AssignmentGroupRegistration) private registrations: AssignmentGroupRegistrationRepository,
+	constructor(@InjectRepository(AssignmentRegistration) private registrations: AssignmentRegistrationRepository,
 				@InjectRepository(Group) private groups: GroupRepository,
 				private events: EventBus) { }
 

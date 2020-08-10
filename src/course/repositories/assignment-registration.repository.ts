@@ -1,20 +1,20 @@
 import { EntityRepository, Repository } from "typeorm";
-import { AssignmentGroupRegistration } from "../entities/assignment-group-registration.entity";
-import { GroupId, Group } from "../entities/group.entity";
-import { UserId } from "../../shared/entities/user.entity";
-import { AssignmentId } from "../entities/assignment.entity";
-import { UserGroupRelation } from "../entities/user-group-relation.entity";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
+import { UserId } from "../../shared/entities/user.entity";
+import { AssignmentRegistration } from "../entities/assignment-group-registration.entity";
+import { AssignmentId } from "../entities/assignment.entity";
+import { Group, GroupId } from "../entities/group.entity";
+import { UserGroupRelation } from "../entities/user-group-relation.entity";
 
-@EntityRepository(AssignmentGroupRegistration)
-export class AssignmentGroupRegistrationRepository extends Repository<AssignmentGroupRegistration> {
+@EntityRepository(AssignmentRegistration)
+export class AssignmentRegistrationRepository extends Repository<AssignmentRegistration> {
 
 	/**
 	 * Creates a registration for the specified user.
 	 * @throws `Error`, if user is already registered. 
 	 */
-	createRegistration(assignmentId: AssignmentId, groupId: GroupId, userId: UserId, participantId: number): Promise<AssignmentGroupRegistration> {
-		const registration = new AssignmentGroupRegistration({
+	createRegistration(assignmentId: AssignmentId, groupId: GroupId, userId: UserId, participantId: number): Promise<AssignmentRegistration> {
+		const registration = new AssignmentRegistration({
 			assignmentId,
 			groupId,
 			userId,
@@ -27,7 +27,7 @@ export class AssignmentGroupRegistrationRepository extends Repository<Assignment
 	/**
 	 * Creates registrations for all users in the given groups.
 	 */
-	createRegistrations(assignmentId: AssignmentId, groups: Group[]): Promise<AssignmentGroupRegistration[]> {
+	createRegistrations(assignmentId: AssignmentId, groups: Group[]): Promise<AssignmentRegistration[]> {
 		const registrations = this.buildRegistrations(groups, assignmentId);
 		return this.save(registrations);
 	}
@@ -36,11 +36,11 @@ export class AssignmentGroupRegistrationRepository extends Repository<Assignment
 	 * Maps groups with members to `AssignmentGroupRegistration` entities for a specific assignment.
 	 * Groups must include `UserGroupRelation`.
 	 */
-	private buildRegistrations(groups: Group[], assignmentId: string): AssignmentGroupRegistration[] {
-		const registrations: AssignmentGroupRegistration[] = [];
+	private buildRegistrations(groups: Group[], assignmentId: string): AssignmentRegistration[] {
+		const registrations: AssignmentRegistration[] = [];
 		groups.forEach(group => {
 			group.userGroupRelations.forEach(member => {
-				registrations.push(new AssignmentGroupRegistration({
+				registrations.push(new AssignmentRegistration({
 					assignmentId,
 					groupId: group.id,
 					userId: member.userId,
@@ -63,7 +63,7 @@ export class AssignmentGroupRegistrationRepository extends Repository<Assignment
 			.groupBy("registration.groupId")
 			.orderBy("group.name")
 			.distinct(true);
-		
+			
 		const registrationsGroups = await groupQuery.getMany();
 		console.log(groupQuery);
 
