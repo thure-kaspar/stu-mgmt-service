@@ -6,10 +6,12 @@ import { CourseParticipantsService } from "./course-participants.service";
 import { CourseService } from "./course.service";
 import { GroupService } from "./group.service";
 import { NotificationService } from "./update.service";
+import { AssignmentRegistrationService } from "./assignment-registration.service";
 
 export const Services = [
 	AssessmentAllocationService,
 	AssessmentService,
+	AssignmentRegistrationService,
 	AssignmentService,
 	CourseConfigService,
 	CourseParticipantsService,

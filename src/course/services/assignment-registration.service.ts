@@ -5,7 +5,7 @@ import { AssignmentRegistration } from "../entities/assignment-group-registratio
 import { AssignmentId } from "../entities/assignment.entity";
 import { CourseId } from "../entities/course.entity";
 import { Group, GroupId } from "../entities/group.entity";
-import { AssignmentRegistrationRepository } from "../repositories/assignment-group-registration.repository";
+import { AssignmentRegistrationRepository } from "../repositories/assignment-registration.repository";
 import { GroupRepository } from "../repositories/group.repository";
 import { EventBus } from "@nestjs/cqrs";
 import { UserRegistered } from "../events/assignment/user-registered.event";

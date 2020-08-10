@@ -9,6 +9,7 @@ import { CourseRole } from "../../src/shared/enums";
 import { convertToEntity, copy } from "../utils/object-helper";
 import { COURSE_JAVA_1920 } from "./courses.mock";
 import { USER_MGMT_ADMIN_JAVA_LECTURER, USER_SYSTEM_ADMIN, USER_STUDENT_JAVA } from "./users.mock";
+import { COURSE_JAVA_1920_PARTICIPANTS } from "./participants/participants.mock";
 
 export class AuthGuardMock { 
 	canActivate(context: ExecutionContext): boolean {
@@ -26,6 +27,7 @@ export class CourseMemberGuardMock_LECTURER {
 		
 		const course = convertToEntity(CourseEntity, COURSE_JAVA_1920);
 		const participant = new ParticipantEntity({
+			id: 4,
 			userId: USER_MGMT_ADMIN_JAVA_LECTURER.id,
 			user: convertToEntity(User, USER_MGMT_ADMIN_JAVA_LECTURER),
 			role: CourseRole.LECTURER
@@ -44,6 +46,7 @@ export class CourseMemberGuardMock_STUDENT {
 		
 		const course = convertToEntity(CourseEntity, COURSE_JAVA_1920);
 		const participant = new ParticipantEntity({
+			id: 1,
 			userId: USER_STUDENT_JAVA.id,
 			user: convertToEntity(User, USER_STUDENT_JAVA),
 			role: CourseRole.STUDENT

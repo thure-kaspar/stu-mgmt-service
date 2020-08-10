@@ -14,7 +14,7 @@ export class Participant {
 	readonly role: CourseRole;
 
 	constructor(private participant: ParticipantEntity) {
-		this.id = participant.id;
+		this.id = this.participant.id;
 		this.userId = this.participant.userId;
 		this.rzName = this.participant.user.rzName;
 		this.username = this.participant.user.username;

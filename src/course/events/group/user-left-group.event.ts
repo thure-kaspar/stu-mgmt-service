@@ -1,14 +1,12 @@
 import { EventsHandler, IEventHandler } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
-import { GroupEvent } from "../../entities/group-event.entity";
 import { Repository } from "typeorm";
-import { NotificationService } from "../../services/update.service";
-import { Course, CourseId } from "../../entities/course.entity";
-import { CourseRepository } from "../../repositories/course.repository";
-import { AffectedObject, EventType } from "../../../shared/dto/update-message.dto";
-import { GroupId } from "../../entities/group.entity";
-import { UserId } from "../../../shared/entities/user.entity";
 import { Event } from "..";
+import { UserId } from "../../../shared/entities/user.entity";
+import { CourseId } from "../../entities/course.entity";
+import { GroupEvent } from "../../entities/group-event.entity";
+import { GroupId } from "../../entities/group.entity";
+import { NotificationService } from "../../services/update.service";
 
 export class UserLeftGroupEvent {
 	constructor(

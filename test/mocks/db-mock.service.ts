@@ -4,7 +4,7 @@ import { AdmissionCriteria } from "../../src/course/entities/admission-criteria.
 import { AssessmentAllocation } from "../../src/course/entities/assessment-allocation.entity";
 import { AssessmentUserRelation } from "../../src/course/entities/assessment-user-relation.entity";
 import { Assessment } from "../../src/course/entities/assessment.entity";
-import { AssignmentGroupRegistration } from "../../src/course/entities/assignment-group-registration.entity";
+import { AssignmentRegistration } from "../../src/course/entities/assignment-group-registration.entity";
 import { AssignmentTemplate } from "../../src/course/entities/assignment-template.entity";
 import { Assignment } from "../../src/course/entities/assignment.entity";
 import { CourseConfig } from "../../src/course/entities/course-config.entity";
@@ -16,10 +16,11 @@ import { PartialAssessment } from "../../src/course/entities/partial-assessment.
 import { Participant } from "../../src/course/entities/participant.entity";
 import { UserGroupRelation } from "../../src/course/entities/user-group-relation.entity";
 import { User } from "../../src/shared/entities/user.entity";
+import { AssignmentState } from "../../src/shared/enums";
 import { convertToEntity, convertToEntityNoRelations } from "../utils/object-helper";
 import { ASSESSMENT_ALLOCATIONS_MOCK } from "./assessment-allocation.mock";
 import { AssessmentsMock } from "./assessments.mock";
-import { ASSIGNMENTS_ALL, ASSIGNMENTS_JAVA_1920, ASSIGNMENTS_JAVA_2020 } from "./assignments.mock";
+import { ASSIGNMENTS_ALL, ASSIGNMENTS_JAVA_1920 } from "./assignments.mock";
 import { ADMISSION_CRITERIA_JAVA } from "./course-config/admission-criteria.mock";
 import { ASSIGNMENT_TEMPLATES_MOCK } from "./course-config/assignment-templates.mock";
 import { COURSE_CONFIGS_MOCK } from "./course-config/course-config.mock";
@@ -27,13 +28,12 @@ import { GROUP_SETTINGS_MOCK } from "./course-config/group-settings.mock";
 import { CoursesMock } from "./courses.mock";
 import { getGroupEventEntities } from "./groups/group-events.mock";
 import { GROUPS_ALL } from "./groups/groups.mock";
-import { REGISTERED_GROUPS_AND_MEMBERS } from "./groups/registered-groups-for-assignment.mock";
+import { GROUP_1_DEFAULT, GROUP_2_DEFAULT } from "./groups/registered-groups-for-assignment.mock";
 import { UserGroupRelationsMock } from "./groups/user-group-relations.mock";
 import { PARTIAL_ASSESSMENT_MOCK } from "./partial-assessments.mock";
-import { COURSE_PARTICIPANTS_ALL, PARTICIPANT_JAVA_2020_KUNOLD } from "./participants/participants.mock";
+import { COURSE_PARTICIPANTS_ALL } from "./participants/participants.mock";
 import { AssessmentUserRelationsMock } from "./relations.mock";
 import { UsersMock } from "./users.mock";
-import { AssignmentState } from "../../src/shared/enums";
 
 export class DbMockService {
 
@@ -68,12 +68,13 @@ export class DbMockService {
 		await this.createGroupSettings();
 		await this.createUsers();
 		await this.createGroups();
-		await this.createGroupEvents();
-		await this.createAssignments();
-		await this.createAssessments();
-		await this.createPartialAssessments();
 		await this.createParticipants();
 		await this.createUserGroupRelations();
+		await this.createGroupEvents();
+		await this.createAssignments();
+		await this.createAssignmentRegistrations();
+		await this.createAssessments();
+		await this.createPartialAssessments();
 		await this.createAssessmentUserRelations();
 		await this.createAssessmentAllocations();
 	}
@@ -209,28 +210,30 @@ export class DbMockService {
 	}
 
 	async createAssignmentRegistrations(): Promise<void> {
-		const repo = this.con.getRepository(AssignmentGroupRegistration);
-		const groups = REGISTERED_GROUPS_AND_MEMBERS;
+		const repo = this.con.getRepository(AssignmentRegistration);
+		const groups = [GROUP_1_DEFAULT, GROUP_2_DEFAULT]; //REGISTERED_GROUPS_AND_MEMBERS;
 
 		const predicate = (a: AssignmentDto): boolean => {
 			return a.state === AssignmentState.IN_PROGRESS || a.state === AssignmentState.IN_REVIEW || a.state === AssignmentState.EVALUATED;
-		} ;
+		};
 
 		const startedAssignments = [
 			...ASSIGNMENTS_JAVA_1920.filter(predicate),
-			...ASSIGNMENTS_JAVA_2020.filter(predicate)
+			//...ASSIGNMENTS_JAVA_2020.filter(predicate)
 		];
 
-		const registrations: AssignmentGroupRegistration[] = [];
+		const registrations: AssignmentRegistration[] = [];
 		startedAssignments.forEach(assignment => {
 			groups.forEach(groupWithCourseId => {
-				groupWithCourseId.group.userGroupRelations.forEach(userRel => {
-					new AssignmentGroupRegistration({
-						assignmentId: assignment.id,
-						groupId: groupWithCourseId.group.id,
-						userId: userRel.userId,
-						participantId: COURSE_PARTICIPANTS_ALL.find(p => p.participant.userId === userRel.userId).id
-					});
+				groupWithCourseId.userGroupRelations.forEach(userRel => {
+					registrations.push(
+						new AssignmentRegistration({
+							assignmentId: assignment.id,
+							groupId: groupWithCourseId.id,
+							userId: userRel.userId,
+							participantId: COURSE_PARTICIPANTS_ALL.find(p => p.participant.userId === userRel.userId).id
+						})
+					);
 				});
 			});
 		});
