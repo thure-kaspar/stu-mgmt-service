@@ -43,11 +43,10 @@ describe("GET-REQUESTS of AssignmentController (e2e)", () => {
 		const assignment = ASSIGNMENT_JAVA_IN_REVIEW_SINGLE;
 
 		return request(app.getHttpServer())
-			.get(`/courses/${assignment.courseId}/assignments/${assignment.id}`)
+			.get(`/courses/${course.id}/assignments/${assignment.id}`)
 			.expect(({ body }) => {
 				const result = body as AssignmentDto;
 				expect(result.id).toEqual(assignment.id);
-				expect(result.courseId).toEqual(assignment.courseId);
 				expect(result.state).toEqual(assignment.state);
 			});
 	});
@@ -75,12 +74,11 @@ describe("POST-REQUESTS of AssignmentController (e2e)", () => {
 		const assignment = ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP;
 
 		return request(app.getHttpServer())
-			.post(`/courses/${assignment.courseId}/assignments`)
+			.post(`/courses/${course.id}/assignments`)
 			.send(assignment)
 			.expect(201)
 			.expect(({ body }) => {
 				const result = body as AssignmentDto;
-				expect(result.courseId).toEqual(assignment.courseId);
 				expect(result.name).toEqual(assignment.name);
 				expect(result.type).toEqual(assignment.type);
 				expect(result.points).toEqual(assignment.points);

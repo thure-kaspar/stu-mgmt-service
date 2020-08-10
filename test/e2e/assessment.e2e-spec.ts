@@ -208,7 +208,7 @@ describe("POST-REQUESTS of AssessmentController (e2e)", () => {
 		const expected = copy(assessment);
 
 		return request(app.getHttpServer())
-			.post(`/courses/${assignment.courseId}/assignments/${assessment.assignmentId}/assessments`)
+			.post(`/courses/${course.id}/assignments/${assessment.assignmentId}/assessments`)
 			.send(assessment)
 			.expect(201)
 			.expect(({ body }) => {
@@ -224,7 +224,7 @@ describe("POST-REQUESTS of AssessmentController (e2e)", () => {
 		const expected = copy(assessment);
 
 		return request(app.getHttpServer())
-			.post(`/courses/${assignment.courseId}/assignments/${assessment.assignmentId}/assessments`)
+			.post(`/courses/${course.id}/assignments/${assessment.assignmentId}/assessments`)
 			.send(assessment)
 			.expect(201)
 			.expect(({ body }) => {
@@ -240,7 +240,7 @@ describe("POST-REQUESTS of AssessmentController (e2e)", () => {
 		const expected = copy(assessment);
 
 		return request(app.getHttpServer())
-			.post(`/courses/${assignment.courseId}/assignments/${assessment.assignmentId}/assessments`)
+			.post(`/courses/${course.id}/assignments/${assessment.assignmentId}/assessments`)
 			.send(assessment)
 			.expect(201)
 			.expect(({ body }) => {
@@ -258,7 +258,7 @@ describe("POST-REQUESTS of AssessmentController (e2e)", () => {
 		const expected = copy(partialAssessment);
 
 		return request(app.getHttpServer())
-			.post(`/courses/${assignment.courseId}/assignments/${assessment.assignmentId}/assessments/${assessment.id}`)
+			.post(`/courses/${course.id}/assignments/${assessment.assignmentId}/assessments/${assessment.id}`)
 			.send(partialAssessment)
 			.expect(201)
 			.expect(({ body }) => {
