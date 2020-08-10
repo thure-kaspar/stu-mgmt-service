@@ -30,6 +30,7 @@ async function bootstrap(): Promise<void> {
 		.addTag("assessments")
 		.addTag("groups")
 		.addTag("users")
+		.addTag("assignment-registration")
 		.addTag("assessment-allocation")
 		.addTag("test")
 		.build();

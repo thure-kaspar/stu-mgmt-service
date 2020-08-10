@@ -60,21 +60,17 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 		const groupQuery = this.createQueryBuilder("registration")
 			.where("registration.assignmentId = :assignmentId", { assignmentId })
 			.innerJoinAndSelect("registration.group", "group")
-			.groupBy("registration.groupId")
-			.orderBy("group.name")
-			.distinct(true);
+			.distinctOn(["group.name"])
+			.orderBy("group.name");
 			
 		const registrationsGroups = await groupQuery.getMany();
-		console.log(groupQuery);
 
 		const participantQuery = this.createQueryBuilder("registration")
 			.where("registration.assignmentId = :assignmentId", { assignmentId })
 			.innerJoinAndSelect("registration.participant", "participant")
-			.innerJoinAndSelect("participant", "participant.user")
-			.groupBy("registration.groupId");
+			.innerJoinAndSelect("participant.user", "user");
 
 		const registrationsParticipants = await participantQuery.getMany();
-		console.log(registrationsParticipants);
 
 		// Map groupIds to groups
 		const groupMap = new Map<GroupId, Group>();
@@ -89,9 +85,7 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 			}));
 		});
 
-		const groups = Object.values(groupMap) as Group[];
-		console.log(groups);
-		return groups;
+		return Array.from(groupMap.values());
 	}
 
 	/**
@@ -102,11 +96,14 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 	async getRegisteredGroupWithMembers(assignmentId: AssignmentId, groupId: GroupId): Promise<Group> {
 		const query = await this.createQueryBuilder("registration")
 			.where("registration.assignmentId = :assignmentId", { assignmentId })
-			.innerJoinAndSelect("registration.group", "group", "group.id = :groupId", { groupId })
+			.andWhere("registration.groupId = :groupId", { groupId })
+			.innerJoinAndSelect("registration.group", "group")
 			.innerJoinAndSelect("registration.participant", "participant")
 			.innerJoinAndSelect("participant.user", "user")
 			.getMany();
-		
+	
+		if (query.length == 0) throw new EntityNotFoundError(Group, null);
+
 		const userGroupRelations: UserGroupRelation[] = [];
 		query.forEach(registration => {
 			userGroupRelations.push(new UserGroupRelation({
