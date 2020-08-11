@@ -18,10 +18,11 @@ import { Guards } from "./guards";
 import { QueryHandlers } from "./queries";
 import { Repositories } from "./repositories";
 import { Services } from "./services";
+import { GroupRegistrationRelation } from "./entities/group-registration-relation.entity";
 
 @Module({
 	imports: [
-		TypeOrmModule.forFeature([...Repositories, UserRepository, AssessmentEvent]),
+		TypeOrmModule.forFeature([...Repositories, UserRepository, AssessmentEvent, GroupRegistrationRelation]),
 		CqrsModule,
 		HttpModule,
 		AuthModule

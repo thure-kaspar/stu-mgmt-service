@@ -1,17 +1,19 @@
-import { Controller, Get, Param, Post, UseGuards, Delete } from "@nestjs/common";
+import { Controller, Delete, Get, Param, Post, Req, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
-import { ApiOperation, ApiTags, ApiBearerAuth } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { Request } from "express";
 import { UserId } from "../../shared/entities/user.entity";
+import { PaginatedResult } from "../../utils/http-utils";
 import { GetCourse, GetSelectedParticipant } from "../decorators/decorators";
 import { GroupDto } from "../dto/group/group.dto";
 import { AssignmentId } from "../entities/assignment.entity";
 import { CourseId } from "../entities/course.entity";
 import { GroupId } from "../entities/group.entity";
 import { CourseMemberGuard } from "../guards/course-member.guard";
+import { TeachingStaffGuard } from "../guards/teaching-staff.guard";
 import { Course } from "../models/course.model";
 import { Participant } from "../models/participant.model";
 import { AssignmentRegistrationService } from "../services/assignment-registration.service";
-import { TeachingStaffGuard } from "../guards/teaching-staff.guard";
 
 @ApiBearerAuth()
 @ApiTags("assignment-registration")
@@ -62,11 +64,12 @@ export class AssignmentRegistrationController {
 	})
 	@Get("groups")
 	getRegisteredGroups(
+		@Req() request: Request,
 		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: AssignmentId,
 	): Promise<GroupDto[]> {
 
-		return this.registrations.getRegisteredGroupsWithMembers(assignmentId);
+		return PaginatedResult(this.registrations.getRegisteredGroupsWithMembers(assignmentId), request);
 	}
 
 	@ApiOperation({

@@ -8,11 +8,11 @@ import { GroupWithAssignedEvaluatorDto } from "../../src/course/queries/groups-w
 import { createApplication, createApplication_STUDENT } from "../mocks/application.mock";
 import { ASSESSMENT_ALLOCATIONS_MOCK } from "../mocks/assessment-allocation.mock";
 import { AssessmentsMock } from "../mocks/assessments.mock";
-import { ASSIGNMENTS_ALL, ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA_IN_REVIEW_SINGLE } from "../mocks/assignments.mock";
+import { ASSIGNMENTS_ALL, ASSIGNMENT_JAVA_IN_REVIEW_SINGLE } from "../mocks/assignments.mock";
 import { CoursesMock, COURSE_JAVA_1920 } from "../mocks/courses.mock";
 import { DbMockService } from "../mocks/db-mock.service";
 import { GROUP_EVENTS_MOCK } from "../mocks/groups/group-events.mock";
-import { GROUPS_ALL, GROUP_1_JAVA, GROUP_2_JAVA, GROUPS_JAVA_1920 } from "../mocks/groups/groups.mock";
+import { GROUPS_ALL, GROUPS_JAVA_1920, GROUP_1_JAVA, GROUP_2_JAVA } from "../mocks/groups/groups.mock";
 import { UserGroupRelationsMock } from "../mocks/groups/user-group-relations.mock";
 import { UsersMock, USER_MGMT_ADMIN_JAVA_LECTURER, USER_STUDENT_JAVA } from "../mocks/users.mock";
 import { copy } from "../utils/object-helper";
@@ -155,42 +155,6 @@ describe("GET-REQUESTS of GroupController (e2e)", () => {
 					const result = body as GroupEventDto[];
 					expect(result.length).toBeGreaterThan(5); 
 					// TODO: Check if sorting + data is correct (Deserialize date from JSON)
-				});
-		});
-	
-	});
-
-	describe("(GET) /groups/{groupId}/assignments/{assigmentId}", () => {
-	
-		it("Generates a snapshot of the group's members at the time of the assignment's end date", () => {
-			const assignment = ASSIGNMENT_JAVA_CLOSED;
-			const group = GROUP_1_JAVA;
-
-			return request(app.getHttpServer())
-				.get(`/courses/${course.id}/groups/${group.id}/assignments/${assignment.id}`)
-				.expect(({ body }) => {
-					const result = body as GroupDto;
-					expect(result).toBeTruthy();
-					expect(result.members.length).toEqual(2);
-				});
-		});
-	
-	});
-
-	describe("(GET) /groups/assignments/{assignmentId}", () => {
-		
-		it("Generates a snapshot of the group constellations at the time of the assignment's end date.", () => {
-			const assignment = ASSIGNMENT_JAVA_CLOSED;
-
-			return request(app.getHttpServer())
-				.get(`/courses/${course.id}/groups/assignments/${assignment.id}`)
-				.expect(({ body }) => {
-					const result = body as GroupDto[];
-					expect(result).toBeTruthy();
-					expect(result.length).toEqual(3);
-					expect(result[0].members.length).toEqual(2);
-					expect(result[1].members.length).toEqual(0);
-					expect(result[2].members.length).toEqual(2);
 				});
 		});
 	

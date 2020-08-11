@@ -42,25 +42,22 @@ export class AssignmentRegistrationService {
 	/**
 	 * Returns all groups and their members that are registered for this assignment.
 	 */
-	async getRegisteredGroupsWithMembers(assignmentId: AssignmentId): Promise<GroupDto[]> {
-		const groups = await this.registrations.getRegisteredGroupsWithMembers(assignmentId);
-		return groups.map(g => DtoFactory.createGroupDto(g));
+	async getRegisteredGroupsWithMembers(assignmentId: AssignmentId): Promise<[GroupDto[], number]> {
+		return await this.registrations.getRegisteredGroupsWithMembers(assignmentId);
 	}
 
 	/**
 	 * Returns a group and its members for the specified assignment.
 	 */
 	async getRegisteredGroupWithMembers(assignmentId: AssignmentId, groupId: GroupId): Promise<GroupDto> {
-		const group = await this.registrations.getRegisteredGroupWithMembers(assignmentId, groupId);
-		return DtoFactory.createGroupDto(group);
+		return this.registrations.getRegisteredGroupWithMembers(assignmentId, groupId);
 	}
 
 	/**
 	 * Returns the registered group of a participant for an assignment.
 	 */
 	async getRegisteredGroupOfUser(assignmentId: AssignmentId, userId: UserId): Promise<GroupDto> {
-		const group = await this.registrations.getRegisteredGroupOfUser(assignmentId, userId);
-		return DtoFactory.createGroupDto(group);
+		return this.registrations.getRegisteredGroupOfUser(assignmentId, userId);
 	}
 
 	/**

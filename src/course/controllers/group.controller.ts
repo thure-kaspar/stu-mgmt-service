@@ -106,35 +106,6 @@ export class GroupController {
 		return this.groupService.getGroupHistoryOfCourse(courseId);
 	}
 
-	@Get(":groupId/assignments/:assignmentId")
-	@ApiOperation({
-		operationId: "getGroupFromAssignment",
-		summary: "Get snapshot of a group at assignment end.",
-		description: "Returns a snapshot of the group's members at the time of the assignment's end."
-	})
-	getGroupFromAssignment(
-		@Param("courseId") courseId: CourseId,
-		@Param("groupId") groupId: GroupId,
-		@Param("assignmentId") assignmentId: string
-	): Promise<GroupDto> {
-		
-		return this.groupService.getGroupFromAssignment(groupId, assignmentId);
-	}
-
-	@Get("assignments/:assignmentId")
-	@ApiOperation({
-		operationId: "getGroupsFromAssignment",
-		summary: "Get snapshot of groups at assignment end.",
-		description: "Returns a snapshot of the group constellations at the time of the assignment's end."
-	})
-	getGroupsFromAssignment(
-		@Param("courseId") courseId: CourseId,
-		@Param("assignmentId") assignmentId: string
-	): Promise<GroupDto[]> {
-		
-		return this.groupService.getGroupsFromAssignment(courseId, assignmentId);
-	}
-
 	@Get("assignments/:assignmentId/with-assigned-evaluator")
 	@ApiOperation({
 		operationId: "getGroupsWithAssignedEvaluator",

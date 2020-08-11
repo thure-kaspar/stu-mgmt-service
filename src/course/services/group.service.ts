@@ -225,7 +225,7 @@ export class GroupService {
 	/**
 	 * Returns all groups and their members that are registered for this assignment.
 	 */
-	async getGroupsFromAssignment(courseId: CourseId, assignmentId: string): Promise<GroupDto[]> {
+	async getGroupsFromAssignment(courseId: CourseId, assignmentId: string): Promise<[GroupDto[], number]> {
 		return this.registrations.getRegisteredGroupsWithMembers(assignmentId);
 	}
 
