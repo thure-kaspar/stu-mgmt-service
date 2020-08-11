@@ -40,6 +40,7 @@ export class GroupController {
 		description: "Creates a new group, if course allows group creation. If request was triggered by student, student is automatically joining the group."
 	})
 	createGroup(
+		@Param("courseId") courseId: CourseId,
 		@GetCourse() course: Course, 
 		@GetParticipant() participant: Participant,
 		@Body() groupDto: GroupDto,
@@ -70,6 +71,9 @@ export class GroupController {
 	@Post(":groupId/users/:userId")
 	@UseGuards(SelectedParticipantGuard, GroupGuard)
 	addUserToGroup(
+		@Param("courseId") courseId: CourseId,
+		@Param("groupId") groupId: GroupId,
+		@Param("userId") userId: UserId,
 		@GetCourse() course: Course,
 		@GetGroup() group: Group,
 		@GetParticipant() participant: Participant,
