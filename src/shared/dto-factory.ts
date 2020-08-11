@@ -153,6 +153,10 @@ export abstract class DtoFactory {
 			assessmentDto.partialAssessments = assessment.partialAssessments.map(p => p.toDto());
 		}
 
+		if (assessment.assignment) {
+			assessmentDto.assignment = this.createAssignmentDto(assessment.assignment);
+		}
+
 		// If assessment belongs to a single student
 		if (assessment.assessmentUserRelations?.length == 1) {
 			assessmentDto.userId = assessment.assessmentUserRelations[0].userId;
