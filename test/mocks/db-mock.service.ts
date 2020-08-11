@@ -6,12 +6,13 @@ import { AssessmentUserRelation } from "../../src/course/entities/assessment-use
 import { Assessment } from "../../src/course/entities/assessment.entity";
 import { AssignmentRegistration } from "../../src/course/entities/assignment-group-registration.entity";
 import { AssignmentTemplate } from "../../src/course/entities/assignment-template.entity";
-import { Assignment } from "../../src/course/entities/assignment.entity";
+import { Assignment, AssignmentId } from "../../src/course/entities/assignment.entity";
 import { CourseConfig } from "../../src/course/entities/course-config.entity";
 import { Course } from "../../src/course/entities/course.entity";
 import { GroupEvent } from "../../src/course/entities/group-event.entity";
+import { GroupRegistrationRelation } from "../../src/course/entities/group-registration-relation.entity";
 import { GroupSettings } from "../../src/course/entities/group-settings.entity";
-import { Group } from "../../src/course/entities/group.entity";
+import { Group, GroupId } from "../../src/course/entities/group.entity";
 import { PartialAssessment } from "../../src/course/entities/partial-assessment.entity";
 import { Participant } from "../../src/course/entities/participant.entity";
 import { UserGroupRelation } from "../../src/course/entities/user-group-relation.entity";
@@ -27,11 +28,10 @@ import { COURSE_CONFIGS_MOCK } from "./course-config/course-config.mock";
 import { GROUP_SETTINGS_MOCK } from "./course-config/group-settings.mock";
 import { CoursesMock } from "./courses.mock";
 import { getGroupEventEntities } from "./groups/group-events.mock";
-import { GROUPS_ALL } from "./groups/groups.mock";
-import { GROUP_1_DEFAULT, GROUP_2_DEFAULT } from "./groups/registered-groups-for-assignment.mock";
+import { GROUPS_ALL, GROUP_1_JAVA, GROUP_2_JAVA, GROUP_4_JAVA } from "./groups/groups.mock";
 import { UserGroupRelationsMock } from "./groups/user-group-relations.mock";
 import { PARTIAL_ASSESSMENT_MOCK } from "./partial-assessments.mock";
-import { COURSE_PARTICIPANTS_ALL } from "./participants/participants.mock";
+import { COURSE_PARTICIPANTS_ALL, PARTICIPANT_JAVA_1920_STUDENT, PARTICIPANT_JAVA_1920_STUDENT_2, PARTICIPANT_JAVA_1920_STUDENT_ELSHAR, PARTICIPANT_JAVA_1920_STUDENT_KUNOLD } from "./participants/participants.mock";
 import { AssessmentUserRelationsMock } from "./relations.mock";
 import { UsersMock } from "./users.mock";
 
@@ -182,10 +182,10 @@ export class DbMockService {
 	async createParticipants(): Promise<void> {
 		const allParticipants: Partial<Participant>[] = COURSE_PARTICIPANTS_ALL.map(p => {
 			return {
-				id: p.id,
+				id: p.participant.id,
 				courseId: p.courseId,
 				userId: p.participant.userId,
-				role: p.participant.role
+				role: p.participant.participant.role
 			};
 		});
 
@@ -211,7 +211,6 @@ export class DbMockService {
 
 	async createAssignmentRegistrations(): Promise<void> {
 		const repo = this.con.getRepository(AssignmentRegistration);
-		const groups = [GROUP_1_DEFAULT, GROUP_2_DEFAULT]; //REGISTERED_GROUPS_AND_MEMBERS;
 
 		const predicate = (a: AssignmentDto): boolean => {
 			return a.state === AssignmentState.IN_PROGRESS || a.state === AssignmentState.IN_REVIEW || a.state === AssignmentState.EVALUATED;
@@ -222,23 +221,24 @@ export class DbMockService {
 			//...ASSIGNMENTS_JAVA_2020.filter(predicate)
 		];
 
+		const registrationForGroup = (assignmentId: AssignmentId, groupId: GroupId, participantIds: number[]): AssignmentRegistration => {
+			return new AssignmentRegistration({
+				assignmentId,
+				groupId,
+				groupRelations: participantIds.map(id => new GroupRegistrationRelation({ participantId: id }))
+			});
+		};
+
 		const registrations: AssignmentRegistration[] = [];
 		startedAssignments.forEach(assignment => {
-			groups.forEach(groupWithCourseId => {
-				groupWithCourseId.userGroupRelations.forEach(userRel => {
-					registrations.push(
-						new AssignmentRegistration({
-							assignmentId: assignment.id,
-							groupId: groupWithCourseId.id,
-							userId: userRel.userId,
-							participantId: COURSE_PARTICIPANTS_ALL.find(p => p.participant.userId === userRel.userId).id
-						})
-					);
-				});
-			});
+			registrations.push(
+				registrationForGroup(assignment.id, GROUP_1_JAVA.id, [PARTICIPANT_JAVA_1920_STUDENT.id, PARTICIPANT_JAVA_1920_STUDENT_2.id]),
+				registrationForGroup(assignment.id, GROUP_4_JAVA.id, [PARTICIPANT_JAVA_1920_STUDENT_ELSHAR.id, PARTICIPANT_JAVA_1920_STUDENT_KUNOLD.id]),
+				registrationForGroup(assignment.id, GROUP_2_JAVA.id, []),
+			);
 		});
 
-		await repo.insert(registrations).catch(error => console.error(error));
+		await repo.save(registrations).catch(error => console.error(error));
 	}
 
 }

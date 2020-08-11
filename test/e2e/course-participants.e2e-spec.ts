@@ -51,7 +51,7 @@ describe("GET-REQUESTS of CourseController (e2e)", () => {
 
 		it("Filters STUDENTs", () => {
 			const role = CourseRole.STUDENT;
-			const expected = COURSE_JAVA_1920_PARTICIPANTS.filter(p => p.participant.role === role);
+			const expected = COURSE_JAVA_1920_PARTICIPANTS.filter(p => p.participant.participant.role === role);
 			console.assert(expected.length > 0, "Expecting >1 STUDENT.");
 
 			const queryString = `courseRole=${role}`;
@@ -71,7 +71,7 @@ describe("GET-REQUESTS of CourseController (e2e)", () => {
 
 		it("Filters TUTORs", () => {
 			const role = CourseRole.TUTOR;
-			const expected = COURSE_JAVA_1920_PARTICIPANTS.filter(p => p.participant.role === role);
+			const expected = COURSE_JAVA_1920_PARTICIPANTS.filter(p => p.participant.participant.role === role);
 			console.assert(expected.length > 0, "Expecting >1 TUTOR.");
 
 			const queryString = `courseRole=${role}`;
@@ -92,7 +92,7 @@ describe("GET-REQUESTS of CourseController (e2e)", () => {
 		
 		it("Filters LECTURERs", () => {
 			const role = CourseRole.LECTURER;
-			const expected = COURSE_JAVA_1920_PARTICIPANTS.filter(p => p.participant.role === role);
+			const expected = COURSE_JAVA_1920_PARTICIPANTS.filter(p => p.participant.participant.role === role);
 			console.assert(expected.length > 0, "Expecting >1 LECTURER.");
 
 			const queryString = `courseRole=${role}`;
@@ -113,7 +113,7 @@ describe("GET-REQUESTS of CourseController (e2e)", () => {
 		it("Filters LECTURERs and TUTORs at once", () => {
 			const role1 = CourseRole.LECTURER;
 			const role2 = CourseRole.TUTOR;
-			const expected = COURSE_JAVA_1920_PARTICIPANTS.filter(p => p.participant.role === role1 || p.participant.role === role2);
+			const expected = COURSE_JAVA_1920_PARTICIPANTS.filter(p => p.participant.participant.role === role1 || p.participant.participant.role === role2);
 
 			const queryString = `courseRole=${role1}&courseRole=${role2}`;
 
@@ -128,7 +128,7 @@ describe("GET-REQUESTS of CourseController (e2e)", () => {
 
 		it("Filters by username", () => {
 			const username = "m";
-			const expected = COURSE_JAVA_1920_PARTICIPANTS.filter(p => p.participant.username.includes(username));
+			const expected = COURSE_JAVA_1920_PARTICIPANTS.filter(p => p.participant.participant.username.includes(username));
 			console.assert(expected.length > 1, "Expecting >1 participants to match username");
 
 			const queryString = `username=${username}`;
