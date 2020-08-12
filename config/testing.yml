@@ -1,4 +1,19 @@
+server:
+  port: 9999
+
 db: 
-  type: "sqlite"
-  database: "../../StudentMgmtDb_Test.db"
+  type: "postgres"
+  port: 5432
+  database: "StudentMgmtTestDb"
+  host: "localhost"
+  username: "postgres"
+  password: "admin"
   synchronize: true
+  dropSchema: true
+
+jwt:
+  secret: "jwt-dev-secret"
+
+logger:
+  requests: false
+  dbErrors: true

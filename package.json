@@ -15,13 +15,13 @@
     "start:prod": "env NODE_ENV=production node dist/main",
     "lint": "eslint src test --ext .ts,.tsx",
     "lint:fix": "eslint src test --ext .ts,.tsx --fix",
-    "test": "env NODE_ENV=demo jest --config ./test/jest-unit.json",
-    "test:watch": "env NODE_ENV=demo jest --watch --config ./test/jest-unit.json",
-    "test:cov": "env NODE_ENV=demo jest --coverage --config ./test/jest-unit.json",
-    "test:debug": "env NODE_ENV=demo node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand --config ./test/jest-unit.json",
-    "test:e2e": "env NODE_ENV=demo jest --runInBand --config ./test/jest-e2e.json",
-    "test:e2ecov": "env NODE_ENV=demo jest --runInBand --config ./test/jest-e2e.json --coverage",
-    "script:demodb": "env NODE_ENV=demo jest --runInBand --config ./scripts/jest-e2e.json"
+    "test": "env NODE_ENV=testing jest --config ./test/jest-unit.json",
+    "test:watch": "env NODE_ENV=testing jest --watch --config ./test/jest-unit.json",
+    "test:cov": "env NODE_ENV=testing jest --coverage --config ./test/jest-unit.json",
+    "test:debug": "env NODE_ENV=testing node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand --config ./test/jest-unit.json",
+    "test:e2e": "env NODE_ENV=testing jest --runInBand --config ./test/jest-e2e.json",
+    "test:e2ecov": "env NODE_ENV=testing jest --runInBand --config ./test/jest-e2e.json --coverage",
+    "script:demodb": "env NODE_ENV=testing jest --runInBand --config ./scripts/jest-e2e.json"
   },
   "dependencies": {
     "@nestjs/common": "^7.0.8",

@@ -1,2 +1,2 @@
-process.env.JWT_SECRET = "dev_secret";
-process.env.NODE_ENV = "demo";
+process.env.JWT_SECRET = "jwt-dev-secret";
+process.env.NODE_ENV = "testing";
