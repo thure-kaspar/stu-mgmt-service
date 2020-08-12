@@ -185,14 +185,13 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 	 * Removes the registration of a user.
 	 */
 	async removeRegistrationForUser(assignmentId: AssignmentId, userId: UserId): Promise<boolean> {
-		const registration = await this.findOneOrFail({
-			where: {
-				assignmentId,
-				userId
-			}
-		});
+		const relation = await this.groupRelationsRepository.createQueryBuilder("relation")
+			.innerJoin("relation.assignmentRegistration", "registration", "registration.assignmentId = :assignmentId", { assignmentId })
+			.innerJoin("relation.participant", "participant", "participant.userId = :userId", { userId })
+			.getOne();
 
-		return !!(await this.remove(registration));
+		if (!relation) throw new EntityNotFoundError(GroupRegistrationRelation, { assignmentId, userId });
+		return !!(await this.groupRelationsRepository.remove(relation));
 	}
 
 	/**
