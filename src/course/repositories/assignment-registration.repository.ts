@@ -3,6 +3,7 @@ import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
 import { DtoFactory } from "../../shared/dto-factory";
 import { UserId } from "../../shared/entities/user.entity";
 import { AssignmentGroupTuple } from "../../user/dto/assignment-group-tuple.dto";
+import { AssignmentRegistrationFilter } from "../dto/assignment/assignment-registration.filter";
 import { GroupDto } from "../dto/group/group.dto";
 import { AssignmentRegistration } from "../entities/assignment-group-registration.entity";
 import { AssignmentId } from "../entities/assignment.entity";
@@ -82,13 +83,22 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 	 * Includes relations:
 	 * - Group (with members)
 	 */
-	async getRegisteredGroupsWithMembers(assignmentId: AssignmentId): Promise<[GroupDto[], number]> {
+	async getRegisteredGroupsWithMembers(assignmentId: AssignmentId, filter?: AssignmentRegistrationFilter): Promise<[GroupDto[], number]> {
+		const { groupname, skip, take } = filter || { };
+
 		const query = this.createQueryBuilder("registration")
 			.where("registration.assignmentId = :assignmentId", { assignmentId })
 			.innerJoinAndSelect("registration.group", "group")
 			.leftJoinAndSelect("registration.groupRelations", "groupRelations")
 			.leftJoinAndSelect("groupRelations.participant", "participant")
-			.leftJoinAndSelect("participant.user", "user");
+			.leftJoinAndSelect("participant.user", "user")
+			.orderBy("group.name", "ASC")
+			.skip(skip)
+			.take(take);
+	
+		if (groupname) {
+			query.andWhere("group.name ILIKE :groupname", { groupname: `%${groupname}%` });
+		}
 
 		const [result, count] = await query.getManyAndCount();
 		

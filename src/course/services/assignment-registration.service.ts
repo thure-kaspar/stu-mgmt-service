@@ -1,20 +1,20 @@
 import { Injectable } from "@nestjs/common";
+import { EventBus } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UserId } from "../../shared/entities/user.entity";
+import { AssignmentRegistrationFilter } from "../dto/assignment/assignment-registration.filter";
+import { GroupDto } from "../dto/group/group.dto";
 import { AssignmentRegistration } from "../entities/assignment-group-registration.entity";
 import { AssignmentId } from "../entities/assignment.entity";
 import { CourseId } from "../entities/course.entity";
 import { Group, GroupId } from "../entities/group.entity";
-import { AssignmentRegistrationRepository } from "../repositories/assignment-registration.repository";
-import { GroupRepository } from "../repositories/group.repository";
-import { EventBus } from "@nestjs/cqrs";
+import { GroupUnregistered } from "../events/assignment/group-unregistered.event";
 import { UserRegistered } from "../events/assignment/user-registered.event";
 import { UserUnregistered } from "../events/assignment/user-unregistered.event";
-import { GroupUnregistered } from "../events/assignment/group-unregistered.event";
-import { Participant } from "../models/participant.model";
 import { Course } from "../models/course.model";
-import { DtoFactory } from "../../shared/dto-factory";
-import { GroupDto } from "../dto/group/group.dto";
+import { Participant } from "../models/participant.model";
+import { AssignmentRegistrationRepository } from "../repositories/assignment-registration.repository";
+import { GroupRepository } from "../repositories/group.repository";
 
 @Injectable()
 export class AssignmentRegistrationService {
@@ -42,8 +42,8 @@ export class AssignmentRegistrationService {
 	/**
 	 * Returns all groups and their members that are registered for this assignment.
 	 */
-	async getRegisteredGroupsWithMembers(assignmentId: AssignmentId): Promise<[GroupDto[], number]> {
-		return await this.registrations.getRegisteredGroupsWithMembers(assignmentId);
+	async getRegisteredGroupsWithMembers(assignmentId: AssignmentId, filter?: AssignmentRegistrationFilter): Promise<[GroupDto[], number]> {
+		return await this.registrations.getRegisteredGroupsWithMembers(assignmentId, filter);
 	}
 
 	/**
