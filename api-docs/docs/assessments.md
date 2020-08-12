@@ -1,20 +1,6 @@
 # Assessments
 This article explains how you can create, update and find assessments using the Student-Management-System's API.
 
-- [Assessments](#assessments)
-	- [Creating assessments](#creating-assessments)
-	- [Adding partial assessments](#adding-partial-assessments)
-		- [Endpoint for creating partial assessments](#endpoint-for-creating-partial-assessments)
-		- [Adding partial assessments in the update](#adding-partial-assessments-in-the-update)
-	- [Updating assessments](#updating-assessments)
-		- [Updating native properties](#updating-native-properties)
-		- [Updating partial assessments](#updating-partial-assessments)
-	- [Searching assessments](#searching-assessments)
-		- [Assessments of an assignment](#assessments-of-an-assignment)
-		- [Specific assessment](#specific-assessment)
-		- [All assessments of a group](#all-assessments-of-a-group)
-		- [All assessment of a course participant](#all-assessment-of-a-course-participant)
-
 ## Creating assessments
 Creating assessment allows you to grade assignments. By doing so, you award points to students, which will then be counted towards the fulfillment of the specified [Admission criteria](TODO).
 

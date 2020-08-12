@@ -1,29 +1,28 @@
-import { Injectable, BadRequestException } from "@nestjs/common";
-import { CourseParticipantsFilter } from "../dto/course/course-participants.filter";
-import { UserDto } from "../../shared/dto/user.dto";
-import { DtoFactory } from "../../shared/dto-factory";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { CourseUserRepository } from "../repositories/course-user-repository";
-import { CourseClosedException } from "../exceptions/custom-exceptions";
 import { CourseRole } from "../../shared/enums";
+import { toDtos } from "../../shared/interfaces/to-dto.interface";
+import { CourseParticipantsFilter } from "../dto/course-participant/course-participants.filter";
+import { ParticipantDto } from "../dto/course-participant/participant.dto";
 import { Course, CourseId } from "../entities/course.entity";
+import { Participant } from "../entities/participant.entity";
+import { CourseClosedException } from "../exceptions/custom-exceptions";
 import { CourseRepository } from "../repositories/course.repository";
-import { CourseUserRelation } from "../entities/course-user-relation.entity";
-import { CourseUserRelationRepository } from "../repositories/course-user-relation.repository";
+import { ParticipantRepository } from "../repositories/participant.repository";
+import { UserId } from "../../shared/entities/user.entity";
 
 @Injectable()
 export class CourseParticipantsService {
 	
-	constructor(@InjectRepository(CourseUserRepository) private courseUserRepo: CourseUserRepository,
-				@InjectRepository(Course) private courseRepo: CourseRepository,
-				@InjectRepository(CourseUserRelation) private courseUserRelationRepo: CourseUserRelationRepository) { }
+	constructor(@InjectRepository(Course) private courseRepo: CourseRepository,
+				@InjectRepository(Participant) private participantRepo: ParticipantRepository) { }
 
 	/**
 	 * Adds the user to the course. 
 	 * If the course requires a password, the given password must match the specified password.
 	 * Throws exception, if course is closed or password does not match.
 	 */
-	async addUser(courseId: CourseId, userId: string, password?: string): Promise<any> { // TODO: don't return any
+	async addParticipant(courseId: CourseId, userId: UserId, password?: string): Promise<any> { // TODO: don't return any
 		const course = await this.courseRepo.getCourseWithConfig(courseId);
 
 		if (course.isClosed) throw new CourseClosedException(course.id);
@@ -34,13 +33,12 @@ export class CourseParticipantsService {
 			throw new BadRequestException("The given password was incorrect.");
 		}
 
-		return this.courseUserRelationRepo.createCourseUserRelation(courseId, userId, CourseRole.STUDENT);
+		return this.participantRepo.createParticipant(courseId, userId, CourseRole.STUDENT);
 	}
 
-	async getUsersOfCourse(courseId: CourseId, filter?: CourseParticipantsFilter): Promise<[UserDto[], number]> {
-		const [users, count] = await this.courseUserRepo.getUsersOfCourse(courseId, filter);
-		const userDtos = users.map(user => DtoFactory.createUserDto(user, user.courseUserRelations[0].role));
-		return [userDtos, count];
+	async getParticipants(courseId: CourseId, filter?: CourseParticipantsFilter): Promise<[ParticipantDto[], number]> {
+		const [participants, count] = await this.participantRepo.getParticipants(courseId, filter);
+		return [toDtos(participants), count];
 	}
 
 	/**
@@ -49,17 +47,17 @@ export class CourseParticipantsService {
 	 * Includes relations:
 	 * - Group (if exists, includes members)
 	 */
-	async getParticipant(courseId: CourseId, userId: string): Promise<UserDto> {
-		const user = await this.courseUserRepo.getParticipant(courseId, userId);
-		return DtoFactory.createUserDto(user, user.courseUserRelations[0].role);
+	async getParticipant(courseId: CourseId, userId: UserId): Promise<ParticipantDto> {
+		const participant = await this.participantRepo.getParticipant(courseId, userId);
+		return participant.toDto();
 	}
 
-	async updateRole(courseId: CourseId, userId: string, role: CourseRole): Promise<boolean> {
-		return this.courseUserRelationRepo.updateRole(courseId, userId, role);
+	async updateRole(courseId: CourseId, userId: UserId, role: CourseRole): Promise<boolean> {
+		return this.participantRepo.updateRole(courseId, userId, role);
 	}
 
-	async removeUser(courseId: CourseId, userId: string): Promise<boolean> {
-		return await this.courseUserRelationRepo.removeUser(courseId, userId);
+	async removeUser(courseId: CourseId, userId: UserId): Promise<boolean> {
+		return await this.participantRepo.removeUser(courseId, userId);
 	}
 
 }

@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { CourseConfigDto } from "../dto/course-config/course-config.dto";
-import { AdmissionCritera } from "./admission-criteria.entity";
+import { AdmissionCriteria } from "./admission-criteria.entity";
 import { AssignmentTemplate } from "./assignment-template.entity";
 import { Course, CourseId } from "./course.entity";
 import { GroupSettings } from "./group-settings.entity";
@@ -26,8 +26,8 @@ export class CourseConfig {
 	@OneToOne(type => GroupSettings, groupSettings => groupSettings.courseConfig, { cascade: ["insert"] })
 	groupSettings: GroupSettings;
 
-	@OneToOne(type => AdmissionCritera, admissionCriteria => admissionCriteria.courseConfig, { cascade: ["insert"], nullable: true })
-	admissionCriteria: AdmissionCritera;
+	@OneToOne(type => AdmissionCriteria, admissionCriteria => admissionCriteria.courseConfig, { cascade: ["insert"], nullable: true })
+	admissionCriteria: AdmissionCriteria;
 
 	@OneToMany(type => AssignmentTemplate, assignmentTemplate => assignmentTemplate.courseConfig, { cascade: ["insert"] })
 	assignmentTemplates: AssignmentTemplate[];

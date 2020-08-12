@@ -2,24 +2,26 @@ import { Repository, EntityRepository } from "typeorm";
 import { Course, CourseId } from "../entities/course.entity";
 import { CourseDto } from "../dto/course/course.dto";
 import { CourseFilter } from "../dto/course/course-filter.dto";
-import { AdmissionCritera } from "../entities/admission-criteria.entity";
+import { AdmissionCriteria } from "../entities/admission-criteria.entity";
 import { CourseConfig } from "../entities/course-config.entity";
 import { GroupSettings } from "../entities/group-settings.entity";
 import { AssignmentTemplate } from "../entities/assignment-template.entity";
 import { CourseCreateDto } from "../dto/course/course-create.dto";
-import { CourseUserRelation } from "../entities/course-user-relation.entity";
+import { Participant } from "../entities/participant.entity";
 import { CourseRole } from "../../shared/enums";
-import { User } from "../../shared/entities/user.entity";
+import { User, UserId } from "../../shared/entities/user.entity";
+import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
+import { CourseConfigDto } from "../dto/course-config/course-config.dto";
 
 @EntityRepository(Course)
 export class CourseRepository extends Repository<Course> {
 
 	/**
 	 * Inserts a new course in the database. Includes the CourseConfig (with child-entities).
-	 * If lecturers are included in the Dto, the CourseUserRelations will also be created.
+	 * If lecturers are included in the Dto, the Participants will also be created.
 	 */
-	async createCourse(courseDto: CourseCreateDto): Promise<Course> {
-		const course = this.createInsertableEntity(courseDto);
+	async createCourse(courseDto: CourseCreateDto, config: CourseConfigDto): Promise<Course> {
+		const course = this.createInsertableEntity(courseDto, config);
 		
 		if (courseDto.lecturers?.length > 0) {
 			const userRepo = this.manager.getRepository(User);
@@ -28,14 +30,14 @@ export class CourseRepository extends Repository<Course> {
 				where: courseDto.lecturers.map(username => ({ username: username }))
 			});
 
-			const courseUserRelations = lecturers.map(lecturer => {
-				const relation = new CourseUserRelation();
+			const participants = lecturers.map(lecturer => {
+				const relation = new Participant();
 				relation.userId = lecturer.id;
 				relation.role = CourseRole.LECTURER;
 				return relation;
 			});
 
-			course.courseUserRelations = courseUserRelations;
+			course.participants = participants;
 		}
 
 		return this.save(course);
@@ -75,7 +77,28 @@ export class CourseRepository extends Repository<Course> {
 	}
 
 	async getCourseWithUsers(id: string): Promise<Course> {
-		return this.findOneOrFail(id, { relations: ["courseUserRelations", "courseUserRelations.user"] });
+		return this.findOneOrFail(id, { relations: ["participants", "participants.user"] });
+	}
+
+	/**
+	 * Retrieves a course with a specific participant.  
+	 * Includes relations:
+	 * - Participants (1)
+	 * - Participant.User
+	 * @throws `EntityNotFoundError` if course or participant does not exist.
+	 */
+	async getCourseWithParticipant(id: CourseId, userId: UserId): Promise<Course> {
+		const query = this.createQueryBuilder("course")
+			.where("course.id = :id", { id })
+			.innerJoinAndSelect("course.participants", "participant", "participant.userId = :userId", { userId })
+			.innerJoinAndSelect("participant.user", "user")
+			.leftJoinAndSelect("participant.groupRelation", "groupRelation")
+			.leftJoinAndSelect("groupRelation.group", "group");
+		
+		const course = await query.getOne();
+
+		if (!course) throw new EntityNotFoundError(Course, { id, userId });
+		return course;
 	}
 
 	/**
@@ -121,7 +144,7 @@ export class CourseRepository extends Repository<Course> {
 	/**
 	 * Creates a Course entity from the given CourseDto, which should be used for insertion in the database.
 	 */
-	public createInsertableEntity(courseDto: CourseDto): Course {
+	public createInsertableEntity(courseDto: CourseDto, configDto: CourseConfigDto): Course {
 		const course = new Course(); // TODO: Can't simply call this.create because admissionCriterias structure doesn't match. (Would remove the need for the code below)
 		course.id = courseDto.id;
 		course.shortname = courseDto.shortname;
@@ -131,21 +154,21 @@ export class CourseRepository extends Repository<Course> {
 		course.isClosed = courseDto.isClosed;
 
 		course.config = new CourseConfig();
-		course.config.password = courseDto.config.password?.length > 0 ? courseDto.config.password : null; // Replace empty string with null
-		course.config.subscriptionUrl = courseDto.config.subscriptionUrl;
+		course.config.password = configDto.password?.length > 0 ? configDto.password : null; // Replace empty string with null
+		course.config.subscriptionUrl = configDto.subscriptionUrl;
 	
 		course.config.groupSettings = new GroupSettings();
-		Object.assign(course.config.groupSettings, courseDto.config.groupSettings);
+		Object.assign(course.config.groupSettings, configDto.groupSettings);
 
-		course.config.assignmentTemplates = courseDto.config.assignmentTemplates?.map(t => {
+		course.config.assignmentTemplates = configDto.assignmentTemplates?.map(t => {
 			const template = new AssignmentTemplate();
 			Object.assign(template, t);
 			return template;
 		});
 
-		if (courseDto.config.admissionCriteria?.criteria?.length > 0) {
-			course.config.admissionCriteria = new AdmissionCritera();
-			course.config.admissionCriteria.admissionCriteria = courseDto.config.admissionCriteria;
+		if (configDto.admissionCriteria?.criteria?.length > 0) {
+			course.config.admissionCriteria = new AdmissionCriteria();
+			course.config.admissionCriteria.admissionCriteria = configDto.admissionCriteria;
 		}
 
 		return course;

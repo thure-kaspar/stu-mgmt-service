@@ -11,6 +11,7 @@ import { COURSE_CONFIG_JAVA_1920 } from "../../mocks/course-config/course-config
 import { COURSE_INFO_2_2020, COURSE_JAVA_1920 } from "../../mocks/courses.mock";
 import { USER_STUDENT_2_JAVA, USER_STUDENT_JAVA } from "../../mocks/users.mock";
 import { convertToEntity, copy } from "../../utils/object-helper";
+import { CourseCreateDto } from "../../../src/course/dto/course/course-create.dto";
 
 const mock_CourseRepository = () => ({
 	createCourse: jest.fn().mockResolvedValue(convertToEntity(Course, COURSE_JAVA_1920)),
@@ -62,19 +63,20 @@ describe("CourseService", () => {
 	});
 
 	describe("createCourse", () => {
+		let courseCreateDto: CourseCreateDto;
 
 		beforeEach(() => { 
-			courseDto.config = copy(COURSE_CONFIG_JAVA_1920);
+			courseCreateDto = {...courseDto, config: copy(COURSE_CONFIG_JAVA_1920) };
 		});		
 		
 		it("Calls repository for creation", async () => {
-			await service.createCourse(courseDto);
+			await service.createCourse(courseCreateDto);
 			expect(courseRepository.createCourse).toHaveBeenCalledWith(courseDto);
 		});
 
 		it("Dto contains id -> Assigns id", async () => {
 			courseDto.id = "my-id";
-			await service.createCourse(courseDto);
+			await service.createCourse(courseCreateDto);
 			expect(courseRepository.createCourse).toHaveBeenCalledWith(courseDto);
 		});
 
@@ -83,18 +85,18 @@ describe("CourseService", () => {
 			const expected = copy(courseDto);
 			expected.id = expected.shortname + "-" + expected.semester;
 
-			await service.createCourse(courseDto);
+			await service.createCourse(courseCreateDto);
 			expect(courseRepository.createCourse).toHaveBeenCalledWith(expected);
 		});
 
 		it("Dto contains password -> Assigns password", async () => {
-			courseDto.config.password = "hasAPassword";
-			await service.createCourse(courseDto);
+			courseCreateDto.config.password = "hasAPassword";
+			await service.createCourse(courseCreateDto);
 			expect(courseRepository.createCourse).toHaveBeenCalledWith(courseDto);
 		});
 
 		it("Returns Dto", async () => {
-			await service.createCourse(courseDto);
+			await service.createCourse(courseCreateDto);
 			expect(DtoFactory.createCourseDto).toHaveBeenCalled();
 		});
 

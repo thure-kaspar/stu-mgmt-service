@@ -1,6 +1,8 @@
 import { Repository, EntityRepository } from "typeorm";
 import { GroupEvent } from "../entities/group-event.entity";
 import { CourseId } from "../entities/course.entity";
+import { GroupId } from "../entities/group.entity";
+import { UserId } from "../../shared/entities/user.entity";
 
 @EntityRepository(GroupEvent)
 export class GroupEventRepository extends Repository<GroupEvent> {
@@ -34,7 +36,7 @@ export class GroupEventRepository extends Repository<GroupEvent> {
 	 * @param courseId
 	 * @param [before] Allows to exclude all events that happened after the given date.
 	 */
-	getGroupHistoryOfUser(userId: string, courseId: CourseId, before?: Date): Promise<GroupEvent[]> {
+	getGroupHistoryOfUser(userId: UserId, courseId: CourseId, before?: Date): Promise<GroupEvent[]> {
 		const query = this.createQueryBuilder("event")
 			.innerJoin("event.group", "group")
 			.where("event.userId = :userId", { userId })
@@ -56,7 +58,7 @@ export class GroupEventRepository extends Repository<GroupEvent> {
 	 * @param groupId
 	 * @param [before] Allows to exclude all events that happened after the given date.
 	 */
-	getGroupHistoryOfGroup(groupId: string, before?: Date): Promise<GroupEvent[]> {
+	getGroupHistoryOfGroup(groupId: GroupId, before?: Date): Promise<GroupEvent[]> {
 		const query = this.createQueryBuilder("event")
 			.where("event.groupId = :groupId", { groupId })
 			.innerJoinAndSelect("event.user", "user")

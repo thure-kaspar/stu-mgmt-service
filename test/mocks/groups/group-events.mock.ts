@@ -1,7 +1,7 @@
 import { GroupEventDto } from "../../../src/course/dto/group/group-event.dto";
-import { UserJoinedGroupEvent } from "../../../src/course/events/user-joined-group.event";
+import { UserJoinedGroupEvent } from "../../../src/course/events/group/user-joined-group.event";
 import { USER_STUDENT_JAVA, USER_STUDENT_2_JAVA, USER_STUDENT_3_JAVA_TUTOR, USER_ELSHAR, USER_KUNOLD } from "../users.mock";
-import { UserLeftGroupEvent } from "../../../src/course/events/user-left-group.event";
+import { UserLeftGroupEvent } from "../../../src/course/events/group/user-left-group.event";
 import { GroupEvent } from "../../../src/course/entities/group-event.entity";
 import { GROUP_1_JAVA, GROUP_2_JAVA, GROUP_3_JAVA2020, GROUP_4_JAVA } from "./groups.mock";
 

@@ -7,6 +7,7 @@ import { getConnection } from "typeorm";
 import { EntityNotFoundFilter } from "./shared/entity-not-found.filter";
 import { ValidationPipe } from "@nestjs/common";
 import { StudentMgmtException } from "./course/exceptions/custom-exceptions";
+import { StudentMgmtEvent } from "./course/events";
 
 async function bootstrap(): Promise<void> {
 	const serverConfig = config.get("server");
@@ -30,10 +31,11 @@ async function bootstrap(): Promise<void> {
 		.addTag("assessments")
 		.addTag("groups")
 		.addTag("users")
+		.addTag("assignment-registration")
 		.addTag("assessment-allocation")
 		.addTag("test")
 		.build();
-	const document = SwaggerModule.createDocument(app, options, { extraModels: [StudentMgmtException] });
+	const document = SwaggerModule.createDocument(app, options, { extraModels: [StudentMgmtException, StudentMgmtEvent] });
 	SwaggerModule.setup("api", app, document);
 
 	// If demo environment, populate database with test data

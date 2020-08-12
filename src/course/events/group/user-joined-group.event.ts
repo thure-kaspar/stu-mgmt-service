@@ -1,12 +1,14 @@
 import { EventsHandler, IEventHandler } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
-import { GroupEvent } from "../entities/group-event.entity";
+import { GroupEvent } from "../../entities/group-event.entity";
 import { Repository } from "typeorm";
+import { GroupId } from "../../entities/group.entity";
+import { UserId } from "../../../shared/entities/user.entity";
 
 export class UserJoinedGroupEvent {
 	constructor(
-		public readonly groupId: string,
-		public readonly userId: string
+		public readonly groupId: GroupId,
+		public readonly userId: UserId
 	) { }
 }
 

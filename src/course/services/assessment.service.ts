@@ -10,7 +10,7 @@ import { Assignment } from "../entities/assignment.entity";
 import { AssignmentState } from "../../shared/enums";
 import { GroupService } from "./group.service";
 import { EventBus } from "@nestjs/cqrs";
-import { AssessmentScoreChangedEvent } from "../events/assessment-score-changed.event";
+import { AssessmentScoreChanged } from "../events/assessment/assessment-score-changed.event";
 import { AssessmentEvent } from "../entities/assessment-event.entity";
 import { Repository } from "typeorm";
 import { AssessmentEventDto } from "../dto/assessment/assessment-event.dto";
@@ -27,17 +27,12 @@ export class AssessmentService {
 	) { }
 
 	async createAssessment(assignmentId: string, assessmentDto: AssessmentCreateDto): Promise<AssessmentDto> {
-		// assignmentId from the path must be equal to the dto's assignmentId
-		if (assignmentId !== assessmentDto.assignmentId) {
-			throw new BadRequestException("AssessmentDto refers to a different Assignment.");
-		}
-
 		let userIds: string[];
 		// If assessment should apply to a group
 		if (assessmentDto.groupId) {
 			// Get ids of members that were in this group for the assignment
 			const group = await this.groupService.getGroupFromAssignment(assessmentDto.groupId, assignmentId);
-			userIds = group.users.map(x => x.id);
+			userIds = group.members.map(x => x.userId);
 		// If assessment should apply to single user
 		} else if (assessmentDto.userId) {
 			userIds = [assessmentDto.userId];
@@ -114,7 +109,7 @@ export class AssessmentService {
 
 		// Store event, if achieved points changed
 		if (original.achievedPoints !== updated.achievedPoints) {
-			this.events.publish(new AssessmentScoreChangedEvent(assessmentId, updatedBy, {
+			this.events.publish(new AssessmentScoreChanged(assessmentId, updatedBy, {
 				oldScore: original.achievedPoints,
 				newScore: updated.achievedPoints
 			}));

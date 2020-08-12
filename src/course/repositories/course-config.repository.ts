@@ -4,7 +4,7 @@ import { CourseConfigDto } from "../dto/course-config/course-config.dto";
 import { CourseConfigUpdateDto } from "../dto/course-config/course-config.dto";
 import { GroupSettings } from "../entities/group-settings.entity";
 import { AssignmentTemplate } from "../entities/assignment-template.entity";
-import { AdmissionCritera } from "../entities/admission-criteria.entity";
+import { AdmissionCriteria } from "../entities/admission-criteria.entity";
 import { CourseId } from "../entities/course.entity";
 
 @EntityRepository(CourseConfig)
@@ -56,7 +56,7 @@ export class CourseConfigRepository extends Repository<CourseConfig> {
 
 		// Admission criteria
 		if (configDto.admissionCriteria?.criteria?.length > 0) {
-			config.admissionCriteria = new AdmissionCritera();
+			config.admissionCriteria = new AdmissionCriteria();
 			config.admissionCriteria.admissionCriteria = configDto.admissionCriteria;
 		}
 		

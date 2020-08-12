@@ -32,7 +32,7 @@ export class UsersWithAssignedEvaluatorHandler implements IQueryHandler<UsersWit
 		// Query Users of course and join assessment allocation, if available to retrieve id of assigned evaluator.
 		const userQuery = this.userRepo.createQueryBuilder("user")
 			.leftJoinAndSelect("user.assessmentAllocations", "allocation", "allocation.assignmentId = :assignmentId", { assignmentId }) // Needs to be first param to allow reuse in subquery params :)
-			.innerJoin("user.courseUserRelations", "courseRelations", "courseRelations.courseId = :courseId", { courseId });
+			.innerJoin("user.participations", "participations", "participations.courseId = :courseId", { courseId });
 
 		if (skip) userQuery.skip(skip);
 		if (take) userQuery.take(take);

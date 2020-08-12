@@ -1,7 +1,7 @@
 import { UserDto } from "../../src/shared/dto/user.dto";
 import { UserRole, CourseRole } from "../../src/shared/enums";
 import { User } from "../../src/shared/entities/user.entity";
-import { CourseUserRelation } from "../../src/course/entities/course-user-relation.entity";
+import { Participant } from "../../src/course/entities/participant.entity";
 
 export const USER_STUDENT_JAVA: UserDto = {
 	id: "a019ea22-5194-4b83-8d31-0de0dc9bca53",
@@ -113,10 +113,10 @@ export function getUsersOfCourseMock(): User[] {
 		user.username = p.username;
 		user.rzName = p.rzName;
 		user.role = p.role;
-		user.courseUserRelations = [new CourseUserRelation()];
-		user.courseUserRelations[0].courseId = "java-wise1920";
-		user.courseUserRelations[0].userId = p.id;
-		user.courseUserRelations[0].role = CourseRole.STUDENT;
+		user.participations = [new Participant()];
+		user.participations[0].courseId = "java-wise1920";
+		user.participations[0].userId = p.id;
+		user.participations[0].role = CourseRole.STUDENT;
 
 		users.push(user);
 	});

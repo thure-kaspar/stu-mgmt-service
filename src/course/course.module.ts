@@ -1,19 +1,28 @@
-import { Module, HttpModule } from "@nestjs/common";
-import { TypeOrmModule } from "@nestjs/typeorm";
+import { HttpModule, Module } from "@nestjs/common";
 import { CqrsModule } from "@nestjs/cqrs";
+import { TypeOrmModule } from "@nestjs/typeorm";
 import { AuthModule } from "../auth/auth.module";
-import { QueryHandlers } from "./queries";
-import { EventHandlers } from "./events";
-import { Repositories } from "./repositories";
-import { Controllers } from "./controllers";
-import { Services } from "./services";
-import { Guards } from "./guards";
 import { UserRepository } from "../user/repositories/user.repository";
+import { Controllers } from "./controllers";
 import { AssessmentEvent } from "./entities/assessment-event.entity";
+import { AssessmentScoreChangedHandler } from "./events/assessment/assessment-score-changed.event";
+import { AssignmentCreatedNotificationHandler } from "./events/assignment/assignment-created.event";
+import { AssignmentStateChangedNotificationHandler } from "./events/assignment/assignment-state-changed.event";
+import { GroupRegisteredNotificationHandler } from "./events/assignment/group-registered.event";
+import { GroupUnregisteredNotificationHandler } from "./events/assignment/group-unregistered.event";
+import { UserRegisteredNotificationHandler } from "./events/assignment/user-registered.event";
+import { UserUnregisteredNotificationHandler } from "./events/assignment/user-unregistered.event";
+import { UserJoinedGroupHandler } from "./events/group/user-joined-group.event";
+import { UserLeftGroupHandler, UserLeftGroupNotificationHandler } from "./events/group/user-left-group.event";
+import { Guards } from "./guards";
+import { QueryHandlers } from "./queries";
+import { Repositories } from "./repositories";
+import { Services } from "./services";
+import { GroupRegistrationRelation } from "./entities/group-registration-relation.entity";
 
 @Module({
 	imports: [
-		TypeOrmModule.forFeature([...Repositories, UserRepository, AssessmentEvent]),
+		TypeOrmModule.forFeature([...Repositories, UserRepository, AssessmentEvent, GroupRegistrationRelation]),
 		CqrsModule,
 		HttpModule,
 		AuthModule
@@ -22,7 +31,20 @@ import { AssessmentEvent } from "./entities/assessment-event.entity";
 	providers: [
 		...Services,
 		...Guards,
-		...EventHandlers,
+		...[
+			UserJoinedGroupHandler, 
+			UserLeftGroupHandler, 
+			AssessmentScoreChangedHandler,
+		],
+		...[
+			UserLeftGroupNotificationHandler,
+			AssignmentCreatedNotificationHandler,
+			AssignmentStateChangedNotificationHandler,
+			GroupRegisteredNotificationHandler,
+			GroupUnregisteredNotificationHandler,
+			UserRegisteredNotificationHandler,
+			UserUnregisteredNotificationHandler
+		],
 		...QueryHandlers
 	]
 })

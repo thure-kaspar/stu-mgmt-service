@@ -1,61 +1,42 @@
-import { GroupService } from "../../../src/course/services/group.service";
-import { CourseRepository } from "../../../src/course/repositories/course.repository";
-import { DtoFactory } from "../../../src/shared/dto-factory";
-import { GroupRepository } from "../../../src/course/repositories/group.repository";
-import { TestingModule, Test } from "@nestjs/testing";
-import { GroupDto } from "../../../src/course/dto/group/group.dto";
-import { GROUP_1_JAVA, GROUP_2_JAVA } from "../../mocks/groups/groups.mock";
-import { copy, convertToEntity, convertToEntityNoRelations } from "../../utils/object-helper";
-import { COURSE_JAVA_1920 } from "../../mocks/courses.mock";
-import { UserGroupRelation } from "../../../src/course/entities/user-group-relation.entity";
-import { COURSE_CONFIG_JAVA_1920 } from "../../mocks/course-config/course-config.mock";
-import { Course, CourseId } from "../../../src/course/entities/course.entity";
-import { Group } from "../../../src/course/entities/group.entity";
-import { CourseConfig } from "../../../src/course/entities/course-config.entity";
-import { GroupSettings } from "../../../src/course/entities/group-settings.entity";
-import { GROUP_SETTINGS_GROUPS_ALLOWED_MIN2_MAX3_SELF } from "../../mocks/course-config/group-settings.mock";
-import { CourseUserRelation } from "../../../src/course/entities/course-user-relation.entity";
 import { EventBus } from "@nestjs/cqrs";
-import { UserJoinedGroupEvent } from "../../../src/course/events/user-joined-group.event";
-import { UserLeftGroupEvent } from "../../../src/course/events/user-left-group.event";
-import { GroupEventRepository } from "../../../src/course/repositories/group-event.repository";
-import { AssignmentRepository } from "../../../src/course/repositories/assignment.repository";
-import { CourseParticipantsService } from "../../../src/course/services/course-participants.service";
-import { USER_STUDENT_JAVA, USER_MGMT_ADMIN_JAVA_LECTURER } from "../../mocks/users.mock";
-import { CourseRole } from "../../../src/shared/enums";
-import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
-import { User } from "../../../src/shared/entities/user.entity";
-import { UserDto } from "../../../src/shared/dto/user.dto";
-import { AuthModule } from "../../../src/auth/auth.module";
-import { getImports } from "../../mocks/application.mock";
+import { Test, TestingModule } from "@nestjs/testing";
+import { ParticipantDto } from "../../../src/course/dto/course-participant/participant.dto";
 import { GroupFilter } from "../../../src/course/dto/group/group-filter.dto";
+import { GroupDto, GroupUpdateDto } from "../../../src/course/dto/group/group.dto";
+import { CourseConfig } from "../../../src/course/entities/course-config.entity";
+import { Course, CourseId } from "../../../src/course/entities/course.entity";
+import { GroupSettings } from "../../../src/course/entities/group-settings.entity";
+import { Group } from "../../../src/course/entities/group.entity";
+import { Participant } from "../../../src/course/entities/participant.entity";
+import { UserGroupRelation } from "../../../src/course/entities/user-group-relation.entity";
+import { UserJoinedGroupEvent } from "../../../src/course/events/group/user-joined-group.event";
+import { UserLeftGroupEvent } from "../../../src/course/events/group/user-left-group.event";
+import { AlreadyInGroupException, CourseClosedException } from "../../../src/course/exceptions/custom-exceptions";
+import { AssignmentRepository } from "../../../src/course/repositories/assignment.repository";
+import { CourseRepository } from "../../../src/course/repositories/course.repository";
+import { GroupEventRepository } from "../../../src/course/repositories/group-event.repository";
+import { GroupRepository } from "../../../src/course/repositories/group.repository";
+import { GroupService } from "../../../src/course/services/group.service";
+import { DtoFactory } from "../../../src/shared/dto-factory";
+import { COURSE_CONFIG_JAVA_1920 } from "../../mocks/course-config/course-config.mock";
+import { GROUP_SETTINGS_GROUPS_ALLOWED_MIN2_MAX3_SELF } from "../../mocks/course-config/group-settings.mock";
+import { COURSE_JAVA_1920 } from "../../mocks/courses.mock";
+import { GROUP_1_JAVA, GROUP_2_JAVA } from "../../mocks/groups/groups.mock";
+import { PARTICIPANT_JAVA_1920_LECTURER, PARTICIPANT_JAVA_1920_STUDENT } from "../../mocks/participants/participants.mock";
+import { convertToEntity, convertToEntityNoRelations, copy } from "../../utils/object-helper";
 
-function getGroupWithUsersMock_JoiningPossible(passwordRequired = true) {
+function getGroupWithUsersMock_JoiningPossible(passwordRequired = true): Group {
 	const group = convertToEntity(Group, GROUP_1_JAVA);
 	const userRelation1 = new UserGroupRelation();
 	userRelation1.groupId = group.id;
 	userRelation1.userId = "user_id_1";
+	userRelation1.participant = new Participant(PARTICIPANT_JAVA_1920_STUDENT);
 	group.userGroupRelations = [userRelation1];
 	
 	const course = convertToEntity(Course, COURSE_JAVA_1920);
 	group.course = course;
 
 	if(!passwordRequired) group.password = null;
-
-	return group;
-}
-
-function getGroupWithUsersMock_CapacityReached() {
-	const group = convertToEntity(Group, GROUP_1_JAVA);
-	const course = convertToEntity(Course, COURSE_JAVA_1920);
-	group.course = course;
-
-	const userRelation1 = new UserGroupRelation();
-	userRelation1.groupId = group.id;
-	userRelation1.userId = "user_id_1";
-	group.userGroupRelations = [userRelation1];
-	
-	//group.course.maxGroupSize = 1; // Groups has reached its capacity
 
 	return group;
 }
@@ -73,7 +54,7 @@ function mock_getGroupForAddUserToGroup(groupClosed: boolean, capacityReached: b
 	group.password = password;
 	group.userGroupRelations = []; // default: empty group
 	group.course = convertToEntityNoRelations(Course, COURSE_JAVA_1920);
-	group.course.courseUserRelations = [convertToEntityNoRelations(CourseUserRelation, { courseId: group.courseId, userId: "some_id" })];
+	group.course.participants = [convertToEntityNoRelations(Participant, { courseId: group.courseId, userId: "some_id" })];
 	group.course.config = convertToEntityNoRelations(CourseConfig, COURSE_CONFIG_JAVA_1920);
 	group.course.config.groupSettings = convertToEntityNoRelations(GroupSettings, GROUP_SETTINGS_GROUPS_ALLOWED_MIN2_MAX3_SELF);
 
@@ -118,15 +99,6 @@ const mock_AssignmentRepository = () => ({
 	
 });
 
-const mock_CourseParticipantsService = () => ({
-	getParticipant: jest.fn().mockImplementation(() => {
-		// Return a student by default
-		const user = copy(USER_STUDENT_JAVA);
-		user.courseRole = CourseRole.STUDENT;
-		return user;
-	})
-});
-
 const mock_EventBus = () => ({
 	publish: jest.fn()
 });
@@ -136,7 +108,6 @@ describe("GroupService", () => {
 	let service: GroupService;
 	let groupRepository: GroupRepository;
 	let courseRepository: CourseRepository;
-	let courseParticipants: CourseParticipantsService;
 	let eventBus: EventBus;
 	let groupDto: GroupDto;
 	let courseId: CourseId;
@@ -149,7 +120,6 @@ describe("GroupService", () => {
 				{ provide: CourseRepository, useFactory: mock_CourseRepository },
 				{ provide: GroupEventRepository, useFactory: mock_GroupEventRepository },
 				{ provide: AssignmentRepository, useFactory: mock_AssignmentRepository },
-				{ provide: CourseParticipantsService, useFactory: mock_CourseParticipantsService },
 				{ provide: EventBus, useFactory: mock_EventBus }
 			],
 		}).compile();
@@ -159,10 +129,9 @@ describe("GroupService", () => {
 		service = module.get(GroupService);
 		groupRepository = module.get(GroupRepository);
 		courseRepository = module.get(CourseRepository);
-		courseParticipants = module.get(CourseParticipantsService);
 		eventBus = module.get(EventBus);
 		groupDto = copy(GROUP_1_JAVA);
-		courseId = copy(GROUP_1_JAVA).courseId;
+		courseId = COURSE_JAVA_1920.id;
 	});
 
 	it("Should be defined", () => {
@@ -171,15 +140,14 @@ describe("GroupService", () => {
 
 	describe("createGroup", () => {
 
-		let student: UserDto;
-		let lecturer: UserDto;
+		let student: ParticipantDto;
+		let lecturer: ParticipantDto;
 
 		beforeEach(() => {
-			student = copy(USER_STUDENT_JAVA);
-			student.courseRole = CourseRole.STUDENT;
-
-			lecturer = copy(USER_MGMT_ADMIN_JAVA_LECTURER);
-			lecturer.courseRole = CourseRole.LECTURER;
+			student = copy(PARTICIPANT_JAVA_1920_STUDENT);
+			student.group = undefined;
+			student.groupId = undefined;
+			lecturer = copy(PARTICIPANT_JAVA_1920_LECTURER);
 		});
 
 		it("User is STUDENT + no name schema -> Creates group and adds student", async () => {
@@ -194,7 +162,7 @@ describe("GroupService", () => {
 
 			await service.createGroup(courseId, groupDto, student);
 
-			expect(service.addUserToGroup_Force).toHaveBeenCalledWith(expect.anything(), student.id);
+			expect(service.addUserToGroup_Force).toHaveBeenCalledWith(courseId, groupDto.id, student.userId);
 			expect(DtoFactory.createGroupDto).toHaveBeenCalled();
 		});
 
@@ -203,12 +171,6 @@ describe("GroupService", () => {
 		// });
 
 		it("User is LECTURER -> Creates group", async () => {
-			courseParticipants.getParticipant = jest.fn().mockImplementationOnce(()=> {
-				const user = copy(USER_MGMT_ADMIN_JAVA_LECTURER);
-				user.courseRole = CourseRole.LECTURER;
-				return user;
-			});
-
 			await service.createGroup(courseId, groupDto, lecturer);
 
 			expect(DtoFactory.createGroupDto).toHaveBeenCalled();
@@ -245,20 +207,36 @@ describe("GroupService", () => {
 				expect(error.status).toEqual(403);
 			}
 		});
+
+		it("User already has a group -> Throws AlreadyInGroupException", async () => {
+			const studentWithGroup = copy(PARTICIPANT_JAVA_1920_STUDENT);
+			studentWithGroup.groupId = GROUP_1_JAVA.id;
+			studentWithGroup.group = GROUP_1_JAVA;
+			
+			try {
+				await service.createGroup(groupDto.courseId, groupDto, studentWithGroup);
+				expect(true).toEqual(false);
+			} catch(error) {
+				expect(error).toBeTruthy();
+				expect(error.status).toEqual(409);
+				expect(error).toBeInstanceOf(AlreadyInGroupException);
+			}
+		});
 	
 	});
 
 	describe("addUserToGroup", () => {
 
 		const userId = "user_id";
+		const courseId = "course_id";
 
 		it("Joining possible + correct password -> Adds user to group", async () => {
 			console.assert(groupDto.password.length > 0, "Group should be password protected");
 
-			await service.addUserToGroup(groupDto.id, userId, groupDto.password);
+			await service.addUserToGroup(courseId, groupDto.id, userId, groupDto.password);
 
 			expect(groupRepository.getGroupForAddUserToGroup).toHaveBeenCalledWith(groupDto.id, userId); // Called to check if joining is possible
-			expect(groupRepository.addUserToGroup).toHaveBeenCalledWith(groupDto.id, userId);
+			expect(groupRepository.addUserToGroup).toHaveBeenCalledWith(courseId, groupDto.id, userId);
 		});
 
 		it("Joining possible + No password required -> Adds user to group", async () => {
@@ -266,15 +244,15 @@ describe("GroupService", () => {
 				mock_getGroupForAddUserToGroup(false, false, null) // Joining possible, No password required
 			);
 
-			await service.addUserToGroup(groupDto.id, userId);
+			await service.addUserToGroup(courseId, groupDto.id, userId);
 
 			expect(groupRepository.getGroupForAddUserToGroup).toHaveBeenCalledWith(groupDto.id, userId); // Called to check if joining is possible
-			expect(groupRepository.addUserToGroup).toHaveBeenCalledWith(groupDto.id, userId);
+			expect(groupRepository.addUserToGroup).toHaveBeenCalledWith(courseId, groupDto.id, userId);
 		});
 
 		it("Joining possible -> Triggers UserJoinedGroupEvent", async () => {
 			console.assert(groupDto.password.length > 0, "Group should be password protected");
-			await service.addUserToGroup(groupDto.id, userId, groupDto.password);
+			await service.addUserToGroup(courseId, groupDto.id, userId, groupDto.password);
 			expect(eventBus.publish).toHaveBeenCalledWith(new UserJoinedGroupEvent(groupDto.id, userId));
 		});
 	
@@ -284,11 +262,11 @@ describe("GroupService", () => {
 			);
 			
 			try {
-				await service.addUserToGroup(groupDto.id, userId, groupDto.password);
+				await service.addUserToGroup(courseId, groupDto.id, userId, groupDto.password);
 				expect(true).toEqual(false);
 			} catch(error) {
 				expect(error).toBeTruthy();
-				expect(error.status).toEqual(409);
+				expect(error.status).toEqual(403);
 			}
 		});
 
@@ -298,7 +276,7 @@ describe("GroupService", () => {
 			);
 
 			try {
-				await service.addUserToGroup(groupDto.id, userId, groupDto.password);
+				await service.addUserToGroup(courseId, groupDto.id, userId, groupDto.password);
 				expect(true).toEqual(false);
 			} catch(error) {
 				expect(error).toBeTruthy();
@@ -310,11 +288,11 @@ describe("GroupService", () => {
 			const password = "incorrect";
 			
 			try {
-				await service.addUserToGroup(groupDto.id, userId, password);
+				await service.addUserToGroup(courseId, groupDto.id, userId, password);
 				expect(true).toEqual(false);
 			} catch(error) {
 				expect(error).toBeTruthy();
-				expect(error.status).toEqual(400);
+				expect(error.status).toEqual(403);
 			}
 		});
 	
@@ -323,10 +301,11 @@ describe("GroupService", () => {
 	describe("addUserToGroup_Force", () => {
 	
 		const userId = "user_id";
+		const courseId = "course_id";
 
 		it("Adds user to group", async () => {
-			await service.addUserToGroup_Force(groupDto.id, userId);
-			expect(groupRepository.addUserToGroup).toHaveBeenCalledWith(groupDto.id, userId);
+			await service.addUserToGroup_Force(courseId, groupDto.id, userId);
+			expect(groupRepository.addUserToGroup).toHaveBeenCalledWith(courseId, groupDto.id, userId);
 		});
 	
 	});
@@ -355,38 +334,123 @@ describe("GroupService", () => {
 			await service.getUsersOfGroup(groupDto.id);
 			expect(groupRepository.getGroupWithUsers).toHaveBeenCalledWith(groupDto.id);
 		});
-
-		it("Returns Dtos", async () => {
-			DtoFactory.createUserDto = jest.fn();
-			await service.getUsersOfGroup(groupDto.id);
-			expect(DtoFactory.createUserDto).toHaveBeenCalled();
-		});
 	
 	});
 
 	describe("updateGroup", () => {
 	
-		it("Calls repository for update", async () => {
-			await service.updateGroup(groupDto.id, groupDto);
-			expect(groupRepository.updateGroup).toHaveBeenCalledWith(groupDto.id, groupDto);
+		const courseId = "course_id";
+		const update: GroupUpdateDto = {
+			isClosed: true,
+			name: "New name",
+			password: "newpassword"
+		};
+
+		describe("Valid", () => {
+
+			beforeEach(() => {
+				groupRepository.getGroupWithUsers = jest.fn().mockImplementationOnce(() => {
+					return getGroupWithUsersMock_JoiningPossible();
+				});
+
+				courseRepository.getCourseWithConfigAndGroupSettings = jest.fn().mockImplementationOnce(() => {
+					const course = convertToEntity(Course, copy(COURSE_JAVA_1920));
+					course.isClosed = false;
+					course.config = convertToEntity(CourseConfig, copy(COURSE_CONFIG_JAVA_1920));
+					course.config.groupSettings.sizeMin = 0;
+					course.config.groupSettings.selfmanaged = true;
+					course.config.groupSettings.nameSchema = undefined;
+					return course;
+				});
+			});
+			
+			it("Calls repository for update", async () => {
+				await service.updateGroup(courseId, groupDto.id, update);
+				expect(groupRepository.updateGroup).toHaveBeenCalledWith(groupDto.id, update);
+			});
+	
+			it("Returns Dto", async () => {
+				await service.updateGroup(courseId, groupDto.id, update);
+				expect(DtoFactory.createGroupDto).toHaveBeenCalled();
+			});
+		
 		});
 
-		it("Returns Dto", async () => {
-			await service.updateGroup(groupDto.id, groupDto);
-			expect(DtoFactory.createGroupDto).toHaveBeenCalled();
-		});
+		describe("Invalid", () => {
+		
+			it("Course is closed", async () => {
+				courseRepository.getCourseWithConfigAndGroupSettings = jest.fn().mockImplementationOnce(() => {
+					const course = copy(COURSE_JAVA_1920);
+					course.isClosed = true;
+					return course;
+				});
 
-		it("GroupId differs from Dto", async () => {
-			const groupId = "different_id";
-			
-			try {
-				await service.updateGroup(groupId, groupDto);
-				expect(true).toEqual(false);
-			} catch(error) {
-				expect(error).toBeTruthy();
-				expect(error.status).toEqual(400);
-			}
-			
+				try {
+					await service.updateGroup(courseId, groupDto.id, update);
+					expect(true).toEqual(false);
+				} catch(error) {
+					expect(error).toBeTruthy();
+					expect(error instanceof CourseClosedException).toBeTruthy();
+				}
+			});
+
+			it("Name changed + Does not allow selfmanaged groups", async () => {
+				courseRepository.getCourseWithConfigAndGroupSettings = jest.fn().mockImplementationOnce(() => {
+					const course = convertToEntity(Course, copy(COURSE_JAVA_1920));
+					course.isClosed = false;
+					course.config = convertToEntity(CourseConfig, copy(COURSE_CONFIG_JAVA_1920));
+					course.config.groupSettings.selfmanaged = false;
+					return course;
+				});
+
+				try {
+					await service.updateGroup(courseId, groupDto.id, update);
+					expect(true).toEqual(false);
+				} catch(error) {
+					expect(error).toBeTruthy();
+					expect(error.status).toEqual(400);
+				}
+			});
+
+			it("Name changed + Enforces name schema", async () => {
+				courseRepository.getCourseWithConfigAndGroupSettings = jest.fn().mockImplementationOnce(() => {
+					const course = convertToEntity(Course, copy(COURSE_JAVA_1920));
+					course.isClosed = false;
+					course.config = convertToEntity(CourseConfig, copy(COURSE_CONFIG_JAVA_1920));
+					course.config.groupSettings.selfmanaged = true;
+					course.config.groupSettings.nameSchema = "JAVA";
+					return course;
+				});
+
+				try {
+					await service.updateGroup(courseId, groupDto.id, update);
+					expect(true).toEqual(false);
+				} catch(error) {
+					expect(error).toBeTruthy();
+					expect(error.status).toEqual(400);
+				}
+			});
+
+			it("Closing group + Min capacity not reached", async () => {
+				courseRepository.getCourseWithConfigAndGroupSettings = jest.fn().mockImplementationOnce(() => {
+					const course = convertToEntity(Course, copy(COURSE_JAVA_1920));
+					course.isClosed = false;
+					course.config = convertToEntity(CourseConfig, copy(COURSE_CONFIG_JAVA_1920));
+					course.config.groupSettings.selfmanaged = true;
+					course.config.groupSettings.nameSchema = undefined;
+					course.config.groupSettings.sizeMin = 99; // Min capacity not reached
+					return course;
+				});
+
+				try {
+					await service.updateGroup(courseId, groupDto.id, update);
+					expect(true).toEqual(false);
+				} catch(error) {
+					expect(error).toBeTruthy();
+					expect(error.status).toEqual(400);
+				}
+			});
+		
 		});
 	
 	});

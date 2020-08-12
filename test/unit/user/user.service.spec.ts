@@ -14,7 +14,7 @@ import { Group } from "../../../src/course/entities/group.entity";
 import { GROUP_1_JAVA } from "../../mocks/groups/groups.mock";
 import { USER_STUDENT_JAVA } from "../../mocks/users.mock";
 import { COURSE_JAVA_1920 } from "../../mocks/courses.mock";
-import { UserLeftGroupEvent } from "../../../src/course/events/user-left-group.event";
+import { UserLeftGroupEvent } from "../../../src/course/events/group/user-left-group.event";
 
 const mock_UserRepository = () => ({
 

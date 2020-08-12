@@ -1,11 +1,13 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { AssessmentAllocation } from "../../course/entities/assessment-allocation.entity";
 import { AssessmentUserRelation } from "../../course/entities/assessment-user-relation.entity";
-import { CourseUserRelation } from "../../course/entities/course-user-relation.entity";
+import { Participant } from "../../course/entities/participant.entity";
 import { UserGroupRelation } from "../../course/entities/user-group-relation.entity";
 import { UserRole } from "../enums";
 
-@Entity("users")
+export type UserId = string;
+
+@Entity()
 export class User {
     @PrimaryGeneratedColumn("uuid")
     id: string;
@@ -22,8 +24,8 @@ export class User {
     @Column({ type: "enum", enum: UserRole, default: UserRole.USER })
     role: UserRole;
     
-    @OneToMany(type => CourseUserRelation, courseUserRelations => courseUserRelations.user)
-	courseUserRelations: CourseUserRelation[];
+    @OneToMany(type => Participant, participants => participants.user)
+	participations: Participant[];
 	
 	@OneToMany(type => UserGroupRelation, userGroupRelation => userGroupRelation.user)
     userGroupRelations: UserGroupRelation[];
@@ -33,4 +35,9 @@ export class User {
 	
 	@OneToMany(type => AssessmentAllocation, allocation => allocation.user)
 	assessmentAllocations: AssessmentAllocation[];
+
+	constructor(partial?: Partial<User>) {
+		if (partial) Object.assign(this, partial);
+	}
+
 }

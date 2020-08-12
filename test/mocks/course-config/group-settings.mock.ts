@@ -2,7 +2,7 @@ import { GroupSettingsDto } from "../../../src/course/dto/course-config/group-se
 
 export const GROUP_SETTINGS_GROUPS_ALLOWED_MIN2_MAX3_SELF: GroupSettingsDto = {
 	allowGroups: true,
-	nameSchema: "JAVA-",
+	//nameSchema: "JAVA-",
 	sizeMin: 2,
 	sizeMax: 3,
 	selfmanaged: true,

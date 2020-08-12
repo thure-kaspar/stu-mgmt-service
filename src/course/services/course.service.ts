@@ -21,7 +21,7 @@ export class CourseService {
 			courseDto.id = courseDto.shortname + "-" + courseDto.semester; 
 		}
 
-		const course = await this.courseRepository.createCourse(courseDto);
+		const course = await this.courseRepository.createCourse(courseDto, courseDto.config);
 		return DtoFactory.createCourseDto(course);
 	}
 

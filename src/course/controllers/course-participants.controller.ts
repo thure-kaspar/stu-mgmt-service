@@ -1,23 +1,24 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, ValidationPipe, BadRequestException } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, ValidationPipe } from "@nestjs/common";
 import { QueryBus } from "@nestjs/cqrs";
-import { ApiBearerAuth, ApiOperation, ApiTags, ApiQuery } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 import { sanitizeEnum, setTotalCountHeader } from "../../../test/utils/http-utils";
 import { PasswordDto } from "../../shared/dto/password.dto";
-import { UserDto } from "../../shared/dto/user.dto";
 import { CourseRole } from "../../shared/enums";
+import { throwIfRequestFailed, transformArray } from "../../utils/http-utils";
 import { ChangeCourseRoleDto } from "../dto/change-course-role.dto";
-import { CourseParticipantsFilter } from "../dto/course/course-participants.filter";
+import { CourseParticipantsFilter } from "../dto/course-participant/course-participants.filter";
+import { ParticipantDto } from "../dto/course-participant/participant.dto";
+import { CourseId } from "../entities/course.entity";
 import { CanJoinCourseDto } from "../queries/can-join-course/can-join-course.dto";
 import { CanJoinCourseQuery } from "../queries/can-join-course/can-join-course.query";
+import { CompareParticipantsListQuery } from "../queries/compare-participants-list/compare-participants-list.query";
+import { ParticipantsComparisonDto } from "../queries/compare-participants-list/participants-comparison.dto";
 import { AssignedEvaluatorFilter } from "../queries/groups-with-assigned-evaluator/group-with-assigned-evaluator.dto";
 import { UserWithAssignedEvaluatorDto } from "../queries/users-with-assigned-evaluator/user-with-assigned-evaluator.dto";
 import { UsersWithAssignedEvaluatorQuery } from "../queries/users-with-assigned-evaluator/users-with-assigned-evaluator.query";
 import { CourseParticipantsService } from "../services/course-participants.service";
-import { ParticipantsComparisonDto } from "../queries/compare-participants-list/participants-comparison.dto";
-import { CourseId } from "../entities/course.entity";
-import { CompareParticipantsListQuery } from "../queries/compare-participants-list/compare-participants-list.query";
-import { transformArray, throwIfRequestFailed } from "../../utils/http-utils";
+import { UserId } from "../../shared/entities/user.entity";
 
 @ApiBearerAuth()
 @ApiTags("course-participants")
@@ -38,10 +39,10 @@ export class CourseParticipantsController {
 		description: "Adds a user to the course. If the course requires a password, the correct password needs to be included in the request body."
 	})
 	addUser(@Param("courseId") courseId: CourseId,
-			@Param("userId") userId: string,
+			@Param("userId") userId: UserId,
 			@Body() password?: PasswordDto,
 	): Promise<any> {
-		return this.courseParticipantsService.addUser(courseId, userId, password.password);
+		return this.courseParticipantsService.addParticipant(courseId, userId, password.password);
 	}
 
 	/**
@@ -57,10 +58,10 @@ export class CourseParticipantsController {
 		@Req() request: Request,
 		@Param("courseId") courseId: CourseId,
 		@Query() filter?: CourseParticipantsFilter
-	): Promise<UserDto[]> {
+	): Promise<ParticipantDto[]> {
 		filter.courseRole = sanitizeEnum(CourseRole, filter.courseRole);
 		
-		const [users, count] = await this.courseParticipantsService.getUsersOfCourse(courseId, filter);
+		const [users, count] = await this.courseParticipantsService.getParticipants(courseId, filter);
 		setTotalCountHeader(request, count);
 		return users;
 	}
@@ -73,8 +74,8 @@ export class CourseParticipantsController {
 	})
 	getParticipant(
 		@Param("courseId") courseId: CourseId,
-		@Param("userId") userId: string
-	): Promise<UserDto> {
+		@Param("userId") userId: UserId
+	): Promise<ParticipantDto> {
 
 		return this.courseParticipantsService.getParticipant(courseId, userId);
 	}
@@ -107,7 +108,7 @@ export class CourseParticipantsController {
 	})
 	canUserJoinCourse(
 		@Param("courseId") courseId: CourseId,
-		@Param("userId") userId: string,
+		@Param("userId") userId: UserId,
 	): Promise<CanJoinCourseDto> {
 
 		return this.queryBus.execute(new CanJoinCourseQuery(courseId, userId));
@@ -143,7 +144,7 @@ export class CourseParticipantsController {
 	})
 	async updateUserRole(
 		@Param("courseId") courseId: CourseId,
-		@Param("userId") userId: string,
+		@Param("userId") userId: UserId,
 		@Body(ValidationPipe) dto: ChangeCourseRoleDto
 	): Promise<void> {
 		
@@ -164,7 +165,7 @@ export class CourseParticipantsController {
 	})
 	async removeUser(
 		@Param("courseId") courseId: CourseId,
-		@Param("userId") userId: string,
+		@Param("userId") userId: UserId,
 	): Promise<void> {
 
 		return throwIfRequestFailed(

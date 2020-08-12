@@ -5,11 +5,13 @@ import { Course, CourseId } from "./course.entity";
 import { GroupEvent } from "./group-event.entity";
 import { UserGroupRelation } from "./user-group-relation.entity";
 
+export type GroupId = string;
+
 @Entity("groups")
 @Unique("Unique_Name_CourseId", ["name", "courseId"]) // Enforce unique group names in course
 export class Group {
     @PrimaryGeneratedColumn("uuid")
-    id: string;
+    id: GroupId;
 
     @Column()
 	name: string;
@@ -40,5 +42,9 @@ export class Group {
 	history: GroupEvent[];
 
 	@OneToMany(type => AssessmentAllocation, allocation => allocation.group)
-	assessmentAllocations: AssessmentAllocation[]; 
+	assessmentAllocations: AssessmentAllocation[];
+
+	constructor(partial?: Partial<Group>) {
+		if (partial) Object.assign(this, partial);
+	}
 }

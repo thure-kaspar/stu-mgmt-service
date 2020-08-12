@@ -5,28 +5,35 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 import { setTotalCountHeader } from "../../../test/utils/http-utils";
 import { PasswordDto } from "../../shared/dto/password.dto";
-import { UserDto } from "../../shared/dto/user.dto";
 import { PaginatedResult, throwIfRequestFailed } from "../../utils/http-utils";
-import { GetParticipant } from "../decorators/get-participant.decorator";
+import { ParticipantDto } from "../dto/course-participant/participant.dto";
 import { GroupCreateBulkDto } from "../dto/group/group-create-bulk.dto";
 import { GroupEventDto } from "../dto/group/group-event.dto";
 import { GroupFilter } from "../dto/group/group-filter.dto";
-import { GroupDto } from "../dto/group/group.dto";
+import { GroupDto, GroupUpdateDto } from "../dto/group/group.dto";
 import { CourseId } from "../entities/course.entity";
 import { CourseMemberGuard } from "../guards/course-member.guard";
 import { AssignedEvaluatorFilter, GroupWithAssignedEvaluatorDto } from "../queries/groups-with-assigned-evaluator/group-with-assigned-evaluator.dto";
 import { GroupsWithAssignedEvaluatorQuery } from "../queries/groups-with-assigned-evaluator/groups-with-assigned-evaluator.query";
 import { GroupService } from "../services/group.service";
+import { Course } from "../models/course.model";
+import { Participant } from "../models/participant.model";
+import { GetGroup, GetCourse, GetParticipant, GetSelectedParticipant } from "../decorators/decorators";
+import { Group } from "../models/group.model";
+import { GroupGuard } from "../guards/group.guard";
+import { SelectedParticipantGuard } from "../guards/selected-participant.guard";
+import { GroupId } from "../entities/group.entity";
+import { UserId } from "../../shared/entities/user.entity";
 
 @ApiBearerAuth()
 @ApiTags("groups")
+@UseGuards(AuthGuard(), CourseMemberGuard)
 @Controller("courses/:courseId/groups")
 export class GroupController {
 	constructor(private groupService: GroupService,
 				private queryBus: QueryBus) { }
 
 	@Post()
-	@UseGuards(AuthGuard(), CourseMemberGuard)
 	@ApiOperation({
 		operationId: "createGroup",
 		summary: "Create group.",
@@ -34,11 +41,12 @@ export class GroupController {
 	})
 	createGroup(
 		@Param("courseId") courseId: CourseId,
+		@GetCourse() course: Course, 
+		@GetParticipant() participant: Participant,
 		@Body() groupDto: GroupDto,
-		@GetParticipant() participant: UserDto
 	): Promise<GroupDto> {
 
-		return this.groupService.createGroup(courseId, groupDto, participant);
+		return this.groupService.createGroup(course, participant, groupDto);
 	}
 
 	@Post("bulk")
@@ -55,20 +63,25 @@ export class GroupController {
 		return this.groupService.createMultipleGroups(courseId, groupCreateBulk);
 	}
 	
-	@Post(":groupId/users/:userId")
 	@ApiOperation({
 		operationId: "addUserToGroup",
 		summary: "Add user to group.",
 		description: "Adds the user to the group, if constraints are fulfilled."
 	})
+	@Post(":groupId/users/:userId")
+	@UseGuards(SelectedParticipantGuard, GroupGuard)
 	addUserToGroup(
 		@Param("courseId") courseId: CourseId,
-		@Param("groupId") groupId: string,
-		@Param("userId") userId: string,
+		@Param("groupId") groupId: GroupId,
+		@Param("userId") userId: UserId,
+		@GetCourse() course: Course,
+		@GetGroup() group: Group,
+		@GetParticipant() participant: Participant,
+		@GetSelectedParticipant() selectedParticipant: Participant,
 		@Body() password?: PasswordDto,
 	): Promise<any> {
 
-		return this.groupService.addUserToGroup(groupId, userId, password.password);
+		return this.groupService.addUserToGroup(course, group, participant, selectedParticipant, password.password);
 	}
 
 	@Get()
@@ -95,35 +108,6 @@ export class GroupController {
 	getGroupHistoryOfCourse(@Param("courseId") courseId: CourseId): Promise<GroupEventDto[]> {
 
 		return this.groupService.getGroupHistoryOfCourse(courseId);
-	}
-
-	@Get(":groupId/assignments/:assignmentId")
-	@ApiOperation({
-		operationId: "getGroupFromAssignment",
-		summary: "Get snapshot of a group at assignment end.",
-		description: "Returns a snapshot of the group's members at the time of the assignment's end."
-	})
-	getGroupFromAssignment(
-		@Param("courseId") courseId: CourseId,
-		@Param("groupId") groupId: string,
-		@Param("assignmentId") assignmentId: string
-	): Promise<GroupDto> {
-		
-		return this.groupService.getGroupFromAssignment(groupId, assignmentId);
-	}
-
-	@Get("assignments/:assignmentId")
-	@ApiOperation({
-		operationId: "getGroupsFromAssignment",
-		summary: "Get snapshot of groups at assignment end.",
-		description: "Returns a snapshot of the group constellations at the time of the assignment's end."
-	})
-	getGroupsFromAssignment(
-		@Param("courseId") courseId: CourseId,
-		@Param("assignmentId") assignmentId: string
-	): Promise<GroupDto[]> {
-		
-		return this.groupService.getGroupsFromAssignment(courseId, assignmentId);
 	}
 
 	@Get("assignments/:assignmentId/with-assigned-evaluator")
@@ -153,7 +137,7 @@ export class GroupController {
 	})
 	getGroup(
 			@Param("courseId") courseId: CourseId,
-			@Param("groupId") groupId: string
+			@Param("groupId") groupId: GroupId
 	): Promise<GroupDto> {
 		return this.groupService.getGroup(groupId);
 	}
@@ -167,25 +151,28 @@ export class GroupController {
 	})
 	getUsersOfGroup(
 		@Param("courseId") courseId: CourseId,
-		@Param("groupId") groupId: string
-	): Promise<UserDto[]> {
+		@Param("groupId") groupId: GroupId
+	): Promise<ParticipantDto[]> {
 
 		return this.groupService.getUsersOfGroup(groupId);
 	}
 
-	@Patch(":groupId")
 	@ApiOperation({
 		operationId: "updateGroup",
 		summary: "Update group.",
-		description: "Updates the group"
+		description: "Updates the group partially."
 	})
+	@Patch(":groupId")
+	@UseGuards(GroupGuard)
 	updateGroup(
 		@Param("courseId") courseId: CourseId,
-		@Param("groupId") groupId: string,
-		@Body() groupDto: GroupDto
+		@Param("groupId") groupId: GroupId,
+		@GetCourse() course: Course,
+		@GetGroup() group: Group,
+		@Body() update: GroupUpdateDto
 	): Promise<GroupDto> {
 
-		return this.groupService.updateGroup(groupId, groupDto);
+		return this.groupService.updateGroup(course, group, update);
 	}
 
 	@Delete(":groupId/users/:userId")
@@ -196,8 +183,8 @@ export class GroupController {
 	})
 	removeUserFromGroup(
 		@Param("courseId") courseId: CourseId,
-		@Param("groupId") groupId: string,
-		@Param("userId") userId: string,
+		@Param("groupId") groupId: GroupId,
+		@Param("userId") userId: UserId,
 		@Body("reason") reason?: string
 	): Promise<void> {
 
@@ -212,7 +199,7 @@ export class GroupController {
 	})
 	deleteGroup(
 		@Param("courseId") courseId: CourseId,
-		@Param("groupId") groupId: string
+		@Param("groupId") groupId: GroupId
 	): Promise<void> {
 
 		return throwIfRequestFailed(

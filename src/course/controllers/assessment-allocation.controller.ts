@@ -3,6 +3,8 @@ import { Controller, Param, Post, Body, Delete, BadRequestException, Query, Get 
 import { AssessmentAllocationDto } from "../dto/assessment-allocation/assessment-allocation.dto";
 import { AssessmentAllocationService } from "../services/assessment-allocation.service";
 import { CourseId } from "../entities/course.entity";
+import { GroupId } from "../entities/group.entity";
+import { UserId } from "../../shared/entities/user.entity";
 
 @ApiBearerAuth()
 @ApiTags("assessment-allocation")
@@ -78,8 +80,8 @@ export class AssessmentAllocationController {
 	removeAllocation(
 		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string,
-		@Query("groupId") groupId: string,
-		@Query("userId") userId: string,
+		@Query("groupId") groupId: GroupId,
+		@Query("userId") userId: UserId,
 	): Promise<void> {
 		const allocation: Partial<AssessmentAllocationDto> = {
 			assignmentId: assignmentId,

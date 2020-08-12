@@ -10,7 +10,7 @@ import { Assignment } from "../../../src/course/entities/assignment.entity";
 import { Group } from "../../../src/course/entities/group.entity";
 import { PartialAssessment } from "../../../src/course/entities/partial-assessment.entity";
 import { UserGroupRelation } from "../../../src/course/entities/user-group-relation.entity";
-import { AssessmentScoreChangedEvent } from "../../../src/course/events/assessment-score-changed.event";
+import { AssessmentScoreChanged } from "../../../src/course/events/assessment/assessment-score-changed.event";
 import { AssessmentRepository } from "../../../src/course/repositories/assessment.repository";
 import { AssignmentRepository } from "../../../src/course/repositories/assignment.repository";
 import { AssessmentService } from "../../../src/course/services/assessment.service";
@@ -21,7 +21,7 @@ import { ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA_EVALUATED, ASSIGNMENT_JAVA_IN_R
 import { GROUP_1_JAVA } from "../../mocks/groups/groups.mock";
 import { UserGroupRelationsMock } from "../../mocks/groups/user-group-relations.mock";
 import { PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW, PARTIAL_ASSESSMENT_MOCK } from "../../mocks/partial-assessments.mock";
-import { USER_STUDENT_2_JAVA, USER_STUDENT_JAVA } from "../../mocks/users.mock";
+import { PARTICIPANT_JAVA_1920_STUDENT, PARTICIPANT_JAVA_1920_STUDENT_2 } from "../../mocks/participants/participants.mock";
 import { convertToEntity, copy } from "../../utils/object-helper";
 
 const mock_AssessmentRepository = () => ({
@@ -67,9 +67,9 @@ function getGroupMock(): Group {
 
 function getGroupFromAssignmentMock(): GroupDto {
 	const group = copy(GROUP_1_JAVA);
-	group.users = [
-		USER_STUDENT_JAVA,
-		USER_STUDENT_2_JAVA
+	group.members = [
+		PARTICIPANT_JAVA_1920_STUDENT,
+		PARTICIPANT_JAVA_1920_STUDENT_2
 	];
 	return group;
 }
@@ -130,7 +130,7 @@ describe("AssessmentService", () => {
 		});
 
 		it("Assessment for group -> Loads group members and extracts userIds", async () => {
-			const expectedUserIds = getGroupFromAssignmentMock().users.map(u => u.id);
+			const expectedUserIds = getGroupFromAssignmentMock().members.map(u => u.userId);
 
 			await service.createAssessment(assessmentDto.assignmentId, assessmentDto);
 
@@ -266,8 +266,6 @@ describe("AssessmentService", () => {
 		beforeEach(() => {
 			validAssessmentForUpdate = copy(ASSESSMENT_JAVA_IN_REVIEW);
 			validAssessmentForUpdate.partialAssessments = PARTIAL_ASSESSMENT_MOCK.filter(p => p.assessmentId === validAssessmentForUpdate.id);
-			validAssessmentForUpdate.assignment = copy(ASSIGNMENT_JAVA_IN_REVIEW_SINGLE);
-
 			assessmentRepository.getAssessmentById = jest.fn().mockImplementationOnce(assessmentBeforeUpdate);
 		});
 
@@ -309,7 +307,7 @@ describe("AssessmentService", () => {
 			assessmentRepository.updateAssessment = jest.fn().mockImplementationOnce(() => withChangedScore);
 
 			await service.updateAssessment(withChangedScore.id, withChangedScore, updatedBy);
-			expect(events.publish).toHaveBeenCalledWith(new AssessmentScoreChangedEvent(
+			expect(events.publish).toHaveBeenCalledWith(new AssessmentScoreChanged(
 				validAssessmentForUpdate.id, 
 				updatedBy, 
 				{ newScore: withChangedScore.achievedPoints, oldScore: assessmentBeforeUpdate().achievedPoints }
