@@ -8,7 +8,7 @@ import { ParticipantDto } from "../dto/course-participant/participant.dto";
 import { DtoFactory } from "../../shared/dto-factory";
 
 @Entity()
-@Index("IDX_CourseId_UserId", ["courseId", "userId"], { unique: true }) // Unique index to prevent user from joining same course multiple times
+@Index("INDEX_CourseId_UserId", ["courseId", "userId"], { unique: true }) // Unique index to prevent user from joining same course multiple times
 export class Participant implements ToDto<ParticipantDto> {
 
 	@PrimaryGeneratedColumn()
