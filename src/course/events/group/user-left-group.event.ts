@@ -6,7 +6,7 @@ import { UserId } from "../../../shared/entities/user.entity";
 import { CourseId } from "../../entities/course.entity";
 import { GroupEvent } from "../../entities/group-event.entity";
 import { GroupId } from "../../entities/group.entity";
-import { NotificationService } from "../../services/update.service";
+import { NotificationService } from "../../services/notification.service";
 
 export class UserLeftGroupEvent {
 	constructor(

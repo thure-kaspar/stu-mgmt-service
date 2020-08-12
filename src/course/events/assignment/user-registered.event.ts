@@ -3,7 +3,7 @@ import { Event } from "..";
 import { UserId } from "../../../shared/entities/user.entity";
 import { AssignmentId } from "../../entities/assignment.entity";
 import { CourseId } from "../../entities/course.entity";
-import { NotificationService } from "../../services/update.service";
+import { NotificationService } from "../../services/notification.service";
 import { GroupId } from "../../entities/group.entity";
 
 export class UserRegistered {

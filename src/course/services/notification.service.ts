@@ -5,7 +5,7 @@ import { Notification } from "../../shared/dto/update-message.dto";
 export class NotificationService { 
 
 	private readonly logger = new Logger(NotificationService.name);
-	private url = process.env.JAVA_URL;
+	private url = process.env.JAVA_URL; // TODO
 
 	constructor(private http: HttpService) { }
 

@@ -1,5 +1,5 @@
 import { EventsHandler, IEventHandler } from "@nestjs/cqrs";
-import { NotificationService } from "../../services/update.service";
+import { NotificationService } from "../../services/notification.service";
 import { Event } from "..";
 import { CourseId } from "../../entities/course.entity";
 import { GroupId } from "../../entities/group.entity";

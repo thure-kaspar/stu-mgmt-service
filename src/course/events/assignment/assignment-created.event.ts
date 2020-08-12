@@ -1,7 +1,7 @@
 import { EventsHandler, IEventHandler } from "@nestjs/cqrs";
 import { AssignmentId } from "../../entities/assignment.entity";
 import { CourseId } from "../../entities/course.entity";
-import { NotificationService } from "../../services/update.service";
+import { NotificationService } from "../../services/notification.service";
 import { Event } from "..";
 
 export class AssignmentCreated {

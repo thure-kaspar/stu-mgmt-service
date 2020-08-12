@@ -1,7 +1,7 @@
 import { Logger } from "@nestjs/common";
 import { EventsHandler, IEventHandler } from "@nestjs/cqrs";
 import { Event } from "..";
-import { NotificationService } from "../../services/update.service";
+import { NotificationService } from "../../services/notification.service";
 import { Assignment } from "../../models/assignment.model";
 
 export class AssignmentStateChanged {

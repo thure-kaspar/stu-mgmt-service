@@ -5,7 +5,7 @@ import { CourseConfigService } from "./course-config.service";
 import { CourseParticipantsService } from "./course-participants.service";
 import { CourseService } from "./course.service";
 import { GroupService } from "./group.service";
-import { NotificationService } from "./update.service";
+import { NotificationService } from "./notification.service";
 import { AssignmentRegistrationService } from "./assignment-registration.service";
 
 export const Services = [
