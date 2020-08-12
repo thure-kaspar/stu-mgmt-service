@@ -102,7 +102,7 @@ export class UserController {
 	@ApiOperation({
 		operationId: "getGroupOfAssignment",
 		summary: "Get group of assignment.",
-		description: "Retrieves the group that the user was a member of when the assignment closed or the current group, if it hasn't closed yet. Returns null, if user was not in a group."
+		description: "Retrieves the group that the user "
 	})
 	getGroupOfAssignment(
 		@Param("userId") userId: UserId,

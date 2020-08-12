@@ -164,6 +164,8 @@ describe("GET-REQUESTS of AssessmentController (e2e)", () => {
 	it("(GET) /courses/{courseId}/assignments/{assignmentId}/assessments/{assessmentId} Assessment with partial assessments -> Retrieves partials", () => {
 		const assignment = copy(ASSIGNMENT_JAVA_IN_REVIEW_SINGLE);
 		const assessment = copy(ASSESSMENT_JAVA_IN_REVIEW);
+
+		assessment.assignment = assignment;
 		assessment.partialAssessments = [PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW, PARTIAL_ASSESSMENT_2_JAVA_IN_REVIEW];
 		assessment.user = USER_STUDENT_JAVA;
 		assessment.userId = USER_STUDENT_JAVA.id;
@@ -338,6 +340,7 @@ describe("PATCH-REQUESTS of AssessmentController (e2e)", () => {
 
 			const tmp = copy(assessment);
 			// Joined relations
+			tmp.assignment = ASSIGNMENT_JAVA_IN_REVIEW_SINGLE;
 			tmp.creator = USER_STUDENT_3_JAVA_TUTOR;
 			tmp.user = USER_STUDENT_3_JAVA_TUTOR;
 			tmp.partialAssessments = update.addPartialAssessments; // Add new partials
@@ -370,6 +373,7 @@ describe("PATCH-REQUESTS of AssessmentController (e2e)", () => {
 			
 			const tmp = copy(assessment);
 			// Joined relations
+			tmp.assignment = ASSIGNMENT_JAVA_IN_REVIEW_SINGLE;
 			tmp.creator = USER_STUDENT_3_JAVA_TUTOR;
 			tmp.user = USER_STUDENT_JAVA;
 
@@ -398,6 +402,7 @@ describe("PATCH-REQUESTS of AssessmentController (e2e)", () => {
 			
 			const tmp = copy(assessment);
 			// Joined relations
+			tmp.assignment = ASSIGNMENT_JAVA_IN_REVIEW_SINGLE;
 			tmp.creator = USER_STUDENT_3_JAVA_TUTOR;
 			tmp.user = USER_STUDENT_JAVA;
 

@@ -8,7 +8,7 @@ import { UserDto } from "../../src/shared/dto/user.dto";
 import { CollaborationType, UserRole } from "../../src/shared/enums";
 import { AssignmentGroupTuple } from "../../src/user/dto/assignment-group-tuple.dto";
 import { createApplication } from "../mocks/application.mock";
-import { ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA_INVISIBLE } from "../mocks/assignments.mock";
+import { ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA_INVISIBLE, ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP } from "../mocks/assignments.mock";
 import { COURSE_JAVA_1920 } from "../mocks/courses.mock";
 import { DbMockService } from "../mocks/db-mock.service";
 import { GROUP_EVENT_REJOIN_SCENARIO } from "../mocks/groups/group-events.mock";
@@ -114,13 +114,15 @@ describe("GET-REQUESTS of UserController (e2e)", () => {
 	describe("(GET) /users/{userId}/courses/{courseId}/assignments/{assignmentId}/group", () => {
 		const course = COURSE_JAVA_1920;
 
-		it("Retrieves the user's group at the time of assignment's end date", () => {
-			const assignment = ASSIGNMENT_JAVA_CLOSED;
-			console.assert(!!assignment.endDate, "Assignment must have an end date.");
+		it("Retrieves the user's group for this assignment", () => {
+			const assignment = ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP;
 			const expected = GROUP_1_JAVA;
+
+			console.assert(assignment.collaboration === CollaborationType.GROUP, "Expecting a group assignment.");
 	
 			return request(app.getHttpServer())
 				.get(`/users/${user.id}/courses/${course.id}/assignments/${assignment.id}/group`)
+				.expect(200)
 				.expect(({ body }) => {
 					const result = body as GroupDto;
 					expect(result.id).toEqual(expected.id);
@@ -128,32 +130,13 @@ describe("GET-REQUESTS of UserController (e2e)", () => {
 				});
 		});
 
-		it("Assignment had no end date -> Returns current group", () => {
-			const assignment = ASSIGNMENT_JAVA_INVISIBLE;
-			const expected = GROUP_1_JAVA;
-			console.assert(!assignment.endDate, "Assignment must have no end date.");
-			console.assert(assignment.collaboration !== CollaborationType.SINGLE, "CollaborationType should not be SINGLE.");
-	
-			return request(app.getHttpServer())
-				.get(`/users/${user.id}/courses/${course.id}/assignments/${assignment.id}/group`)
-				.expect(({ body }) => {
-					const result = body as GroupDto;
-					expect(result.id).toEqual(expected.id);
-					expect(result.name).toEqual(expected.name);
-				});
-		});
-
-		it("User had no group -> Returns empty object", () => {
+		it("User had no group -> 404", () => {
 			const assignment = ASSIGNMENT_JAVA_CLOSED;
 			const userNoGroup = USER_MGMT_ADMIN_JAVA_LECTURER;
-			console.assert(!!assignment.endDate, "Assignment must have an end date.");
 	
 			return request(app.getHttpServer())
 				.get(`/users/${userNoGroup.id}/courses/${course.id}/assignments/${assignment.id}/group`)
-				.expect(({ body }) => {
-					const result = body as GroupDto;
-					expect(result).toEqual({});
-				});
+				.expect(404);
 		});
 	
 	});
@@ -166,16 +149,14 @@ describe("GET-REQUESTS of UserController (e2e)", () => {
 			// TODO: Create a more complicated scenario with test data instead of using implicit knowledge about data
 			return request(app.getHttpServer())
 				.get(`/users/${user.id}/courses/${course.id}/assignments/groups`)
+				.expect(200)
 				.expect(({ body }) => {
 					const result = body as AssignmentGroupTuple[];
+					expect(result.length).toBeGreaterThan(3);
 					result.forEach(entry => {
-
-						if (entry.assignment.collaboration === CollaborationType.SINGLE) {
-							expect(entry.group).toBeFalsy();
-						} else {
-							expect(entry.group.id).toEqual(currentGroup.id);
-						}
-
+						expect(entry.assignment).toBeTruthy();
+						expect(entry.group).toBeTruthy();
+						expect(entry.group.id).toEqual(currentGroup.id);
 					});
 				});
 		});

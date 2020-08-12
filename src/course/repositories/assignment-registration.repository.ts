@@ -2,9 +2,11 @@ import { EntityRepository, getRepository, Repository } from "typeorm";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
 import { DtoFactory } from "../../shared/dto-factory";
 import { UserId } from "../../shared/entities/user.entity";
+import { AssignmentGroupTuple } from "../../user/dto/assignment-group-tuple.dto";
 import { GroupDto } from "../dto/group/group.dto";
 import { AssignmentRegistration } from "../entities/assignment-group-registration.entity";
 import { AssignmentId } from "../entities/assignment.entity";
+import { CourseId } from "../entities/course.entity";
 import { GroupRegistrationRelation } from "../entities/group-registration-relation.entity";
 import { Group, GroupId } from "../entities/group.entity";
 
@@ -138,6 +140,27 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 		if (!query) throw new EntityNotFoundError(AssignmentRegistration, null);
 		
 		return this.getRegisteredGroupWithMembers(assignmentId, query.groupId); // TODO: Do in this query instead of 2
+	}
+
+	async getAllRegisteredGroupsOfUserInCourse(courseId: CourseId, userId: UserId): Promise<AssignmentGroupTuple[]> {
+		const query = await this.createQueryBuilder("registration")
+			.where("participant.userId = :userId", { userId })
+			.innerJoinAndSelect("registration.group", "group")
+			.innerJoinAndSelect("registration.assignment", "assignment")
+			.innerJoin("registration.groupRelations", "groupRelations")
+			.innerJoin("groupRelations.participant", "participant")
+			.orderBy("assignment.endDate", "ASC", "NULLS LAST")
+			.getMany();
+		
+		const tuples: AssignmentGroupTuple[] = query.map(registration => {
+			const group = DtoFactory.createGroupDto(registration.group);
+			return {
+				assignment: DtoFactory.createAssignmentDto(registration.assignment),
+				group: group
+			};
+		});
+
+		return tuples;
 	}
 
 	/**
