@@ -1,5 +1,5 @@
 import { HttpService, Injectable, Logger } from "@nestjs/common";
-import { Notification } from "../../shared/dto/update-message.dto";
+import { Notification } from "../../shared/dto/notification.dto";
 
 @Injectable()
 export class NotificationService { 
