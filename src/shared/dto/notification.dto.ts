@@ -4,7 +4,7 @@ import { GroupId } from "../../course/entities/group.entity";
 import { Event } from "../../course/events";
 import { UserId } from "../entities/user.entity";
 
-export class Notification {
+export class NotificationDto {
 	event: Event;
 	courseId: CourseId;
 	assignmentId?: AssignmentId;

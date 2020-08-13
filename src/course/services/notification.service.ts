@@ -1,5 +1,5 @@
 import { HttpService, Injectable, Logger } from "@nestjs/common";
-import { Notification } from "../../shared/dto/notification.dto";
+import { NotificationDto } from "../../shared/dto/notification.dto";
 
 @Injectable()
 export class NotificationService { 
@@ -12,7 +12,7 @@ export class NotificationService {
 	/**
 	 * Sends the UpdateMessage via http-post to the URL specified by the course.
 	 */
-	send(notification: Notification): void {
+	send(notification: NotificationDto): void {
 		if (this.url && notification) {
 			this.logger.verbose("Sending notification to: " + this.url);
 			this.http.post(this.url, notification).toPromise()
