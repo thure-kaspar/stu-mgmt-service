@@ -11,5 +11,4 @@ export class NotificationDto {
 	groupId?: GroupId;
 	userId?: UserId;
 	payload?: object;
-	date? = new Date();
 }
