@@ -177,6 +177,7 @@ export abstract class DtoFactory {
 					userId: rel.userId,
 					username: rel.user.username,
 					rzName: rel.user.rzName,
+					email: rel.user.email
 				};
 				return participant;
 			});

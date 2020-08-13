@@ -50,6 +50,7 @@ export class Participant implements ToDto<ParticipantDto> {
 			role: this.role,
 			username: this.user?.username,
 			rzName: this.user?.rzName,
+			email: this.user?.email,
 			groupId: this.groupRelation?.groupId,
 			group: this.groupRelation?.group ? DtoFactory.createGroupDto(this.groupRelation.group) : undefined,
 		};

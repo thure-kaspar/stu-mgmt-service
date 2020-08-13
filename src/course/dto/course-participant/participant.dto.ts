@@ -6,6 +6,7 @@ export class ParticipantDto {
 	userId: UserId;
 	username: string;
 	rzName: string;
+	email: string;
 	role: CourseRole;
 	groupId?: string;
 	group?: GroupDto;

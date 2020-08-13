@@ -18,6 +18,7 @@ export const PARTICIPANT_DTO = (user: UserDto, course: CourseDto, role: CourseRo
 	userId: user.id,
 	username: user.username,
 	rzName: user.rzName,
+	email: user.email,
 	role: role,
 	groupId: groupId,
 	group: group // Not included in every request, so it is included as optional parameter
