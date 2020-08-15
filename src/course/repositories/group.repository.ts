@@ -123,6 +123,7 @@ export class GroupRepository extends Repository<Group> {
 			.leftJoinAndSelect("group.userGroupRelations", "userRelation")
 			.leftJoinAndSelect("userRelation.participant", "participant")
 			.leftJoinAndSelect("participant.user", "user")
+			.orderBy("group.name", "ASC")
 			.skip(skip)
 			.take(take);
 		
