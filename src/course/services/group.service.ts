@@ -157,8 +157,9 @@ export class GroupService {
 	 *   - Given password matches the group's password
 	 */
 	async addUserToGroup(course: Course, group: Group, participant: Participant, selectedParticipant: Participant, password?: string): Promise<void> {
-		const groupSettings = await this.getGroupSettingsOfCourse(course.id);
+		selectedParticipant.hasNoGroup();
 
+		const groupSettings = await this.getGroupSettingsOfCourse(course.id);
 		course.with(CourseWithGroupSettings, groupSettings)
 			.isNotClosed();
 		
