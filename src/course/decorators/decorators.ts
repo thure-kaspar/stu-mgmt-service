@@ -6,8 +6,7 @@ import { createParamDecorator, ExecutionContext } from "@nestjs/common";
  * - `CourseMemberGuard`
  */
 export const GetCourse = createParamDecorator((data: unknown, ctx: ExecutionContext) => {
-	const request = ctx.switchToHttp().getRequest();
-	return request.course;
+	return ctx.switchToHttp().getRequest().course;
 });
 
 /**
@@ -17,8 +16,7 @@ export const GetCourse = createParamDecorator((data: unknown, ctx: ExecutionCont
  * - `CourseMemberGuard`
  */
 export const GetParticipant = createParamDecorator((data: unknown, ctx: ExecutionContext) => {
-	const request = ctx.switchToHttp().getRequest();
-	return request.participant;
+	return ctx.switchToHttp().getRequest().participant;
 });
 
 /**
@@ -29,8 +27,7 @@ export const GetParticipant = createParamDecorator((data: unknown, ctx: Executio
  * - `SelectedParticipantGuard`
  */
 export const GetSelectedParticipant = createParamDecorator((data: unknown, ctx: ExecutionContext) => {
-	const request = ctx.switchToHttp().getRequest();
-	return request.participant;
+	return ctx.switchToHttp().getRequest().selectedParticipant;
 });
 
 /**
@@ -39,8 +36,7 @@ export const GetSelectedParticipant = createParamDecorator((data: unknown, ctx: 
  * - `GroupGuard`
  */
 export const GetGroup = createParamDecorator((data: unknown, ctx: ExecutionContext) => {
-	const request = ctx.switchToHttp().getRequest();
-	return request.group;
+	return ctx.switchToHttp().getRequest().group;
 });
 
 /**
@@ -49,6 +45,5 @@ export const GetGroup = createParamDecorator((data: unknown, ctx: ExecutionConte
  * - `AssignmentGuard`
  */
 export const GetAssignment = createParamDecorator((data: unknown, ctx: ExecutionContext) => {
-	const request = ctx.switchToHttp().getRequest();
-	return request.assignment;
+	return ctx.switchToHttp().getRequest().assignment;
 });
