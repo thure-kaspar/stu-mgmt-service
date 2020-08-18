@@ -194,33 +194,6 @@ export class GroupRepository extends Repository<Group> {
 	}
 
 	/**
-	 * Creates Group-Entities from the given map. Users will be added into the UserGroupRelations.
-	 */
-	async getRecreatedGroups(groupIdUsersMap: Map<string, User[]>): Promise<Group[]> {
-		const groups = await this.getGroupsByIds([...groupIdUsersMap.keys()]);
-		groups.forEach(group => {
-			group.userGroupRelations = [];
-			groupIdUsersMap.get(group.id).forEach(member => {
-				const relation = new UserGroupRelation();
-				relation.user = member;
-				relation.userId = member.id;
-				relation.groupId = group.id;
-				// Add necessary information for ParticipantDto creation
-				relation.participant = new Participant({
-					userId: member.id,
-					role: CourseRole.STUDENT,
-					user: new User({
-						username: member.username,
-						rzName: member.rzName,
-					}),
-				});
-				group.userGroupRelations.push(relation);
-			});
-		});
-		return groups;
-	}
-
-	/**
 	 * Updates the group. Does not update any included relations.
 	 */
 	async updateGroup(groupId: GroupId, update: GroupUpdateDto): Promise<Group> {
