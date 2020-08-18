@@ -5,25 +5,25 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 import { setTotalCountHeader } from "../../../test/utils/http-utils";
 import { PasswordDto } from "../../shared/dto/password.dto";
+import { UserId } from "../../shared/entities/user.entity";
 import { PaginatedResult, throwIfRequestFailed } from "../../utils/http-utils";
+import { GetCourse, GetGroup, GetParticipant, GetSelectedParticipant } from "../decorators/decorators";
 import { ParticipantDto } from "../dto/course-participant/participant.dto";
 import { GroupCreateBulkDto } from "../dto/group/group-create-bulk.dto";
 import { GroupEventDto } from "../dto/group/group-event.dto";
 import { GroupFilter } from "../dto/group/group-filter.dto";
 import { GroupDto, GroupUpdateDto } from "../dto/group/group.dto";
 import { CourseId } from "../entities/course.entity";
+import { GroupId } from "../entities/group.entity";
 import { CourseMemberGuard } from "../guards/course-member.guard";
+import { GroupGuard } from "../guards/group.guard";
+import { SelectedParticipantGuard } from "../guards/selected-participant.guard";
+import { Course } from "../models/course.model";
+import { Group } from "../models/group.model";
+import { Participant } from "../models/participant.model";
 import { AssignedEvaluatorFilter, GroupWithAssignedEvaluatorDto } from "../queries/groups-with-assigned-evaluator/group-with-assigned-evaluator.dto";
 import { GroupsWithAssignedEvaluatorQuery } from "../queries/groups-with-assigned-evaluator/groups-with-assigned-evaluator.query";
 import { GroupService } from "../services/group.service";
-import { Course } from "../models/course.model";
-import { Participant } from "../models/participant.model";
-import { GetGroup, GetCourse, GetParticipant, GetSelectedParticipant } from "../decorators/decorators";
-import { Group } from "../models/group.model";
-import { GroupGuard } from "../guards/group.guard";
-import { SelectedParticipantGuard } from "../guards/selected-participant.guard";
-import { GroupId } from "../entities/group.entity";
-import { UserId } from "../../shared/entities/user.entity";
 
 @ApiBearerAuth()
 @ApiTags("groups")
@@ -79,7 +79,7 @@ export class GroupController {
 		@GetParticipant() participant: Participant,
 		@GetSelectedParticipant() selectedParticipant: Participant,
 		@Body() password?: PasswordDto,
-	): Promise<any> {
+	): Promise<void> {
 
 		return this.groupService.addUserToGroup(course, group, participant, selectedParticipant, password.password);
 	}
@@ -175,34 +175,43 @@ export class GroupController {
 		return this.groupService.updateGroup(course, group, update);
 	}
 
-	@Delete(":groupId/users/:userId")
 	@ApiOperation({
 		operationId: "removeUserFromGroup",
 		summary: "Remove user.",
 		description: "Removes the user from the group."
 	})
+	@Delete(":groupId/users/:userId")
+	@UseGuards(GroupGuard)
 	removeUserFromGroup(
 		@Param("courseId") courseId: CourseId,
 		@Param("groupId") groupId: GroupId,
 		@Param("userId") userId: UserId,
-		@Body("reason") reason?: string
+		@GetCourse() course: Course,
+		@GetGroup() group: Group,
+		@GetParticipant() participant: Participant,
+		@GetSelectedParticipant() selectedParticipant: Participant,
+		@Body("reason") reason?: string,
 	): Promise<void> {
-		return this.groupService.removeUser(courseId, groupId, userId, reason);
+		return this.groupService.removeUser(course, group, participant, selectedParticipant, reason);
 	}
 
-	@Delete(":groupId")
 	@ApiOperation({
 		operationId: "deleteGroup",
 		summary: "Delete group.",
 		description: "Deletes the group."
 	})
+	@Delete(":groupId")
+	@UseGuards(GroupGuard)
 	deleteGroup(
 		@Param("courseId") courseId: CourseId,
-		@Param("groupId") groupId: GroupId
+		@Param("groupId") groupId: GroupId,
+		@GetCourse() course: Course,
+		@GetGroup() group: Group,
+		@GetParticipant() participant: Participant
 	): Promise<void> {
 
 		return throwIfRequestFailed(
-			this.groupService.deleteGroup(groupId),
+			this.groupService.deleteGroup(course, group, participant),
 			`Failed to delete group (${groupId})`
 		);
 	}

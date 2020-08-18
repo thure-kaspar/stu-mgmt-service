@@ -255,17 +255,46 @@ export class GroupService {
 		return DtoFactory.createGroupDto(updated);
 	}
 
-	async removeUser(courseId: CourseId, groupId: GroupId, userId: UserId, reason?: string): Promise<void> {
-		const removed = await this.groupRepository.removeUser(groupId, userId);
+
+	/**
+	 * Removes the `selectedParticipant` from the given `group`.
+	 * If the requesting `participant` is a `STUDENT`, he must be ...
+	 * - member of the group
+	 * - allowed to remove group members
+	 */
+	async removeUser(course: Course, group: Group, participant: Participant, selectedParticipant: Participant, reason?: string): Promise<void> {
+		course.isNotClosed();
+
+		if (participant.isStudent()) {
+			participant
+				.isMemberOfGroup(group)
+				.isAllowedToRemoveGroupMember(selectedParticipant);
+			
+			const groupSettings = await this.getGroupSettingsOfCourse(course.id);
+			course.with(CourseWithGroupSettings, groupSettings)
+				.allowsSelfManagedGroups();
+		}
+
+		const removed = await this.groupRepository.removeUser(group.id, selectedParticipant.userId);
 		if (removed) {
-			this.events.publish(new UserLeftGroupEvent(courseId, groupId, userId, reason));
+			this.events.publish(new UserLeftGroupEvent(course.id, group.id, selectedParticipant.userId, reason));
 		} else {
-			throw new BadRequestException("Failed to remove the user.");
+			throw new BadRequestException(`Failed to remove user (${selectedParticipant.userId}) from group (${group.id}).`);
 		}
 	}
 
-	async deleteGroup(groupId: GroupId): Promise<boolean> {
-		return this.groupRepository.deleteGroup(groupId);
+	async deleteGroup(course: Course, group: Group, participant: Participant): Promise<boolean> {
+		course.isNotClosed();
+
+		if (participant.isStudent()) {
+			participant.isAllowedToRemoveTheirGroup();
+			
+			const groupSettings = await this.getGroupSettingsOfCourse(course.id);
+			course.with(CourseWithGroupSettings, groupSettings)
+				.allowsSelfManagedGroups();
+		}
+
+		return this.groupRepository.deleteGroup(group.id);
 	}
 
 	private getGroupSettingsOfCourse(courseId: CourseId): Promise<GroupSettings> {
