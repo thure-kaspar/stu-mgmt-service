@@ -15,6 +15,7 @@ import { Course } from "../models/course.model";
 import { Participant } from "../models/participant.model";
 import { AssignmentRegistrationService } from "../services/assignment-registration.service";
 import { AssignmentRegistrationFilter } from "../dto/assignment/assignment-registration.filter";
+import { SelectedParticipantGuard } from "../guards/selected-participant.guard";
 
 @ApiBearerAuth()
 @ApiTags("assignment-registration")
@@ -45,7 +46,7 @@ export class AssignmentRegistrationController {
 		description: "Registers a participant as a member of the specified group for the assignment."
 	})
 	@Post("groups/:groupId/members/:userId")
-	@UseGuards(TeachingStaffGuard)
+	@UseGuards(TeachingStaffGuard, SelectedParticipantGuard)
 	registerParticipantAsGroupMember(
 		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: AssignmentId,
