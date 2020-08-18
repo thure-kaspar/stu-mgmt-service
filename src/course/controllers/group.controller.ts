@@ -187,8 +187,7 @@ export class GroupController {
 		@Param("userId") userId: UserId,
 		@Body("reason") reason?: string
 	): Promise<void> {
-
-		return this.groupService.removeUser(groupId, userId, reason);
+		return this.groupService.removeUser(courseId, groupId, userId, reason);
 	}
 
 	@Delete(":groupId")

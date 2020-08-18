@@ -255,10 +255,10 @@ export class GroupService {
 		return DtoFactory.createGroupDto(updated);
 	}
 
-	async removeUser(groupId: GroupId, userId: UserId, reason?: string): Promise<void> {
+	async removeUser(courseId: CourseId, groupId: GroupId, userId: UserId, reason?: string): Promise<void> {
 		const removed = await this.groupRepository.removeUser(groupId, userId);
 		if (removed) {
-			this.events.publish(new UserLeftGroupEvent(groupId, userId, reason));
+			this.events.publish(new UserLeftGroupEvent(courseId, groupId, userId, reason));
 		} else {
 			throw new BadRequestException("Failed to remove the user.");
 		}
