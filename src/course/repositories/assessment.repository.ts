@@ -8,6 +8,7 @@ import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
 import { CourseId } from "../entities/course.entity";
 import { AssessmentFilter } from "../dto/assessment/assessment-filter.dto";
 import { UserId } from "../../shared/entities/user.entity";
+import { GroupId } from "../entities/group.entity";
 
 @EntityRepository(Assessment)
 export class AssessmentRepository extends Repository<Assessment> {
@@ -107,11 +108,29 @@ export class AssessmentRepository extends Repository<Assessment> {
 
 	async getAssessmentsOfUserForCourse(courseId: CourseId, userId: UserId): Promise<Assessment[]> {
 		return this.createQueryBuilder("assessment")
-			.innerJoinAndSelect("assessment.creator", "creator")
+			.leftJoinAndSelect("assessment.creator", "creator")
 			.leftJoinAndSelect("assessment.partialAssessments", "partials") // Include partial assessments, if they exist
 			.leftJoinAndSelect("assessment.group", "group") // Include group, if it exists
 			.innerJoin("assessment.assessmentUserRelations", "userRelation", "userRelation.userId = :userId", { userId }) // User condition
-			.innerJoin("assessment.assignment", "assignment", "assignment.courseId = :courseId", { courseId }) // Course condition
+			.innerJoinAndSelect("assessment.assignment", "assignment", "assignment.courseId = :courseId", { courseId }) // Course condition
+			.getMany();
+	}
+
+	/**
+	 * Retrieves all assessments that target the given group.
+	 * Ordered by creation date.
+	 * Includes relation:
+	 * - Creator
+	 * - Assignment
+	 * - Partial assessments
+	 */
+	async getAssessmentsOfGroup(groupId: GroupId): Promise<Assessment[]> {
+		return this.createQueryBuilder("assessment")
+			.where("assessment.groupId = :groupId", { groupId })
+			.innerJoinAndSelect("assessment.assignment", "assignment")
+			.leftJoinAndSelect("assessment.creator", "creator")
+			.leftJoinAndSelect("assessment.partialAssessments", "partials") // Include partial assessments, if they exist
+			.orderBy("assessment.creationDate", "DESC")
 			.getMany();
 	}
 

@@ -24,6 +24,8 @@ import { Participant } from "../models/participant.model";
 import { AssignedEvaluatorFilter, GroupWithAssignedEvaluatorDto } from "../queries/groups-with-assigned-evaluator/group-with-assigned-evaluator.dto";
 import { GroupsWithAssignedEvaluatorQuery } from "../queries/groups-with-assigned-evaluator/groups-with-assigned-evaluator.query";
 import { GroupService } from "../services/group.service";
+import { GroupMemberGuard } from "../guards/group-member.guard";
+import { AssessmentDto } from "../dto/assessment/assessment.dto";
 
 @ApiBearerAuth()
 @ApiTags("groups")
@@ -129,12 +131,13 @@ export class GroupController {
 		return groups;
 	} 	
 
-	@Get(":groupId")
 	@ApiOperation({
 		operationId: "getGroup",
 		summary: "Get group.",
 		description: "Returns the group with its course, users, assessments and history."
 	})
+	@Get(":groupId")
+	@UseGuards(GroupMemberGuard)
 	getGroup(
 			@Param("courseId") courseId: CourseId,
 			@Param("groupId") groupId: GroupId
@@ -155,6 +158,21 @@ export class GroupController {
 	): Promise<ParticipantDto[]> {
 
 		return this.groupService.getUsersOfGroup(groupId);
+	}
+
+	@ApiOperation({
+		operationId: "getAssessmentsOfGroup",
+		summary: "Get assessments of group.",
+		description: "Retrieves all assessments of this group."
+	})
+	@Get(":groupId/assessments")
+	@UseGuards(GroupMemberGuard)
+	getAssessmentsOfGroup(
+		@Param("courseId") courseId: CourseId,
+		@Param("groupId") groupId: GroupId
+	): Promise<AssessmentDto[]> {
+
+		return this.groupService.getAssessmentsOfGroup(groupId);
 	}
 
 	@ApiOperation({

@@ -7,7 +7,7 @@ import { GroupDto } from "../../src/course/dto/group/group.dto";
 import { GroupWithAssignedEvaluatorDto } from "../../src/course/queries/groups-with-assigned-evaluator/group-with-assigned-evaluator.dto";
 import { createApplication, createApplication_STUDENT } from "../mocks/application.mock";
 import { ASSESSMENT_ALLOCATIONS_MOCK } from "../mocks/assessment-allocation.mock";
-import { AssessmentsMock } from "../mocks/assessments.mock";
+import { AssessmentsMock, ASSESSMENT_JAVA_IN_REVIEW_GROUP_PARTIALS } from "../mocks/assessments.mock";
 import { ASSIGNMENTS_ALL, ASSIGNMENT_JAVA_IN_REVIEW_SINGLE } from "../mocks/assignments.mock";
 import { CoursesMock, COURSE_JAVA_1920 } from "../mocks/courses.mock";
 import { DbMockService } from "../mocks/db-mock.service";
@@ -16,6 +16,7 @@ import { GROUPS_ALL, GROUPS_JAVA_1920, GROUP_1_JAVA, GROUP_2_JAVA } from "../moc
 import { UserGroupRelationsMock } from "../mocks/groups/user-group-relations.mock";
 import { UsersMock, USER_MGMT_ADMIN_JAVA_LECTURER, USER_STUDENT_JAVA } from "../mocks/users.mock";
 import { copy } from "../utils/object-helper";
+import { AssessmentDto } from "../../src/course/dto/assessment/assessment.dto";
 
 let app: INestApplication;
 let dbMockService: DbMockService; // Should be initialized in every describe-block
@@ -143,6 +144,25 @@ describe("GET-REQUESTS of GroupController (e2e)", () => {
 			.get(`/courses/${course.id}/groups/${group.id}/users`)
 			.expect(({ body }) => {
 				expect(body.length).toEqual(memberCount);
+			});
+	});
+
+	it("(GET) /groups/{groupId}/assessments Retrieves all assessments of the group", () => {
+		const group = GROUP_1_JAVA;
+		const assessments = AssessmentsMock.filter(a => a.groupId === group.id);
+		console.assert(assessments.length > 1, "Expecting group to have multiple assessment.");
+
+		return request(app.getHttpServer())
+			.get(`/courses/${course.id}/groups/${group.id}/assessments`)
+			.expect(({ body }) => {
+				const result = body as AssessmentDto[];
+				expect(result.length).toBeGreaterThan(1);
+				expect(result[0].creator).toBeTruthy();
+				expect(result[0].assignment).toBeTruthy();
+
+				const withPartials = result.find(a => a.id === ASSESSMENT_JAVA_IN_REVIEW_GROUP_PARTIALS.id);
+				expect(withPartials).toBeTruthy();
+				expect(withPartials.partialAssessments.length).toBeGreaterThan(0);
 			});
 	});
 

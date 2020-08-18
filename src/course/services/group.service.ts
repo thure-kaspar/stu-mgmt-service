@@ -24,6 +24,8 @@ import { GroupEventRepository } from "../repositories/group-event.repository";
 import { GroupSettingsRepository } from "../repositories/group-settings.repository";
 import { GroupRepository } from "../repositories/group.repository";
 import { AssignmentRegistrationService } from "./assignment-registration.service";
+import { AssessmentDto } from "../dto/assessment/assessment.dto";
+import { AssessmentRepository } from "../repositories/assessment.repository";
 
 @Injectable()
 export class GroupService {
@@ -31,7 +33,8 @@ export class GroupService {
 	constructor(@InjectRepository(GroupEntity) private groupRepository: GroupRepository,
 				@InjectRepository(GroupSettings) private groupSettingsRepository: GroupSettingsRepository,
 				@InjectRepository(GroupEvent) private groupEventRepository: GroupEventRepository,
-				@InjectRepository(Assignment) private assignmentRepository: AssignmentRepository, 
+				@InjectRepository(Assignment) private assignmentRepository: AssignmentRepository,
+				@InjectRepository(AssessmentRepository) private assessmentRepository: AssessmentRepository, 
 				private registrations: AssignmentRegistrationService,
 				private events: EventBus) { }
 
@@ -208,6 +211,11 @@ export class GroupService {
 		const group = await this.groupRepository.getGroupWithUsers(groupId);
 		const participants = group.userGroupRelations.map(x => x.participant.toDto());
 		return participants;
+	}
+
+	async getAssessmentsOfGroup(groupId: GroupId): Promise<AssessmentDto[]> {
+		const assessments = await this.assessmentRepository.getAssessmentsOfGroup(groupId);
+		return assessments.map(a => DtoFactory.createAssessmentDto(a));
 	}
 
 	/** Returns all group events of the course. */
