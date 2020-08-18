@@ -56,9 +56,7 @@ export class UserService {
 
 	async getCoursesOfUser(userId: UserId): Promise<CourseDto[]> {
 		const courses = await this.userRepository.getCoursesOfUser(userId);
-		const courseDtos: CourseDto[] = [];
-		courses.forEach(course => courseDtos.push(DtoFactory.createCourseDto(course)));
-		return courseDtos;
+		return courses.map(c => DtoFactory.createCourseDto(c));
 	}
 
 	/**
