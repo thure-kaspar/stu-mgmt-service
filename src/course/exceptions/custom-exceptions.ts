@@ -28,6 +28,12 @@ export class GroupClosedException extends ForbiddenException {
 	}
 }
 
+export class NotAGroupMemberException extends ForbiddenException {
+	constructor(groupId: GroupId, userId: UserId) {
+		super(`User (${userId}) is not a member of group (${groupId}).`, "NotAGroupMemberException");
+	}
+}
+
 export class GroupsForbiddenException extends ForbiddenException {
 	constructor(courseId: CourseId) {
 		super(`Course (${courseId}) does not allow group creation.`, "GroupsForbiddenException");
@@ -58,6 +64,7 @@ enum StudentMgmtExceptions {
 	NotACourseMemberException = "NotACourseMemberException",
 	NotATeachingStaffMember = "NotATeachingStaffMember",
 	GroupClosedException = "GroupClosedException",
+	NotAGroupMemberException = "NotAGroupMemberException",
 	GroupsForbiddenException = "GroupsForbiddenException",
 	AlreadyInGroupException = "AlreadyInGroupException"
 }
