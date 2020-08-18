@@ -181,7 +181,7 @@ export class GroupController {
 		description: "Removes the user from the group."
 	})
 	@Delete(":groupId/users/:userId")
-	@UseGuards(GroupGuard)
+	@UseGuards(SelectedParticipantGuard, GroupGuard)
 	removeUserFromGroup(
 		@Param("courseId") courseId: CourseId,
 		@Param("groupId") groupId: GroupId,
