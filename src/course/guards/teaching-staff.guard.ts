@@ -1,7 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
-import { isLecturer, isTutor } from "../../shared/enums";
-import { ParticipantDto } from "../dto/course-participant/participant.dto";
 import { NotATeachingStaffMember } from "../exceptions/custom-exceptions";
+import { Participant } from "../models/participant.model";
 import { CourseParticipantsService } from "../services/course-participants.service";
 
 /**
@@ -17,9 +16,9 @@ export class TeachingStaffGuard implements CanActivate {
 
 	async canActivate(context: ExecutionContext): Promise<boolean> {	
 		const request = context.switchToHttp().getRequest();
-		const participant: ParticipantDto = request.participant;
+		const participant: Participant = request.participant;
 
-		if (isLecturer(participant) || isTutor(participant)) {
+		if (participant.isLecturer() || participant.isTutor()) {
 			return true;
 		} else {
 			throw new NotATeachingStaffMember(request.params.courseId, participant.userId);
