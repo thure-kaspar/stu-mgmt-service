@@ -13,4 +13,6 @@ export class PartialAssessmentDto {
 	severity?: Severity;
 	points?: number;
 	comment?: string;
+	path?: string;
+	line?: number;
 }

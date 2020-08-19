@@ -26,6 +26,8 @@ export const PARTIAL_ASSESSMENT_JAVA_IN_REVIEW_GROUP: PartialAssessmentDto = {
 	assessmentId: ASSESSMENT_JAVA_IN_REVIEW_GROUP_PARTIALS.id,
 	title: "Task 1",
 	comment: "Missing ; at the end of line 5",
+	path: "src/de/uni-hildesheim/hello.java",
+	line: 12,
 	points: 0,
 	severity: Severity.ERROR,
 	type: "Compiler Error"

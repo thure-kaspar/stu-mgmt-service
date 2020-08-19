@@ -28,6 +28,12 @@ export class PartialAssessment {
 
 	@Column({ nullable: true })
 	comment?: string;
+
+	@Column({ nullable: true })
+	path?: string;
+
+	@Column({ nullable: true })
+	line?: number;
 	
 	toDto(): PartialAssessmentDto {
 		return {
@@ -37,6 +43,8 @@ export class PartialAssessment {
 			type: this.type ?? undefined,
 			severity: this.severity ?? undefined,
 			comment: this.comment ?? undefined,
+			path: this.path ?? undefined,
+			line: this.line ?? undefined,
 			points: this.points ?? undefined
 		};
 	}
