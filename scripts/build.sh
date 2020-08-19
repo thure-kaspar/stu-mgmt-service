@@ -2,6 +2,7 @@
 
 # Build
 npm install
+ng build --base-href=/Backend-APP/ --deploy-url=/Backend-APP/ --prod
 
 # Unit tests
 #npm run test
@@ -13,4 +14,5 @@ npm install
 #npm run test:cov
 
 # Deploy on demo server
-scripts/deploy.sh
+#scripts/deploy.sh
+scripts/deployAPP.sh
