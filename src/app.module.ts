@@ -9,7 +9,7 @@ import { CourseModule } from "./course/course.module";
 import { MailingModule } from "./mailing/mailing.module";
 import { TestModule } from "./test/test.module";
 import { UserModule } from "./user/user.module";
-import { RequestLogger } from "./utility/request.logger";
+import { RequestLogger } from "./utils/request.logger";
 
 const optionalProviders = (): Provider<any>[] => {
 	const providers: Provider<any>[] = [];
