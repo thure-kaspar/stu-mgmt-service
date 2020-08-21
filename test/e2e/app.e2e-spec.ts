@@ -20,11 +20,14 @@ describe("AppController (e2e)", () => {
 		await getConnection().close(); // Close Db-Connection after all tests have been executed
 	});
 
-	it("(GET) / returns Hello World!", () => {
+	it("(GET) /uptime", () => {
 		return request(app.getHttpServer())
-			.get("/")
+			.get("/uptime")
 			.expect(200)
-			.expect("Hello World!");
+			.expect(({ body}) => {
+				expect(body.startTime).toBeTruthy();
+				expect(body.uptime).toBeTruthy();
+			});
 	});
 	
 });
