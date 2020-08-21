@@ -44,6 +44,7 @@ async function bootstrap(): Promise<void> {
 		await dbMockService.createAll();
 	}
 
+	console.log(`Environment: ${process.env.NODE_ENV}`);
 	await app.listen(port);
 }
 bootstrap();
