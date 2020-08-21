@@ -33,6 +33,7 @@ async function bootstrap(): Promise<void> {
 		.addTag("users")
 		.addTag("assignment-registration")
 		.addTag("assessment-allocation")
+		.addTag("csv")
 		.addTag("test")
 		.build();
 	const document = SwaggerModule.createDocument(app, options, { extraModels: [StudentMgmtException, StudentMgmtEvent] });

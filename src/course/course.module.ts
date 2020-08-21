@@ -19,6 +19,9 @@ import { QueryHandlers } from "./queries";
 import { Repositories } from "./repositories";
 import { Services } from "./services";
 import { GroupRegistrationRelation } from "./entities/group-registration-relation.entity";
+import { CourseMemberGuard } from "./guards/course-member.guard";
+import { TeachingStaffGuard } from "./guards/teaching-staff.guard";
+import { CourseParticipantsService } from "./services/course-participants.service";
 
 @Module({
 	imports: [
@@ -46,6 +49,7 @@ import { GroupRegistrationRelation } from "./entities/group-registration-relatio
 			UserUnregisteredNotificationHandler
 		],
 		...QueryHandlers
-	]
+	],
+	exports: [TypeOrmModule, CourseMemberGuard, TeachingStaffGuard, CourseParticipantsService]
 })
 export class CourseModule { }
