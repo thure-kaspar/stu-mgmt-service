@@ -102,7 +102,7 @@ export class UserController {
 	@ApiOperation({
 		operationId: "getGroupOfAssignment",
 		summary: "Get group of assignment.",
-		description: "Retrieves the group that the user "
+		description: "Retrieves the registered group of this user for a particular assignment."
 	})
 	getGroupOfAssignment(
 		@Param("userId") userId: UserId,

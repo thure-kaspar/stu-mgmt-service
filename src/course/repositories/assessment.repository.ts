@@ -106,6 +106,14 @@ export class AssessmentRepository extends Repository<Assessment> {
 		return query.getManyAndCount();
 	}
 
+	/**
+	 * Returns all assessments of the given user in the specified course.
+	 * Includes relations:
+	 * - Assignment
+	 * - Partial assessments
+	 * - Group
+	 * - Assessment-User-Relations
+	 */
 	async getAssessmentsOfUserForCourse(courseId: CourseId, userId: UserId): Promise<Assessment[]> {
 		return this.createQueryBuilder("assessment")
 			.leftJoinAndSelect("assessment.creator", "creator")
@@ -119,7 +127,7 @@ export class AssessmentRepository extends Repository<Assessment> {
 	/**
 	 * Retrieves all assessments that target the given group.
 	 * Ordered by creation date.
-	 * Includes relation:
+	 * Includes relations:
 	 * - Creator
 	 * - Assignment
 	 * - Partial assessments
