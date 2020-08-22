@@ -137,8 +137,20 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 	 * Returns the user's group for a particular assignment.
 	 * Includes relations:
 	 * - Group (with members)
+	 * @throws EntityNotFoundError if user has no registered group
 	 */
 	async getRegisteredGroupOfUser(assignmentId: AssignmentId, userId: UserId): Promise<GroupDto> {
+		const group = await this.tryGetRegisteredGroupOfUser(assignmentId, userId);
+		if (!group) throw new EntityNotFoundError(AssignmentRegistration, null);
+		return group;
+	}
+
+	/**
+	 * Returns the user's group for a particular assignment or `undefined` if it does not exist.
+	 * Includes relations:
+	 * - Group (with members)
+	 */
+	async tryGetRegisteredGroupOfUser(assignmentId: AssignmentId, userId: UserId): Promise<GroupDto> {
 		const query = await this.createQueryBuilder("registration")
 			.where("registration.assignmentId = :assignmentId", { assignmentId })
 			.andWhere("participant.userId = :userId", { userId })
@@ -147,7 +159,7 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 			.innerJoinAndSelect("groupRelations.participant", "participant")
 			.getOne();
 
-		if (!query) throw new EntityNotFoundError(AssignmentRegistration, null);
+		if (!query) return undefined;
 		
 		return this.getRegisteredGroupWithMembers(assignmentId, query.groupId); // TODO: Do in this query instead of 2
 	}

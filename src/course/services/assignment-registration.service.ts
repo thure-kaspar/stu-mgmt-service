@@ -15,6 +15,7 @@ import { Course } from "../models/course.model";
 import { Participant } from "../models/participant.model";
 import { AssignmentRegistrationRepository } from "../repositories/assignment-registration.repository";
 import { GroupRepository } from "../repositories/group.repository";
+import { AlreadyInGroupException } from "../exceptions/custom-exceptions";
 
 @Injectable()
 export class AssignmentRegistrationService {
@@ -35,6 +36,12 @@ export class AssignmentRegistrationService {
 	 * Registers an individual participant for the assignment as member of the specified group.
 	 */
 	async registerUserToGroup(course: Course, assignmentId: AssignmentId, groupId: GroupId, selectedParticipant: Participant): Promise<void> {
+		const isAlreadyRegistered = await this.registrations.tryGetRegisteredGroupOfUser(assignmentId, selectedParticipant.userId);
+
+		if (isAlreadyRegistered) {
+			throw new AlreadyInGroupException(selectedParticipant.userId, isAlreadyRegistered.id);
+		}
+
 		await this.registrations.createRegistration(assignmentId, groupId, selectedParticipant.userId, selectedParticipant.id);
 		this.events.publish(new UserRegistered(course.id, assignmentId, selectedParticipant.userId, groupId));
 	}
