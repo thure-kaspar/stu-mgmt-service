@@ -5,7 +5,12 @@ export enum RoundingType {
 	UP_NEAREST_INTEGER = "UP_NEAREST_INTEGER"
 }
 
-export function roundingMethod(type: RoundingType, decimals?: number): (value: number) => number {
+export class RoundingBehavior {
+	type: RoundingType;
+	decimals?: number;
+}
+
+export function RoundingMethod(type: RoundingType, decimals?: number): (value: number) => number {
 	switch (type) {
 	case RoundingType.NONE: return (value: number): number => value;
 	case RoundingType.DECIMALS: return (value: number): number => Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals);
@@ -14,4 +19,11 @@ export function roundingMethod(type: RoundingType, decimals?: number): (value: n
 	default:
 		throw new Error("Unsupported RoundingType!");
 	}
+}
+
+/**
+ * (numerator / denominator) * 100;
+ */
+export function Percent(numerator: number, denominator: number): number {
+	return (numerator / denominator) * 100;
 }
