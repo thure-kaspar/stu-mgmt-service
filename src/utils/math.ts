@@ -8,15 +8,9 @@ export enum RoundingType {
 export function roundingMethod(type: RoundingType, decimals?: number): (value: number) => number {
 	switch (type) {
 	case RoundingType.NONE: return (value: number): number => value;
-	case RoundingType.DECIMALS: return (value: number): number => {
-		return Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals);
-	};
-	case RoundingType.DOWN_NEAREST_INTEGER: return (value: number): number => {
-		return Math.floor(value);
-	};
-	case RoundingType.UP_NEAREST_INTEGER: return (value: number): number => {
-		return Math.ceil(value);
-	};
+	case RoundingType.DECIMALS: return (value: number): number => Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals);
+	case RoundingType.DOWN_NEAREST_INTEGER: return (value: number): number => Math.floor(value);
+	case RoundingType.UP_NEAREST_INTEGER: return (value: number): number => Math.ceil(value);
 	default:
 		throw new Error("Unsupported RoundingType!");
 	}
