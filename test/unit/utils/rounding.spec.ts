@@ -35,6 +35,18 @@ describe("Rounding-Strategies", () => {
 			const result = round(endsWith5);
 			expect(result).toEqual(10.30);
 		});
+
+		it("0 -> Rounds to nearest integer", () => {
+			const round = roundingMethod(RoundingType.DECIMALS, 0);
+			const result = round(value);
+			expect(result).toEqual(12);
+		});
+
+		it("Negative decimal -> Rounds digits before comma", () => {
+			const round = roundingMethod(RoundingType.DECIMALS, -1);
+			const result = round(value);
+			expect(result).toEqual(10);
+		});
 	
 	});
 
