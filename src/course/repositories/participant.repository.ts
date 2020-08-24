@@ -51,6 +51,35 @@ export class ParticipantRepository extends Repository<Participant> {
 		return query.getManyAndCount();
 	}
 
+	async getStudentsWithAssessments(courseId: CourseId): Promise<Participant[]> {
+		return this.createQueryBuilder("participant")
+			.where("participant.courseId = :courseId", { courseId })
+			.andWhere("participant.role = :role", { role: CourseRole.STUDENT })
+			.innerJoinAndSelect("participant.user", "user")
+			.leftJoinAndSelect("user.assessmentUserRelations", "aur")
+			.innerJoinAndSelect("aur.assessment", "assessment")
+			.innerJoinAndSelect("assessment.assignment", "assignment", "assignment.courseId = :courseId", { courseId })
+			.getMany();
+	}
+
+	async getStudentWithAssessments(courseId: CourseId, userId: UserId): Promise<Participant> {
+		const query = await this.createQueryBuilder("participant")
+			.where("participant.userId = :userId", { userId })
+			.andWhere("participant.courseId = :courseId", { courseId })
+			.andWhere("participant.role = :role", { role: CourseRole.STUDENT })
+			.innerJoinAndSelect("participant.user", "user")
+			.leftJoinAndSelect("user.assessmentUserRelations", "aur")
+			.innerJoinAndSelect("aur.assessment", "assessment")
+			.innerJoinAndSelect("assessment.assignment", "assignment", "assignment.courseId = :courseId", { courseId })
+			.getOne();
+
+		if (!query) {
+			throw new EntityNotFoundError(Participant, { courseId, userId });
+		}
+		
+		return query;
+	}
+
 	/**
 	 * Returns a specific participant of a course.
 	 * Throws `EntityNotFoundError` if participant does not exist.

@@ -24,12 +24,19 @@ export class AdmissionCriteriaRepository extends Repository<AdmissionCriteria> {
 
 	/** Retrieves the admission criteria. Throws error, if not found. */
 	async getByCourseId(courseId: CourseId): Promise<AdmissionCriteria> {
+		const criteria = await this.tryGetByCourseId(courseId);
+
+		if (!criteria) throw new EntityNotFoundError(AdmissionCriteria, null);
+		return criteria;
+	}
+
+	/** Retrieves the admission criteria or `undefined` if it does not exist. */
+	async tryGetByCourseId(courseId: CourseId): Promise<AdmissionCriteria> {
 		const criteria = await this.createQueryBuilder("criteria")
 			.innerJoin("criteria.courseConfig", "c")
 			.where("c.courseId = :courseId", { courseId })
 			.getOne();
-
-		if (!criteria) throw new EntityNotFoundError(AdmissionCriteria, null);
+	
 		return criteria;
 	}
 
