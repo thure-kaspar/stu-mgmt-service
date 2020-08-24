@@ -10,6 +10,7 @@ import { AdmissionStatusService } from "./admission-status.service";
 		CourseModule
 	],
 	controllers: [AdmissionStatusController],
-	providers: [AdmissionStatusService]
+	providers: [AdmissionStatusService],
+	exports: [AdmissionStatusService]
 })
 export class AdmissionStatusModule {}
