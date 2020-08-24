@@ -12,5 +12,10 @@ npm install
 # test coverage
 #npm run test:cov
 
+# Create pre-compiled distribution package
+npm run build
+rm -f Backend.tar.gz
+tar czf Backend.tar.gz dist config package.json
+
 # Deploy on demo server
 scripts/deploy.sh
