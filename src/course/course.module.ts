@@ -22,6 +22,8 @@ import { GroupRegistrationRelation } from "./entities/group-registration-relatio
 import { CourseMemberGuard } from "./guards/course-member.guard";
 import { TeachingStaffGuard } from "./guards/teaching-staff.guard";
 import { CourseParticipantsService } from "./services/course-participants.service";
+import { AssignmentService } from "./services/assignment.service";
+import { IdentityGuard } from "./guards/identity.guard";
 
 @Module({
 	imports: [
@@ -50,6 +52,6 @@ import { CourseParticipantsService } from "./services/course-participants.servic
 		],
 		...QueryHandlers
 	],
-	exports: [TypeOrmModule, CourseMemberGuard, TeachingStaffGuard, CourseParticipantsService]
+	exports: [TypeOrmModule, CourseMemberGuard, TeachingStaffGuard, IdentityGuard, CourseParticipantsService, AssignmentService]
 })
 export class CourseModule { }
