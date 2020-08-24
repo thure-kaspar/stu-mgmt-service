@@ -55,7 +55,7 @@ export class CourseConfigRepository extends Repository<CourseConfig> {
 		}
 
 		// Admission criteria
-		if (configDto.admissionCriteria?.criteria?.length > 0) {
+		if (configDto.admissionCriteria?.rules?.length > 0) {
 			config.admissionCriteria = new AdmissionCriteria();
 			config.admissionCriteria.admissionCriteria = configDto.admissionCriteria;
 		}

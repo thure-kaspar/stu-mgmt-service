@@ -166,7 +166,7 @@ export class CourseRepository extends Repository<Course> {
 			return template;
 		});
 
-		if (configDto.admissionCriteria?.criteria?.length > 0) {
+		if (configDto.admissionCriteria?.rules?.length > 0) {
 			course.config.admissionCriteria = new AdmissionCriteria();
 			course.config.admissionCriteria.admissionCriteria = configDto.admissionCriteria;
 		}

@@ -22,7 +22,6 @@ import { convertToEntity, convertToEntityNoRelations } from "../utils/object-hel
 import { ASSESSMENT_ALLOCATIONS_MOCK } from "./assessment-allocation.mock";
 import { AssessmentsMock } from "./assessments.mock";
 import { ASSIGNMENTS_ALL, ASSIGNMENTS_JAVA_1920 } from "./assignments.mock";
-import { ADMISSION_CRITERIA_JAVA } from "./course-config/admission-criteria.mock";
 import { ASSIGNMENT_TEMPLATES_MOCK } from "./course-config/assignment-templates.mock";
 import { COURSE_CONFIGS_MOCK } from "./course-config/course-config.mock";
 import { GROUP_SETTINGS_MOCK } from "./course-config/group-settings.mock";
@@ -49,7 +48,7 @@ export class DbMockService {
 	assessmentUserRelations = AssessmentUserRelationsMock;
 	assignmentTemplates = ASSIGNMENT_TEMPLATES_MOCK;
 	groupSettings = GROUP_SETTINGS_MOCK;
-	admissionCriteria = ADMISSION_CRITERIA_JAVA;
+	admissionCriteria = null; // TODO
 	configs = COURSE_CONFIGS_MOCK;
 	allocations = ASSESSMENT_ALLOCATIONS_MOCK;
 	
@@ -64,7 +63,7 @@ export class DbMockService {
 		await this.createCourses();
 		await this.createCourseConfig();
 		await this.createAssignmentTemplates();
-		await this.createAdmissionCriteria();
+		//await this.createAdmissionCriteria(); TODO
 		await this.createGroupSettings();
 		await this.createUsers();
 		await this.createGroups();
