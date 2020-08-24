@@ -11,6 +11,7 @@ import { TestModule } from "./test/test.module";
 import { UserModule } from "./user/user.module";
 import { RequestLogger } from "./utils/request.logger";
 import { CsvModule } from "./csv/csv.module";
+import { AdmissionStatusModule } from "./admission-status/admission-status.module";
 
 const optionalProviders = (): Provider<any>[] => {
 	const providers: Provider<any>[] = [];
@@ -28,7 +29,8 @@ const optionalProviders = (): Provider<any>[] => {
 		TestModule,
 		AuthModule,
 		MailingModule,
-		CsvModule
+		CsvModule,
+		AdmissionStatusModule
 	],
 	controllers: [AppController],
 	providers: [...optionalProviders()],
