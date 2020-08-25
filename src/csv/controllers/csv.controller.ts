@@ -42,6 +42,11 @@ export class CsvController {
 		}
 	}
 
+	@ApiOperation({
+		operationId: "getPointsOverview",
+		summary: "Get points overview.",
+		description: "Returns a .csv file containing the achieved points of every student for all assignments of the specified course. Requires LECTURER or TUTOR role."
+	})
 	@Get("courses/:courseId/admission-status/overview")
 	@UseGuards(CourseMemberGuard, TeachingStaffGuard)
 	async getPointsOverview(
