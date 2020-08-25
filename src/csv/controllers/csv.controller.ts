@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Res, UseGuards } from "@nestjs/common";
+import { Controller, Get, Param, Res, UseGuards, Header } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { Response } from "express";
@@ -24,6 +24,7 @@ export class CsvController {
 		summary: "Get participants.",
 		description: "Returns a .csv file containing the participants of the specified course. Requires LECTURER or TUTOR role."
 	})
+	@Header("content-type", "text/csv")
 	@Get("courses/:courseId/users")
 	@UseGuards(CourseMemberGuard, TeachingStaffGuard)
 	async getParticipants(
@@ -47,6 +48,7 @@ export class CsvController {
 		summary: "Get points overview.",
 		description: "Returns a .csv file containing the achieved points of every student for all assignments of the specified course. Requires LECTURER or TUTOR role."
 	})
+	@Header("content-type", "text/csv")
 	@Get("courses/:courseId/admission-status/overview")
 	@UseGuards(CourseMemberGuard, TeachingStaffGuard)
 	async getPointsOverview(
