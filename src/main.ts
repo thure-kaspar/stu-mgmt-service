@@ -1,4 +1,5 @@
 import { NestFactory } from "@nestjs/core";
+import { NestExpressApplication } from "@nestjs/platform-express";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import { AppModule } from "./app.module";
 import * as config from "config";
@@ -12,12 +13,13 @@ import { StudentMgmtEvent } from "./course/events";
 async function bootstrap(): Promise<void> {
 	const serverConfig = config.get("server");
 	const port = process.env.SERVER_PORT || serverConfig.port;
-	const app = await NestFactory.create(AppModule);
+	const app = await NestFactory.create<NestExpressApplication>(AppModule);
 	app.useGlobalFilters(new EntityNotFoundFilter());
 	app.useGlobalPipes(new ValidationPipe({ transform: true })); // Automatically transform primitive params to their type
 	app.enableCors({ exposedHeaders: "x-total-count" });
+	app.disable("x-powered-by");
 	//app.setGlobalPrefix("mgmt/v1");
-
+	
 	const options = new DocumentBuilder()
 		.addBearerAuth()
 		.setTitle("Student-Management-System-API")
