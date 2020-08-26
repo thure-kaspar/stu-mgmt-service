@@ -153,29 +153,40 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 	async tryGetRegisteredGroupOfUser(assignmentId: AssignmentId, userId: UserId): Promise<GroupDto> {
 		const query = await this.createQueryBuilder("registration")
 			.where("registration.assignmentId = :assignmentId", { assignmentId })
-			.andWhere("participant.userId = :userId", { userId })
+			.andWhere("searchedParticipant.userId = :userId", { userId })
 			.innerJoinAndSelect("registration.group", "group")
-			.leftJoinAndSelect("registration.groupRelations", "groupRelations")
+			.innerJoinAndSelect("registration.groupRelations", "searchedGroupRelations")
+			.innerJoinAndSelect("searchedGroupRelations.participant", "searchedParticipant") 
+			.innerJoinAndSelect("registration.groupRelations", "groupRelations") // Join groupRelation twice (with different alias) to keep all members (WHERE filters by userId)
 			.innerJoinAndSelect("groupRelations.participant", "participant")
+			.innerJoinAndSelect("participant.user", "user")
 			.getOne();
 
 		if (!query) return undefined;
+
+		const group = DtoFactory.createGroupDto(query.group);
+		group.members = query.groupRelations.map(relation => relation.participant.toDto());
 		
-		return this.getRegisteredGroupWithMembers(assignmentId, query.groupId); // TODO: Do in this query instead of 2
+		return group;
 	}
 
 	async getAllRegisteredGroupsOfUserInCourse(courseId: CourseId, userId: UserId): Promise<AssignmentGroupTuple[]> {
 		const query = await this.createQueryBuilder("registration")
-			.where("participant.userId = :userId", { userId })
+			.where("searchedParticipant.userId = :userId", { userId })
+			.andWhere("group.courseId = :courseId", { courseId })
 			.innerJoinAndSelect("registration.group", "group")
 			.innerJoinAndSelect("registration.assignment", "assignment")
-			.innerJoin("registration.groupRelations", "groupRelations")
-			.innerJoin("groupRelations.participant", "participant")
+			.innerJoinAndSelect("registration.groupRelations", "searchedGroupRelations")
+			.innerJoinAndSelect("searchedGroupRelations.participant", "searchedParticipant")
+			.innerJoinAndSelect("registration.groupRelations", "groupRelations") // Join groupRelation twice (with different alias) to keep all members (WHERE filters by userId)
+			.innerJoinAndSelect("groupRelations.participant", "participant")
+			.innerJoinAndSelect("participant.user", "user")
 			.orderBy("assignment.endDate", "ASC", "NULLS LAST")
 			.getMany();
 		
 		const tuples: AssignmentGroupTuple[] = query.map(registration => {
 			const group = DtoFactory.createGroupDto(registration.group);
+			group.members = registration.groupRelations.map(rel => rel.participant.toDto());
 			return {
 				assignment: DtoFactory.createAssignmentDto(registration.assignment),
 				group: group
