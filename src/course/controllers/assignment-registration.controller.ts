@@ -41,6 +41,23 @@ export class AssignmentRegistrationController {
 	}
 
 	@ApiOperation({
+		operationId: "registerGroup",
+		summary: "Register group.",
+		description: "Registers a group and its members for the assignment."
+	})
+	@Post("groups/:groupId")
+	@UseGuards(TeachingStaffGuard)
+	registerGroup(
+		@Param("courseId") courseId: CourseId,
+		@Param("assignmentId") assignmentId: AssignmentId,
+		@Param("groupId") groupId: GroupId,
+		@GetCourse() course: Course,
+	): Promise<void> {
+
+		return this.registrations.registerGroup(course, assignmentId, groupId);
+	}
+
+	@ApiOperation({
 		operationId: "registerParticipantAsGroupMember",
 		summary: "Register participant as group member.",
 		description: "Registers a participant as a member of the specified group for the assignment."

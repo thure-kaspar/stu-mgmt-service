@@ -10,11 +10,25 @@ import { AssignmentId } from "../entities/assignment.entity";
 import { CourseId } from "../entities/course.entity";
 import { GroupRegistrationRelation } from "../entities/group-registration-relation.entity";
 import { Group, GroupId } from "../entities/group.entity";
+import { Participant } from "../entities/participant.entity";
 
 @EntityRepository(AssignmentRegistration)
 export class AssignmentRegistrationRepository extends Repository<AssignmentRegistration> {
 
 	private readonly groupRelationsRepository = getRepository(GroupRegistrationRelation);
+
+	/**
+	 * Creates a registration for specified group and its members.
+	 */
+	async createGroupRegistration(assignmentId: AssignmentId, groupId: GroupId, members: Participant[]): Promise<AssignmentRegistration> {
+		const registration = new AssignmentRegistration({
+			assignmentId,
+			groupId,
+			groupRelations: members.map(member => new GroupRegistrationRelation({ participantId: member.id }))
+		});
+
+		return this.save(registration);
+	}
 
 	/**
 	 * Creates a registration for the specified user.
