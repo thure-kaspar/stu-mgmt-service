@@ -6,14 +6,21 @@ import * as config from "config";
 import { DbMockService } from "../test/mocks/db-mock.service";
 import { getConnection } from "typeorm";
 import { EntityNotFoundFilter } from "./shared/entity-not-found.filter";
-import { ValidationPipe } from "@nestjs/common";
+import { ValidationPipe, Logger } from "@nestjs/common";
 import { StudentMgmtException } from "./course/exceptions/custom-exceptions";
 import { StudentMgmtEvent } from "./course/events";
 
 async function bootstrap(): Promise<void> {
+	const logger = new Logger("Bootstrap");
+	logger.verbose(`Environment: ${process.env.NODE_ENV}`);
+
 	const serverConfig = config.get("server");
 	const port = process.env.SERVER_PORT || serverConfig.port;
-	const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+	logger.verbose("Creating application...");
+	const app = await NestFactory.create<NestExpressApplication>(AppModule, { logger: ["error", "warn", "verbose", "debug"] });
+	logger.verbose("Application created!");
+
 	app.useGlobalFilters(new EntityNotFoundFilter());
 	app.useGlobalPipes(new ValidationPipe({ transform: true })); // Automatically transform primitive params to their type
 	app.enableCors({ exposedHeaders: "x-total-count" });
@@ -44,11 +51,13 @@ async function bootstrap(): Promise<void> {
 
 	// If demo environment, populate database with test data
 	if (process.env.NODE_ENV == "demo") {
+		
 		const dbMockService = new DbMockService(getConnection());
 		await dbMockService.createAll();
 	}
 
-	console.log(`Environment: ${process.env.NODE_ENV}`);
+	logger.verbose("Starting application...");
 	await app.listen(port);
+	logger.verbose(`Application started! (Port: ${port})`);
 }
 bootstrap();
