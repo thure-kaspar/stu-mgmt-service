@@ -65,7 +65,7 @@ export class GroupService {
 	/**
 	 * Creates a group without checking any constraints.
 	 */
-	private async createGroup_Force(course: Course, groupDto: GroupDto): Promise<GroupDto> {
+	async createGroup_Force(course: Course, groupDto: GroupDto): Promise<GroupDto> {
 		const createdGroup = await this.groupRepository.createGroup(course.id, groupDto);
 		return DtoFactory.createGroupDto(createdGroup);
 	}
@@ -96,7 +96,7 @@ export class GroupService {
 	 * If course uses a name schema the name will use the schema, otherwise it will return the specified name from the dto.
 	 * @throws `Error` if name is empty or undefined.
 	 */
-	private async determineName(course: Course, groupSettings: GroupSettings, groupDto: GroupDto): Promise<string> {
+	async determineName(course: Course, groupSettings: GroupSettings, groupDto: GroupDto): Promise<string> {
 		let name: string;
 
 		if (groupSettings.nameSchema) {
@@ -193,6 +193,9 @@ export class GroupService {
 		}
 	}
 
+	/**
+	 * Returns all groups of a course and their members.
+	 */
 	async getGroupsOfCourse(courseId: CourseId, filter?: GroupFilter): Promise<[GroupDto[], number]> {
 		const [groups, count] = await this.groupRepository.getGroupsOfCourse(courseId, filter);
 		const dtos = groups.map(group => DtoFactory.createGroupDto(group));
