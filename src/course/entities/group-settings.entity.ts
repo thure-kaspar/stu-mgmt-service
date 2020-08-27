@@ -29,13 +29,25 @@ export class GroupSettings {
 	@Column()
 	selfmanaged: boolean;
 
+	@Column()
+	autoJoinGroupOnCourseJoined: boolean;
+
+	@Column()
+	mergeGroupsOnAssignmentStarted: boolean;
+
+	constructor(partial?: Partial<GroupSettings>) {
+		if (partial) Object.assign(this, partial);
+	}
+
 	toDto(): GroupSettingsDto {
 		return {
 			allowGroups: this.allowGroups,
 			nameSchema: this.nameSchema ?? undefined,
 			sizeMin: this.sizeMin,
 			sizeMax: this.sizeMax,
-			selfmanaged: this.selfmanaged
+			selfmanaged: this.selfmanaged,
+			autoJoinGroupOnCourseJoined: this.autoJoinGroupOnCourseJoined,
+			mergeGroupsOnAssignmentStarted: this.mergeGroupsOnAssignmentStarted
 		};
 	}
 

@@ -17,6 +17,10 @@ export class GroupDto {
 	@ApiPropertyOptional({ description: "Password required to enter the group." })
 	password?: string;
 
+	/** Indicates, wether group has a password. Set by the server. */
+	@ApiPropertyOptional({ description: "Indicates, wether group has a password. Set by the server." })
+	_hasPassword?: boolean;
+
 	/** Determines, wether course participant are able to join this group. */
 	@ApiPropertyOptional({ description: "Determines, wether course participant are able to join this group." })
 	isClosed?: boolean;

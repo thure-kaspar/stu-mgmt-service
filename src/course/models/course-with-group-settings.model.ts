@@ -7,16 +7,32 @@ import { Group } from "./group.model";
 
 export class CourseWithGroupSettings extends Course {
 
-	private groupSettings: GroupSettings;
+	readonly groupSettings: GroupSettings;
 
 	constructor(course: CourseEntity, groupSettings: GroupSettings) {
 		super(course);
 		this.groupSettings = groupSettings;
 	}
 
+	getMinGroupSize(): number {
+		return this.groupSettings.sizeMin;
+	}
+
+	getMaxGroupSize(): number {
+		return this.groupSettings.sizeMax;
+	}
+
 	isNotClosed(): CourseWithGroupSettings {
 		super.isNotClosed();
 		return this;
+	}
+
+	wantsAutomaticGroupJoins(): boolean {
+		return this.groupSettings.autoJoinGroupOnCourseJoined; 
+	}
+
+	hasGroupNameSchema(): boolean {
+		return !!this.groupSettings.nameSchema;
 	}
 
 	/**

@@ -59,7 +59,9 @@ export abstract class DtoFactory {
 			nameSchema: settings.nameSchema,
 			sizeMin: settings.sizeMin,
 			sizeMax: settings.sizeMax,
-			selfmanaged: settings.selfmanaged
+			selfmanaged: settings.selfmanaged,
+			autoJoinGroupOnCourseJoined: settings.autoJoinGroupOnCourseJoined,
+			mergeGroupsOnAssignmentStarted: settings.mergeGroupsOnAssignmentStarted
 		};
 	}
 
@@ -105,6 +107,7 @@ export abstract class DtoFactory {
 			id: group.id,
 			name: group.name,
 			isClosed:group.isClosed,
+			_hasPassword: !!group.password
 		};
 
 		if (group.userGroupRelations) {

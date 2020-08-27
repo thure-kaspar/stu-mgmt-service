@@ -6,6 +6,8 @@ export const GROUP_SETTINGS_GROUPS_ALLOWED_MIN2_MAX3_SELF: GroupSettingsDto = {
 	sizeMin: 2,
 	sizeMax: 3,
 	selfmanaged: true,
+	autoJoinGroupOnCourseJoined: true,
+	mergeGroupsOnAssignmentStarted: true
 };
 
 export const GROUP_SETTINGS_NO_GROUPS: GroupSettingsDto = {
@@ -14,6 +16,8 @@ export const GROUP_SETTINGS_NO_GROUPS: GroupSettingsDto = {
 	sizeMin: 0,
 	sizeMax: 0,
 	selfmanaged: false,
+	autoJoinGroupOnCourseJoined: false,
+	mergeGroupsOnAssignmentStarted: false
 };
 
 export const GROUP_SETTINGS_GROUPS_ALLOWED_NOT_SELF: GroupSettingsDto = {
@@ -22,6 +26,8 @@ export const GROUP_SETTINGS_GROUPS_ALLOWED_NOT_SELF: GroupSettingsDto = {
 	sizeMin: 2,
 	sizeMax: 3,
 	selfmanaged: false,
+	autoJoinGroupOnCourseJoined: true,
+	mergeGroupsOnAssignmentStarted: false
 };
 
 export const GROUP_SETTINGS_NO_SCHEMA_SELF: GroupSettingsDto = {
@@ -30,6 +36,8 @@ export const GROUP_SETTINGS_NO_SCHEMA_SELF: GroupSettingsDto = {
 	sizeMin: 2,
 	sizeMax: 3,
 	selfmanaged: true,
+	autoJoinGroupOnCourseJoined: true,
+	mergeGroupsOnAssignmentStarted: true
 };
 
 export const GROUP_SETTINGS_MOCK: GroupSettingsDto[] = [
