@@ -151,8 +151,8 @@ export class AssessmentRepository extends Repository<Assessment> {
 			relations: ["partialAssessments"]
 		});
 
-		// Update achievedPoints, if included
-		if (achievedPoints) {
+		// Update achievedPoints, if included (check for undefined or null, because 0 is allowed)
+		if (achievedPoints !== undefined && achievedPoints !== null) {
 			assessment.achievedPoints = updateDto.achievedPoints;
 		}
 
