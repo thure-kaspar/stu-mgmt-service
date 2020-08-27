@@ -68,8 +68,8 @@ function getGroupMock(): Group {
 function getGroupFromAssignmentMock(): GroupDto {
 	const group = copy(GROUP_1_JAVA);
 	group.members = [
-		PARTICIPANT_JAVA_1920_STUDENT,
-		PARTICIPANT_JAVA_1920_STUDENT_2
+		PARTICIPANT_JAVA_1920_STUDENT.participant,
+		PARTICIPANT_JAVA_1920_STUDENT_2.participant
 	];
 	return group;
 }
