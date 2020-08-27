@@ -8,9 +8,11 @@ import { UserRegisteredNotificationHandler } from "./assignment/user-registered.
 import { UserUnregisteredNotificationHandler } from "./assignment/user-unregistered.event";
 import { UserJoinedGroupHandler } from "./group/user-joined-group.event";
 import { UserLeftGroupHandler, UserLeftGroupNotificationHandler } from "./group/user-left-group.event";
+import { CourseJoinedHandler } from "./participant/course-joined.event";
 
 /** EventHandlers that are used internally. */
 export const EventHandlers = [
+	CourseJoinedHandler,
 	UserJoinedGroupHandler, 
 	UserLeftGroupHandler, 
 	AssessmentScoreChangedHandler,
@@ -28,6 +30,7 @@ export const EventNotificationHandlers = [
 ];
 
 export enum Event {
+	COURSE_JOINED = "COURSE_JOINED",
 	ASSIGNMENT_CREATED = "ASSIGNMENT_CREATED",
 	ASSIGNMENT_REMOVED = "ASSIGNMENT_REMOVED",
 	ASSIGNMENT_STATE_CHANGED = "ASSIGNMENT_STATE_CHANGED",

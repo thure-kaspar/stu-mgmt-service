@@ -24,6 +24,7 @@ import { TeachingStaffGuard } from "./guards/teaching-staff.guard";
 import { CourseParticipantsService } from "./services/course-participants.service";
 import { AssignmentService } from "./services/assignment.service";
 import { IdentityGuard } from "./guards/identity.guard";
+import { CourseJoinedHandler } from "./events/participant/course-joined.event";
 
 @Module({
 	imports: [
@@ -37,6 +38,7 @@ import { IdentityGuard } from "./guards/identity.guard";
 		...Services,
 		...Guards,
 		...[
+			CourseJoinedHandler,
 			UserJoinedGroupHandler, 
 			UserLeftGroupHandler, 
 			AssessmentScoreChangedHandler,
