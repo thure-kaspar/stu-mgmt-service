@@ -25,7 +25,7 @@ export enum CollaborationType {
 export enum UserRole {
 	SYSTEM_ADMIN = "SYSTEM_ADMIN",
 	ADMIN_TOOL = "ADMIN_TOOL",
-	MGMT_ADMIN = "MGTM_ADMIN",
+	MGMT_ADMIN = "MGMT_ADMIN",
 	USER = "USER"
 }
 
