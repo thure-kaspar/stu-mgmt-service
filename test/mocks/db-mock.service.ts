@@ -224,7 +224,7 @@ export class DbMockService {
 			return new AssignmentRegistration({
 				assignmentId,
 				groupId,
-				groupRelations: participantIds.map(id => new GroupRegistrationRelation({ participantId: id }))
+				groupRelations: participantIds.map(id => new GroupRegistrationRelation({ participantId: id, assignmentId }))
 			});
 		};
 

@@ -11,6 +11,7 @@ import { CourseId } from "../entities/course.entity";
 import { GroupRegistrationRelation } from "../entities/group-registration-relation.entity";
 import { Group, GroupId } from "../entities/group.entity";
 import { Participant } from "../entities/participant.entity";
+import { DbException, EntityAlreadyExistsError } from "../../shared/database-exceptions";
 
 @EntityRepository(AssignmentRegistration)
 export class AssignmentRegistrationRepository extends Repository<AssignmentRegistration> {
@@ -19,15 +20,23 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 
 	/**
 	 * Creates a registration for specified group and its members.
+	 * @throws `EntityAlreadyExistsError` if group or member is already registered. 
 	 */
 	async createGroupRegistration(assignmentId: AssignmentId, groupId: GroupId, members: Participant[]): Promise<AssignmentRegistration> {
 		const registration = new AssignmentRegistration({
 			assignmentId,
 			groupId,
-			groupRelations: members.map(member => new GroupRegistrationRelation({ participantId: member.id }))
+			groupRelations: members.map(member => this.createGroupRegistrationRelationEntity(assignmentId, member.id))
 		});
-
-		return this.save(registration);
+		
+		try {
+			const created = await this.save(registration);
+			return created;
+		} catch(error) {
+			if (error.code === DbException.PG_UNIQUE_VIOLATION) {
+				throw new EntityAlreadyExistsError(name);
+			}
+		}
 	}
 
 	/**
@@ -43,7 +52,7 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 			const registration = new AssignmentRegistration({
 				assignmentId,
 				groupId,
-				groupRelations: [new GroupRegistrationRelation({ participantId })]
+				groupRelations: [this.createGroupRegistrationRelationEntity(assignmentId, participantId)]
 			});
 
 			return this.save(registration);
@@ -83,13 +92,19 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 				groupId: group.id,
 			});
 			
-			registration.groupRelations = group.userGroupRelations.map(member => new GroupRegistrationRelation({ 
-				participantId: member.participantId
-			}));
+			registration.groupRelations = group.userGroupRelations.map(member => 
+				this.createGroupRegistrationRelationEntity(assignmentId, member.id));
 
 			return registration;
 		});
 		return registrations;
+	}
+
+	private createGroupRegistrationRelationEntity(assignmentId: string, participantId: number): GroupRegistrationRelation {
+		return new GroupRegistrationRelation({
+			assignmentId,
+			participantId: participantId
+		});
 	}
 
 	/**
