@@ -41,7 +41,7 @@ export class CourseParticipantsController {
 	addUser(@Param("courseId") courseId: CourseId,
 			@Param("userId") userId: UserId,
 			@Body() password?: PasswordDto,
-	): Promise<any> {
+	): Promise<void> {
 		return this.courseParticipantsService.addParticipant(courseId, userId, password.password);
 	}
 
