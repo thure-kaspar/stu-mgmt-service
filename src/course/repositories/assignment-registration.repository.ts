@@ -34,7 +34,7 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 			return created;
 		} catch(error) {
 			if (error.code === DbException.PG_UNIQUE_VIOLATION) {
-				throw new EntityAlreadyExistsError(name);
+				throw new EntityAlreadyExistsError();
 			}
 		}
 	}
@@ -46,7 +46,7 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 	async createRegistration(assignmentId: AssignmentId, groupId: GroupId, userId: UserId, participantId: number): Promise<AssignmentRegistration> {
 		// Check if group is already registered
 		const groupRegistration = await this.tryGetRegistration(assignmentId, groupId);
-		
+
 		// If not - create registration for group
 		if (!groupRegistration) {
 			const registration = new AssignmentRegistration({
@@ -58,10 +58,13 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 			return this.save(registration);
 		} 
 		
-		await this.groupRelationsRepository.insert({ 
-			assignmentRegistrationId: groupRegistration.id,
-			participantId: participantId 
-		});
+		// If group registration already exists, add registration relation for this participant
+		const registrationRelation = this.createGroupRegistrationRelationEntity(
+			assignmentId, 
+			participantId, 
+			groupRegistration.id
+		);
+		await this.groupRelationsRepository.insert(registrationRelation);
 
 		return this.findOne(groupRegistration.id, { 
 			relations: ["groupRelations", "groupRelations.participant", "groupRelations.participant.user"]
@@ -100,10 +103,11 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 		return registrations;
 	}
 
-	private createGroupRegistrationRelationEntity(assignmentId: string, participantId: number): GroupRegistrationRelation {
+	private createGroupRegistrationRelationEntity(assignmentId: string, participantId: number, registrationId?: number): GroupRegistrationRelation {
 		return new GroupRegistrationRelation({
 			assignmentId,
-			participantId: participantId
+			participantId: participantId,
+			assignmentRegistrationId: registrationId
 		});
 	}
 
