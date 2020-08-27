@@ -60,6 +60,7 @@ export class InvalidPasswordException extends ForbiddenException {
 
 // ### Export for swagger ###
 enum StudentMgmtExceptions {
+	EntityAlreadyExistsError = "EntityAlreadyExistsError",
 	CourseClosedException = "CourseClosedException",
 	NotACourseMemberException = "NotACourseMemberException",
 	NotATeachingStaffMember = "NotATeachingStaffMember",

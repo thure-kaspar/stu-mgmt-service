@@ -7,7 +7,7 @@ import { EntityAlreadyExistsError } from "./database-exceptions";
  */
 @Catch(EntityAlreadyExistsError)
 export class EntityAlreadyExistsFilter implements ExceptionFilter {
-	catch(exception: EntityAlreadyExistsFilter, host: ArgumentsHost): void {
+	catch(exception: EntityAlreadyExistsError, host: ArgumentsHost): void {
 		const ctx = host.switchToHttp();
 		const response = ctx.getResponse<Response>();
 		const request = ctx.getRequest<Request>();
@@ -17,7 +17,8 @@ export class EntityAlreadyExistsFilter implements ExceptionFilter {
 			.json({
 				statusCode: 409,
 				path: request.url,
-				message: "Failed to create the entity, because it already exists."
+				error: "EntityAlreadyExistsError",
+				message: exception.message ?? "Failed to create the entity, because it already exists."
 			});
 	}
 }
