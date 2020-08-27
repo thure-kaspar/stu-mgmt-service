@@ -9,6 +9,7 @@ import { EntityNotFoundFilter } from "./shared/entity-not-found.filter";
 import { ValidationPipe, Logger } from "@nestjs/common";
 import { StudentMgmtException } from "./course/exceptions/custom-exceptions";
 import { StudentMgmtEvent } from "./course/events";
+import { EntityAlreadyExistsFilter } from "./shared/entity-already-exists.filter";
 
 async function bootstrap(): Promise<void> {
 	const logger = new Logger("Bootstrap");
@@ -22,6 +23,7 @@ async function bootstrap(): Promise<void> {
 	logger.verbose("Application created!");
 
 	app.useGlobalFilters(new EntityNotFoundFilter());
+	app.useGlobalFilters(new EntityAlreadyExistsFilter());
 	app.useGlobalPipes(new ValidationPipe({ transform: true })); // Automatically transform primitive params to their type
 	app.enableCors({ exposedHeaders: "x-total-count" });
 	app.disable("x-powered-by");

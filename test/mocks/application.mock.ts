@@ -7,10 +7,12 @@ import { EntityNotFoundFilter } from "../../src/shared/entity-not-found.filter";
 import { AuthGuard } from "@nestjs/passport";
 import { AuthGuardMock, CourseMemberGuardMock_LECTURER, CourseMemberGuardMock_STUDENT } from "./guards.mock";
 import { CourseMemberGuard } from "../../src/course/guards/course-member.guard";
+import { EntityAlreadyExistsFilter } from "../../src/shared/entity-already-exists.filter";
 
 async function initDefaultApplication(moduleFixture: TestingModule): Promise<INestApplication> {
 	const app = moduleFixture.createNestApplication();
 	app.useGlobalFilters(new EntityNotFoundFilter());
+	app.useGlobalFilters(new EntityAlreadyExistsFilter());
 	app.useGlobalPipes(new ValidationPipe({ transform: true })); // Automatically transform primitive params to their type
 	await app.init();
 	return app;
