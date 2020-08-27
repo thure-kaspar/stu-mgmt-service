@@ -35,7 +35,7 @@ export class CourseJoinedHandler implements IEventHandler<CourseJoined> {
 
 	private createNewGroup(course: CourseWithGroupSettings, participant: Participant) {
 		// Use randomName as fallback, if course does not enforce name schema.
-		const randomName = uniqueNamesGenerator({ dictionaries: [adjectives, colors, animals] });
+		const randomName = uniqueNamesGenerator({ dictionaries: [adjectives, colors, animals], style: "upperCase", separator: "" });
 		this.groupService.createGroup(course, participant, { name: randomName });
 	}
 
