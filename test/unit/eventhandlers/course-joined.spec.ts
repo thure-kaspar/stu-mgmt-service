@@ -1,5 +1,5 @@
 import { TestingModule, Test } from "@nestjs/testing";
-import { CourseJoinedHandler, CourseJoined } from "../../../src/course/events/participant/course-joined.event";
+import { CourseJoined } from "../../../src/course/events/participant/course-joined.event";
 import { CourseWithGroupSettings } from "../../../src/course/models/course-with-group-settings.model";
 import { Participant } from "../../../src/course/models/participant.model";
 import { GroupService } from "../../../src/course/services/group.service";
@@ -9,10 +9,11 @@ import { Course } from "../../../src/course/entities/course.entity";
 import { Participant as ParticipantEntity } from "../../../src/course/entities/participant.entity";
 import { COURSE_JAVA_1920 } from "../../mocks/courses.mock";
 import { GroupSettings } from "../../../src/course/entities/group-settings.entity";
-import { PARTICIPANT_JAVA_1920_STUDENT, PARTICIPANT_JAVA_1920_STUDENT_2 } from "../../mocks/participants/participants.mock";
+import { PARTICIPANT_JAVA_1920_STUDENT_2 } from "../../mocks/participants/participants.mock";
 import { USER_STUDENT_JAVA } from "../../mocks/users.mock";
 import { User } from "../../../src/shared/entities/user.entity";
 import { CourseRole } from "../../../src/shared/enums";
+import { CourseJoinedHandler_AutomaticGroupJoin } from "../../../src/course/events/participant/automatic-group-join.handler";
 
 //#region Mocks
 // Exact participant does not matter, only needed to fill groups
@@ -98,19 +99,19 @@ describe("CourseJoinedHandler (Automatically adds students to groups)", () => {
 	let course: CourseWithGroupSettings;
 	let participant: Participant;
 
-	let courseJoinedHandler: CourseJoinedHandler;
+	let courseJoinedHandler: CourseJoinedHandler_AutomaticGroupJoin;
 	let groupService: GroupService;
 	
 
 	beforeEach(async () => {
 		const module: TestingModule = await Test.createTestingModule({
 			providers: [
-				CourseJoinedHandler,
+				CourseJoinedHandler_AutomaticGroupJoin,
 				{ provide: GroupService, useFactory: mock_GroupService },
 			],
 		}).compile();
 
-		courseJoinedHandler = module.get(CourseJoinedHandler);
+		courseJoinedHandler = module.get(CourseJoinedHandler_AutomaticGroupJoin);
 		groupService = module.get(GroupService);
 
 		course = createMockCourse({
