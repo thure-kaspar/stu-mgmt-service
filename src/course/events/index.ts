@@ -1,33 +1,21 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { AssessmentScoreChangedHandler } from "./assessment/assessment-score-changed.event";
-import { AssignmentCreatedNotificationHandler } from "./assignment/assignment-created.event";
-import { AssignmentStateChangedNotificationHandler } from "./assignment/assignment-state-changed.event";
-import { GroupRegisteredNotificationHandler } from "./assignment/group-registered.event";
-import { GroupUnregisteredNotificationHandler } from "./assignment/group-unregistered.event";
-import { UserRegisteredNotificationHandler } from "./assignment/user-registered.event";
-import { UserUnregisteredNotificationHandler } from "./assignment/user-unregistered.event";
-import { UserJoinedGroupHandler } from "./group/user-joined-group.event";
-import { UserLeftGroupHandler, UserLeftGroupNotificationHandler } from "./group/user-left-group.event";
-import { CourseJoinedHandler } from "./participant/course-joined.event";
 
-/** EventHandlers that are used internally. */
-export const EventHandlers = [
-	CourseJoinedHandler,
-	UserJoinedGroupHandler, 
-	UserLeftGroupHandler, 
-	AssessmentScoreChangedHandler,
-];
+// export const EventHandlers = [
+// 	// EventHandlers that are used internally:
+// 	CourseJoinedHandler_AutomaticGroupJoin,
+// 	UserJoinedGroupHandler, 
+// 	UserLeftGroupHandler, 
+// 	AssessmentScoreChangedHandler,
 
-/** EventHandlers that publish events to other systems. */
-export const EventNotificationHandlers = [
-	UserLeftGroupNotificationHandler,
-	AssignmentCreatedNotificationHandler,
-	AssignmentStateChangedNotificationHandler,
-	GroupRegisteredNotificationHandler,
-	GroupUnregisteredNotificationHandler,
-	UserRegisteredNotificationHandler,
-	UserUnregisteredNotificationHandler
-];
+// 	// EventHandlers that publish events to other systems:
+// 	UserLeftGroupNotificationHandler,
+// 	AssignmentCreatedNotificationHandler,
+// 	AssignmentStateChangedNotificationHandler,
+// 	GroupRegisteredNotificationHandler,
+// 	GroupUnregisteredNotificationHandler,
+// 	UserRegisteredNotificationHandler,
+// 	UserUnregisteredNotificationHandler
+// ];
 
 export enum Event {
 	COURSE_JOINED = "COURSE_JOINED",
