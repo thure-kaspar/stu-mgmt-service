@@ -22,6 +22,16 @@ export function RoundingMethod(type: RoundingType, decimals?: number): (value: n
 }
 
 /**
+ * Calculates the sum.
+ * @example calculateAchievedPoints(assessments: AssessmentDto[]): number {
+		return sumOf(assessments, a => a.achievedPoints);
+	}
+ */
+export function sumOf<T extends object>(items: T[], property: (item: T) => number): number {
+	return items.reduce((previous, current) => previous + property(current), 0);
+}
+
+/**
  * (numerator / denominator) * 100;
  */
 export function Percent(numerator: number, denominator: number): number {
