@@ -37,3 +37,10 @@ export function sumOf<T extends object>(items: T[], property: (item: T) => numbe
 export function Percent(numerator: number, denominator: number): number {
 	return (numerator / denominator) * 100;
 }
+
+/**
+ * value * percent / 100;
+ */
+export function ofPercent(value: number, percent: number): number {
+	return value * percent / 100;
+}
