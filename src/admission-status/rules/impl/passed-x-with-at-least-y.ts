@@ -54,7 +54,7 @@ export class PassedXPercentWithAtLeastYPercentImpl extends PassedXPercentWithAtL
 	 * Returns the count of passed assignments.
 	 * @param achievedPoints Map of [assignmentId, achievedPoints]
 	 */
-	private countPassedAssignments(achievedPoints: { [assignmentId: string]: number; }[]) {
+	private countPassedAssignments(achievedPoints: Map<AssignmentId, number>) {
 		let passedAssignments = 0;
 		this.requiredPointsToPass.forEach((requiredPoints, assignmentId) => {
 			if (this.studentPassedAssignment(achievedPoints, assignmentId, requiredPoints)) {
@@ -70,8 +70,8 @@ export class PassedXPercentWithAtLeastYPercentImpl extends PassedXPercentWithAtL
 	 * @param assignmentId Assignment that should be checked
 	 * @param requiredPoints Points required in this assignment
 	 */
-	private studentPassedAssignment(achievedPoints: { [assignmentId: string]: number; }[], assignmentId: string, requiredPoints: number) {
-		return achievedPoints[assignmentId] >= requiredPoints;
+	private studentPassedAssignment(achievedPoints: Map<AssignmentId, number>, assignmentId: AssignmentId, requiredPoints: number) {
+		return achievedPoints.get(assignmentId) >= requiredPoints;
 	}
 
 	/**
@@ -81,8 +81,12 @@ export class PassedXPercentWithAtLeastYPercentImpl extends PassedXPercentWithAtL
 	 * @param relevantAssessments
 	 * @returns
 	 */
-	private mapAchievedPointsToAssignment(relevantAssessments: AssessmentDto[]): { [assignmentId: string]: number; }[] {
-		return relevantAssessments.map(assessment => ({ [assessment.assignmentId]: assessment.achievedPoints }));
+	private mapAchievedPointsToAssignment(relevantAssessments: AssessmentDto[]): Map<string, number> {
+		const map = new Map<AssignmentId, number>();
+		relevantAssessments.forEach(assessment => {
+			map.set(assessment.assignmentId, assessment.achievedPoints);
+		});
+		return map;
 	}
 
 } 
