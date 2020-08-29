@@ -289,6 +289,23 @@ describe("PATCH-REQUESTS of AssessmentController (e2e)", () => {
 
 	describe("(PATCH) /courses/{courseId}/assignments/{assignmentId}/assessments/{assessmentId}", () => {
 
+		it("Allows score to be set to 0", () => {
+			const assessment = copy(ASSESSMENT_JAVA_IN_REVIEW_NO_PARTIALS);
+	
+			// Create clone of original data and perform some changes
+			const changedAssessment: AssessmentUpdateDto = copy(assessment);
+			changedAssessment.achievedPoints = 0;
+	
+			return request(app.getHttpServer())
+				.patch(`/courses/${course.id}/assignments/${assessment.assignmentId}/assessments/${assessment.id}`)
+				.send(changedAssessment)
+				.expect(200)
+				.expect(({ body }) => {
+					expect(body.id).toEqual(assessment.id); // Check if we retrieved the correct assessments
+					expect(body.achievedPoints).toEqual(changedAssessment.achievedPoints);
+				});
+		});
+
 		it("No partial assessments before -> Updates", () => {
 			const assessment = copy(ASSESSMENT_JAVA_IN_REVIEW_NO_PARTIALS);
 
