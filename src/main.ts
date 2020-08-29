@@ -1,15 +1,17 @@
+import { Logger, ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { NestExpressApplication } from "@nestjs/platform-express";
-import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
-import { AppModule } from "./app.module";
+import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import * as config from "config";
-import { DbMockService } from "../test/mocks/db-mock.service";
 import { getConnection } from "typeorm";
-import { EntityNotFoundFilter } from "./shared/entity-not-found.filter";
-import { ValidationPipe, Logger } from "@nestjs/common";
-import { StudentMgmtException } from "./course/exceptions/custom-exceptions";
+import { DbMockService } from "../test/mocks/db-mock.service";
+import { PassedXPercentWithAtLeastYPercentRuleDto, OverallPercentRuleDto } from "./admission-status/dto/admission-rule.dto";
+import { AppModule } from "./app.module";
 import { StudentMgmtEvent } from "./course/events";
+import { StudentMgmtException } from "./course/exceptions/custom-exceptions";
 import { EntityAlreadyExistsFilter } from "./shared/entity-already-exists.filter";
+import { EntityNotFoundFilter } from "./shared/entity-not-found.filter";
+import { RoundingBehavior } from "./utils/math";
 
 async function bootstrap(): Promise<void> {
 	const logger = new Logger("Bootstrap");
@@ -48,7 +50,17 @@ async function bootstrap(): Promise<void> {
 		.addTag("csv")
 		.addTag("test")
 		.build();
-	const document = SwaggerModule.createDocument(app, options, { extraModels: [StudentMgmtException, StudentMgmtEvent] });
+
+	const document = SwaggerModule.createDocument(app, options, { 
+		extraModels: [
+			StudentMgmtException, 
+			StudentMgmtEvent, 
+			RoundingBehavior,
+			PassedXPercentWithAtLeastYPercentRuleDto,
+			OverallPercentRuleDto
+		] 
+	});
+
 	SwaggerModule.setup("api", app, document);
 
 	// If demo environment, populate database with test data

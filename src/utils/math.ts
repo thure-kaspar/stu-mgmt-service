@@ -1,3 +1,5 @@
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+
 export enum RoundingType {
 	NONE = "NONE",
 	DECIMALS = "DECIMALS",
@@ -6,7 +8,9 @@ export enum RoundingType {
 }
 
 export class RoundingBehavior {
+	@ApiProperty()
 	type: RoundingType;
+	@ApiPropertyOptional()
 	decimals?: number;
 }
 

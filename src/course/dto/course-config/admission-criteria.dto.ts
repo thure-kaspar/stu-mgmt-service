@@ -1,5 +1,5 @@
-import { AdmissionRule } from "../../../admission-status/rules/abstract-rules";
+import { AdmissionRuleDto } from "../../../admission-status/dto/admission-rule.dto";
 
 export class AdmissionCriteriaDto {
-	rules: AdmissionRule[];
+	rules: AdmissionRuleDto[];
 }
