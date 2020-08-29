@@ -4,6 +4,7 @@ import { AssignmentDto } from "../../course/dto/assignment/assignment.dto";
 import { RoundingBehavior } from "../../utils/math";
 import { AdmissionRuleDto } from "../dto/admission-rule.dto";
 import { RuleCheckResult } from "../dto/rule-check-result.dto";
+import { AssignmentState } from "../../shared/enums";
 
 export enum RuleType {
 	PASSED_X_PERCENT_WITH_AT_LEAST_Y_PERCENT = "PASSED_X_PERCENT_WITH_AT_LEAST_Y_PERCENT",
@@ -18,14 +19,14 @@ export abstract class AdmissionRule extends AdmissionRuleDto {
 	 * Filters assignments by the `AssignmentType` that is used by this rule.
 	 */
 	protected filterAssignmentsByType(assignments: AssignmentDto[]): AssignmentDto[] {
-		return assignments.filter(a => a.type === this.assignmentType);
+		return assignments.filter(a => a.type === this.assignmentType && a.state === AssignmentState.EVALUATED);
 	}
 
 	/**
 	 * Filters assessments by the `AssignmentType` that is used by this rule.
 	 */
 	protected filterAssessmentsByType(assessments: AssessmentDto[]): AssessmentDto[] {
-		return assessments.filter(a => a.assignment.type === this.assignmentType);
+		return assessments.filter(a => a.assignment.type === this.assignmentType && a.assignment.state === AssignmentState.EVALUATED);
 	}
 	
 }
