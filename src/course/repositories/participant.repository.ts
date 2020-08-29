@@ -6,6 +6,7 @@ import { CourseId } from "../entities/course.entity";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
 import { CourseParticipantsFilter } from "../dto/course-participant/course-participants.filter";
 import { UserId } from "../../shared/entities/user.entity";
+import { DbException } from "../../shared/database-exceptions";
 
 @EntityRepository(Participant)
 export class ParticipantRepository extends Repository<Participant> {
@@ -18,12 +19,12 @@ export class ParticipantRepository extends Repository<Participant> {
 
 		await this.save(participant)
 			.catch((error) => {
-				if (error.code === "23505") { // TODO: Store error codes in enum
+				if (error.code === DbException.PG_UNIQUE_VIOLATION) {
 					throw new ConflictException("This user is already signed up to the course.");
 				}
 			});
 
-		return participant;
+		return this.getParticipant(courseId, userId);
 	}
 
 	/**
