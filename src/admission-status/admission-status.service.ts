@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, BadRequestException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { AssignmentDto } from "../course/dto/assignment/assignment.dto";
 import { AdmissionCriteria } from "../course/entities/admission-criteria.entity";
@@ -8,9 +8,13 @@ import { Participant } from "../course/entities/participant.entity";
 import { AdmissionCriteriaRepository } from "../course/repositories/admission-criteria.repository";
 import { ParticipantRepository } from "../course/repositories/participant.repository";
 import { AssignmentService } from "../course/services/assignment.service";
-import { AssignmentState } from "../shared/enums";
-import { PointsOverviewDto, StudentResults } from "./dto/points-overview.dto";
 import { UserId } from "../shared/entities/user.entity";
+import { AssignmentState } from "../shared/enums";
+import { AdmissionStatusDto } from "./dto/admission-status.dto";
+import { PointsOverviewDto, StudentResults } from "./dto/points-overview.dto";
+import { AdmissionRule } from "./rules/abstract-rules";
+import { AdmissionRuleFactory } from "./rules/factory";
+import { AdmissionRuleDto } from "./dto/admission-rule.dto";
 
 @Injectable() 
 export class AdmissionStatusService {
@@ -18,6 +22,46 @@ export class AdmissionStatusService {
 	constructor(@InjectRepository(Participant) private participants: ParticipantRepository,
 				@InjectRepository(AdmissionCriteria) private admissionCriteria: AdmissionCriteriaRepository,
 				private assignmentService: AssignmentService) { }
+
+	async getAdmissionStatusOfParticipants(courseId: CourseId): Promise<AdmissionStatusDto[]> {
+		const [students, assignments, admissionCriteria] = await Promise.all([
+			this.participants.getStudentsWithAssessments(courseId),
+			this.assignmentService.getAssignments(courseId),
+			this.admissionCriteria.getByCourseId(courseId)
+		]);
+			
+		const evaluated = assignments.filter(a => a.state === AssignmentState.EVALUATED);
+		const rules = admissionCriteria.admissionCriteria?.rules;
+
+		if (this.courseHasNoAdmissionCriteria(rules)) {
+			throw new BadRequestException(`Course (${courseId}) does not have admission criterias.`);
+		}
+
+		const criteria = rules.map(rule => AdmissionRuleFactory.create(rule, evaluated));	
+		return this.computeAdmissionStatusOfEachStudent(students, criteria);
+	}
+			
+	private courseHasNoAdmissionCriteria(rules?: AdmissionRuleDto[]) {
+		return !(rules?.length > 0);
+	}
+
+	private computeAdmissionStatusOfEachStudent(students: Participant[], criteria: AdmissionRule[]): AdmissionStatusDto[] {
+		return students.map(student => this.computeAdmissionStatus(student, criteria));
+	}
+			
+	private computeAdmissionStatus(student: Participant, criteria: AdmissionRule[]): AdmissionStatusDto {
+		const assessments = student.user.assessmentUserRelations.map(aur => aur.assessment);
+		const studentDto = student.toDto();
+			
+		const results = criteria.map(rule => rule.check(assessments));
+		const hasAdmission = results.every(rule => rule.passed);
+					
+		return {
+			participant: studentDto,
+			hasAdmission,
+			results,
+		};
+	}
 
 	async getPointsOverview(courseId: CourseId): Promise<PointsOverviewDto> {
 		const [students, assignments] = await Promise.all([
@@ -71,45 +115,4 @@ export class AdmissionStatusService {
 		return assignments.filter(a => a.state === AssignmentState.EVALUATED);
 	}
 
-	// async getAdmissionStatusOfParticipants(courseId: CourseId): Promise<AdmissionStatusDto[]> {
-	// 	const [students, assignments, admissionCriteria] = await Promise.all([
-	// 		this.participants.getStudentsWithAssessments(courseId),
-	// 		this.assignmentService.getAssignments(courseId),
-	// 		this.admissionCriteria.getByCourseId(courseId)
-	// 	]);
-
-	// 	const evaluated = assignments.filter(a => a.state === AssignmentState.EVALUATED);
-	// 	const rules = admissionCriteria.admissionCriteria.rules;
-	// 	const criteria = rules.map(rule => AdmissionRuleFactory.create(evaluated, rule));
-
-	// 	return this.computeAdmissionStatusOfEachStudent(students, criteria);
-	// }
-
-	// private computeAdmissionStatusOfEachStudent(
-	// 	students: Participant[], 
-	// 	criteria: AdmissionRule[]
-	// ): AdmissionStatusDto[] {
-
-	// 	return students.map(student => this.computeAdmissionStatus(student, criteria));
-	// }
-
-	// private computeAdmissionStatus(student: Participant, criteria: AdmissionRule[]): AdmissionStatusDto {
-	// 	const assessments = student.user.assessmentUserRelations.map(aur => aur.assessment);
-	// 	const studentDto = student.toDto();
-
-	// 	const results = criteria.map(c => null);
-	// 	const passed = this.determineIfPassed(results);
-	// 	return { participant: studentDto, results, passed };
-	// }
-
-	// private determineIfPassed(results: RuleCheckResult[]): boolean {
-	// 	for (const result of results) {
-	// 		if (Array.isArray(result.passed)) {
-	// 			return result.passed.find(r => r === true);
-	// 		} else {
-	// 			return result.passed;
-	// 		}
-	// 	}
-	// }
-	
 }

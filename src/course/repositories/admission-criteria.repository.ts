@@ -26,7 +26,7 @@ export class AdmissionCriteriaRepository extends Repository<AdmissionCriteria> {
 	async getByCourseId(courseId: CourseId): Promise<AdmissionCriteria> {
 		const criteria = await this.tryGetByCourseId(courseId);
 
-		if (!criteria) throw new EntityNotFoundError(AdmissionCriteria, null);
+		if (!criteria) throw new EntityNotFoundError(AdmissionCriteria, courseId);
 		return criteria;
 	}
 

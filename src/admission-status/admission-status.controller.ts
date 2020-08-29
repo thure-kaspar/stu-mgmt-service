@@ -1,4 +1,4 @@
-import { Controller, Get, NotImplementedException, Param, UseGuards } from "@nestjs/common";
+import { Controller, Get, Param, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { CourseId } from "../course/entities/course.entity";
@@ -7,6 +7,7 @@ import { IdentityGuard } from "../course/guards/identity.guard";
 import { TeachingStaffGuard } from "../course/guards/teaching-staff.guard";
 import { UserId } from "../shared/entities/user.entity";
 import { AdmissionStatusService } from "./admission-status.service";
+import { AdmissionStatusDto } from "./dto/admission-status.dto";
 import { PointsOverviewDto } from "./dto/points-overview.dto";
 
 @ApiBearerAuth()
@@ -17,12 +18,18 @@ export class AdmissionStatusController {
 
 	constructor(private admissionStatus: AdmissionStatusService) { }
 
+	@ApiOperation({
+		operationId: "getAdmissionStatusOfParticipants",
+		summary: "Get admission status.",
+		description: "Returns the admission status of all participants."
+	})
 	@Get()
+	@UseGuards(TeachingStaffGuard)
 	getAdmissionStatusOfParticipants(
 		@Param("courseId") courseId: CourseId
-	): Promise<any[]> {
+	): Promise<AdmissionStatusDto[]> {
 
-		throw new NotImplementedException();
+		return this.admissionStatus.getAdmissionStatusOfParticipants(courseId);
 	}
 
 	@ApiOperation({
