@@ -1,8 +1,8 @@
 import { AssessmentDto } from "../../../course/dto/assessment/assessment.dto";
 import { AssignmentDto } from "../../../course/dto/assignment/assignment.dto";
-import { ParticipantDto } from "../../../course/dto/course-participant/participant.dto";
-import { RoundingMethod, Percent } from "../../../utils/math";
-import { OverallPercentRule, RuleCheckResult } from "../abstract-rules";
+import { Percent, RoundingMethod, sumOf } from "../../../utils/math";
+import { OverallPercentRule } from "../abstract-rules";
+import { RuleCheckResult } from "../../dto/rule-check-result.dto";
 
 export class OverallPercentRuleImpl extends OverallPercentRule {
 
@@ -13,47 +13,39 @@ export class OverallPercentRuleImpl extends OverallPercentRule {
 		super();
 		Object.assign(this, rule);
 
-		const relevantAssignments = assignments.filter(a => a.type === this.assignmentType);
-		this.overallPoints = this.calculateOverallPoints(relevantAssignments);
+		const relevantAssignments = this.filterAssignmentsByType(assignments);
+		this.overallPoints = sumOf(relevantAssignments, a => a.points);
 		this.round = RoundingMethod(this.pointsRounding.type, this.pointsRounding.decimals);
 	}
 
-	check(assessments: AssessmentDto[], participant: ParticipantDto): RuleCheckResult {
-		if (this.shouldBeIgnoredForParticipant(participant)) {
-			return this.ignoreForParticipant();
-		}
-
+	/**
+	 * Sums up the achieved points of a student and checks, wether the percentage of
+	 * achieved points is equal or greater than the required percentage of achievable points.
+	 */
+	check(assessments: AssessmentDto[]): RuleCheckResult {
 		// Rule is fulfilled, if there were no achievable points
 		if (this.overallPoints === 0) {
 			return {
 				achievedPoints: 0,
 				achievedPercent: 100,
 				passed: true,
-				comment: "No achievable points."
+				comment: "No achievable points.",
+				_rule: this.type,
+				_assignmentType: this.assignmentType
 			};
 		}
 
-		const relevantAssessments = assessments.filter(a => a.assignment.type === this.assignmentType);
-		const achievedPoints = this.calculateAchievedPoints(relevantAssessments);
-		const currentPercent = this.round(Percent(achievedPoints, this.overallPoints));
+		const relevantAssessments = this.filterAssessmentsByType(assessments);
+		const achievedPoints = sumOf(relevantAssessments, a => a.achievedPoints);
+		const achievedPercent = this.round(Percent(achievedPoints, this.overallPoints));
 
 		return {
 			achievedPoints,
-			achievedPercent: currentPercent,
-			passed: currentPercent >= this.requiredPercent
+			achievedPercent,
+			passed: achievedPercent >= this.requiredPercent,
+			_rule: this.type,
+			_assignmentType: this.assignmentType
 		};
-	}
-
-	private calculateOverallPoints(assignments: AssignmentDto[]): number {
-		let overall = 0;
-		assignments.forEach(a => overall += a.points);
-		return overall;
-	}
-
-	private calculateAchievedPoints(assessments: AssessmentDto[]): number {
-		let achieved = 0;
-		assessments.forEach(a => achieved += a.achievedPoints);
-		return achieved;
 	}
 
 }
