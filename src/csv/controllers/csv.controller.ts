@@ -20,14 +20,14 @@ export class CsvController {
 				private admissionStatus: AdmissionStatusService) { }
 
 	@ApiOperation({
-		operationId: "getParticipants",
+		operationId: "getParticipantsAsCsv",
 		summary: "Get participants.",
 		description: "Returns a .csv file containing the participants of the specified course. Requires LECTURER or TUTOR role."
 	})
 	@Header("content-type", "text/csv")
 	@Get("courses/:courseId/users")
 	@UseGuards(CourseMemberGuard, TeachingStaffGuard)
-	async getParticipants(
+	async getParticipantsAsCsv(
 		@Res() response: Response,
 		@Param("courseId") courseId: CourseId,
 	): Promise<void> {
@@ -44,14 +44,14 @@ export class CsvController {
 	}
 
 	@ApiOperation({
-		operationId: "getPointsOverview",
+		operationId: "getPointsOverviewAsCsv",
 		summary: "Get points overview.",
 		description: "Returns a .csv file containing the achieved points of every student for all assignments of the specified course. Requires LECTURER or TUTOR role."
 	})
 	@Header("content-type", "text/csv")
 	@Get("courses/:courseId/admission-status/overview")
 	@UseGuards(CourseMemberGuard, TeachingStaffGuard)
-	async getPointsOverview(
+	async getPointsOverviewAsCsv(
 		@Res() response: Response,
 		@Param("courseId") courseId: CourseId
 	): Promise<void> {
