@@ -33,6 +33,7 @@ import { PARTIAL_ASSESSMENT_MOCK } from "./partial-assessments.mock";
 import { COURSE_PARTICIPANTS_ALL, PARTICIPANT_JAVA_1920_STUDENT, PARTICIPANT_JAVA_1920_STUDENT_2, PARTICIPANT_JAVA_1920_STUDENT_ELSHAR, PARTICIPANT_JAVA_1920_STUDENT_KUNOLD } from "./participants/participants.mock";
 import { AssessmentUserRelationsMock } from "./relations.mock";
 import { UsersMock } from "./users.mock";
+import { ADMISSION_CRITERIA_MOCK } from "./course-config/admission-criteria.mock";
 
 export class DbMockService {
 
@@ -48,7 +49,7 @@ export class DbMockService {
 	assessmentUserRelations = AssessmentUserRelationsMock;
 	assignmentTemplates = ASSIGNMENT_TEMPLATES_MOCK;
 	groupSettings = GROUP_SETTINGS_MOCK;
-	admissionCriteria = null; // TODO
+	admissionCriteria = ADMISSION_CRITERIA_MOCK;
 	configs = COURSE_CONFIGS_MOCK;
 	allocations = ASSESSMENT_ALLOCATIONS_MOCK;
 	
@@ -63,7 +64,7 @@ export class DbMockService {
 		await this.createCourses();
 		await this.createCourseConfig();
 		await this.createAssignmentTemplates();
-		//await this.createAdmissionCriteria(); TODO
+		await this.createAdmissionCriteria();
 		await this.createGroupSettings();
 		await this.createUsers();
 		await this.createGroups();
