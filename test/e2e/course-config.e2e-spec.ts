@@ -11,10 +11,10 @@ import { GroupSettingsDto } from "../../src/course/dto/course-config/group-setti
 import { AdmissionCriteriaDto } from "../../src/course/dto/course-config/admission-criteria.dto";
 import { AssignmentTemplateDto } from "../../src/course/dto/course-config/assignment-template.dto";
 import { copy } from "../utils/object-helper";
-import { ADMISSION_CRITERIA_JAVA, RULE_OVERALL_HOMEWORK_50_PERCENT } from "../mocks/course-config/admission-criteria.mock";
 import { CourseConfigUpdateDto } from "../../src/course/dto/course-config/course-config.dto";
 import { GROUP_SETTINGS_GROUPS_ALLOWED_MIN2_MAX3_SELF } from "../mocks/course-config/group-settings.mock";
 import { GroupSettingsUpdateDto } from "../../src/course/dto/course-config/group-settings.dto";
+import { ADMISSION_CRITERIA_MOCK } from "../mocks/course-config/admission-criteria.mock";
 
 let app: INestApplication;
 let dbMockService: DbMockService;
@@ -50,8 +50,8 @@ describe("POST-REQUEST of CourseConfigController (e2e)", () => {
 	it("(POST) .../config/admission-criteria Creates admission criteria and returns it", async () => {
 		await dbMockService.createCourseConfig();
 		const config = copy(COURSE_CONFIG_JAVA_1920);
-		const criteria = copy(ADMISSION_CRITERIA_JAVA);
-		const expected = ADMISSION_CRITERIA_JAVA;
+		const criteria = copy(ADMISSION_CRITERIA_MOCK);
+		const expected = ADMISSION_CRITERIA_MOCK;
 
 		return request(app.getHttpServer())
 			.post(`/courses/${course.id}/config/${config.id}/admission-criteria`)
@@ -192,9 +192,9 @@ describe("PATCH-REQUEST of CourseConfigController (e2e)", () => {
 	});
 
 	it("(PATCH) .../config/admission-criteria Updates admission criteria", () => {
-		const criteria = copy(ADMISSION_CRITERIA_JAVA);
-		criteria.criteria = [RULE_OVERALL_HOMEWORK_50_PERCENT];
-		criteria.exludedAssigmentIds = ["assignment_id_1", "assignment_id_2"];
+		const criteria = copy(ADMISSION_CRITERIA_MOCK);
+		criteria.rules[0].requiredPercent = 55; // Change required percent
+		criteria.rules = [criteria.rules[0], criteria.rules[1]]; // Remove one rule
 
 		return request(app.getHttpServer())
 			.patch(`/courses/${course.id}/config/admission-criteria`)
