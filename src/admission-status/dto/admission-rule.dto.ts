@@ -27,3 +27,19 @@ export class PassedXPercentWithAtLeastYPercentRuleDto extends AdmissionRuleDto {
 export class OverallPercentRuleDto extends AdmissionRuleDto {
 	readonly type = RuleType.REQUIRED_PERCENT_OVERALL;
 }
+
+export function toString(rule: AdmissionRuleDto): string {
+	const baseString = `${rule.type} ### ${rule.assignmentType}`;
+	const requiredPercent = `Required: ${rule.requiredPercent}%`;
+	const pointsRounding = `Rounding: ${rule.pointsRounding.type}` + (rule.pointsRounding.decimals ? ` (${rule.pointsRounding.decimals})` : "");
+
+	let result = baseString + " ### " + requiredPercent + " ### " + pointsRounding;
+
+	if (rule.type === RuleType.PASSED_X_PERCENT_WITH_AT_LEAST_Y_PERCENT) {
+		const ruleAs = (rule as PassedXPercentWithAtLeastYPercentRuleDto);
+		result += ` ### Required Assignments: ${ruleAs.passedAssignmentsPercent}%`;
+		result += ` ### Assignments rounding: ${ruleAs.passedAssignmentsRounding.type}%` + (ruleAs.passedAssignmentsRounding.decimals ? ` (${ruleAs.passedAssignmentsRounding.decimals})` : "");
+	}
+
+	return result;
+}
