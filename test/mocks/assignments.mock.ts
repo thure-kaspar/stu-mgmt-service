@@ -1,6 +1,6 @@
 import { AssignmentDto } from "../../src/course/dto/assignment/assignment.dto";
 import { AssignmentType, CollaborationType, AssignmentState } from "../../src/shared/enums";
-import { COURSE_JAVA_1920, COURSE_JAVA_2020 } from "./courses.mock";
+import { COURSE_JAVA_1920, COURSE_JAVA_2020, COURSE_INFO_2_2020 } from "./courses.mock";
 import { CourseId } from "../../src/course/entities/course.entity";
 
 export const ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP: AssignmentDto = {
@@ -128,6 +128,27 @@ export const ASSIGNMENT_JAVA2020_GROUP_CLOSED: AssignmentDto = {
 	startDate: new Date(2020, 5, 27),
 };
 
+export const ASSIGNMENT_INVISIBLE_WILL_BE_STARTED: AssignmentDto = {
+	id: "ec328bb0-cd98-4ee0-a6e8-308c8c4a694d",
+	name: "ASSIGNMENT_JAVA_INVISIBLE_WILL_BE_STARTED",
+	points: 0,
+	type: AssignmentType.HOMEWORK,
+	state: AssignmentState.INVISIBLE,
+	startDate: new Date(),
+	collaboration: CollaborationType.GROUP_OR_SINGLE,
+};
+
+export const ASSIGNMENT_IN_PROGRESS_WILL_BE_STOPPED: AssignmentDto = {
+	id: "d0b208a1-7374-4c8b-a01e-f685324a73c7",
+	name: "ASSIGNMENT_JAVA_IN_PROGRESS_WILL_BE_STOPPED",
+	points: 0,
+	type: AssignmentType.TESTAT,
+	state: AssignmentState.IN_PROGRESS,
+	collaboration: CollaborationType.SINGLE,
+	startDate: new Date(2020, 7, 2),
+	endDate: new Date()
+};
+
 export const ASSIGNMENTS_JAVA_1920: AssignmentDto[] = [
 	ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP,
 	ASSIGNMENT_JAVA_CLOSED,
@@ -146,7 +167,13 @@ export const ASSIGNMENTS_JAVA_2020: AssignmentDto[] = [
 	ASSIGNMENT_JAVA2020_GROUP_CLOSED
 ];
 
+export const ASSIGNMENTS_INFO_2020: AssignmentDto[] = [
+	ASSIGNMENT_INVISIBLE_WILL_BE_STARTED,
+	ASSIGNMENT_IN_PROGRESS_WILL_BE_STOPPED
+];
+
 export const ASSIGNMENTS_ALL: { assignments: AssignmentDto[]; courseId: CourseId }[] = [
 	{ assignments: ASSIGNMENTS_JAVA_1920, courseId: COURSE_JAVA_1920.id },
 	{ assignments: ASSIGNMENTS_JAVA_2020, courseId: COURSE_JAVA_2020.id },
+	{ assignments: ASSIGNMENTS_INFO_2020, courseId: COURSE_INFO_2_2020.id },
 ];
