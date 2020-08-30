@@ -48,6 +48,7 @@ async function bootstrap(): Promise<void> {
 		.addTag("admission-status")
 		.addTag("assessment-allocation")
 		.addTag("csv")
+		.addTag("task-scheduler")
 		.addTag("test")
 		.build();
 
