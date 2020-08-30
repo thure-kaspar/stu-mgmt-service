@@ -14,8 +14,6 @@ import { TeachingStaffGuard } from "./guards/teaching-staff.guard";
 import { QueryHandlers } from "./queries";
 import { Repositories } from "./repositories";
 import { Services } from "./services";
-import { AssignmentService } from "./services/assignment.service";
-import { CourseParticipantsService } from "./services/course-participants.service";
 import { UserJoinedGroupHandler } from "./events/group/user-joined-group.event";
 import { UserLeftGroupHandler, UserLeftGroupNotificationHandler } from "./events/group/user-left-group.event";
 import { AssessmentScoreChangedHandler } from "./events/assessment/assessment-score-changed.event";
@@ -54,6 +52,6 @@ import { CourseJoinedHandler_AutomaticGroupJoin } from "./events/participant/aut
 		UserRegisteredNotificationHandler,
 		UserUnregisteredNotificationHandler,
 	],
-	exports: [TypeOrmModule, CourseMemberGuard, TeachingStaffGuard, IdentityGuard, CourseParticipantsService, AssignmentService]
+	exports: [TypeOrmModule, CourseMemberGuard, TeachingStaffGuard, IdentityGuard, ...Services]
 })
 export class CourseModule { }
