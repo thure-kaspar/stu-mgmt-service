@@ -11,10 +11,11 @@ interface Token {
 
 interface User {
 	username: string;
+	fullName: string;
 	realm: string;
 	passwordDto: PasswordDto;
 	settings: Settings;
-	role: string;
+	role: "DEFAULT" | "ADMIN" | "SERVICE";
 }
 
 interface Settings {

@@ -33,6 +33,12 @@ export class UserRepository extends Repository<User> {
 		});
 	}
 
+	async tryGetUserByUsername(username: string): Promise<User> {
+		return this.findOne({
+			where: { username }
+		});
+	}
+
 	async getCoursesOfUser(userId: UserId): Promise<Course[]> {
 		const user = await this.findOneOrFail(userId, { 
 			relations: ["participations", "participations.course"] 
@@ -72,7 +78,7 @@ export class UserRepository extends Repository<User> {
 		user.email = userDto.email;
 		user.role = userDto.role;
 		user.username = userDto.username;
-		user.rzName = userDto.rzName;
+		user.displayName = userDto.displayName;
 		return user;
 	}
 }

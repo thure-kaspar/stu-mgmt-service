@@ -10,7 +10,7 @@ export class Participant {
 
 	readonly id: number;
 	readonly username: string;
-	readonly rzName: string;
+	readonly displayName: string;
 	readonly userId: UserId;
 	readonly groupId: GroupId;
 	readonly role: CourseRole;
@@ -18,7 +18,7 @@ export class Participant {
 	constructor(private participant: ParticipantEntity) {
 		this.id = this.participant.id;
 		this.userId = this.participant.userId;
-		this.rzName = this.participant.user.rzName;
+		this.displayName = this.participant.user.displayName;
 		this.username = this.participant.user.username;
 		this.role = this.participant.role;
 		this.groupId = this.participant.groupRelation?.groupId;

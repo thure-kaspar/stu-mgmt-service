@@ -9,7 +9,7 @@ export class UserDto {
 	
 	email: string;
 	username: string;
-	rzName: string;
+	displayName: string;
 
 	/** Role within the application. */
 	@ApiProperty({ description: "Role within the application." })

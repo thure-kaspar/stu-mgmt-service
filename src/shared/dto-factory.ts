@@ -86,7 +86,7 @@ export abstract class DtoFactory {
 			id: user.id,
 			email: user.email,
 			username: user.username,
-			rzName: user.rzName,
+			displayName: user.displayName,
 			role: user.role,
 		};
     
@@ -179,7 +179,7 @@ export abstract class DtoFactory {
 					role: CourseRole.STUDENT,
 					userId: rel.userId,
 					username: rel.user.username,
-					rzName: rel.user.rzName,
+					displayName: rel.user.displayName,
 					email: rel.user.email
 				};
 				return participant;

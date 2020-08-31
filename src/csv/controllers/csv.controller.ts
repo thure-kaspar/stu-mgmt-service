@@ -38,7 +38,7 @@ export class CsvController {
 		const [participants] = await this.participants.getParticipants(courseId);
 		
 		try {
-			const csv = await this.csvConverter.parse(participants, ["userId", "email", "rzName", "username"]);
+			const csv = await this.csvConverter.parse(participants, ["userId", "email", "displayName", "username"]);
 			response.attachment(`${courseId}-participants.csv`);
 			response.status(200).send(csv);
 		} catch(error) {
@@ -60,7 +60,7 @@ export class CsvController {
 	): Promise<void> {
 		const overview = await this.admissionStatus.getPointsOverview(courseId);
 
-		let firstRow = "userId,rzName,username";
+		let firstRow = "userId,displayName,username";
 		overview.assignments.forEach(assignment => firstRow += "," + assignment.name);
 
 		let secondRow = "max points, max points, max points";
@@ -68,7 +68,7 @@ export class CsvController {
 
 		let data = "";
 		overview.results.forEach(result => {
-			data += `${result.student.userId},${result.student.rzName},${result.student.username}`;
+			data += `${result.student.userId},${result.student.displayName},${result.student.username}`;
 			result.achievedPoints.forEach(points => data += "," + points);
 			data += "\n";
 		});
@@ -100,7 +100,7 @@ export class CsvController {
 			this.admissionStatus.getAdmissionStatusOfParticipants(courseId)
 		]);
 
-		let firstRow = "userId,rzName,username,hasAdmission";
+		let firstRow = "userId,displayName,username,hasAdmission";
 		criteria.rules.forEach(rule => firstRow += "," + `[${toString(rule)}],,`);
 
 		let secondRow = ",,,";
@@ -108,7 +108,7 @@ export class CsvController {
 		
 		let data = "";
 		admissionStatus.forEach(status => {
-			data += `${status.participant.userId},${status.participant.rzName},${status.participant.username},${status.hasAdmission}`;
+			data += `${status.participant.userId},${status.participant.displayName},${status.participant.username},${status.hasAdmission}`;
 			status.results.forEach(result => data += "," + result.passed + "," + result.achievedPoints + "," + result.achievedPercent);
 			data += "\n";
 		});

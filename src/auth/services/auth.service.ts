@@ -8,9 +8,14 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { UserRepository } from "../../user/repositories/user.repository";
 import { User } from "../../shared/entities/user.entity";
 import { UserRole } from "../../shared/enums";
+import { AuthInfo } from "../dto/auth-info.dto";
+import { DtoFactory } from "../../shared/dto-factory";
+import * as config from "config";
 
 @Injectable()
 export class AuthService {
+
+	private jwtExpiresIn = config.get("jwt.expiresIn");
 
 	constructor(private jwtService: JwtService,
 				private authSystem: AuthSystemService,
@@ -31,23 +36,25 @@ export class AuthService {
 		const authInfo = await this.authSystem.checkAuthentication(credentials);
 		if (!authInfo) throw new BadRequestException("Invalid credentials");
 
-		// Find user in this system
+		// Try to find user in this system
 		let user: User;
-		try {
-			user = await this.userRepository.getUserByUsername(authInfo.user.username);
-		} catch(error) {
-			// User does not exist, create account in this system
-			user = await this.userRepository.createUser({
-				// TODO: Add fullname
-				username: authInfo.user.username,
-				rzName: authInfo.user.username,
-				email: authInfo.user.settings?.email_address,
-				role: this.determineRole(authInfo.user.role)
-			});
-		}
+		user = await this.userRepository.tryGetUserByUsername(authInfo.user.username);
 
-		// Create AuthToken for the user
+		if (!user) {
+			// User does not exist, create account in this system
+			user = await this.createUser(authInfo);
+		}
+		
 		return this.generateAuthToken(user);
+	}
+
+	private async createUser(authInfo: AuthInfo) {
+		const username = authInfo.user.username;
+		const displayName = authInfo.user.fullName?.length > 0 ? authInfo.user.fullName : authInfo.user.username;
+		const role = this.determineRole(authInfo.user.role);
+		const email = authInfo.user.settings?.email_address;
+
+		return this.userRepository.createUser({ username, displayName, email, role });
 	}
 
 	/**
@@ -87,14 +94,14 @@ export class AuthService {
 		// Generate JWT Token
 		const payload: JwtPayload = { userId: user.id, username: user.username, role: user.role };
 		const accessToken = await this.jwtService.signAsync(payload);
+		const expiresIn = new Date(Date.now() + this.jwtExpiresIn * 1000);
 		
 		// Configure the AuthToken, that gets send back to user
 		const authToken: AuthTokenDto = { 
 			accessToken: accessToken, // JWT (encrypted)
-			userId: user.id,
-			username: user.username,
-			email: user.email,
-			role: user.role
+			user: DtoFactory.createUserDto(user),
+			expiration: expiresIn,
+			_expirationInLocale: expiresIn.toLocaleString()
 		};
 		
 		return authToken;

@@ -5,7 +5,7 @@ import { UserId } from "../../../shared/entities/user.entity";
 export class ParticipantDto {
 	userId: UserId;
 	username: string;
-	rzName: string;
+	displayName: string;
 	email: string;
 	role: CourseRole;
 	groupId?: string;

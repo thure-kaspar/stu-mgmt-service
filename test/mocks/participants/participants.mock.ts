@@ -17,7 +17,7 @@ type CourseIdParticipantWithIds = { courseId: CourseId; participant: Participant
 export const PARTICIPANT_DTO = (user: UserDto, course: CourseDto, role: CourseRole, groupId?: string, group?: GroupDto): ParticipantDto => ({
 	userId: user.id,
 	username: user.username,
-	rzName: user.rzName,
+	displayName: user.displayName,
 	email: user.email,
 	role: role,
 	groupId: groupId,
