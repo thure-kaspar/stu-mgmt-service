@@ -96,7 +96,7 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 			});
 			
 			registration.groupRelations = group.userGroupRelations.map(member => 
-				this.createGroupRegistrationRelationEntity(assignmentId, member.id));
+				this.createGroupRegistrationRelationEntity(assignmentId, member.participantId));
 
 			return registration;
 		});
