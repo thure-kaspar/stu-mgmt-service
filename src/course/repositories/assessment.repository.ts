@@ -83,6 +83,7 @@ export class AssessmentRepository extends Repository<Assessment> {
 		if (name) {
 			query.andWhere(new Brackets(qb => {
 				qb.where("group.name ILIKE :name", { name: `%${name}%` });
+				qb.orWhere("user.displayName ILIKE :name", { name: `%${name}%` });
 				qb.orWhere("user.username ILIKE :name", { name: `%${name}%` });
 			}));
 		}

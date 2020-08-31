@@ -1,5 +1,5 @@
 import { ConflictException } from "@nestjs/common";
-import { EntityRepository, Repository } from "typeorm";
+import { EntityRepository, Repository, Brackets } from "typeorm";
 import { Participant } from "../entities/participant.entity";
 import { CourseRole } from "../../shared/enums";
 import { CourseId } from "../entities/course.entity";
@@ -31,7 +31,7 @@ export class ParticipantRepository extends Repository<Participant> {
 	 * Returns the participants of a course.
 	 */
 	async getParticipants(courseId: CourseId, filter?: CourseParticipantsFilter): Promise<[Participant[], number]> {
-		const { courseRole, username, skip, take } = filter || { };
+		const { courseRole, name, skip, take } = filter || { };
 
 		const query = this.createQueryBuilder("participant")
 			.where("participant.courseId = :courseId", { courseId })
@@ -41,8 +41,11 @@ export class ParticipantRepository extends Repository<Participant> {
 			.skip(skip)
 			.take(take);
 
-		if (username) {
-			query.andWhere("user.username ILIKE :username", { username: `%${username}%`});
+		if (name) {
+			query.andWhere(new Brackets(qb => {
+				qb.where("user.username ILIKE :name", { name: `%${name}%` });
+				qb.orWhere("user.displayName ILIKE :name", { name: `%${name}%` });
+			}));
 		}
 	
 		if (courseRole?.length > 0) {

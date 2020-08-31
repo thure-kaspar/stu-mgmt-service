@@ -57,7 +57,7 @@ export class UsersWithAssignedEvaluatorHandler implements IQueryHandler<UsersWit
 		}
 		
 		if (nameOfGroupOrUser) {
-			userQuery.andWhere("user.username ILIKE :name", { name: `%${nameOfGroupOrUser}%` });
+			userQuery.andWhere("user.displayName ILIKE :name", { name: `%${nameOfGroupOrUser}%` });
 		}
 
 		const [users, count] = await userQuery.getManyAndCount();
