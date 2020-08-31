@@ -9,6 +9,8 @@ import { CourseMemberGuard } from "../guards/course-member.guard";
 import { CourseService } from "../services/course.service";
 import { CourseId } from "../entities/course.entity";
 import { throwIfRequestFailed } from "../../utils/http-utils";
+import { Roles } from "../../auth/decorators/roles.decorator";
+import { UserRole } from "../../shared/enums";
 
 @ApiBearerAuth()
 @ApiTags("courses") 
@@ -21,12 +23,14 @@ export class CourseController {
 	/**
 	 * Creates a new course.
 	 */
-	@Post()
 	@ApiOperation({
 		operationId: "createCourse",
 		summary: "Create course.",
 		description: "Creates a new course."
 	})
+	@Post()
+	@UseGuards(AuthGuard())
+	@Roles(UserRole.MGMT_ADMIN, UserRole.SYSTEM_ADMIN)
 	createCourse(@Body() courseDto: CourseCreateDto): Promise<CourseDto> {
 		return this.courseService.createCourse(courseDto);
 	}

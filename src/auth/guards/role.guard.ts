@@ -13,14 +13,14 @@ export class RoleGuard implements CanActivate {
 		// Get required roles for the requested route
 		const roles = this.reflector.get<string[]>("roles", context.getHandler());
 
-		// If no role were specified for the request, return true (execute request)
+		// If no roles were specified for the request, return true (execute request)
 		if (!roles) return true; 
 
 		// Get user from HTTP-Request (authorized user gets attached to request object!)
 		const request = context.switchToHttp().getRequest();
 		const user = request.user;
 
-		// Return true, if user role 
+		// Return true, if user's role is included in required roles
 		return roles.includes(user.role);
 	}
 
