@@ -53,7 +53,7 @@ describe("GET-REQUESTS of UserController (e2e)", () => {
 				expect(result.id).toEqual(user.id);
 				expect(result.email).toEqual(user.email);
 				expect(result.role).toEqual(user.role);
-				expect(result.rzName).toEqual(user.rzName);
+				expect(result.displayName).toEqual(user.displayName);
 				expect(result.username).toEqual(user.username);
 			});
 	});
@@ -66,7 +66,7 @@ describe("GET-REQUESTS of UserController (e2e)", () => {
 				expect(result.id).toEqual(user.id);
 				expect(result.email).toEqual(user.email);
 				expect(result.role).toEqual(user.role);
-				expect(result.rzName).toEqual(user.rzName);
+				expect(result.displayName).toEqual(user.displayName);
 				expect(result.username).toEqual(user.username);
 			});
 	});

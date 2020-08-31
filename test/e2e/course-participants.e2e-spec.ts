@@ -44,7 +44,7 @@ describe("GET-REQUESTS of CourseController (e2e)", () => {
 					expect(result.length).toEqual(expected.length);
 					expect(result[0].userId).toBeTruthy();
 					expect(result[0].username).toBeTruthy();
-					expect(result[0].rzName).toBeTruthy();
+					expect(result[0].displayName).toBeTruthy();
 					expect(result[0].role).toBeTruthy();
 				});
 		});
@@ -126,12 +126,13 @@ describe("GET-REQUESTS of CourseController (e2e)", () => {
 				});
 		});
 
-		it("Filters by username", () => {
-			const username = "m";
-			const expected = COURSE_JAVA_1920_PARTICIPANTS.filter(p => p.participant.participant.username.includes(username));
-			console.assert(expected.length > 1, "Expecting >1 participants to match username");
+		it("Filters by name", () => {
+			const name = "m";
+			const expected = COURSE_JAVA_1920_PARTICIPANTS.filter(p => p.participant.participant.username.includes(name)
+			|| p.participant.participant.displayName.includes(name));
+			console.assert(expected.length > 1, "Expecting >1 participants to match name");
 
-			const queryString = `username=${username}`;
+			const queryString = `name=${name}`;
 
 			return request(app.getHttpServer())
 				.get(`${route}?${queryString}`)
