@@ -45,7 +45,7 @@ export class Assignment {
 	 * Returns `true`, if assignment is now in `IN_PROGRESS` state and
 	 * `oldState` was a different state.
 	 */
-	wasStarted(oldState: AssignmentState): boolean {
+	wasStarted(oldState?: AssignmentState): boolean {
 		return this.assignment.state === AssignmentState.IN_PROGRESS && oldState !== AssignmentState.IN_PROGRESS;
 	}
 

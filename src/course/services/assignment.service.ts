@@ -20,7 +20,14 @@ export class AssignmentService {
 
 	async createAssignment(courseId: CourseId, assignmentDto: AssignmentDto): Promise<AssignmentDto> {
 		const createdAssignment = await this.assignmentRepository.createAssignment(courseId, assignmentDto);
-		this.events.publish(new AssignmentCreated(courseId, createdAssignment.id));
+
+		const assignment = new Assignment(createdAssignment);
+		this.events.publish(new AssignmentCreated(courseId, assignment.id));
+
+		if (assignment.wasStarted() && assignment.allowsGroups()) {
+			await this.registrations.registerGroupsForAssignment(courseId, assignment.id);
+		}
+
 		return DtoFactory.createAssignmentDto(createdAssignment);
 	}
 
