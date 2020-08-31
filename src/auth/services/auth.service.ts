@@ -38,15 +38,29 @@ export class AuthService {
 		} catch(error) {
 			// User does not exist, create account in this system
 			user = await this.userRepository.createUser({
+				// TODO: Add fullname
 				username: authInfo.user.username,
-				rzName: "?", // TODO: Remove property ?
+				rzName: authInfo.user.username,
 				email: authInfo.user.settings?.email_address,
-				role: UserRole.USER
+				role: this.determineRole(authInfo.user.role)
 			});
 		}
 
 		// Create AuthToken for the user
 		return this.generateAuthToken(user);
+	}
+
+	/**
+	 * Determines the role of a new account.
+	 * @param role Role given by the Sparkyservice.
+	 */
+	private determineRole(role: string): UserRole {
+		switch (role) {
+		case "DEFAULT": return UserRole.USER;
+		case "ADMIN": return UserRole.SYSTEM_ADMIN;
+		case "SERVICE": return UserRole.ADMIN_TOOL;
+		default: return UserRole.USER;
+		}
 	}
 
 	/**
