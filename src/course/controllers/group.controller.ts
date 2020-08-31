@@ -26,6 +26,7 @@ import { GroupsWithAssignedEvaluatorQuery } from "../queries/groups-with-assigne
 import { GroupService } from "../services/group.service";
 import { GroupMemberGuard } from "../guards/group-member.guard";
 import { AssessmentDto } from "../dto/assessment/assessment.dto";
+import { TeachingStaffGuard } from "../guards/teaching-staff.guard";
 
 @ApiBearerAuth()
 @ApiTags("groups")
@@ -35,12 +36,12 @@ export class GroupController {
 	constructor(private groupService: GroupService,
 				private queryBus: QueryBus) { }
 
-	@Post()
 	@ApiOperation({
 		operationId: "createGroup",
 		summary: "Create group.",
 		description: "Creates a new group, if course allows group creation. If request was triggered by student, student is automatically joining the group."
 	})
+	@Post()
 	createGroup(
 		@Param("courseId") courseId: CourseId,
 		@GetCourse() course: Course, 
@@ -51,12 +52,13 @@ export class GroupController {
 		return this.groupService.createGroup(course, participant, groupDto);
 	}
 
-	@Post("bulk")
 	@ApiOperation({
 		operationId: "createMultipleGroups",
 		summary: "Create multiple groups.",
 		description: "Creates multiple groups with the given names or naming schema and count."
 	})
+	@Post("bulk")
+	@UseGuards(TeachingStaffGuard)
 	createMultipleGroups(
 		@Param("courseId") courseId: CourseId,
 		@Body() groupCreateBulk: GroupCreateBulkDto 
@@ -86,12 +88,12 @@ export class GroupController {
 		return this.groupService.addUserToGroup(course, group, participant, selectedParticipant, password.password);
 	}
 
-	@Get()
 	@ApiOperation({
 		operationId: "getGroupsOfCourse",
 		summary: "Get groups of course.",
 		description: "Retrieves all groups that belong to the course."
 	})
+	@Get()
 	getGroupsOfCourse(
 		@Req() request: Request,
 		@Param("courseId") courseId: CourseId,
@@ -101,23 +103,25 @@ export class GroupController {
 		return PaginatedResult(this.groupService.getGroupsOfCourse(courseId, filter), request);
 	}
 
-	@Get("history")
 	@ApiOperation({
 		operationId: "getGroupHistoryOfCourse",
 		summary: "Get group history of course.",
 		description: "Retrieves all group events of the course."
 	})
+	@Get("history")
+	@UseGuards(TeachingStaffGuard)
 	getGroupHistoryOfCourse(@Param("courseId") courseId: CourseId): Promise<GroupEventDto[]> {
 
 		return this.groupService.getGroupHistoryOfCourse(courseId);
 	}
 
-	@Get("assignments/:assignmentId/with-assigned-evaluator")
 	@ApiOperation({
 		operationId: "getGroupsWithAssignedEvaluator",
 		summary: "Get groups with assigned evaluator.",
 		description: "Retrieves groups with their assigned evaluator for an assignment"
 	})
+	@UseGuards(TeachingStaffGuard)
+	@Get("assignments/:assignmentId/with-assigned-evaluator")
 	async getGroupsWithAssignedEvaluator(
 		@Req() request: Request,
 		@Param("courseId") courseId: CourseId,
@@ -146,12 +150,13 @@ export class GroupController {
 	}
 
 
-	@Get(":groupId/users")
 	@ApiOperation({
 		operationId: "getUsersOfGroup",
 		summary: "Get users of group.",
 		description: "Retrieves all users that are members of the group."
 	})
+	@Get(":groupId/users")
+	@UseGuards(GroupMemberGuard)
 	getUsersOfGroup(
 		@Param("courseId") courseId: CourseId,
 		@Param("groupId") groupId: GroupId
@@ -166,7 +171,7 @@ export class GroupController {
 		description: "Retrieves all assessments of this group."
 	})
 	@Get(":groupId/assessments")
-	@UseGuards(GroupMemberGuard)
+	@UseGuards(TeachingStaffGuard)
 	getAssessmentsOfGroup(
 		@Param("courseId") courseId: CourseId,
 		@Param("groupId") groupId: GroupId

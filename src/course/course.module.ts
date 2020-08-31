@@ -9,7 +9,7 @@ import { GroupRegistrationRelation } from "./entities/group-registration-relatio
 //import { EventHandlers } from "./events";
 import { Guards } from "./guards";
 import { CourseMemberGuard } from "./guards/course-member.guard";
-import { IdentityGuard } from "./guards/identity.guard";
+import { ParticipantIdentityGuard } from "./guards/identity.guard";
 import { TeachingStaffGuard } from "./guards/teaching-staff.guard";
 import { QueryHandlers } from "./queries";
 import { Repositories } from "./repositories";
@@ -52,6 +52,6 @@ import { CourseJoinedHandler_AutomaticGroupJoin } from "./events/participant/aut
 		UserRegisteredNotificationHandler,
 		UserUnregisteredNotificationHandler,
 	],
-	exports: [TypeOrmModule, CourseMemberGuard, TeachingStaffGuard, IdentityGuard, ...Services]
+	exports: [TypeOrmModule, CourseMemberGuard, TeachingStaffGuard, ParticipantIdentityGuard, ...Services]
 })
 export class CourseModule { }

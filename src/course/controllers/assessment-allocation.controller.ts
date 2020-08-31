@@ -1,14 +1,18 @@
 import { ApiTags, ApiOperation, ApiQuery, ApiBearerAuth } from "@nestjs/swagger";
-import { Controller, Param, Post, Body, Delete, BadRequestException, Query, Get } from "@nestjs/common";
+import { Controller, Param, Post, Body, Delete, BadRequestException, Query, Get, UseGuards } from "@nestjs/common";
 import { AssessmentAllocationDto } from "../dto/assessment-allocation/assessment-allocation.dto";
 import { AssessmentAllocationService } from "../services/assessment-allocation.service";
 import { CourseId } from "../entities/course.entity";
 import { GroupId } from "../entities/group.entity";
 import { UserId } from "../../shared/entities/user.entity";
+import { AuthGuard } from "@nestjs/passport";
+import { CourseMemberGuard } from "../guards/course-member.guard";
+import { TeachingStaffGuard } from "../guards/teaching-staff.guard";
 
 @ApiBearerAuth()
 @ApiTags("assessment-allocation")
 @Controller("courses/:courseId/assignments/:assignmentId/assessment-allocations")
+@UseGuards(AuthGuard(), CourseMemberGuard, TeachingStaffGuard)
 export class AssessmentAllocationController {
 
 	constructor(private allocationService: AssessmentAllocationService) { }

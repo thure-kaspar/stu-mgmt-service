@@ -11,6 +11,7 @@ import { CourseId } from "../entities/course.entity";
 import { throwIfRequestFailed } from "../../utils/http-utils";
 import { Roles } from "../../auth/decorators/roles.decorator";
 import { UserRole } from "../../shared/enums";
+import { TeachingStaffGuard } from "../guards/teaching-staff.guard";
 
 @ApiBearerAuth()
 @ApiTags("courses") 
@@ -38,12 +39,12 @@ export class CourseController {
 	/**
 	 * Returns all courses that match the given filter.
 	 */
-	@Get()
 	@ApiOperation({
 		operationId: "getCourses",
 		summary: "Get courses.",
 		description: "Returns all courses that match the given filter."
 	})
+	@Get()
 	getCourses(@Query() filter?: CourseFilter): Promise<CourseDto[]> {
 		return this.courseService.getCourses(filter);
 	}
@@ -51,13 +52,13 @@ export class CourseController {
 	/**
 	 * Returns the course.
 	 */
-	@Get(":courseId")
-	@UseGuards(AuthGuard(), CourseMemberGuard)
 	@ApiOperation({
 		operationId: "getCourseById",
 		summary: "Get course.",
 		description: "Retrieves the course, if the requesting user is a member of this course."
 	})
+	@Get(":courseId")
+	@UseGuards(AuthGuard(), CourseMemberGuard)
 	getCourseById(@Param("courseId") courseId: CourseId): Promise<CourseDto> {
 		return this.courseService.getCourseById(courseId);
 	}
@@ -65,12 +66,13 @@ export class CourseController {
 	/**
 	 * Returns the course.
 	 */
-	@Get(":name/semester/:semester")
 	@ApiOperation({
 		operationId: "getCourseByNameAndSemester",
 		summary: "Get course by name and semester.",
 		description: ""
 	})
+	@Get(":name/semester/:semester")
+	@UseGuards(AuthGuard(), CourseMemberGuard)
 	getCourseByNameAndSemester(
 		@Param("name") name: string,
 		@Param("semester") semester: string
@@ -82,12 +84,13 @@ export class CourseController {
 	/**
 	 * Updates the course.
 	 */
-	@Patch(":courseId")
 	@ApiOperation({
 		operationId: "updateCourse",
 		summary: "Update course.",
 		description: "Updates the course."
 	})
+	@Patch(":courseId")
+	@UseGuards(AuthGuard(), CourseMemberGuard, TeachingStaffGuard)
 	updateCourse(
 		@Param("courseId") courseId: CourseId,
 		@Body() courseDto: CourseDto
@@ -99,12 +102,13 @@ export class CourseController {
 	/**
 	 * Deletes the course.
 	 */
-	@Delete(":courseId")
 	@ApiOperation({
 		operationId: "deleteCourse",
 		summary: "Delete course.",
 		description: "Deletes the course."
 	})
+	@Delete(":courseId")
+	@UseGuards(AuthGuard(), CourseMemberGuard, TeachingStaffGuard)
 	deleteCourse(
 		@Param("courseId") courseId: CourseId,
 	): Promise<void> {

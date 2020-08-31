@@ -3,7 +3,7 @@ import { AuthGuard } from "@nestjs/passport";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { CourseId } from "../course/entities/course.entity";
 import { CourseMemberGuard } from "../course/guards/course-member.guard";
-import { IdentityGuard } from "../course/guards/identity.guard";
+import { ParticipantIdentityGuard } from "../course/guards/identity.guard";
 import { TeachingStaffGuard } from "../course/guards/teaching-staff.guard";
 import { UserId } from "../shared/entities/user.entity";
 import { AdmissionStatusService } from "./admission-status.service";
@@ -49,7 +49,7 @@ export class AdmissionStatusController {
 		description: "Returns an overview of the achieved points of a student mapped the assignments."
 	})
 	@Get("overview/:userId")
-	@UseGuards(IdentityGuard)
+	@UseGuards(ParticipantIdentityGuard)
 	getPointsOverviewOfStudent(
 		@Param("courseId") courseId: CourseId,
 		@Param("userId") userId: UserId

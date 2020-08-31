@@ -11,21 +11,24 @@ import { CourseId } from "../entities/course.entity";
 import { AssessmentFilter } from "../dto/assessment/assessment-filter.dto";
 import { PaginatedResult, throwIfRequestFailed } from "../../utils/http-utils";
 import { Request } from "express";
+import { CourseMemberGuard } from "../guards/course-member.guard";
+import { TeachingStaffGuard } from "../guards/teaching-staff.guard";
 
 @ApiBearerAuth()
 @ApiTags("assessments")
 @Controller("courses/:courseId/assignments/:assignmentId/assessments")
-//@UseGuards(AuthGuard()) -- temporarily disabled
+@UseGuards(AuthGuard(), CourseMemberGuard)
 export class AssessmentController {
 
 	constructor(private assessmentService: AssessmentService) { }
 
-	@Post()
 	@ApiOperation({
 		operationId: "createAssessment",
 		summary: "Create assessment.",
 		description: "Creates a new assessment."
 	})
+	@Post()
+	@UseGuards(TeachingStaffGuard)
 	createAssessment(
 		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string,
@@ -35,12 +38,13 @@ export class AssessmentController {
 		return this.assessmentService.createAssessment(assignmentId, assessment);
 	}
 
-	@Post(":assessmentId")
 	@ApiOperation({
 		operationId: "addPartialAssessment",
 		summary: "Add partial assessment.",
 		description: "Adds a partial assessment for an existing assessment. Alternatively, partial assessments can be created together with the assessment."
 	})
+	@Post(":assessmentId")
+	@UseGuards(TeachingStaffGuard)
 	addPartialAssessment(
 		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string,
@@ -51,12 +55,13 @@ export class AssessmentController {
 		return this.assessmentService.addPartialAssessment(assignmentId, assessmentId, partial);
 	}
 
-	@Get()
 	@ApiOperation({
 		operationId: "getAssessmentsForAssignment",
 		summary: "Get assessments of assignment.",
 		description: "Retrieves assessments that have been created for the assignment."
 	})
+	@Get()
+	@UseGuards(TeachingStaffGuard)
 	getAssessmentsForAssignment(
 		@Req() request: Request,
 		@Param("courseId") courseId: CourseId,
@@ -67,12 +72,12 @@ export class AssessmentController {
 		return PaginatedResult(this.assessmentService.getAssessmentsForAssignment(assignmentId, new AssessmentFilter(filter)), request);
 	}
 
-	@Get(":assessmentId")
 	@ApiOperation({
 		operationId: "getAssessmentById",
 		summary: "Get assessment.",
 		description: "Retrieves the assessment."
 	})
+	@Get(":assessmentId")
 	getAssessmentById(
 		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string,
@@ -82,12 +87,13 @@ export class AssessmentController {
 		return this.assessmentService.getAssessmentById(assessmentId);
 	}
 
-	@Get(":assessmentId/events")
 	@ApiOperation({
 		operationId: "getEventsOfAssessment",
 		summary: "Get assessment events.",
 		description: "Retrieves events of the assessment."
 	})
+	@Get(":assessmentId/events")
+	@UseGuards(TeachingStaffGuard)
 	getEventsOfAssessment(
 		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string,
@@ -98,7 +104,7 @@ export class AssessmentController {
 	}
 
 	@Patch(":assessmentId")
-	@UseGuards(AuthGuard())
+	@UseGuards(TeachingStaffGuard)
 	@ApiOperation({
 		operationId: "updateAssessment",
 		summary: "Update assessment.",
@@ -115,12 +121,13 @@ export class AssessmentController {
 		return this.assessmentService.updateAssessment(assessmentId, assessmentDto, updatedBy.id);
 	}
 
-	@Delete(":assessmentId")
 	@ApiOperation({
 		operationId: "deleteAssessment",
 		summary: "Delete assessment.",
 		description: "Deletes the assessment."
 	})
+	@Delete(":assessmentId")
+	@UseGuards(TeachingStaffGuard)
 	deleteAssessment(
 		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string,

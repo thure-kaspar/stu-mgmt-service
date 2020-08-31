@@ -2,11 +2,11 @@ import { CanActivate, ExecutionContext, Injectable, ForbiddenException } from "@
 import { Participant } from "../models/participant.model";
 
 /**
- * Only allows requests that refer to data about the requesting user himself.
+ * Only allows requests that refer to data about the requesting participant himself.
  * Additionally, requests by `LECTURER` and `TUTOR` will be allowed.
  */
 @Injectable()
-export class IdentityGuard implements CanActivate {
+export class ParticipantIdentityGuard implements CanActivate {
 
 	async canActivate(context: ExecutionContext): Promise<boolean> {	
 		const request = context.switchToHttp().getRequest();

@@ -11,6 +11,7 @@ import { Course } from "../models/course.model";
 import { Assignment } from "../models/assignment.model";
 import { AssignmentGuard } from "../guards/assignment.guard";
 import { AssignmentId } from "../entities/assignment.entity";
+import { TeachingStaffGuard } from "../guards/teaching-staff.guard";
 
 @ApiBearerAuth()
 @ApiTags("assignments")
@@ -19,12 +20,13 @@ import { AssignmentId } from "../entities/assignment.entity";
 export class AssignmentController {
 	constructor(private assignmentService: AssignmentService) { }
 
-	@Post()
 	@ApiOperation({
 		operationId: "createAssignment",
 		summary: "Create assignment.",
 		description: "Creates a new assignment."
 	})
+	@Post()
+	@UseGuards(TeachingStaffGuard)
 	createAssignment(
 		@Param("courseId") courseId: CourseId,
 		@Body() assignmentDto: AssignmentDto
@@ -66,7 +68,7 @@ export class AssignmentController {
 		description: "Updates the assignment."
 	})
 	@Patch(":assignmentId")
-	@UseGuards(AssignmentGuard)
+	@UseGuards(TeachingStaffGuard, AssignmentGuard)
 	updateAssignment(
 		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: AssignmentId,
@@ -78,12 +80,13 @@ export class AssignmentController {
 		return this.assignmentService.updateAssignment(course, assignment, update);
 	}
 
-	@Delete(":assignmentId")
 	@ApiOperation({
 		operationId: "deleteAssignment",
 		summary: "Delete assignment.",
 		description: "Deletes the assignment. Returns true, if removal was successful."
 	})
+	@Delete(":assignmentId")
+	@UseGuards(TeachingStaffGuard)
 	async deleteAssignment(
 		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string

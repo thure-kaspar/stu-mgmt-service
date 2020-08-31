@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, ValidationPipe } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, ValidationPipe, UseGuards } from "@nestjs/common";
 import { QueryBus } from "@nestjs/cqrs";
 import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
@@ -19,10 +19,15 @@ import { UserWithAssignedEvaluatorDto } from "../queries/users-with-assigned-eva
 import { UsersWithAssignedEvaluatorQuery } from "../queries/users-with-assigned-evaluator/users-with-assigned-evaluator.query";
 import { CourseParticipantsService } from "../services/course-participants.service";
 import { UserId } from "../../shared/entities/user.entity";
+import { AuthGuard } from "@nestjs/passport";
+import { TeachingStaffGuard } from "../guards/teaching-staff.guard";
+import { CourseMemberGuard } from "../guards/course-member.guard";
+import { ParticipantIdentityGuard } from "../guards/identity.guard";
 
 @ApiBearerAuth()
 @ApiTags("course-participants")
 @Controller("courses/:courseId/users")
+@UseGuards(AuthGuard())
 export class CourseParticipantsController {
 
 	constructor(private courseParticipantsService: CourseParticipantsService,
@@ -48,12 +53,13 @@ export class CourseParticipantsController {
 	/**
 	 * Returns a collection of users that are signed up for this course.
 	 */
-	@Get()
 	@ApiOperation({
 		operationId: "getUsersOfCourse",
 		summary: "Get users of course.",
 		description: "Returns a collection of users that are signed up for this course."
 	})
+	@Get()
+	@UseGuards(CourseMemberGuard)
 	async getUsersOfCourse(
 		@Req() request: Request,
 		@Param("courseId") courseId: CourseId,
@@ -66,12 +72,13 @@ export class CourseParticipantsController {
 		return users;
 	}
 
-	@Get(":userId")
 	@ApiOperation({
 		operationId: "getParticipant",
 		summary: "Get participant.",
 		description: "Retrieves a specific participant and course related information about the participant."
 	})
+	@UseGuards(CourseMemberGuard)
+	@Get(":userId")
 	getParticipant(
 		@Param("courseId") courseId: CourseId,
 		@Param("userId") userId: UserId
@@ -80,12 +87,13 @@ export class CourseParticipantsController {
 		return this.courseParticipantsService.getParticipant(courseId, userId);
 	}
 
-	@Get("query/compare-participants-list")
 	@ApiOperation({
 		operationId: "compareParticipantsList",
 		summary: "Compare participants list..",
 		description: "Returns an Object, which divides the course participants in two groups (in/out)."
 	})
+	@Get("query/compare-participants-list")
+	@UseGuards(CourseMemberGuard, TeachingStaffGuard)
 	@ApiQuery({ name: "compareToCourseIds", type: String, isArray: true })
 	compareParticipantsList(
 		@Param("courseId") courseId: CourseId,
@@ -100,12 +108,12 @@ export class CourseParticipantsController {
 		}
 	}
 
-	@Get(":userId/canJoin")
 	@ApiOperation({
 		operationId: "canUserJoinCourse",
 		summary: "Check if joining is possible.",
 		description: "Checks, if the user is able to join the course. A user can join a course, if he's not already a member and the course is not closed."
 	})
+	@Get(":userId/canJoin")
 	canUserJoinCourse(
 		@Param("courseId") courseId: CourseId,
 		@Param("userId") userId: UserId,
@@ -114,12 +122,13 @@ export class CourseParticipantsController {
 		return this.queryBus.execute(new CanJoinCourseQuery(courseId, userId));
 	}
 
-	@Get("assignments/:assignmentId/with-assigned-evaluator")
 	@ApiOperation({
 		operationId: "getUsersWithAssignedEvaluator",
 		summary: "Get users with assigned evaluator.",
 		description: "Returns users with their assigned evaluator for a particular assignment."
 	})
+	@UseGuards(CourseMemberGuard, TeachingStaffGuard)
+	@Get("assignments/:assignmentId/with-assigned-evaluator")
 	async getUsersWithAssignedEvaluator(
 		@Req() request: Request,
 		@Param("courseId") courseId: CourseId,
@@ -136,12 +145,13 @@ export class CourseParticipantsController {
 	/**
 	 * Assigns the given role to the user of this course.
 	 */
-	@Patch(":userId/role")
 	@ApiOperation({
 		operationId: "updateUserRole",
 		summary: "Update user's role in course.",
 		description: "Assigns the given role to the user of this course."
 	})
+	@UseGuards(CourseMemberGuard, TeachingStaffGuard)
+	@Patch(":userId/role")
 	async updateUserRole(
 		@Param("courseId") courseId: CourseId,
 		@Param("userId") userId: UserId,
@@ -157,12 +167,13 @@ export class CourseParticipantsController {
 	/**
 	 * Removes the user from the course. Returns true, if removal was successful.
 	 */
-	@Delete(":userId")
 	@ApiOperation({
 		operationId: "removeUser",
 		summary: "Remove user from course.",
 		description: "Removes the user from the course. Returns true, if removal was successful."
 	})
+	@UseGuards(CourseMemberGuard, ParticipantIdentityGuard)
+	@Delete(":userId")
 	async removeUser(
 		@Param("courseId") courseId: CourseId,
 		@Param("userId") userId: UserId,

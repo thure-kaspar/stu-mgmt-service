@@ -9,13 +9,16 @@ import { GroupRepository } from "../course/repositories/group.repository";
 import { UserController } from "./controllers/user.controller";
 import { UserRepository } from "./repositories/user.repository";
 import { UserService } from "./services/user.service";
+import { IdentityGuard } from "./guards/identity.guard";
+import { CourseModule } from "../course/course.module";
 
 @Module({
 	imports: [
 		TypeOrmModule.forFeature([UserRepository, GroupRepository, GroupEventRepository, AssignmentRepository, AssignmentRegistrationRepository, AssessmentRepository]),
-		AuthModule
+		AuthModule,
+		CourseModule
 	],
 	controllers: [UserController],
-	providers: [UserService]
+	providers: [UserService, IdentityGuard]
 })
 export class UserModule {}
