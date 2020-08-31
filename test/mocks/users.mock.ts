@@ -48,7 +48,7 @@ export const USER_FROM_AUTH_SYSTEM: UserDto = {
 	email: "user@sparky-system.test",
 	username: "user",
 	rzName: "authUser",
-	role: UserRole.USER
+	role: UserRole.SYSTEM_ADMIN
 };
 
 export const USER_KLING_AUTH_SYSTEM: UserDto = {
