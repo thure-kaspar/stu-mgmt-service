@@ -1,10 +1,8 @@
-import { UserRole } from "../../shared/enums";
-import { UserId } from "../../shared/entities/user.entity";
+import { UserDto } from "../../shared/dto/user.dto";
 
 export class AuthTokenDto {
 	accessToken: string;
-	userId: UserId;
-	username: string;
-	email: string;
-	role: UserRole;
+	user: UserDto;
+	expiration?: Date;
+	_expirationInLocale: string;
 }
