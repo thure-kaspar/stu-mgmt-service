@@ -5,23 +5,22 @@ import { AssessmentDto } from "../../course/dto/assessment/assessment.dto";
 import { GroupEventDto } from "../../course/dto/group/group-event.dto";
 import { GroupDto } from "../../course/dto/group/group.dto";
 import { Assessment } from "../../course/entities/assessment.entity";
+import { AssignmentRegistration } from "../../course/entities/assignment-group-registration.entity";
 import { Assignment } from "../../course/entities/assignment.entity";
 import { CourseId } from "../../course/entities/course.entity";
 import { GroupEvent } from "../../course/entities/group-event.entity";
 import { Group } from "../../course/entities/group.entity";
-import { UserJoinedGroupEvent } from "../../course/events/group/user-joined-group.event";
 import { AssessmentRepository } from "../../course/repositories/assessment.repository";
+import { AssignmentRegistrationRepository } from "../../course/repositories/assignment-registration.repository";
 import { AssignmentRepository } from "../../course/repositories/assignment.repository";
 import { GroupEventRepository } from "../../course/repositories/group-event.repository";
 import { GroupRepository } from "../../course/repositories/group.repository";
 import { DtoFactory } from "../../shared/dto-factory";
 import { UserDto } from "../../shared/dto/user.dto";
 import { User, UserId } from "../../shared/entities/user.entity";
-import { CollaborationType } from "../../shared/enums";
+import { AssignmentState } from "../../shared/enums";
 import { AssignmentGroupTuple } from "../dto/assignment-group-tuple.dto";
 import { UserRepository } from "../repositories/user.repository";
-import { AssignmentRegistration } from "../../course/entities/assignment-group-registration.entity";
-import { AssignmentRegistrationRepository } from "../../course/repositories/assignment-registration.repository";
 
 @Injectable()
 export class UserService {
@@ -92,7 +91,8 @@ export class UserService {
 
 	async getAssessmentsOfUserForCourse(userId: UserId, courseId: CourseId): Promise<AssessmentDto[]> {
 		const assessments = await this.assessmentRepository.getAssessmentsOfUserForCourse(courseId, userId);
-		return assessments.map(a => DtoFactory.createAssessmentDto(a));
+		const evaluated = assessments.filter(a => a.assignment.state === AssignmentState.EVALUATED);
+		return evaluated.map(a => DtoFactory.createAssessmentDto(a));
 	}
 
 	async updateUser(userId: UserId, userDto: UserDto): Promise<UserDto> {
