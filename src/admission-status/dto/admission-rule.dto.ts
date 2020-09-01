@@ -10,7 +10,7 @@ export class AdmissionRuleDto {
 	@Min(0)
 	@Max(100)
 	requiredPercent: number;
-	pointsRounding: RoundingBehavior;
+	achievedPercentRounding: RoundingBehavior;
 }
 
 export class PassedXPercentWithAtLeastYPercentRuleDto extends AdmissionRuleDto {
@@ -31,7 +31,7 @@ export class OverallPercentRuleDto extends AdmissionRuleDto {
 export function toString(rule: AdmissionRuleDto): string {
 	const baseString = `${rule.type} ### ${rule.assignmentType}`;
 	const requiredPercent = `Required: ${rule.requiredPercent}%`;
-	const pointsRounding = `Rounding: ${rule.pointsRounding.type}` + (rule.pointsRounding.decimals ? ` (${rule.pointsRounding.decimals})` : "");
+	const pointsRounding = `Rounding: ${rule.achievedPercentRounding.type}` + (rule.achievedPercentRounding.decimals ? ` (${rule.achievedPercentRounding.decimals})` : "");
 
 	let result = baseString + " ### " + requiredPercent + " ### " + pointsRounding;
 

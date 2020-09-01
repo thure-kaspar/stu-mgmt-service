@@ -8,7 +8,7 @@ const ADMISSION_RULE_HOMEWORK_OVERALL_50_PERCENT_ROUNDING_NEXT_INTEGER: OverallP
 	type: RuleType.REQUIRED_PERCENT_OVERALL,
 	assignmentType: AssignmentType.HOMEWORK,
 	requiredPercent: 50,
-	pointsRounding: {
+	achievedPercentRounding: {
 		type: RoundingType.UP_NEAREST_INTEGER
 	},
 };
@@ -17,7 +17,7 @@ const ADMISSION_RULE_TESTAT_OVERALL_50_PERCENT_ROUNDING_NEXT_INTEGER: OverallPer
 	type: RuleType.REQUIRED_PERCENT_OVERALL,
 	assignmentType: AssignmentType.TESTAT,
 	requiredPercent: 50,
-	pointsRounding: {
+	achievedPercentRounding: {
 		type: RoundingType.DECIMALS,
 		decimals: 0
 	},
@@ -27,7 +27,7 @@ const ADMISSION_RULE_HOMEWORK_PASSED_X_PERCENT_WITH_AT_LEAST_Y_PERCENT: PassedXP
 	type: RuleType.PASSED_X_PERCENT_WITH_AT_LEAST_Y_PERCENT,
 	assignmentType: AssignmentType.HOMEWORK,
 	requiredPercent: 50,
-	pointsRounding: {
+	achievedPercentRounding: {
 		type: RoundingType.NONE,
 	},
 	passedAssignmentsPercent: 70,

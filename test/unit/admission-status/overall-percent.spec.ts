@@ -48,7 +48,7 @@ describe("OVERALL_PERCENT", () => {
 			type: RuleType.REQUIRED_PERCENT_OVERALL,
 			assignmentType: AssignmentType.HOMEWORK,
 			requiredPercent: 50,
-			pointsRounding: {
+			achievedPercentRounding: {
 				type: RoundingType.NONE
 			}
 		};
@@ -100,7 +100,7 @@ describe("OVERALL_PERCENT", () => {
 			const achievedPerAssignment = achievedTotal / 4;
 			assessments.forEach(a => a.achievedPoints = achievedPerAssignment);
 
-			rule = {...rule, pointsRounding: {
+			rule = {...rule, achievedPercentRounding: {
 				type: RoundingType.DECIMALS,
 				decimals: 0	
 			}};
@@ -118,7 +118,7 @@ describe("OVERALL_PERCENT", () => {
 			const achievedPerAssignment = achievedTotal / 4;
 			assessments.forEach(a => a.achievedPoints = achievedPerAssignment);
 
-			rule = {...rule, pointsRounding: {
+			rule = {...rule, achievedPercentRounding: {
 				type: RoundingType.DECIMALS,
 				decimals: 0	
 			}};

@@ -18,7 +18,7 @@ describe("PassedXPercentWithAtLeastYPercentImpl", () => {
 			type: RuleType.PASSED_X_PERCENT_WITH_AT_LEAST_Y_PERCENT,
 			assignmentType: assignmentType,
 			requiredPercent: 50,
-			pointsRounding: {
+			achievedPercentRounding: {
 				type: RoundingType.NONE
 			},
 			passedAssignmentsPercent: 70,

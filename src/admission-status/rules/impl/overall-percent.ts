@@ -15,7 +15,7 @@ export class OverallPercentRuleImpl extends OverallPercentRule {
 
 		const relevantAssignments = this.filterAssignmentsByType(assignments);
 		this.overallPoints = sumOf(relevantAssignments, a => a.points);
-		this.round = RoundingMethod(this.pointsRounding.type, this.pointsRounding.decimals);
+		this.round = RoundingMethod(this.achievedPercentRounding.type, this.achievedPercentRounding.decimals);
 	}
 
 	/**

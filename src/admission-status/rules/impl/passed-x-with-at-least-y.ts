@@ -9,7 +9,7 @@ export class PassedXPercentWithAtLeastYPercentImpl extends PassedXPercentWithAtL
 
 	private countOfAssignmentsThatStudentMustPass: number;
 	private roundRequiredAssignments: (value: number) => number;
-	private roundRequiredPoints: (value: number) => number;
+	private roundAchievedPercent: (value: number) => number;
 
 	/** [AssignmentId, Rounded points required to pass] */
 	private requiredPointsToPass = new Map<AssignmentId, number>();
@@ -18,7 +18,7 @@ export class PassedXPercentWithAtLeastYPercentImpl extends PassedXPercentWithAtL
 		super();
 		Object.assign(this, rule);
 		
-		this.roundRequiredPoints = RoundingMethod(this.pointsRounding.type, this.pointsRounding.decimals);
+		this.roundAchievedPercent = RoundingMethod(this.achievedPercentRounding.type, this.achievedPercentRounding.decimals);
 		this.roundRequiredAssignments = RoundingMethod(this.passedAssignmentsRounding.type, this.passedAssignmentsRounding.decimals);
 		
 		const relevantAssignments = this.filterAssignmentsByType(assignments);
@@ -27,8 +27,7 @@ export class PassedXPercentWithAtLeastYPercentImpl extends PassedXPercentWithAtL
 		this.countOfAssignmentsThatStudentMustPass = this.roundRequiredAssignments(requiredAssignmentCount);
 
 		relevantAssignments.forEach(assignment => {
-			const pointsRequiredToPass = ofPercent(assignment.points, this.requiredPercent);
-			this.requiredPointsToPass.set(assignment.id, this.roundRequiredPoints(pointsRequiredToPass));
+			this.requiredPointsToPass.set(assignment.id, assignment.points);
 		});
 	}
 
@@ -41,13 +40,14 @@ export class PassedXPercentWithAtLeastYPercentImpl extends PassedXPercentWithAtL
 		const achievedPoints = this.mapAchievedPointsToAssignment(relevantAssessments);
 		const passedAssignments = this.countPassedAssignments(achievedPoints);
 
-		return {
+		const result: RuleCheckResult = {
 			achievedPoints: passedAssignments,
 			achievedPercent: Percent(passedAssignments, this.countOfAssignmentsThatStudentMustPass),
 			passed: passedAssignments >= this.countOfAssignmentsThatStudentMustPass,
 			_rule: this.type,
 			_assignmentType: this.assignmentType
 		};
+		return result;
 	}
 
 	/**
@@ -57,7 +57,7 @@ export class PassedXPercentWithAtLeastYPercentImpl extends PassedXPercentWithAtL
 	private countPassedAssignments(achievedPoints: Map<AssignmentId, number>) {
 		let passedAssignments = 0;
 		this.requiredPointsToPass.forEach((requiredPoints, assignmentId) => {
-			if (this.studentPassedAssignment(achievedPoints, assignmentId, requiredPoints)) {
+			if (this.studentPassedAssignment(achievedPoints, assignmentId)) {
 				passedAssignments++;
 			}
 		});
@@ -68,10 +68,11 @@ export class PassedXPercentWithAtLeastYPercentImpl extends PassedXPercentWithAtL
 	 * Determines, wether the student has achieved enough points to pass the assignment.
 	 * @param achievedPoints Map of [assignmentId, achievedPoints]
 	 * @param assignmentId Assignment that should be checked
-	 * @param requiredPoints Points required in this assignment
 	 */
-	private studentPassedAssignment(achievedPoints: Map<AssignmentId, number>, assignmentId: AssignmentId, requiredPoints: number) {
-		return achievedPoints.get(assignmentId) >= requiredPoints;
+	private studentPassedAssignment(achievedPoints: Map<AssignmentId, number>, assignmentId: AssignmentId): boolean {
+		const achievedPercent = Percent(achievedPoints.get(assignmentId), this.requiredPointsToPass.get(assignmentId));
+		const achievedPercentRounded = this.roundAchievedPercent(achievedPercent);
+		return achievedPercentRounded >= this.requiredPercent;
 	}
 
 	/**
