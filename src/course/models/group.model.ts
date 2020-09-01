@@ -1,14 +1,14 @@
 import { BadRequestException } from "@nestjs/common";
+import { GroupUpdateDto } from "../dto/group/group.dto";
 import { Group as GroupEntity } from "../entities/group.entity";
 import { GroupClosedException, GroupFullException, InvalidPasswordException } from "../exceptions/custom-exceptions";
-import { ParticipantDto } from "../dto/course-participant/participant.dto";
-import { GroupUpdateDto } from "../dto/group/group.dto";
+import { Participant } from "./participant.model";
 
 export class Group {
 
 	readonly id: string;
 	readonly name: string;
-	readonly members: ParticipantDto[];
+	members: Participant[];
 	readonly password?: string;
 	readonly isClosed: boolean;
 
@@ -17,7 +17,19 @@ export class Group {
 		this.name = group.name;
 		this.isClosed = group.isClosed;
 		this.password = group.password;
-		this.members = group.userGroupRelations.map(rel => rel.participant.toDto());
+		this.members = group.userGroupRelations.map(rel => new Participant(rel.participant));
+	}
+
+	/** Returns the amount of group members. */
+	get size(): number {
+		return this.members.length; 
+	}
+
+	/**
+	 * Returns `true`, if the group is not closed and has no password.
+	 */
+	isOpen(): boolean {
+		return !(this.isClosed || this.password);
 	}
 
 	/**
@@ -45,6 +57,22 @@ export class Group {
 	 */
 	wantsToChangeName(update: GroupUpdateDto): boolean {
 		return update.name && (update.name !== this.name);
+	}
+
+
+	/**
+	 * Returns `true`, if the group size is below the specified min size.
+	 */
+	isTooSmall(sizeMin: number): boolean {
+		return this.members.length < sizeMin;
+	}
+
+	/**
+	 * Returns `true`, if the group is not closed, has no password and its size is below
+	 * the specified max size.
+	 */
+	isJoinable(sizeMax: number): boolean {
+		return this.isOpen() && this.members.length < sizeMax;
 	}
 
 	/**
