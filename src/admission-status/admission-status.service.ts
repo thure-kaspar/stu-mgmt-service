@@ -30,14 +30,29 @@ export class AdmissionStatusService {
 			this.admissionCriteria.getByCourseId(courseId)
 		]);
 			
+		return this._getAdmissionStatusOfParticipants(courseId, assignments, admissionCriteria, students);
+	}
+
+	async getAdmissionStatusOfParticipant(courseId: CourseId, userId: UserId): Promise<AdmissionStatusDto> {
+		const [student, assignments, admissionCriteria] = await Promise.all([
+			this.participants.getStudentWithAssessments(courseId, userId),
+			this.assignmentService.getAssignments(courseId),
+			this.admissionCriteria.getByCourseId(courseId)
+		]);
+
+		const results = this._getAdmissionStatusOfParticipants(courseId, assignments, admissionCriteria, [student]);
+		return results[0];
+	}
+
+	private _getAdmissionStatusOfParticipants(courseId: string, assignments: AssignmentDto[], admissionCriteria: AdmissionCriteria, students: Participant[]) {
 		const evaluated = assignments.filter(a => a.state === AssignmentState.EVALUATED);
 		const rules = admissionCriteria.admissionCriteria?.rules;
 
 		if (this.courseHasNoAdmissionCriteria(rules)) {
-			throw new BadRequestException(`Course (${courseId}) does not have admission criterias.`);
+			throw new BadRequestException(`Course (${courseId}) does not have admission criteria.`);
 		}
 
-		const criteria = rules.map(rule => AdmissionRuleFactory.create(rule, evaluated));	
+		const criteria = rules.map(rule => AdmissionRuleFactory.create(rule, evaluated)); 
 		return this.computeAdmissionStatusOfEachStudent(students, criteria);
 	}
 			

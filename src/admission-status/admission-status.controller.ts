@@ -33,6 +33,21 @@ export class AdmissionStatusController {
 	}
 
 	@ApiOperation({
+		operationId: "getAdmissionStatusOfParticipant",
+		summary: "Get admission status.",
+		description: "Returns the admission status of all participants."
+	})
+	@Get(":userId")
+	@UseGuards(TeachingStaffGuard)
+	getAdmissionStatusOfParticipant(
+		@Param("courseId") courseId: CourseId,
+		@Param("userId") userId: UserId
+	): Promise<AdmissionStatusDto> {
+
+		return this.admissionStatus.getAdmissionStatusOfParticipant(courseId, userId);
+	}
+
+	@ApiOperation({
 		operationId: "getPointsOverview",
 		summary: "Get points overview.",
 		description: "Returns an overview of the achieved points of all students mapped the assignments."
