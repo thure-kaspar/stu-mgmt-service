@@ -47,7 +47,7 @@ export const USER_FROM_AUTH_SYSTEM: UserDto = {
 	id: "abc6e1c0-6db0-4c35-8d97-07cc7173c34c",
 	email: "user@sparky-system.test",
 	displayName: "user",
-	username: "authUser",
+	username: "user",
 	role: UserRole.SYSTEM_ADMIN
 };
 
