@@ -83,6 +83,7 @@ export class AssignmentRegistrationController {
 		description: "Retrieves all registered groups and their members for the specified assignment."
 	})
 	@Get("groups")
+	@UseGuards(TeachingStaffGuard)
 	getRegisteredGroups(
 		@Req() request: Request,
 		@Param("courseId") courseId: CourseId,
