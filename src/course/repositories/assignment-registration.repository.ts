@@ -1,5 +1,6 @@
 import { EntityRepository, getRepository, Repository } from "typeorm";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
+import { DbException, EntityAlreadyExistsError } from "../../shared/database-exceptions";
 import { DtoFactory } from "../../shared/dto-factory";
 import { UserId } from "../../shared/entities/user.entity";
 import { AssignmentGroupTuple } from "../../user/dto/assignment-group-tuple.dto";
@@ -9,9 +10,9 @@ import { AssignmentRegistration } from "../entities/assignment-group-registratio
 import { AssignmentId } from "../entities/assignment.entity";
 import { CourseId } from "../entities/course.entity";
 import { GroupRegistrationRelation } from "../entities/group-registration-relation.entity";
-import { Group, GroupId } from "../entities/group.entity";
+import { GroupId } from "../entities/group.entity";
 import { Participant } from "../entities/participant.entity";
-import { DbException, EntityAlreadyExistsError } from "../../shared/database-exceptions";
+import { Group } from "../models/group.model";
 
 @EntityRepository(AssignmentRegistration)
 export class AssignmentRegistrationRepository extends Repository<AssignmentRegistration> {
@@ -95,8 +96,8 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 				groupId: group.id,
 			});
 			
-			registration.groupRelations = group.userGroupRelations.map(member => 
-				this.createGroupRegistrationRelationEntity(assignmentId, member.participantId));
+			registration.groupRelations = group.members.map(member => 
+				this.createGroupRegistrationRelationEntity(assignmentId, member.id));
 
 			return registration;
 		});
