@@ -38,7 +38,7 @@ export class AdmissionStatusController {
 		description: "Returns the admission status of all participants."
 	})
 	@Get(":userId")
-	@UseGuards(TeachingStaffGuard)
+	@UseGuards(ParticipantIdentityGuard)
 	getAdmissionStatusOfParticipant(
 		@Param("courseId") courseId: CourseId,
 		@Param("userId") userId: UserId
