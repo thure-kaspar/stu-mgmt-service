@@ -18,14 +18,14 @@ export class AssignmentService {
 				private registrations: AssignmentRegistrationService,
 				private events: EventBus) { }
 
-	async createAssignment(courseId: CourseId, assignmentDto: AssignmentDto): Promise<AssignmentDto> {
-		const createdAssignment = await this.assignmentRepository.createAssignment(courseId, assignmentDto);
+	async createAssignment(course: Course, assignmentDto: AssignmentDto): Promise<AssignmentDto> {
+		const createdAssignment = await this.assignmentRepository.createAssignment(course.id, assignmentDto);
 
 		const assignment = new Assignment(createdAssignment);
-		this.events.publish(new AssignmentCreated(courseId, assignment.id));
+		this.events.publish(new AssignmentCreated(course.id, assignment.id));
 
 		if (assignment.wasStarted() && assignment.allowsGroups()) {
-			await this.registrations.registerGroupsForAssignment(courseId, assignment.id);
+			await this.registrations.registerGroupsForAssignment(course, assignment.id);
 		}
 
 		return DtoFactory.createAssignmentDto(createdAssignment);
@@ -55,7 +55,7 @@ export class AssignmentService {
 		if (assignment.wasStarted(oldState) && assignment.allowsGroups()) {
 			const isFirstStart = !await this.registrations.hasRegistrations(assignment.id);
 			if (isFirstStart) {
-				await this.registrations.registerGroupsForAssignment(course.id, assignment.id);
+				await this.registrations.registerGroupsForAssignment(course, assignment.id);
 			}
 		}
 

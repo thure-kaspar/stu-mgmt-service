@@ -34,10 +34,11 @@ export class AssignmentRegistrationController {
 	@UseGuards(TeachingStaffGuard)
 	_registerAllGroups(
 		@Param("courseId") courseId: CourseId,
-		@Param("assignmentId") assignmentId: AssignmentId, 
+		@Param("assignmentId") assignmentId: AssignmentId,
+		@GetCourse() course: Course,
 	): Promise<void> {
 
-		return this.registrations.registerGroupsForAssignment(courseId, assignmentId);
+		return this.registrations.registerGroupsForAssignment(course, assignmentId);
 	}
 
 	@ApiOperation({

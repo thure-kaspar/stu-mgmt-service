@@ -29,10 +29,11 @@ export class AssignmentController {
 	@UseGuards(TeachingStaffGuard)
 	createAssignment(
 		@Param("courseId") courseId: CourseId,
-		@Body() assignmentDto: AssignmentDto
+		@Body() assignmentDto: AssignmentDto,
+		@GetCourse() course: Course
 	): Promise<AssignmentDto> {
 
-		return this.assignmentService.createAssignment(courseId, assignmentDto);
+		return this.assignmentService.createAssignment(course, assignmentDto);
 	}
 
 	@Get()
