@@ -7,6 +7,7 @@ import { User } from "../../../shared/entities/user.entity";
 import { UserRepository } from "../../../user/repositories/user.repository";
 import { Assessment } from "../../entities/assessment.entity";
 import { CourseId } from "../../entities/course.entity";
+import { Brackets } from "typeorm";
 
 /**
  * Queries users of a course with their assigned evaluator for a particular assignment.
@@ -57,7 +58,12 @@ export class UsersWithAssignedEvaluatorHandler implements IQueryHandler<UsersWit
 		}
 		
 		if (nameOfGroupOrUser) {
-			userQuery.andWhere("user.displayName ILIKE :name", { name: `%${nameOfGroupOrUser}%` });
+			if (name) {
+				userQuery.andWhere(new Brackets(qb => {
+					qb.where("user.username ILIKE :name", { name: `%${name}%` });
+					qb.orWhere("user.displayName ILIKE :name", { name: `%${name}%` });
+				}));
+			}
 		}
 
 		const [users, count] = await userQuery.getManyAndCount();
