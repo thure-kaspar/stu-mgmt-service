@@ -8,7 +8,7 @@ export enum RoundingType {
 }
 
 export class RoundingBehavior {
-	@ApiProperty()
+	@ApiProperty({ type: RoundingType, enum: RoundingType })
 	type: RoundingType;
 	@ApiPropertyOptional()
 	decimals?: number;
