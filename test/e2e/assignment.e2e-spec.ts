@@ -61,6 +61,8 @@ describe("POST-REQUESTS of AssignmentController (e2e)", () => {
 		// Setup mocks
 		dbMockService = new DbMockService(getConnection());
 		await dbMockService.createCourses();
+		await dbMockService.createCourseConfig();
+		await dbMockService.createGroupSettings();
 		await dbMockService.createUsers();
 		await dbMockService.createParticipants();
 	});
