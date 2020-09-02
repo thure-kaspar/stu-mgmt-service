@@ -19,6 +19,32 @@ export class AdmissionStatusController {
 	constructor(private admissionStatus: AdmissionStatusService) { }
 
 	@ApiOperation({
+		operationId: "getPointsOverview",
+		summary: "Get points overview.",
+		description: "Returns an overview of the achieved points of all students mapped the assignments."
+	})
+	@Get("overview")
+	@UseGuards(TeachingStaffGuard)
+	getPointsOverview(@Param("courseId") courseId: CourseId): Promise<PointsOverviewDto> {
+		return this.admissionStatus.getPointsOverview(courseId);
+	}
+
+	@ApiOperation({
+		operationId: "getPointsOverviewOfStudent",
+		summary: "Get points overview of student.",
+		description: "Returns an overview of the achieved points of a student mapped the assignments."
+	})
+	@Get("overview/:userId")
+	@UseGuards(ParticipantIdentityGuard)
+	getPointsOverviewOfStudent(
+		@Param("courseId") courseId: CourseId,
+		@Param("userId") userId: UserId
+	): Promise<PointsOverviewDto> {
+
+		return this.admissionStatus.getPointsOverviewOfStudent(courseId, userId);
+	}
+
+	@ApiOperation({
 		operationId: "getAdmissionStatusOfParticipants",
 		summary: "Get admission status.",
 		description: "Returns the admission status of all participants."
@@ -45,32 +71,6 @@ export class AdmissionStatusController {
 	): Promise<AdmissionStatusDto> {
 
 		return this.admissionStatus.getAdmissionStatusOfParticipant(courseId, userId);
-	}
-
-	@ApiOperation({
-		operationId: "getPointsOverview",
-		summary: "Get points overview.",
-		description: "Returns an overview of the achieved points of all students mapped the assignments."
-	})
-	@Get("overview")
-	@UseGuards(TeachingStaffGuard)
-	getPointsOverview(@Param("courseId") courseId: CourseId): Promise<PointsOverviewDto> {
-		return this.admissionStatus.getPointsOverview(courseId);
-	}
-
-	@ApiOperation({
-		operationId: "getPointsOverviewOfStudent",
-		summary: "Get points overview of student.",
-		description: "Returns an overview of the achieved points of a student mapped the assignments."
-	})
-	@Get("overview/:userId")
-	@UseGuards(ParticipantIdentityGuard)
-	getPointsOverviewOfStudent(
-		@Param("courseId") courseId: CourseId,
-		@Param("userId") userId: UserId
-	): Promise<PointsOverviewDto> {
-
-		return this.admissionStatus.getPointsOverviewOfStudent(courseId, userId);
 	}
 
 }
