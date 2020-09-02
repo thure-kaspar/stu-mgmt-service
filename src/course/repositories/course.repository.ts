@@ -43,20 +43,22 @@ export class CourseRepository extends Repository<Course> {
 		return this.save(course);
 	}
 
-	async getCourses(filter?: CourseFilter): Promise<Course[]> {
+	async getCourses(filter?: CourseFilter): Promise<[Course[], number]> {
 		// Check if filter-object was supplied with properties
 		if (filter && Object.keys(filter).length > 0) {
 			const query = this.createQueryBuilder("course");
+			query.skip(filter?.skip);
+			query.take(filter?.take);
 			if (!filter.title) filter.title = ""; // Need something for 1st where (?)
 			query.where("course.title ilike :title", { title: "%" + filter.title + "%" });
 			if (filter.shortname) query.andWhere("course.shortname = :shortname", { shortname: filter.shortname });
 			if (filter.semester) query.andWhere("course.semester = :semester", { semester: filter.semester });
 
-			return query.getMany();
+			return query.getManyAndCount();
 		}
 		
 		// If no filter was supplied, return everything
-		return this.find();
+		return this.findAndCount();
 	}
 	
 	/**

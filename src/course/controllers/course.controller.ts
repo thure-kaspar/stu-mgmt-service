@@ -1,17 +1,18 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards } from "@nestjs/common";
 import { QueryBus } from "@nestjs/cqrs";
 import { AuthGuard } from "@nestjs/passport";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { Request } from "express";
+import { Roles } from "../../auth/decorators/roles.decorator";
+import { UserRole } from "../../shared/enums";
+import { PaginatedResult, throwIfRequestFailed } from "../../utils/http-utils";
 import { CourseCreateDto } from "../dto/course/course-create.dto";
 import { CourseFilter } from "../dto/course/course-filter.dto";
 import { CourseDto } from "../dto/course/course.dto";
-import { CourseMemberGuard } from "../guards/course-member.guard";
-import { CourseService } from "../services/course.service";
 import { CourseId } from "../entities/course.entity";
-import { throwIfRequestFailed } from "../../utils/http-utils";
-import { Roles } from "../../auth/decorators/roles.decorator";
-import { UserRole } from "../../shared/enums";
+import { CourseMemberGuard } from "../guards/course-member.guard";
 import { TeachingStaffGuard } from "../guards/teaching-staff.guard";
+import { CourseService } from "../services/course.service";
 
 @ApiBearerAuth()
 @ApiTags("courses") 
@@ -45,8 +46,11 @@ export class CourseController {
 		description: "Returns all courses that match the given filter."
 	})
 	@Get()
-	getCourses(@Query() filter?: CourseFilter): Promise<CourseDto[]> {
-		return this.courseService.getCourses(filter);
+	getCourses(
+		@Req() request: Request,
+		@Query() filter?: CourseFilter
+	): Promise<CourseDto[]> {
+		return PaginatedResult(this.courseService.getCourses(filter), request);
 	}
 
 	/**

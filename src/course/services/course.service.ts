@@ -25,9 +25,9 @@ export class CourseService {
 		return DtoFactory.createCourseDto(course);
 	}
 
-	async getCourses(filter?: CourseFilter): Promise<CourseDto[]> {
-		const courses = await this.courseRepository.getCourses(filter);
-		return courses.map(course => DtoFactory.createCourseDto(course));
+	async getCourses(filter?: CourseFilter): Promise<[CourseDto[], number]> {
+		const [courses, count] = await this.courseRepository.getCourses(filter);
+		return [courses.map(course => DtoFactory.createCourseDto(course)), count];
 	}
 
 	async getCourseById(id: string): Promise<CourseDto> {
