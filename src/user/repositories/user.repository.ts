@@ -2,6 +2,7 @@ import { Repository, EntityRepository } from "typeorm";
 import { User, UserId } from "../../shared/entities/user.entity";
 import { UserDto } from "../../shared/dto/user.dto";
 import { Course, CourseId } from "src/course/entities/course.entity";
+import { UserFilter } from "../dto/user.filter";
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -11,8 +12,26 @@ export class UserRepository extends Repository<User> {
 		return this.save(user);
 	}
 
-	async getAllUsers(): Promise<User[]> {
-		return this.find();
+	async getUsers(filter?: UserFilter): Promise<[User[], number]> {
+		const { username, displayName, roles, skip, take } = filter || { };
+
+		const query = this.createQueryBuilder("user")
+			.skip(skip)
+			.take(take);
+		
+		if (username) {
+			query.andWhere("user.username ILIKE :username", { username: `%${username}%`});
+		}
+
+		if (displayName) {
+			query.andWhere("user.displayName ILIKE :displayName", { displayName: `%${displayName}%`});
+		}
+
+		if (roles?.length > 0) {
+			query.andWhere("user.role IN (:...roles)", { roles });
+		}
+
+		return query.getManyAndCount();
 	}
 
 	async getUserById(id: string): Promise<User> {

@@ -1,21 +1,23 @@
-import { Controller, Post, Body, Get, Param, Delete, Patch, UseGuards } from "@nestjs/common";
-import { UserService } from "../services/user.service";
-import { UserDto } from "../../shared/dto/user.dto";
-import { ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
-import { CourseDto } from "src/course/dto/course/course.dto";
-import { AssessmentDto } from "../../course/dto/assessment/assessment.dto";
-import { GroupDto } from "../../course/dto/group/group.dto";
-import { GroupEventDto } from "../../course/dto/group/group-event.dto";
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
-import { AssignmentGroupTuple } from "../dto/assignment-group-tuple.dto";
-import { CourseId } from "../../course/entities/course.entity";
-import { throwIfRequestFailed } from "../../utils/http-utils";
-import { UserId } from "../../shared/entities/user.entity";
+import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { Request } from "express";
+import { CourseDto } from "src/course/dto/course/course.dto";
 import { Roles } from "../../auth/decorators/roles.decorator";
-import { UserRole } from "../../shared/enums";
-import { IdentityGuard } from "../guards/identity.guard";
-import { ParticipantIdentityGuard } from "../../course/guards/identity.guard";
+import { AssessmentDto } from "../../course/dto/assessment/assessment.dto";
+import { GroupEventDto } from "../../course/dto/group/group-event.dto";
+import { GroupDto } from "../../course/dto/group/group.dto";
+import { CourseId } from "../../course/entities/course.entity";
 import { CourseMemberGuard } from "../../course/guards/course-member.guard";
+import { ParticipantIdentityGuard } from "../../course/guards/identity.guard";
+import { UserDto } from "../../shared/dto/user.dto";
+import { UserId } from "../../shared/entities/user.entity";
+import { UserRole } from "../../shared/enums";
+import { PaginatedResult, throwIfRequestFailed } from "../../utils/http-utils";
+import { AssignmentGroupTuple } from "../dto/assignment-group-tuple.dto";
+import { UserFilter } from "../dto/user.filter";
+import { IdentityGuard } from "../guards/identity.guard";
+import { UserService } from "../services/user.service";
 
 @ApiBearerAuth()
 @ApiTags("users")
@@ -37,14 +39,17 @@ export class UserController {
 	}
 
 	@ApiOperation({
-		operationId: "getAllUsers",
+		operationId: "getUsers",
 		summary: "Get users.",
 		description: "Retrieves all users that match the specified filter."
 	})
 	@Get()
 	@Roles(UserRole.SYSTEM_ADMIN, UserRole.MGMT_ADMIN)
-	getUsers(): Promise<UserDto[]> {
-		return this.userService.getAllUsers();
+	getUsers(
+		@Req() request: Request,
+		@Query() filter?: UserFilter
+	): Promise<UserDto[]> {
+		return PaginatedResult(this.userService.getUsers(new UserFilter(filter)), request);
 	}
 
 	@ApiOperation({

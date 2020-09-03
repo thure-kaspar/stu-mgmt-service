@@ -21,6 +21,7 @@ import { User, UserId } from "../../shared/entities/user.entity";
 import { AssignmentState } from "../../shared/enums";
 import { AssignmentGroupTuple } from "../dto/assignment-group-tuple.dto";
 import { UserRepository } from "../repositories/user.repository";
+import { UserFilter } from "../dto/user.filter";
 
 @Injectable()
 export class UserService {
@@ -38,9 +39,9 @@ export class UserService {
 		return createdUserDto;
 	}
 
-	async getAllUsers(): Promise<UserDto[]> {
-		const users = await this.userRepository.getAllUsers();
-		return users.map(user => DtoFactory.createUserDto(user));
+	async getUsers(filter?: UserFilter): Promise<[UserDto[], number]> {
+		const [users, count] = await this.userRepository.getUsers(filter);
+		return [users.map(user => DtoFactory.createUserDto(user)), count];
 	}
 
 	async getUserById(id: string): Promise<UserDto> {

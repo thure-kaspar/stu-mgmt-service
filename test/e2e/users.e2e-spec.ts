@@ -37,12 +37,90 @@ describe("GET-REQUESTS of UserController (e2e)", () => {
 		await getConnection().close(); // Close Db-Connection after all tests have been executed
 	});
 
-	it("(GET) /users Retrieves all users", () => {
-		return request(app.getHttpServer())
-			.get("/users")
-			.expect(({ body }) => {
-				expect(body.length).toEqual(users.length);
-			});
+	describe("(GET) /users", () => {
+	
+		it("Retrieves all users", () => {
+			return request(app.getHttpServer())
+				.get("/users")
+				.expect(({ body }) => {
+					expect(body.length).toEqual(users.length);
+				});
+		});
+
+		it("Filters by username", () => {
+			const username = "m";
+			const expected = UsersMock.filter(u => u.username.includes(username)).length;
+
+			const queryString = `username=${username}`;
+
+			console.assert(expected > 0, "Expecting >0 users to match the given username.");
+
+			return request(app.getHttpServer())
+				.get(`/users?${queryString}`)
+				.expect(({ body }) => {
+					expect(body.length).toEqual(expected);
+				});
+		});
+
+		it("Filters by displayName", () => {
+			const displayName = "m";
+			const expected = UsersMock.filter(u => u.displayName.includes(displayName)).length;
+
+			const queryString = `displayName=${displayName}`;
+
+			console.assert(expected > 0, "Expecting >0 users to match the given displayName.");
+
+			return request(app.getHttpServer())
+				.get(`/users?${queryString}`)
+				.expect(({ body }) => {
+					expect(body.length).toEqual(expected);
+				});
+		});
+
+		it("Filters by role (Single)", () => {
+			const role = UserRole.MGMT_ADMIN;
+			const expected = UsersMock.filter(u => u.role === role).length;
+
+			const queryString = `roles=${role}`;
+
+			console.assert(expected > 0, "Expecting >0 users to match the given role.");
+
+			return request(app.getHttpServer())
+				.get(`/users?${queryString}`)
+				.expect(({ body }) => {
+					expect(body.length).toEqual(expected);
+				});
+		});
+
+		it("Filters by roles (Multiple)", () => {
+			const role1 = UserRole.MGMT_ADMIN;
+			const role2 = UserRole.USER;
+			const expected = UsersMock.filter(u => u.role === role1 || u.role === role2).length;
+
+			const queryString = `roles=${role1}&roles=${role2}`;
+
+			console.assert(expected > 0, "Expecting >0 users to match the given roles.");
+
+			return request(app.getHttpServer())
+				.get(`/users?${queryString}`)
+				.expect(({ body }) => {
+					expect(body.length).toEqual(expected);
+				});
+		});
+
+		it("Uses pagination", () => {
+			const skip = 1;
+			const take = 2;
+
+			const queryString = `skip=${skip}&take=${take}`;
+
+			return request(app.getHttpServer())
+				.get(`/users?${queryString}`)
+				.expect(({ body }) => {
+					expect(body.length).toEqual(take);
+				});
+		});
+	
 	});
 
 	it("(GET) /users/{userId} Retrieves the user by id", () => {
