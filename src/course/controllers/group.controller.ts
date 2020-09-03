@@ -94,13 +94,20 @@ export class GroupController {
 		description: "Retrieves all groups that belong to the course."
 	})
 	@Get()
-	getGroupsOfCourse(
+	async getGroupsOfCourse(
 		@Req() request: Request,
 		@Param("courseId") courseId: CourseId,
+		@GetParticipant() participant: Participant,
 		@Query() filter?: GroupFilter
 	): Promise<GroupDto[]> {
 		
-		return PaginatedResult(this.groupService.getGroupsOfCourse(courseId, filter), request);
+		const groups = await PaginatedResult(this.groupService.getGroupsOfCourse(courseId, filter), request);
+
+		if (participant.isStudent()) {
+			groups.forEach(group => group.members?.forEach(member => member.email = undefined));
+		}
+
+		return groups;
 	}
 
 	@ApiOperation({
