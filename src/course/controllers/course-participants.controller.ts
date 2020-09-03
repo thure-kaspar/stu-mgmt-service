@@ -1,15 +1,19 @@
-import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, ValidationPipe, UseGuards } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards, ValidationPipe } from "@nestjs/common";
 import { QueryBus } from "@nestjs/cqrs";
+import { AuthGuard } from "@nestjs/passport";
 import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
-import { sanitizeEnum, setTotalCountHeader } from "../../../test/utils/http-utils";
+import { setTotalCountHeader } from "../../../test/utils/http-utils";
 import { PasswordDto } from "../../shared/dto/password.dto";
-import { CourseRole } from "../../shared/enums";
-import { throwIfRequestFailed, transformArray } from "../../utils/http-utils";
+import { UserId } from "../../shared/entities/user.entity";
+import { PaginatedResult, throwIfRequestFailed, transformArray } from "../../utils/http-utils";
 import { ChangeCourseRoleDto } from "../dto/change-course-role.dto";
 import { CourseParticipantsFilter } from "../dto/course-participant/course-participants.filter";
 import { ParticipantDto } from "../dto/course-participant/participant.dto";
 import { CourseId } from "../entities/course.entity";
+import { CourseMemberGuard } from "../guards/course-member.guard";
+import { ParticipantIdentityGuard } from "../guards/identity.guard";
+import { TeachingStaffGuard } from "../guards/teaching-staff.guard";
 import { CanJoinCourseDto } from "../queries/can-join-course/can-join-course.dto";
 import { CanJoinCourseQuery } from "../queries/can-join-course/can-join-course.query";
 import { CompareParticipantsListQuery } from "../queries/compare-participants-list/compare-participants-list.query";
@@ -18,11 +22,6 @@ import { AssignedEvaluatorFilter } from "../queries/groups-with-assigned-evaluat
 import { UserWithAssignedEvaluatorDto } from "../queries/users-with-assigned-evaluator/user-with-assigned-evaluator.dto";
 import { UsersWithAssignedEvaluatorQuery } from "../queries/users-with-assigned-evaluator/users-with-assigned-evaluator.query";
 import { CourseParticipantsService } from "../services/course-participants.service";
-import { UserId } from "../../shared/entities/user.entity";
-import { AuthGuard } from "@nestjs/passport";
-import { TeachingStaffGuard } from "../guards/teaching-staff.guard";
-import { CourseMemberGuard } from "../guards/course-member.guard";
-import { ParticipantIdentityGuard } from "../guards/identity.guard";
 
 @ApiBearerAuth()
 @ApiTags("course-participants")
@@ -65,11 +64,8 @@ export class CourseParticipantsController {
 		@Param("courseId") courseId: CourseId,
 		@Query() filter?: CourseParticipantsFilter
 	): Promise<ParticipantDto[]> {
-		filter.courseRole = sanitizeEnum(CourseRole, filter.courseRole);
 		
-		const [users, count] = await this.courseParticipantsService.getParticipants(courseId, filter);
-		setTotalCountHeader(request, count);
-		return users;
+		return PaginatedResult(this.courseParticipantsService.getParticipants(courseId, new CourseParticipantsFilter(filter)), request);
 	}
 
 	@ApiOperation({
