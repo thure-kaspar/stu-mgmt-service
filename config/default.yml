@@ -6,6 +6,9 @@ db:
   port: 5432
   database: "StudentMgmtDb"
 
+notifications:
+  java: null
+
 smtp:
   server: "smtp_server"
   useSecureConnection: true

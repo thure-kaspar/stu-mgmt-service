@@ -1,13 +1,16 @@
 import { HttpService, Injectable, Logger } from "@nestjs/common";
 import { NotificationDto } from "../../shared/dto/notification.dto";
+import * as config from "config";
 
 @Injectable()
 export class NotificationService { 
 
 	private readonly logger = new Logger(NotificationService.name);
-	private url = process.env.JAVA_URL; // TODO
+	private url = process.env.JAVA_URL ?? config.get("notifications.java");
 
-	constructor(private http: HttpService) { }
+	constructor(private http: HttpService) {
+		this.logger.verbose(`Event notifications will be send to: ${this.url}`);
+	}
 
 	/**
 	 * Sends the UpdateMessage via http-post to the URL specified by the course.
