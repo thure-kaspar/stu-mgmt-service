@@ -87,25 +87,25 @@ describe("PassedXPercentWithAtLeastYPercentImpl", () => {
 		assessments = _assessments as any;
 	});
 
-	it("4/4 Assessment passed -> Passed", () => {
+	it("3/4 Assignments passed (One missing assessment) -> Passed", () => {
 		const _assessments = copy(assessments);
-		assessments.forEach(a => a.achievedPoints = a.assignment.points);
+		_assessments.forEach(a => a.achievedPoints = a.assignment.points);
 
+		const ruleImpl = new IndividualPercentWithAllowedFailuresImpl(rule, assignments);
+		const result = ruleImpl.check(_assessments);
+		expect(result._assignmentType).toEqual(assignmentType);
+		expect(result._rule).toEqual(RuleType.INDIVIDUAL_PERCENT_WITH_ALLOWED_FAILURES);
+		expect(result.passed).toEqual(true);
+		expect(result.achievedPoints).toEqual(1); // Number of failed assignments
+		expect(result.achievedPercent).toEqual(50);
+	});
+
+	it("2/4 Assignments passed -> Passed", () => {
 		const ruleImpl = new IndividualPercentWithAllowedFailuresImpl(rule, assignments);
 		const result = ruleImpl.check(assessments);
 		expect(result._assignmentType).toEqual(assignmentType);
 		expect(result._rule).toEqual(RuleType.INDIVIDUAL_PERCENT_WITH_ALLOWED_FAILURES);
 		expect(result.passed).toEqual(true);
-		expect(result.achievedPoints).toEqual(0); // Number of failed assignments
-		expect(result.achievedPercent).toEqual(0);
-	});
-
-	it("2/4 Assessment passed -> Not passed", () => {
-		const ruleImpl = new IndividualPercentWithAllowedFailuresImpl(rule, assignments);
-		const result = ruleImpl.check(assessments);
-		expect(result._assignmentType).toEqual(assignmentType);
-		expect(result._rule).toEqual(RuleType.INDIVIDUAL_PERCENT_WITH_ALLOWED_FAILURES);
-		expect(result.passed).toEqual(false);
 		expect(result.achievedPoints).toEqual(2); // Number of failed assignments
 		expect(result.achievedPercent).toEqual(100); // Student had to pass exactly 2 assignments
 	});
@@ -114,6 +114,20 @@ describe("PassedXPercentWithAtLeastYPercentImpl", () => {
 		const ruleImpl = new IndividualPercentWithAllowedFailuresImpl(rule, []);
 		const result = ruleImpl.check(assessments);
 		expect(result.passed).toEqual(true);
+	});
+
+	it("1/4 Assignments passed -> Not passed", () => {
+		const _assessments = copy(assessments);
+		_assessments.forEach(a => a.achievedPoints = 0); // Failed all
+		_assessments[0].achievedPoints = _assessments[0].assignment.points; // Except for first one
+
+		const ruleImpl = new IndividualPercentWithAllowedFailuresImpl(rule, assignments);
+		const result = ruleImpl.check(_assessments);
+		expect(result._assignmentType).toEqual(assignmentType);
+		expect(result._rule).toEqual(RuleType.INDIVIDUAL_PERCENT_WITH_ALLOWED_FAILURES);
+		expect(result.passed).toEqual(false);
+		expect(result.achievedPoints).toEqual(3); // Number of failed assignments
+		expect(result.achievedPercent).toEqual(3 / rule.allowedFailures * 100); // (3/2) * 100
 	});
 
 	it("0 Assessment given -> Not passed", () => {
