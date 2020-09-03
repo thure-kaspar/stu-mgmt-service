@@ -122,6 +122,7 @@ export class AssessmentRepository extends Repository<Assessment> {
 			.leftJoinAndSelect("assessment.group", "group") // Include group, if it exists
 			.innerJoin("assessment.assessmentUserRelations", "userRelation", "userRelation.userId = :userId", { userId }) // User condition
 			.innerJoinAndSelect("assessment.assignment", "assignment", "assignment.courseId = :courseId", { courseId }) // Course condition
+			.orderBy("assessment.creationDate", "DESC")
 			.getMany();
 	}
 
