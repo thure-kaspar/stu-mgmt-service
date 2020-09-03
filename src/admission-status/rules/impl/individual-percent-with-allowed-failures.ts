@@ -36,7 +36,7 @@ export class IndividualPercentWithAllowedFailuresImpl extends IndividualPercentW
 		const result: RuleCheckResult = {
 			achievedPoints: failedAssignments,
 			achievedPercent: Percent(failedAssignments, this.allowedFailures),
-			passed: failedAssignments < this.allowedFailures,
+			passed: failedAssignments <= this.allowedFailures,
 			_rule: this.type,
 			_assignmentType: this.assignmentType
 		};
@@ -63,7 +63,7 @@ export class IndividualPercentWithAllowedFailuresImpl extends IndividualPercentW
 	 * @param assignmentId Assignment that should be checked
 	 */
 	private studentFailedAssignment(achievedPoints: Map<AssignmentId, number>, assignmentId: AssignmentId): boolean {
-		const achievedPercent = Percent(achievedPoints.get(assignmentId), this.requiredPointsToPass.get(assignmentId));
+		const achievedPercent = Percent(achievedPoints.get(assignmentId) ?? 0, this.requiredPointsToPass.get(assignmentId));
 		const achievedPercentRounded = this.roundAchievedPercent(achievedPercent);
 		return achievedPercentRounded < this.requiredPercent;
 	}
