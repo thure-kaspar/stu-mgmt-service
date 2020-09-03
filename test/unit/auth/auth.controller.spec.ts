@@ -53,10 +53,15 @@ describe("Auth Controller", () => {
 		it("Valid credentials -> Returns AuthToken", async () => {
 			const expected: AuthTokenDto = {
 				accessToken: "xxx.yyy.zzz",
-				email: authCredentials.email,
-				userId: "user_id_1",
-				username: "max_mustermann",
-				role: UserRole.USER,
+				expiration: new Date(),
+				_expirationInLocale: "TODO",
+				user: {
+					email: authCredentials.email,
+					displayName: "user_id_1",
+					id: "user_id_1",
+					username: "max_mustermann",
+					role: UserRole.USER,
+				}
 			};
 			authService.login = jest.fn().mockResolvedValue(expected);
 			const result = await controller.login(authCredentials);
