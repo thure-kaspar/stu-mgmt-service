@@ -1,4 +1,4 @@
-import { OverallPercentRuleDto, PassedXPercentWithAtLeastYPercentRuleDto } from "../../../src/admission-status/dto/admission-rule.dto";
+import { OverallPercentRuleDto, IndividualPercentWithAllowedFailuresRuleDto } from "../../../src/admission-status/dto/admission-rule.dto";
 import { RuleType } from "../../../src/admission-status/rules/abstract-rules";
 import { AdmissionCriteriaDto } from "../../../src/course/dto/course-config/admission-criteria.dto";
 import { AssignmentType } from "../../../src/shared/enums";
@@ -23,24 +23,20 @@ const ADMISSION_RULE_TESTAT_OVERALL_50_PERCENT_ROUNDING_NEXT_INTEGER: OverallPer
 	},
 };
 
-const ADMISSION_RULE_HOMEWORK_PASSED_X_PERCENT_WITH_AT_LEAST_Y_PERCENT: PassedXPercentWithAtLeastYPercentRuleDto = {
-	type: RuleType.PASSED_X_PERCENT_WITH_AT_LEAST_Y_PERCENT,
+const ADMISSION_RULE_INDIVIDUAL_PERCENT_WITH_ALLOWED_FAILURES: IndividualPercentWithAllowedFailuresRuleDto = {
+	type: RuleType.INDIVIDUAL_PERCENT_WITH_ALLOWED_FAILURES,
 	assignmentType: AssignmentType.HOMEWORK,
 	requiredPercent: 50,
 	achievedPercentRounding: {
 		type: RoundingType.NONE,
 	},
-	passedAssignmentsPercent: 70,
-	passedAssignmentsRounding: {
-		type: RoundingType.DOWN_NEAREST_INTEGER,
-	}
-
+	allowedFailures: 2
 };
 
 export const ADMISSION_CRITERIA_MOCK: AdmissionCriteriaDto = {
 	rules: [
 		ADMISSION_RULE_HOMEWORK_OVERALL_50_PERCENT_ROUNDING_NEXT_INTEGER,
 		ADMISSION_RULE_TESTAT_OVERALL_50_PERCENT_ROUNDING_NEXT_INTEGER,
-		ADMISSION_RULE_HOMEWORK_PASSED_X_PERCENT_WITH_AT_LEAST_Y_PERCENT
+		ADMISSION_RULE_INDIVIDUAL_PERCENT_WITH_ALLOWED_FAILURES
 	]
 };

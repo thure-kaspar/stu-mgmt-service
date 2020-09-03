@@ -1,30 +1,29 @@
-import { PassedXPercentWithAtLeastYPercent, RuleType } from "../../../src/admission-status/rules/abstract-rules";
+
 import { AssessmentDto } from "../../../src/course/dto/assessment/assessment.dto";
 import { AssignmentDto } from "../../../src/course/dto/assignment/assignment.dto";
 import { AssignmentState, AssignmentType } from "../../../src/shared/enums";
 import { RoundingType } from "../../../src/utils/math";
-import { PassedXPercentWithAtLeastYPercentImpl } from "../../../src/admission-status/rules/impl/passed-x-with-at-least-y";
+import { IndividualPercentWithAllowedFailures, RuleType } from "../../../src/admission-status/rules/abstract-rules";
+import { IndividualPercentWithAllowedFailuresImpl } from "../../../src/admission-status/rules/impl/individual-percent-with-allowed-failures";
+import { copy } from "../../utils/object-helper";
 
 describe("PassedXPercentWithAtLeastYPercentImpl", () => {
 
 	let assessments: AssessmentDto[];
 	let assignments: AssignmentDto[];
-	let rule: Partial<PassedXPercentWithAtLeastYPercent>;
+	let rule: Partial<IndividualPercentWithAllowedFailures>;
 
 	const assignmentType = AssignmentType.HOMEWORK;
 
 	beforeEach(() => {
 		rule = {
-			type: RuleType.PASSED_X_PERCENT_WITH_AT_LEAST_Y_PERCENT,
+			type: RuleType.INDIVIDUAL_PERCENT_WITH_ALLOWED_FAILURES,
 			assignmentType: assignmentType,
 			requiredPercent: 50,
 			achievedPercentRounding: {
 				type: RoundingType.NONE
 			},
-			passedAssignmentsPercent: 70,
-			passedAssignmentsRounding: {
-				type: RoundingType.DOWN_NEAREST_INTEGER
-			},
+			allowedFailures: 2
 		};
 
 		const assignment_1: Partial<AssignmentDto> = {
@@ -88,24 +87,37 @@ describe("PassedXPercentWithAtLeastYPercentImpl", () => {
 		assessments = _assessments as any;
 	});
 
-	it("2 Assessment passed -> Passed", () => {
-		const ruleImpl = new PassedXPercentWithAtLeastYPercentImpl(rule, assignments);
+	it("4/4 Assessment passed -> Passed", () => {
+		const _assessments = copy(assessments);
+		assessments.forEach(a => a.achievedPoints = a.assignment.points);
+
+		const ruleImpl = new IndividualPercentWithAllowedFailuresImpl(rule, assignments);
 		const result = ruleImpl.check(assessments);
 		expect(result._assignmentType).toEqual(assignmentType);
-		expect(result._rule).toEqual(RuleType.PASSED_X_PERCENT_WITH_AT_LEAST_Y_PERCENT);
+		expect(result._rule).toEqual(RuleType.INDIVIDUAL_PERCENT_WITH_ALLOWED_FAILURES);
 		expect(result.passed).toEqual(true);
-		expect(result.achievedPoints).toEqual(2); // Number of passed assignments
+		expect(result.achievedPoints).toEqual(0); // Number of failed assignments
+		expect(result.achievedPercent).toEqual(0);
+	});
+
+	it("2/4 Assessment passed -> Not passed", () => {
+		const ruleImpl = new IndividualPercentWithAllowedFailuresImpl(rule, assignments);
+		const result = ruleImpl.check(assessments);
+		expect(result._assignmentType).toEqual(assignmentType);
+		expect(result._rule).toEqual(RuleType.INDIVIDUAL_PERCENT_WITH_ALLOWED_FAILURES);
+		expect(result.passed).toEqual(false);
+		expect(result.achievedPoints).toEqual(2); // Number of failed assignments
 		expect(result.achievedPercent).toEqual(100); // Student had to pass exactly 2 assignments
 	});
 
 	it("0 Assignments given -> Passed", () => {
-		const ruleImpl = new PassedXPercentWithAtLeastYPercentImpl(rule, []);
+		const ruleImpl = new IndividualPercentWithAllowedFailuresImpl(rule, []);
 		const result = ruleImpl.check(assessments);
 		expect(result.passed).toEqual(true);
 	});
 
 	it("0 Assessment given -> Not passed", () => {
-		const ruleImpl = new PassedXPercentWithAtLeastYPercentImpl(rule, assignments);
+		const ruleImpl = new IndividualPercentWithAllowedFailuresImpl(rule, assignments);
 		const result = ruleImpl.check([]);
 		expect(result.passed).toEqual(false);
 	});

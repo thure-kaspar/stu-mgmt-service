@@ -5,7 +5,7 @@ import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import * as config from "config";
 import { getConnection } from "typeorm";
 import { DbMockService } from "../test/mocks/db-mock.service";
-import { PassedXPercentWithAtLeastYPercentRuleDto, OverallPercentRuleDto } from "./admission-status/dto/admission-rule.dto";
+import { OverallPercentRuleDto, IndividualPercentWithAllowedFailuresRuleDto } from "./admission-status/dto/admission-rule.dto";
 import { AppModule } from "./app.module";
 import { StudentMgmtEvent } from "./course/events";
 import { StudentMgmtException } from "./course/exceptions/custom-exceptions";
@@ -57,7 +57,7 @@ async function bootstrap(): Promise<void> {
 			StudentMgmtException, 
 			StudentMgmtEvent, 
 			RoundingBehavior,
-			PassedXPercentWithAtLeastYPercentRuleDto,
+			IndividualPercentWithAllowedFailuresRuleDto,
 			OverallPercentRuleDto
 		] 
 	});

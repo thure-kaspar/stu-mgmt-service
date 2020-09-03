@@ -7,7 +7,7 @@ import { RuleCheckResult } from "../dto/rule-check-result.dto";
 import { AssignmentState } from "../../shared/enums";
 
 export enum RuleType {
-	PASSED_X_PERCENT_WITH_AT_LEAST_Y_PERCENT = "PASSED_X_PERCENT_WITH_AT_LEAST_Y_PERCENT",
+	INDIVIDUAL_PERCENT_WITH_ALLOWED_FAILURES = "INDIVIDUAL_PERCENT_WITH_ALLOWED_FAILURES",
 	REQUIRED_PERCENT_OVERALL = "REQUIRED_PERCENT_OVERALL",
 }
 
@@ -31,15 +31,9 @@ export abstract class AdmissionRule extends AdmissionRuleDto {
 	
 }
 
-export abstract class PassedXPercentWithAtLeastYPercent extends AdmissionRule {
-	type = RuleType.PASSED_X_PERCENT_WITH_AT_LEAST_Y_PERCENT;
-
-	@Min(0)
-	@Max(100)
-	passedAssignmentsPercent: number;
-
-	@IsDefined()
-	passedAssignmentsRounding: RoundingBehavior;
+export abstract class IndividualPercentWithAllowedFailures extends AdmissionRule {
+	type = RuleType.INDIVIDUAL_PERCENT_WITH_ALLOWED_FAILURES;
+	allowedFailures: number;
 }
 
 export abstract class OverallPercentRule extends AdmissionRule {

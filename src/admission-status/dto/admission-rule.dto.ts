@@ -1,7 +1,7 @@
-import { RuleType } from "../rules/abstract-rules";
+import { Max, Min } from "class-validator";
 import { AssignmentType } from "../../shared/enums";
-import { Min, Max, IsDefined } from "class-validator";
 import { RoundingBehavior } from "../../utils/math";
+import { RuleType } from "../rules/abstract-rules";
 
 export class AdmissionRuleDto {
 	readonly type: RuleType;
@@ -13,15 +13,11 @@ export class AdmissionRuleDto {
 	achievedPercentRounding: RoundingBehavior;
 }
 
-export class PassedXPercentWithAtLeastYPercentRuleDto extends AdmissionRuleDto {
-	readonly type = RuleType.PASSED_X_PERCENT_WITH_AT_LEAST_Y_PERCENT;
+export class IndividualPercentWithAllowedFailuresRuleDto extends AdmissionRuleDto {
+	readonly type = RuleType.INDIVIDUAL_PERCENT_WITH_ALLOWED_FAILURES;
 
-	@Min(0)
-	@Max(100)
-	passedAssignmentsPercent: number;
-
-	@IsDefined()
-	passedAssignmentsRounding: RoundingBehavior;
+	@Min(1)
+	allowedFailures: number;
 }
 
 export class OverallPercentRuleDto extends AdmissionRuleDto {
@@ -35,10 +31,9 @@ export function toString(rule: AdmissionRuleDto): string {
 
 	let result = baseString + " ### " + requiredPercent + " ### " + pointsRounding;
 
-	if (rule.type === RuleType.PASSED_X_PERCENT_WITH_AT_LEAST_Y_PERCENT) {
-		const ruleAs = (rule as PassedXPercentWithAtLeastYPercentRuleDto);
-		result += ` ### Required Assignments: ${ruleAs.passedAssignmentsPercent}%`;
-		result += ` ### Assignments rounding: ${ruleAs.passedAssignmentsRounding.type}%` + (ruleAs.passedAssignmentsRounding.decimals ? ` (${ruleAs.passedAssignmentsRounding.decimals})` : "");
+	if (rule.type === RuleType.INDIVIDUAL_PERCENT_WITH_ALLOWED_FAILURES) {
+		const ruleAs = (rule as IndividualPercentWithAllowedFailuresRuleDto);
+		result += ` ### Allowed failures: ${ruleAs.allowedFailures}%`;
 	}
 
 	return result;

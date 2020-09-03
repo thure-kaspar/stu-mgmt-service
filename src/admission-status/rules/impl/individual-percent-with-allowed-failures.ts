@@ -1,31 +1,24 @@
-import { PassedXPercentWithAtLeastYPercent } from "../abstract-rules";
-import { AssignmentDto } from "../../../course/dto/assignment/assignment.dto";
-import { RoundingMethod, ofPercent, Percent } from "../../../utils/math";
-import { AssignmentId } from "../../../course/entities/assignment.entity";
 import { AssessmentDto } from "../../../course/dto/assessment/assessment.dto";
+import { AssignmentDto } from "../../../course/dto/assignment/assignment.dto";
+import { AssignmentId } from "../../../course/entities/assignment.entity";
+import { Percent, RoundingMethod } from "../../../utils/math";
 import { RuleCheckResult } from "../../dto/rule-check-result.dto";
+import { IndividualPercentWithAllowedFailures } from "../abstract-rules";
 
-export class PassedXPercentWithAtLeastYPercentImpl extends PassedXPercentWithAtLeastYPercent {
+export class IndividualPercentWithAllowedFailuresImpl extends IndividualPercentWithAllowedFailures {
 
-	private countOfAssignmentsThatStudentMustPass: number;
-	private roundRequiredAssignments: (value: number) => number;
 	private roundAchievedPercent: (value: number) => number;
 
 	/** [AssignmentId, Rounded points required to pass] */
 	private requiredPointsToPass = new Map<AssignmentId, number>();
 
-	constructor(rule: Partial<PassedXPercentWithAtLeastYPercent>, assignments: AssignmentDto[]) {
+	constructor(rule: Partial<IndividualPercentWithAllowedFailures>, assignments: AssignmentDto[]) {
 		super();
 		Object.assign(this, rule);
 		
 		this.roundAchievedPercent = RoundingMethod(this.achievedPercentRounding.type, this.achievedPercentRounding.decimals);
-		this.roundRequiredAssignments = RoundingMethod(this.passedAssignmentsRounding.type, this.passedAssignmentsRounding.decimals);
 		
 		const relevantAssignments = this.filterAssignmentsByType(assignments);
-		const requiredAssignmentCount = ofPercent(relevantAssignments.length, this.passedAssignmentsPercent);
-		
-		this.countOfAssignmentsThatStudentMustPass = this.roundRequiredAssignments(requiredAssignmentCount);
-
 		relevantAssignments.forEach(assignment => {
 			this.requiredPointsToPass.set(assignment.id, assignment.points);
 		});
@@ -38,12 +31,12 @@ export class PassedXPercentWithAtLeastYPercentImpl extends PassedXPercentWithAtL
 	check(assessments: AssessmentDto[]): RuleCheckResult {
 		const relevantAssessments = this.filterAssessmentsByType(assessments);
 		const achievedPoints = this.mapAchievedPointsToAssignment(relevantAssessments);
-		const passedAssignments = this.countPassedAssignments(achievedPoints);
+		const failedAssignments = this.countFailedAssignments(achievedPoints);
 
 		const result: RuleCheckResult = {
-			achievedPoints: passedAssignments,
-			achievedPercent: Percent(passedAssignments, this.countOfAssignmentsThatStudentMustPass),
-			passed: passedAssignments >= this.countOfAssignmentsThatStudentMustPass,
+			achievedPoints: failedAssignments,
+			achievedPercent: Percent(failedAssignments, this.allowedFailures),
+			passed: failedAssignments < this.allowedFailures,
 			_rule: this.type,
 			_assignmentType: this.assignmentType
 		};
@@ -51,17 +44,17 @@ export class PassedXPercentWithAtLeastYPercentImpl extends PassedXPercentWithAtL
 	}
 
 	/**
-	 * Returns the count of passed assignments.
+	 * Returns the count of failed assignments.
 	 * @param achievedPoints Map of [assignmentId, achievedPoints]
 	 */
-	private countPassedAssignments(achievedPoints: Map<AssignmentId, number>) {
-		let passedAssignments = 0;
+	private countFailedAssignments(achievedPoints: Map<AssignmentId, number>) {
+		let failures = 0;
 		this.requiredPointsToPass.forEach((requiredPoints, assignmentId) => {
-			if (this.studentPassedAssignment(achievedPoints, assignmentId)) {
-				passedAssignments++;
+			if (this.studentFailedAssignment(achievedPoints, assignmentId)) {
+				failures++;
 			}
 		});
-		return passedAssignments;
+		return failures;
 	}
 
 	/**
@@ -69,18 +62,14 @@ export class PassedXPercentWithAtLeastYPercentImpl extends PassedXPercentWithAtL
 	 * @param achievedPoints Map of [assignmentId, achievedPoints]
 	 * @param assignmentId Assignment that should be checked
 	 */
-	private studentPassedAssignment(achievedPoints: Map<AssignmentId, number>, assignmentId: AssignmentId): boolean {
+	private studentFailedAssignment(achievedPoints: Map<AssignmentId, number>, assignmentId: AssignmentId): boolean {
 		const achievedPercent = Percent(achievedPoints.get(assignmentId), this.requiredPointsToPass.get(assignmentId));
 		const achievedPercentRounded = this.roundAchievedPercent(achievedPercent);
-		return achievedPercentRounded >= this.requiredPercent;
+		return achievedPercentRounded < this.requiredPercent;
 	}
 
 	/**
-	 *
-	 *
-	 * @private
-	 * @param relevantAssessments
-	 * @returns
+	 * Creates an [AssignmentId, achieved points]-Map.
 	 */
 	private mapAchievedPointsToAssignment(relevantAssessments: AssessmentDto[]): Map<string, number> {
 		const map = new Map<AssignmentId, number>();
