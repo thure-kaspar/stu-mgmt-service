@@ -1,5 +1,5 @@
 import { Injectable, Logger } from "@nestjs/common";
-import { SchedulerRegistry } from "@nestjs/schedule";
+import { SchedulerRegistry, Cron, CronExpression } from "@nestjs/schedule";
 import { InjectRepository } from "@nestjs/typeorm";
 import { LessThanOrEqual, MoreThanOrEqual } from "typeorm";
 import { AssignmentUpdateDto } from "../course/dto/assignment/assignment.dto";
@@ -21,7 +21,7 @@ export class AssignmentSchedulerService {
 		@InjectRepository(AssignmentEntity) private assignmentRepository: AssignmentRepository
 	) { }
 
-	//@Cron(CronExpression.EVERY_10_SECONDS, { name: "startAssignments" }) Disabled for now
+	@Cron("1 * * * *", { name: "startAssignments" })
 	async startAssignments(): Promise<void> {
 		this.logger.verbose("Starting job: 'startAssignments'");
 
@@ -39,13 +39,13 @@ export class AssignmentSchedulerService {
 		return this.assignmentRepository.find({ 
 			where: {
 				state: AssignmentState.INVISIBLE,
-				startDate: MoreThanOrEqual(new Date())
+				startDate: LessThanOrEqual(new Date())
 			},
 			relations: ["course"]
 		});
 	}
 
-	//@Cron(CronExpression.EVERY_10_SECONDS, { name: "stopAssignments" }) Disabled for now
+	@Cron("1 * * * *", { name: "stopAssignments" })
 	async stopAssignments(): Promise<void> {
 		this.logger.verbose("Starting job: 'stopAssignments'");
 		
