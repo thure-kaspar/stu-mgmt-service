@@ -10,7 +10,7 @@ import { GroupDto } from "../../course/dto/group/group.dto";
 import { CourseId } from "../../course/entities/course.entity";
 import { CourseMemberGuard } from "../../course/guards/course-member.guard";
 import { ParticipantIdentityGuard } from "../../course/guards/identity.guard";
-import { UserDto } from "../../shared/dto/user.dto";
+import { UserDto, UserUpdateDto } from "../../shared/dto/user.dto";
 import { UserId } from "../../shared/entities/user.entity";
 import { UserRole } from "../../shared/enums";
 import { PaginatedResult, throwIfRequestFailed } from "../../utils/http-utils";
@@ -169,7 +169,7 @@ export class UserController {
 	@Roles(UserRole.SYSTEM_ADMIN, UserRole.MGMT_ADMIN)
 	updateUser(
 		@Param("userId") userId: UserId,
-		@Body() userDto: UserDto
+		@Body() userDto: UserUpdateDto
 	): Promise<UserDto> {
 		return this.userService.updateUser(userId, userDto);
 	}

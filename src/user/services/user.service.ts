@@ -16,7 +16,7 @@ import { AssignmentRepository } from "../../course/repositories/assignment.repos
 import { GroupEventRepository } from "../../course/repositories/group-event.repository";
 import { GroupRepository } from "../../course/repositories/group.repository";
 import { DtoFactory } from "../../shared/dto-factory";
-import { UserDto } from "../../shared/dto/user.dto";
+import { UserDto, UserUpdateDto } from "../../shared/dto/user.dto";
 import { User, UserId } from "../../shared/entities/user.entity";
 import { AssignmentState } from "../../shared/enums";
 import { AssignmentGroupTuple } from "../dto/assignment-group-tuple.dto";
@@ -96,10 +96,7 @@ export class UserService {
 		return evaluated.map(a => DtoFactory.createAssessmentDto(a));
 	}
 
-	async updateUser(userId: UserId, userDto: UserDto): Promise<UserDto> {
-		if (userId !== userDto.id) {
-			throw new BadRequestException("UserId refers to a different user.");
-		}
+	async updateUser(userId: UserId, userDto: UserUpdateDto): Promise<UserDto> {
 		const user = await this.userRepository.updateUser(userId, userDto);
 		return DtoFactory.createUserDto(user);
 	}

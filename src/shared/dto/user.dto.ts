@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional, OmitType } from "@nestjs/swagger";
 import { CourseDto } from "../../course/dto/course/course.dto";
 import { UserRole } from "../enums";
 
@@ -7,7 +7,7 @@ export class UserDto {
 	@ApiPropertyOptional({ description: "Unique identifier of this user." })
 	id?: string;
 	
-	email: string;
+	email?: string;
 	username: string;
 	displayName: string;
 
@@ -19,3 +19,5 @@ export class UserDto {
 	//@ApiPropertyOptional({ description: "Courses that the user has signed up for.", type: () => CourseDto })
 	courses?: CourseDto[];
 }
+
+export class UserUpdateDto extends OmitType(UserDto, ["id", "username", "courses"]) {}

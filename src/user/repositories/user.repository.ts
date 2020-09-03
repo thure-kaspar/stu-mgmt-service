@@ -1,6 +1,6 @@
 import { Repository, EntityRepository } from "typeorm";
 import { User, UserId } from "../../shared/entities/user.entity";
-import { UserDto } from "../../shared/dto/user.dto";
+import { UserDto, UserUpdateDto } from "../../shared/dto/user.dto";
 import { Course, CourseId } from "src/course/entities/course.entity";
 import { UserFilter } from "../dto/user.filter";
 
@@ -16,6 +16,7 @@ export class UserRepository extends Repository<User> {
 		const { username, displayName, roles, skip, take } = filter || { };
 
 		const query = this.createQueryBuilder("user")
+			.orderBy("user.username")
 			.skip(skip)
 			.take(take);
 		
@@ -77,11 +78,11 @@ export class UserRepository extends Repository<User> {
 		return !!user;
 	} 
 
-	async updateUser(userId: UserId, userDto: UserDto): Promise<User> {
+	async updateUser(userId: UserId, userDto: UserUpdateDto): Promise<User> {
 		const user = await this.getUserById(userId);
 
-		// TODO: Define Patch-Object or create method
 		user.email = userDto.email;
+		user.displayName = userDto.displayName;
 		user.role = userDto.role;
 
 		return this.save(user);
