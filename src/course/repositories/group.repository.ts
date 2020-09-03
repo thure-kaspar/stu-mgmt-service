@@ -184,7 +184,16 @@ export class GroupRepository extends Repository<Group> {
 	 */
 	private tryFindAvailableName(groups: Group[], schema: string): string {
 		for (let i = 1; i <= 9999; i++) {
-			const suggestion = schema + i.toString();
+			let suggestion = schema;
+
+			if (i < 10) {
+				suggestion += "00" + i.toString(); // i.e. JP001
+			} else if (i < 100) {
+				suggestion += "0" + i.toString(); // i.e. JP010
+			} else {
+				suggestion += i.toString(); // i.e. JP100
+			}
+
 			if (!groups.find(group => group.name === suggestion)) {
 				return suggestion;
 			}
