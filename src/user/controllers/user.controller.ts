@@ -18,11 +18,12 @@ import { AssignmentGroupTuple } from "../dto/assignment-group-tuple.dto";
 import { UserFilter } from "../dto/user.filter";
 import { IdentityGuard } from "../guards/identity.guard";
 import { UserService } from "../services/user.service";
+import { RoleGuard } from "../../auth/guards/role.guard";
 
 @ApiBearerAuth()
 @ApiTags("users")
 @Controller("users")
-@UseGuards(AuthGuard())
+@UseGuards(AuthGuard(), RoleGuard)
 export class UserController {
 
 	constructor(private userService: UserService) { }
