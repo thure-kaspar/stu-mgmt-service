@@ -59,18 +59,12 @@ export class GroupRepository extends Repository<Group> {
 	async getGroupById_All(groupId: GroupId): Promise<Group> {
 		const query = await this.createQueryBuilder("group")
 			.where("group.id = :groupId", { groupId })
-			.leftJoinAndSelect("group.course", "course")
-			.leftJoinAndSelect("group.assessments", "assessment")
-			.leftJoinAndSelect("assessment.assignment", "assignment")
 			.leftJoinAndSelect("group.userGroupRelations", "userGroupRelation")
 			.leftJoinAndSelect("userGroupRelation.participant", "participant")
 			.leftJoinAndSelect("participant.user", "user")
-			.leftJoinAndSelect("group.history", "history")
-			.leftJoinAndSelect("history.user", "history_user")
-			.orderBy("history.timestamp", "DESC")
 			.getOne();
 
-		if (!query) throw new EntityNotFoundError(Group, null);
+		if (!query) throw new EntityNotFoundError(Group, { groupId });
 		return query;
 	}
 
