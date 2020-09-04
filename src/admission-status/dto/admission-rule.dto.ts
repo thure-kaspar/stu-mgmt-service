@@ -33,7 +33,7 @@ export function toString(rule: AdmissionRuleDto): string {
 
 	if (rule.type === RuleType.INDIVIDUAL_PERCENT_WITH_ALLOWED_FAILURES) {
 		const ruleAs = (rule as IndividualPercentWithAllowedFailuresRuleDto);
-		result += ` ### Allowed failures: ${ruleAs.allowedFailures}%`;
+		result += ` ### Allowed failures: ${ruleAs.allowedFailures}`;
 	}
 
 	return result;
