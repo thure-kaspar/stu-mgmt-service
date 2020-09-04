@@ -10,6 +10,7 @@ import { TeachingStaffGuard } from "../../course/guards/teaching-staff.guard";
 import { CourseConfigService } from "../../course/services/course-config.service";
 import { CourseParticipantsService } from "../../course/services/course-participants.service";
 import { CsvConverterService } from "../services/csv-converter.service";
+import { GroupService } from "../../course/services/group.service";
 
 @ApiBearerAuth()
 @ApiTags("csv")
@@ -17,9 +18,12 @@ import { CsvConverterService } from "../services/csv-converter.service";
 @UseGuards(AuthGuard())
 export class CsvController {
 
+	private readonly separator = "\t";
+
 	constructor(private csvConverter: CsvConverterService,
 				private participants: CourseParticipantsService,
 				private courseConfig: CourseConfigService,
+				private groupService: GroupService,
 				private admissionStatus: AdmissionStatusService) { }
 
 	@ApiOperation({
@@ -36,11 +40,25 @@ export class CsvController {
 	): Promise<void> {
 
 		const [participants] = await this.participants.getParticipants(courseId);
+		const [groups] = await this.groupService.getGroupsOfCourse(courseId);
+		const groupNames = new Map<string, string>();
+		groups.forEach(group => groupNames.set(group.id, group.name));
+
+		const row = (userId, role, email, username, displayName) => {
+			return `${userId}${this.separator}${role}${this.separator}${email}${this.separator}${username}${this.separator}${displayName}\n`;
+		};
+
+		const header = row("userId", "role", "email", "username", "displayName");
+		let data = "";
+		participants.forEach(p => {
+			data += row(p.userId, p.role, p.email, p.username, p.displayName);
+		});
+
+		const tsv = header + data;
 		
 		try {
-			const csv = await this.csvConverter.parse(participants, ["userId", "email", "displayName", "username"]);
-			response.attachment(`${courseId}-participants.csv`);
-			response.status(200).send(csv);
+			response.attachment(`${courseId}-participants.tsv`);
+			response.status(200).send(tsv);
 		} catch(error) {
 			response.status(500).send();
 		}
@@ -60,23 +78,23 @@ export class CsvController {
 	): Promise<void> {
 		const overview = await this.admissionStatus.getPointsOverview(courseId);
 
-		let firstRow = "userId,displayName,username";
-		overview.assignments.forEach(assignment => firstRow += "," + assignment.name);
+		let firstRow = `userId${this.separator}displayName${this.separator}username`;
+		overview.assignments.forEach(assignment => firstRow += this.separator + assignment.name);
 
-		let secondRow = "max points, max points, max points";
-		overview.assignments.forEach(assignment => secondRow += "," + assignment.points);
+		let secondRow = `max points${this.separator}max points${this.separator}max points`;
+		overview.assignments.forEach(assignment => secondRow += this.separator + assignment.points);
 
 		let data = "";
 		overview.results.forEach(result => {
-			data += `${result.student.userId},${result.student.displayName},${result.student.username}`;
-			result.achievedPoints.forEach(points => data += "," + points);
+			data += `${result.student.userId}${this.separator}${result.student.displayName}${this.separator}${result.student.username}`;
+			result.achievedPoints.forEach(points => data += this.separator + points);
 			data += "\n";
 		});
 
 		const csv = firstRow + "\n" + secondRow + "\n" + data;
 
 		try {
-			response.attachment(`${courseId}-points-overview.csv`);
+			response.attachment(`${courseId}-points-overview.tsv`);
 			response.status(200).send(csv);
 		} catch(error) {
 			response.status(500).send();
@@ -100,23 +118,23 @@ export class CsvController {
 			this.admissionStatus.getAdmissionStatusOfParticipants(courseId)
 		]);
 
-		let firstRow = "userId,displayName,username,hasAdmission";
-		criteria.rules.forEach(rule => firstRow += "," + `[${toString(rule)}],,`);
+		let firstRow = `userId${this.separator}displayName${this.separator}username${this.separator}hasAdmission`;
+		criteria.rules.forEach(rule => firstRow += this.separator + `[${toString(rule)}]${this.separator}${this.separator}`);
 
-		let secondRow = ",,,";
-		criteria.rules.forEach(rule => secondRow += ",passed,achievedPoints,achievedPercent");
+		let secondRow = `${this.separator}${this.separator}${this.separator}`;
+		criteria.rules.forEach(rule => secondRow += `${this.separator}passed${this.separator}achievedPoints${this.separator}achievedPercent`);
 		
 		let data = "";
 		admissionStatus.forEach(status => {
-			data += `${status.participant.userId},${status.participant.displayName},${status.participant.username},${status.hasAdmission}`;
-			status.results.forEach(result => data += "," + result.passed + "," + result.achievedPoints + "," + result.achievedPercent);
+			data += `${status.participant.userId}${this.separator}${status.participant.displayName}${this.separator}${status.participant.username}${this.separator}${status.hasAdmission}`;
+			status.results.forEach(result => data += this.separator + result.passed + this.separator + result.achievedPoints + this.separator + result.achievedPercent);
 			data += "\n";
 		});
 
 		const csv = firstRow + "\n" + secondRow + "\n" + data;
 
 		try {
-			response.attachment(`${courseId}-admission-status.csv`);
+			response.attachment(`${courseId}-admission-status.tsv`);
 			response.status(200).send(csv);
 		} catch(error) {
 			response.status(500).send();
