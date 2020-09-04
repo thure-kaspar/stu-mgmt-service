@@ -40,18 +40,15 @@ export class CsvController {
 	): Promise<void> {
 
 		const [participants] = await this.participants.getParticipants(courseId);
-		const [groups] = await this.groupService.getGroupsOfCourse(courseId);
-		const groupNames = new Map<string, string>();
-		groups.forEach(group => groupNames.set(group.id, group.name));
 
-		const row = (userId, role, email, username, displayName) => {
-			return `${userId}${this.separator}${role}${this.separator}${email}${this.separator}${username}${this.separator}${displayName}\n`;
+		const row = (userId, role, email, username, displayName, group) => {
+			return `${userId}${this.separator}${role}${this.separator}${email}${this.separator}${username}${this.separator}${displayName}${this.separator}${group}\n`;
 		};
 
-		const header = row("userId", "role", "email", "username", "displayName");
+		const header = row("userId", "role", "email", "username", "displayName", "group");
 		let data = "";
 		participants.forEach(p => {
-			data += row(p.userId, p.role, p.email, p.username, p.displayName);
+			data += row(p.userId, p.role, p.email, p.username, p.displayName, p.group?.name ?? "");
 		});
 
 		const tsv = header + data;
