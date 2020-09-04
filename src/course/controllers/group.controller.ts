@@ -104,7 +104,7 @@ export class GroupController {
 		const groups = await PaginatedResult(this.groupService.getGroupsOfCourse(courseId, filter), request);
 
 		if (participant.isStudent()) {
-			groups.forEach(group => group.members?.forEach(member => member.email = undefined));
+			groups.forEach(group => group.members = undefined);
 		}
 
 		return groups;
@@ -145,13 +145,13 @@ export class GroupController {
 	@ApiOperation({
 		operationId: "getGroup",
 		summary: "Get group.",
-		description: "Returns the group with its course, users, assessments and history."
+		description: "Returns the group with its members."
 	})
 	@Get(":groupId")
 	@UseGuards(GroupMemberGuard)
 	getGroup(
 			@Param("courseId") courseId: CourseId,
-			@Param("groupId") groupId: GroupId
+			@Param("groupId") groupId: GroupId,
 	): Promise<GroupDto> {
 		return this.groupService.getGroup(groupId);
 	}

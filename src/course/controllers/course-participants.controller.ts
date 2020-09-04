@@ -22,6 +22,8 @@ import { AssignedEvaluatorFilter } from "../queries/groups-with-assigned-evaluat
 import { UserWithAssignedEvaluatorDto } from "../queries/users-with-assigned-evaluator/user-with-assigned-evaluator.dto";
 import { UsersWithAssignedEvaluatorQuery } from "../queries/users-with-assigned-evaluator/users-with-assigned-evaluator.query";
 import { CourseParticipantsService } from "../services/course-participants.service";
+import { GetParticipant } from "../decorators/decorators";
+import { Participant } from "../models/participant.model";
 
 @ApiBearerAuth()
 @ApiTags("course-participants")
@@ -75,12 +77,17 @@ export class CourseParticipantsController {
 	})
 	@UseGuards(CourseMemberGuard)
 	@Get(":userId")
-	getParticipant(
+	async getParticipant(
 		@Param("courseId") courseId: CourseId,
-		@Param("userId") userId: UserId
+		@Param("userId") userId: UserId,
+		@GetParticipant() requestingParticipant: Participant
 	): Promise<ParticipantDto> {
 
-		return this.courseParticipantsService.getParticipant(courseId, userId);
+		const participant = await this.courseParticipantsService.getParticipant(courseId, userId);
+		if (requestingParticipant.isStudent() && requestingParticipant.userId !== userId) {
+			participant.email = undefined;
+		}
+		return participant;
 	}
 
 	@ApiOperation({
