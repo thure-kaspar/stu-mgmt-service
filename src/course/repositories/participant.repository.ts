@@ -28,7 +28,10 @@ export class ParticipantRepository extends Repository<Participant> {
 	}
 
 	/**
-	 * Returns the participants of a course.
+	 * Returns the participants of a course. Ordered by role (asc), username (asc).
+	 * Includes relations:
+	 * - User
+	 * - Group
 	 */
 	async getParticipants(courseId: CourseId, filter?: CourseParticipantsFilter): Promise<[Participant[], number]> {
 		const { courseRole, name, skip, take } = filter || { };
@@ -36,6 +39,8 @@ export class ParticipantRepository extends Repository<Participant> {
 		const query = this.createQueryBuilder("participant")
 			.where("participant.courseId = :courseId", { courseId })
 			.innerJoinAndSelect("participant.user", "user")
+			.leftJoinAndSelect("participant.groupRelation", "groupRelation")
+			.leftJoinAndSelect("groupRelation.group", "group")
 			.orderBy("participant.role", "ASC")
 			.addOrderBy("user.username", "ASC")
 			.skip(skip)
