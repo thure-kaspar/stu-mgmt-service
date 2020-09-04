@@ -89,7 +89,7 @@ export class CourseJoinedHandler_AutomaticGroupJoin implements IEventHandler<Cou
 	}
 
 	private isOpen(group: GroupDto): boolean {
-		return !group._hasPassword && !group.isClosed;
+		return !group.hasPassword && !group.isClosed;
 	}
 
 }

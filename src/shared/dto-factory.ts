@@ -102,15 +102,17 @@ export abstract class DtoFactory {
 		return userDto;
 	}
 	
-	static createGroupDto(group: Group): GroupDto {
+	static createGroupDto(group: Group, options?: { includePassword: boolean }): GroupDto {
 		const groupDto: GroupDto = {
 			id: group.id,
 			name: group.name,
 			isClosed:group.isClosed,
-			_hasPassword: !!group.password
+			password: options?.includePassword ?  group.password : undefined,
+			hasPassword: !!group.password
 		};
 
 		if (group.userGroupRelations) {
+			groupDto.size = group.userGroupRelations.length;
 			groupDto.members = [];
 
 			if (group.userGroupRelations.length && group.userGroupRelations[0].participant) {

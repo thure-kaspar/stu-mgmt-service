@@ -19,7 +19,11 @@ export class GroupDto {
 
 	/** Indicates, wether group has a password. Set by the server. */
 	@ApiPropertyOptional({ description: "Indicates, wether group has a password. Set by the server." })
-	_hasPassword?: boolean;
+	hasPassword?: boolean;
+
+	/** Count of group members. Set by the server. */
+	@ApiPropertyOptional({ description: "Count of group members. Set by the server." })
+	size?: number;
 
 	/** Determines, wether course participant are able to join this group. */
 	@ApiPropertyOptional({ description: "Determines, wether course participant are able to join this group." })
@@ -28,6 +32,14 @@ export class GroupDto {
 	/** The members of this group. */
     members?: ParticipantDto[];
 	history?: GroupEventDto[];
+}
+
+/**
+ * Sets the given participants as `group.members` and updates the `group._size`.
+ */
+export function setMembers(group: GroupDto, members: ParticipantDto[]): void {
+	group.members = members;
+	group.size = members.length;
 }
 
 export class GroupUpdateDto {

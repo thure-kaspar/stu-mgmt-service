@@ -24,7 +24,7 @@ const groupWithOneMember_NoPassword_Joinable = (): GroupDto => {
 		name: "groupWithOneMember_NoPassword_Joinable",
 		id: "groupWithOneMember_NoPassword_Joinable",
 		isClosed: false,
-		_hasPassword: false,
+		hasPassword: false,
 		members: [defaultGroupMember]
 	};
 };
@@ -34,7 +34,7 @@ const groupWithNoMembers_NoPassword_Joinable = (): GroupDto => {
 		name: "groupWithNoMembers_NoPassword_Joinable",
 		id: "groupWithNoMembers_NoPassword_Joinable",
 		isClosed: false,
-		_hasPassword: false,
+		hasPassword: false,
 		members: []
 	};
 };
@@ -44,7 +44,7 @@ const groupWithOneMember_WithPassword_NotJoinable = (): GroupDto => {
 		name: "groupWithOneMember_WithPassword_NotJoinable",
 		id: "groupWithOneMember_WithPassword_NotJoinable",
 		isClosed: false,
-		_hasPassword: true,
+		hasPassword: true,
 		members: [defaultGroupMember]
 	};
 };
@@ -54,7 +54,7 @@ const groupWithOneMember_IsClosed_NotJoinable = (): GroupDto => {
 		name: "groupWithOneMember_IsClosed_NotJoinable",
 		id: "groupWithOneMember_IsClosed_NotJoinable",
 		isClosed: true,
-		_hasPassword: false,
+		hasPassword: false,
 		members: [defaultGroupMember]
 	};
 };
@@ -64,7 +64,7 @@ const groupWithTwoMembers_NoPassword_Joinable = (): GroupDto => {
 		name: "groupWithTwoMembers_NoPassword_Joinable",
 		id: "groupWithTwoMembers_NoPassword_Joinable",
 		isClosed: false,
-		_hasPassword: false,
+		hasPassword: false,
 		members: [defaultGroupMember, defaultGroupMember]
 	};
 };
@@ -74,7 +74,7 @@ const groupWithThreeMembers_NoPassword_Full_NotJoinable = (): GroupDto => {
 		name: "groupWithThreeMembers_NoPassword_NotJoinable",
 		id: "groupWithThreeMembers_NoPassword_NotJoinable",
 		isClosed: false,
-		_hasPassword: false,
+		hasPassword: false,
 		members: [defaultGroupMember, defaultGroupMember, defaultGroupMember]
 	};
 };
@@ -174,7 +174,7 @@ describe("CourseJoinedHandler (Automatically adds students to groups)", () => {
 			const groupAtMinSize_WithPassword_NotJoinable = groupWithTwoMembers_NoPassword_Joinable();
 			groupAtMinSize_WithPassword_NotJoinable.name = "groupAtMinSize_WithPassword_NotJoinable";
 			groupAtMinSize_WithPassword_NotJoinable.id = "groupAtMinSize_WithPassword_NotJoinable";
-			groupAtMinSize_WithPassword_NotJoinable._hasPassword = true;
+			groupAtMinSize_WithPassword_NotJoinable.hasPassword = true;
 
 			groupService.getGroupsOfCourse = jest.fn().mockResolvedValueOnce([
 				[

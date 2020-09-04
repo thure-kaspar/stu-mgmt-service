@@ -5,7 +5,7 @@ import { DtoFactory } from "../../shared/dto-factory";
 import { UserId } from "../../shared/entities/user.entity";
 import { AssignmentGroupTuple } from "../../user/dto/assignment-group-tuple.dto";
 import { AssignmentRegistrationFilter } from "../dto/assignment/assignment-registration.filter";
-import { GroupDto } from "../dto/group/group.dto";
+import { GroupDto, setMembers } from "../dto/group/group.dto";
 import { AssignmentRegistration } from "../entities/assignment-group-registration.entity";
 import { AssignmentId } from "../entities/assignment.entity";
 import { CourseId } from "../entities/course.entity";
@@ -136,12 +136,7 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 
 		const [result, count] = await query.getManyAndCount();
 		
-		const groups: GroupDto[] = result.map(r => {
-			const group = DtoFactory.createGroupDto(r.group);
-			group.members = r.groupRelations.map(relation => relation.participant.toDto());
-			return group;
-		});
-
+		const groups: GroupDto[] = result.map(registration => this._buildGroupDto(registration));
 		return [groups, count];
 	}
 
@@ -162,8 +157,13 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 
 		if (!query) throw new EntityNotFoundError(AssignmentRegistration, null);
 		
-		const group = DtoFactory.createGroupDto(query.group);
-		group.members = query.groupRelations.map(relation => relation.participant.toDto());
+		return this._buildGroupDto(query);
+	}
+
+	private _buildGroupDto(registration: AssignmentRegistration): GroupDto {
+		const group = DtoFactory.createGroupDto(registration.group);
+		const members = registration.groupRelations.map(relation => relation.participant.toDto());
+		setMembers(group, members);
 		return group;
 	}
 
@@ -198,10 +198,7 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 
 		if (!query) return undefined;
 
-		const group = DtoFactory.createGroupDto(query.group);
-		group.members = query.groupRelations.map(relation => relation.participant.toDto());
-		
-		return group;
+		return this._buildGroupDto(query);
 	}
 
 	async getAllRegisteredGroupsOfUserInCourse(courseId: CourseId, userId: UserId): Promise<AssignmentGroupTuple[]> {
@@ -219,8 +216,7 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 			.getMany();
 		
 		const tuples: AssignmentGroupTuple[] = query.map(registration => {
-			const group = DtoFactory.createGroupDto(registration.group);
-			group.members = registration.groupRelations.map(rel => rel.participant.toDto());
+			const group = this._buildGroupDto(registration);
 			return {
 				assignment: DtoFactory.createAssignmentDto(registration.assignment),
 				group: group
