@@ -207,7 +207,7 @@ export class GroupService {
 	 */
 	async getGroup(groupId: GroupId): Promise<GroupDto> {
 		const group = await this.groupRepository.getGroupById_All(groupId);
-		return DtoFactory.createGroupDto(group);
+		return DtoFactory.createGroupDto(group, { includePassword: true });
 	}
 
 	async getUsersOfGroup(groupId: GroupId): Promise<ParticipantDto[]> {
