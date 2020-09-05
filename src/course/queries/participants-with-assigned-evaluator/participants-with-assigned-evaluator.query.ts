@@ -65,11 +65,14 @@ export class ParticipantsWithAssignedEvaluatorHandler implements IQueryHandler<P
 
 		const [users, count] = await userQuery.getManyAndCount();
 
-		const dtos = users.map(user => ({
-			participant: user.participations[0].toDto(),
-			assignedEvaluatorId: user.assessmentAllocations[0]?.assignedEvaluatorId,
-			assessmentId: user.assessmentUserRelations?.length > 0 ? user.assessmentUserRelations[0].assessmentId : undefined
-		}));
+		const dtos = users.map(user => {
+			user.participations[0].user = user;
+			return {
+				participant: user.participations[0].toDto(),
+				assignedEvaluatorId: user.assessmentAllocations[0]?.assignedEvaluatorId,
+				assessmentId: user.assessmentUserRelations?.length > 0 ? user.assessmentUserRelations[0].assessmentId : undefined
+			};
+		});
 
 		return [dtos, count];
 	}
