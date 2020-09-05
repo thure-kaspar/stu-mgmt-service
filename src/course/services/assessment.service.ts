@@ -28,23 +28,49 @@ export class AssessmentService {
 				private events: EventBus,
 	) { }
 
+	/**
+	 * Creates a new assessment and returns it.
+	 */
 	async createAssessment(participant: Participant, assignment: Assignment, assessmentDto: AssessmentCreateDto): Promise<AssessmentDto> {
-		let userIds: string[];
+		this.validateAssessment(assessmentDto, assignment);
+		const userIds = await this.getUserIdsOfReviewedParticipants(assessmentDto, assignment);
+		const createdAssessment = await this.assessmentRepository.createAssessment(assessmentDto, userIds, participant.userId);
+		return DtoFactory.createAssessmentDto(createdAssessment);
+	}
+
+	/**
+	 * Validates the assessment.
+	 * Throws appropriate exceptions, if the assessment is invalid.
+	 * @throws `BadRequestException`
+	 */
+	private validateAssessment(assessmentDto: AssessmentCreateDto, assignment: Assignment) {
+		const achievablePoints = assignment.points + (assignment.bonusPoints ?? 0);
+		if (assessmentDto.achievedPoints > achievablePoints) {
+			throw new BadRequestException(`Assignment (${assignment.id}) can only award up to ${achievablePoints} points (Given: ${assessmentDto.achievedPoints}).`);
+		}
+	}
+
+	/**
+	 * Returns the userIds of participants targeted by the assessment.
+	 * @throws `BadRequestException` if assessment did not specify a target.
+	 */
+	private async getUserIdsOfReviewedParticipants(assessmentDto: AssessmentCreateDto, assignment: Assignment) {
+		let userIds: string[] = [];
 		// If assessment should apply to a group
 		if (assessmentDto.groupId) {
 			// Get ids of members that were in this group for the assignment
 			const group = await this.groupService.getGroupFromAssignment(assessmentDto.groupId, assignment.id);
 			userIds = group.members.map(x => x.userId);
-		// If assessment should apply to single user
-		} else if (assessmentDto.userId) {
+			// If assessment should apply to single user
+		}
+		else if (assessmentDto.userId) {
 			userIds = [assessmentDto.userId];
-		// If neither (group or user) has been specified
-		} else {
+			// If neither (group or user) has been specified
+		}
+		else {
 			throw new BadRequestException("Assessment did not specify the evaluated group or user");
 		}
-
-		const createdAssessment = await this.assessmentRepository.createAssessment(assessmentDto, userIds, participant.userId);
-		return DtoFactory.createAssessmentDto(createdAssessment);
+		return userIds;
 	}
 
 	async addPartialAssessment(assignmentId: AssignmentId, assessmentId: string, partial: PartialAssessmentDto): Promise<PartialAssessmentDto> {
