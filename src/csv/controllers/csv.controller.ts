@@ -4,13 +4,16 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { Response } from "express";
 import { AdmissionStatusService } from "../../admission-status/admission-status.service";
 import { toString } from "../../admission-status/dto/admission-rule.dto";
+import { AssignmentId } from "../../course/entities/assignment.entity";
 import { CourseId } from "../../course/entities/course.entity";
 import { CourseMemberGuard } from "../../course/guards/course-member.guard";
 import { TeachingStaffGuard } from "../../course/guards/teaching-staff.guard";
+import { AssessmentService } from "../../course/services/assessment.service";
+import { AssignmentRegistrationService } from "../../course/services/assignment-registration.service";
 import { CourseConfigService } from "../../course/services/course-config.service";
 import { CourseParticipantsService } from "../../course/services/course-participants.service";
-import { CsvConverterService } from "../services/csv-converter.service";
 import { GroupService } from "../../course/services/group.service";
+import { CsvConverterService } from "../services/csv-converter.service";
 
 @ApiBearerAuth()
 @ApiTags("csv")
@@ -24,6 +27,8 @@ export class CsvController {
 				private participants: CourseParticipantsService,
 				private courseConfig: CourseConfigService,
 				private groupService: GroupService,
+				private assessmentService: AssessmentService,
+				private registrations: AssignmentRegistrationService,
 				private admissionStatus: AdmissionStatusService) { }
 
 	@ApiOperation({
@@ -56,6 +61,60 @@ export class CsvController {
 		try {
 			response.attachment(`${courseId}-participants.tsv`);
 			response.status(200).send(tsv);
+		} catch(error) {
+			response.status(500).send();
+		}
+	}
+
+	@ApiOperation({
+		operationId: "getRegisteredGroupsAsCsv",
+		summary: "Get registered groups.",
+		description: "Retrieves a .csv containing all registered groups and their members for the specified assignment. Requires LECTURER or TUTOR role."
+	})
+	@Header("content-type", "text/csv")
+	@Get("courses/:courseId/assignments/:assignmentId")
+	@UseGuards(CourseMemberGuard, TeachingStaffGuard)
+	async getRegisteredGroups(
+		@Res() response: Response,
+		@Param("courseId") courseId: CourseId,
+		@Param("assignmentId") assignmentId: AssignmentId
+	): Promise<void> {
+
+		const data = await this.csvConverter.flattenData(
+			this.registrations.getRegisteredGroupsWithMembers(assignmentId), 
+			this.separator
+		);
+
+		try {
+			response.attachment(`${courseId}-${assignmentId}-registered-groups.tsv`);
+			response.status(200).send(data);
+		} catch(error) {
+			response.status(500).send();
+		}
+	}
+
+	@ApiOperation({
+		operationId: "getAssessmentsForAssignmentAsCsv",
+		summary: "Get assessments of assignments.",
+		description: "Retrieves a .csv containing all assessments of a specified assignment. Requires LECTURER or TUTOR role."
+	})
+	@Header("content-type", "text/csv")
+	@Get("courses/:courseId/assignments/:assignmentId/assessments")
+	@UseGuards(CourseMemberGuard, TeachingStaffGuard)
+	async getAssessmentsForAssignment(
+		@Res() response: Response,
+		@Param("courseId") courseId: CourseId,
+		@Param("assignmentId") assignmentId: AssignmentId
+	): Promise<void> {
+
+		const data = await this.csvConverter.flattenData(
+			this.assessmentService.getAssessmentsForAssignment(assignmentId), 
+			this.separator
+		);
+
+		try {
+			response.attachment(`${courseId}-${assignmentId}-assessments.tsv`);
+			response.status(200).send(data);
 		} catch(error) {
 			response.status(500).send();
 		}

@@ -1,16 +1,38 @@
 import { Injectable } from "@nestjs/common";
-import { parseAsync  } from "json2csv";
+import * as flat from "flat";
 
 @Injectable()
 export class CsvConverterService {
 
 	/**
- 	* Converts the given array of objects to a csv-string.
- 	* If `fields` are specified, only the corresponding properties will be included.
- 	* @param [properties] Array with properties of `T`.
- 	*/
-	parse<T extends object, K extends keyof T>(data: T[], properties?: readonly K[]): Promise<string> {
-		return parseAsync(data, { fields: properties });
-	}
+	 * Transforms all entries in `T[]` to a flat object and returns a string of separated values
+	 * using the given `separator`. Will determine all existing properties to create a header row.
+	 */
+	async flattenData<T>(promise: Promise<[T[], number]>, separator: string): Promise<string> {
+		const [data] = await promise;
+		
+		// Create array of flat objects
+		const flatData = data.map(entry => flat.flatten(entry));
+
+		// Create array of all existing properties
+		const properties = new Set<string>();
+		flatData.forEach(flatObject => {
+			Object.keys(flatObject).forEach(key => properties.add(key));
+		});
+		const keys = Array.from(properties.values());
+
+		// Create header row
+		const rows = [];
+		rows.push(keys.join(separator));
+
+		// Create entries
+		flatData.forEach(flatObject => {
+			const rowData = keys.map(key => flatObject[key]);
+			rows.push(rowData.join(separator));
+		});
+		
+		// Create a single string
+		return rows.join("\n");
+	} 
 
 }
