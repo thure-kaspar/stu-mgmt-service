@@ -191,7 +191,7 @@ export abstract class DtoFactory {
 				};
 				return participant;
 			});
-			assessmentDto.group.size = assessmentDto.group.members.length;
+			assessmentDto.group.size = assessmentDto.group.members?.length;
 		}
 
 		return assessmentDto;
