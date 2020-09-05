@@ -1,8 +1,8 @@
 import { ApiPropertyOptional } from "@nestjs/swagger";
-import { UserDto } from "../../../shared/dto/user.dto";
+import { ParticipantDto } from "../../dto/course-participant/participant.dto";
 
-export class UserWithAssignedEvaluatorDto {
-	user: UserDto;
+export class ParticipantsWithAssignedEvaluatorDto {
+	participant: ParticipantDto;
 
 	@ApiPropertyOptional({ description: "UserId of the assigned evaluator (for assignment)." })
 	assignedEvaluatorId?: string;

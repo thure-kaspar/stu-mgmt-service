@@ -19,8 +19,8 @@ import { CanJoinCourseQuery } from "../queries/can-join-course/can-join-course.q
 import { CompareParticipantsListQuery } from "../queries/compare-participants-list/compare-participants-list.query";
 import { ParticipantsComparisonDto } from "../queries/compare-participants-list/participants-comparison.dto";
 import { AssignedEvaluatorFilter } from "../queries/groups-with-assigned-evaluator/group-with-assigned-evaluator.dto";
-import { UserWithAssignedEvaluatorDto } from "../queries/users-with-assigned-evaluator/user-with-assigned-evaluator.dto";
-import { UsersWithAssignedEvaluatorQuery } from "../queries/users-with-assigned-evaluator/users-with-assigned-evaluator.query";
+import { ParticipantsWithAssignedEvaluatorDto } from "../queries/participants-with-assigned-evaluator/participants-with-assigned-evaluator.dto";
+import { ParticipantsWithAssignedEvaluatorQuery } from "../queries/participants-with-assigned-evaluator/participants-with-assigned-evaluator.query";
 import { CourseParticipantsService } from "../services/course-participants.service";
 import { GetParticipant } from "../decorators/decorators";
 import { Participant } from "../models/participant.model";
@@ -126,20 +126,20 @@ export class CourseParticipantsController {
 	}
 
 	@ApiOperation({
-		operationId: "getUsersWithAssignedEvaluator",
-		summary: "Get users with assigned evaluator.",
-		description: "Returns users with their assigned evaluator for a particular assignment."
+		operationId: "getParticipantsWithAssignedEvaluator",
+		summary: "Get participants with assigned evaluator.",
+		description: "Returns participants with their assigned evaluator for a particular assignment."
 	})
 	@UseGuards(CourseMemberGuard, TeachingStaffGuard)
 	@Get("assignments/:assignmentId/with-assigned-evaluator")
-	async getUsersWithAssignedEvaluator(
+	async getParticipantsWithAssignedEvaluator(
 		@Req() request: Request,
 		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string,
 		@Query() filter?: AssignedEvaluatorFilter
-	): Promise<UserWithAssignedEvaluatorDto[]> {
+	): Promise<ParticipantsWithAssignedEvaluatorDto[]> {
 		const [users, count] = await this.queryBus.execute(
-			new UsersWithAssignedEvaluatorQuery(courseId, assignmentId, new AssignedEvaluatorFilter(filter))
+			new ParticipantsWithAssignedEvaluatorQuery(courseId, assignmentId, new AssignedEvaluatorFilter(filter))
 		);
 		setTotalCountHeader(request, count);
 		return users;

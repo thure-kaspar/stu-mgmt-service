@@ -1,19 +1,18 @@
 import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
-import { DtoFactory } from "../../../shared/dto-factory";
-import { AssignedEvaluatorFilter } from "../groups-with-assigned-evaluator/group-with-assigned-evaluator.dto";
-import { UserWithAssignedEvaluatorDto } from "./user-with-assigned-evaluator.dto";
+import { Brackets } from "typeorm";
 import { User } from "../../../shared/entities/user.entity";
 import { UserRepository } from "../../../user/repositories/user.repository";
 import { Assessment } from "../../entities/assessment.entity";
 import { CourseId } from "../../entities/course.entity";
-import { Brackets } from "typeorm";
+import { AssignedEvaluatorFilter } from "../groups-with-assigned-evaluator/group-with-assigned-evaluator.dto";
+import { ParticipantsWithAssignedEvaluatorDto } from "./participants-with-assigned-evaluator.dto";
 
 /**
  * Queries users of a course with their assigned evaluator for a particular assignment.
  * @returns ```[UserWithAssignedEvaluator[], number]```
  */
-export class UsersWithAssignedEvaluatorQuery { 
+export class ParticipantsWithAssignedEvaluatorQuery { 
 	constructor(
 		public readonly courseId: CourseId,
 		public readonly assignmentId: string,
@@ -21,19 +20,19 @@ export class UsersWithAssignedEvaluatorQuery {
 	) { }
 }
 
-@QueryHandler(UsersWithAssignedEvaluatorQuery)
-export class UsersWithAssignedEvaluatorHandler implements IQueryHandler<UsersWithAssignedEvaluatorQuery> {
+@QueryHandler(ParticipantsWithAssignedEvaluatorQuery)
+export class ParticipantsWithAssignedEvaluatorHandler implements IQueryHandler<ParticipantsWithAssignedEvaluatorQuery> {
 
 	constructor(@InjectRepository(User) private userRepo: UserRepository) { }
 
-	async execute(query: UsersWithAssignedEvaluatorQuery): Promise<[UserWithAssignedEvaluatorDto[], number]> {
+	async execute(query: ParticipantsWithAssignedEvaluatorQuery): Promise<[ParticipantsWithAssignedEvaluatorDto[], number]> {
 		const { courseId, assignmentId } = query;
 		const { assignedEvaluatorId, excludeAlreadyReviewed, nameOfGroupOrUser, skip, take } = query.filter || { };
 		
 		// Query Users of course and join assessment allocation, if available to retrieve id of assigned evaluator.
 		const userQuery = this.userRepo.createQueryBuilder("user")
 			.leftJoinAndSelect("user.assessmentAllocations", "allocation", "allocation.assignmentId = :assignmentId", { assignmentId }) // Needs to be first param to allow reuse in subquery params :)
-			.innerJoin("user.participations", "participations", "participations.courseId = :courseId", { courseId });
+			.innerJoinAndSelect("user.participations", "participations", "participations.courseId = :courseId", { courseId });
 
 		if (skip) userQuery.skip(skip);
 		if (take) userQuery.take(take);
@@ -67,7 +66,7 @@ export class UsersWithAssignedEvaluatorHandler implements IQueryHandler<UsersWit
 		const [users, count] = await userQuery.getManyAndCount();
 
 		const dtos = users.map(user => ({
-			user: DtoFactory.createUserDto(user),
+			participant: user.participations[0].toDto(),
 			assignedEvaluatorId: user.assessmentAllocations[0]?.assignedEvaluatorId,
 			assessmentId: user.assessmentUserRelations?.length > 0 ? user.assessmentUserRelations[0].assessmentId : undefined
 		}));
