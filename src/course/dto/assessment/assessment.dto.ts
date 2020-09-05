@@ -3,6 +3,7 @@ import { UserDto } from "../../../shared/dto/user.dto";
 import { GroupDto } from "../group/group.dto";
 import { PartialAssessmentDto } from "./partial-assessment.dto";
 import { AssignmentDto } from "../assignment/assignment.dto";
+import { ParticipantDto } from "../course-participant/participant.dto";
 
 export class AssessmentDto {
 	/** Unique identifier of this assessment. */
@@ -36,8 +37,7 @@ export class AssessmentDto {
 	userId?: string;
 
 	/** If assessment targets a single user, contains the user. */
-	//@ApiPropertyOptional({ description: "If assessment targets a single user, contains the user.", type: () => UserDto })
-	user?: UserDto;
+	participant?: ParticipantDto;
 
 	/** Identifier of the creator of this assessment. */
 	@ApiPropertyOptional({ description: "Identifier of the creator of this assessment."})
@@ -50,7 +50,7 @@ export class AssessmentDto {
 }
 
 /** Version of AssessmentDto containing only properties that can used for creation. */
-export class AssessmentCreateDto extends OmitType(AssessmentDto, ["group", "user", "assignment", "creator", "id"]) { }
+export class AssessmentCreateDto extends OmitType(AssessmentDto, ["group", "participant", "assignment", "creator", "id"]) { }
 /** Version of AssessmentDto containing only properties that can be updated. */
 export class AssessmentUpdateDto {
 	

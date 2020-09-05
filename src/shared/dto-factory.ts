@@ -81,10 +81,10 @@ export abstract class DtoFactory {
 		};
 	}
     
-	static createUserDto(user: User, courseRole?: CourseRole): UserDto {
+	static createUserDto(user: User, courseRole?: CourseRole, options?: { removeEmail: boolean }): UserDto {
 		const userDto: UserDto = {
 			id: user.id,
-			email: user.email,
+			email: options?.removeEmail ? undefined : user.email,
 			username: user.username,
 			displayName: user.displayName,
 			role: user.role,
@@ -151,12 +151,9 @@ export abstract class DtoFactory {
 			groupId: assessment.groupId ?? undefined,
 			achievedPoints: assessment.achievedPoints,
 			comment: assessment.comment ?? undefined,
-			creatorId: assessment.creatorId
+			creatorId: assessment.creatorId,
+			partialAssessments: assessment.partialAssessments?.map(p => p.toDto())
 		};
-
-		if (assessment.partialAssessments) {
-			assessmentDto.partialAssessments = assessment.partialAssessments.map(p => p.toDto());
-		}
 
 		if (assessment.assignment) {
 			assessmentDto.assignment = this.createAssignmentDto(assessment.assignment);
@@ -166,13 +163,21 @@ export abstract class DtoFactory {
 		if (assessment.assessmentUserRelations?.length == 1) {
 			assessmentDto.userId = assessment.assessmentUserRelations[0].userId;
 
+			// If full user was included
 			if (assessment.assessmentUserRelations[0].user) {
-				assessmentDto.user = this.createUserDto(assessment.assessmentUserRelations[0].user);
+				const user = assessment.assessmentUserRelations[0].user;
+				assessmentDto.participant = {
+					userId: user.id,
+					username: user.username,
+					displayName: user.displayName,
+					email: user.email,
+					role: CourseRole.STUDENT
+				};
 			}
 		}
 
 		// If creator was loaded
-		if (assessment.creator) assessmentDto.creator = this.createUserDto(assessment.creator);
+		if (assessment.creator) assessmentDto.creator = this.createUserDto(assessment.creator, CourseRole.TUTOR, { removeEmail: true });
 
 		if (assessment.group) {
 			assessmentDto.group = this.createGroupDto(assessment.group);
@@ -186,6 +191,7 @@ export abstract class DtoFactory {
 				};
 				return participant;
 			});
+			assessmentDto.group.size = assessmentDto.group.members.length;
 		}
 
 		return assessmentDto;
