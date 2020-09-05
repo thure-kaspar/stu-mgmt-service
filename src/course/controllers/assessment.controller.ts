@@ -13,6 +13,10 @@ import { PaginatedResult, throwIfRequestFailed } from "../../utils/http-utils";
 import { Request } from "express";
 import { CourseMemberGuard } from "../guards/course-member.guard";
 import { TeachingStaffGuard } from "../guards/teaching-staff.guard";
+import { GetParticipant, GetAssignment } from "../decorators/decorators";
+import { Participant } from "../models/participant.model";
+import { AssignmentGuard } from "../guards/assignment.guard";
+import { Assignment } from "../models/assignment.model";
 
 @ApiBearerAuth()
 @ApiTags("assessments")
@@ -28,14 +32,16 @@ export class AssessmentController {
 		description: "Creates a new assessment."
 	})
 	@Post()
-	@UseGuards(TeachingStaffGuard)
+	@UseGuards(TeachingStaffGuard, AssignmentGuard)
 	createAssessment(
 		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string,
-		@Body() assessment: AssessmentCreateDto
+		@Body() assessment: AssessmentCreateDto,
+		@GetParticipant() participant: Participant,
+		@GetAssignment() assignment: Assignment
 	): Promise<AssessmentDto> {
 
-		return this.assessmentService.createAssessment(assignmentId, assessment);
+		return this.assessmentService.createAssessment(participant, assignment, assessment);
 	}
 
 	@ApiOperation({

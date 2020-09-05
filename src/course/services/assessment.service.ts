@@ -1,37 +1,39 @@
-import { Injectable, BadRequestException } from "@nestjs/common";
-import { AssessmentDto, AssessmentCreateDto, AssessmentUpdateDto } from "../dto/assessment/assessment.dto";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Assessment } from "../entities/assessment.entity";
-import { AssessmentRepository } from "../repositories/assessment.repository";
-import { DtoFactory } from "../../shared/dto-factory";
-import { PartialAssessmentDto } from "../dto/assessment/partial-assessment.dto";
-import { AssignmentRepository } from "../repositories/assignment.repository";
-import { Assignment } from "../entities/assignment.entity";
-import { AssignmentState } from "../../shared/enums";
-import { GroupService } from "./group.service";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { EventBus } from "@nestjs/cqrs";
-import { AssessmentScoreChanged } from "../events/assessment/assessment-score-changed.event";
-import { AssessmentEvent } from "../entities/assessment-event.entity";
+import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
+import { DtoFactory } from "../../shared/dto-factory";
+import { AssignmentState } from "../../shared/enums";
 import { AssessmentEventDto } from "../dto/assessment/assessment-event.dto";
 import { AssessmentFilter } from "../dto/assessment/assessment-filter.dto";
+import { AssessmentCreateDto, AssessmentDto, AssessmentUpdateDto } from "../dto/assessment/assessment.dto";
+import { PartialAssessmentDto } from "../dto/assessment/partial-assessment.dto";
+import { AssessmentEvent } from "../entities/assessment-event.entity";
+import { Assessment } from "../entities/assessment.entity";
+import { Assignment as AssignmentEntity, AssignmentId } from "../entities/assignment.entity";
+import { AssessmentScoreChanged } from "../events/assessment/assessment-score-changed.event";
+import { Participant } from "../models/participant.model";
+import { AssessmentRepository } from "../repositories/assessment.repository";
+import { AssignmentRepository } from "../repositories/assignment.repository";
+import { GroupService } from "./group.service";
+import { Assignment } from "../models/assignment.model";
 
 @Injectable()
 export class AssessmentService {
 
 	constructor(@InjectRepository(Assessment) private assessmentRepository: AssessmentRepository,
-				@InjectRepository(Assignment) private assignmentRepository: AssignmentRepository,
+				@InjectRepository(AssignmentEntity) private assignmentRepository: AssignmentRepository,
 				@InjectRepository(AssessmentEvent) private assessmentEventsRepo: Repository<AssessmentEvent>,
 				private groupService: GroupService,
 				private events: EventBus,
 	) { }
 
-	async createAssessment(assignmentId: string, assessmentDto: AssessmentCreateDto): Promise<AssessmentDto> {
+	async createAssessment(participant: Participant, assignment: Assignment, assessmentDto: AssessmentCreateDto): Promise<AssessmentDto> {
 		let userIds: string[];
 		// If assessment should apply to a group
 		if (assessmentDto.groupId) {
 			// Get ids of members that were in this group for the assignment
-			const group = await this.groupService.getGroupFromAssignment(assessmentDto.groupId, assignmentId);
+			const group = await this.groupService.getGroupFromAssignment(assessmentDto.groupId, assignment.id);
 			userIds = group.members.map(x => x.userId);
 		// If assessment should apply to single user
 		} else if (assessmentDto.userId) {
@@ -41,11 +43,11 @@ export class AssessmentService {
 			throw new BadRequestException("Assessment did not specify the evaluated group or user");
 		}
 
-		const createdAssessment = await this.assessmentRepository.createAssessment(assessmentDto, userIds);
+		const createdAssessment = await this.assessmentRepository.createAssessment(assessmentDto, userIds, participant.userId);
 		return DtoFactory.createAssessmentDto(createdAssessment);
 	}
 
-	async addPartialAssessment(assignmentId: string, assessmentId: string, partial: PartialAssessmentDto): Promise<PartialAssessmentDto> {
+	async addPartialAssessment(assignmentId: AssignmentId, assessmentId: string, partial: PartialAssessmentDto): Promise<PartialAssessmentDto> {
 		if (assessmentId != partial.assessmentId) {
 			throw new BadRequestException("Partial assessment refers to a different assessment.");
 		}
@@ -62,7 +64,7 @@ export class AssessmentService {
 	/**
 	 * Returns all assessments that match the specified filter.
 	 */
-	async getAssessmentsForAssignment(assignmentId: string, filter?: AssessmentFilter): Promise<[AssessmentDto[], number]> {
+	async getAssessmentsForAssignment(assignmentId: AssignmentId, filter?: AssessmentFilter): Promise<[AssessmentDto[], number]> {
 		const [assessments, count] = await this.assessmentRepository.getAssessmentsForAssignment(assignmentId, filter);
 		const dtos = assessments.map(assessment => DtoFactory.createAssessmentDto(assessment));
 		return [dtos, count];

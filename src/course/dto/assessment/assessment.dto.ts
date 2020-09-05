@@ -50,7 +50,7 @@ export class AssessmentDto {
 }
 
 /** Version of AssessmentDto containing only properties that can used for creation. */
-export class AssessmentCreateDto extends OmitType(AssessmentDto, ["group", "participant", "assignment", "creator", "id"]) { }
+export class AssessmentCreateDto extends OmitType(AssessmentDto, ["group", "participant", "assignment", "creator", "creatorId", "id"]) { }
 /** Version of AssessmentDto containing only properties that can be updated. */
 export class AssessmentUpdateDto {
 	

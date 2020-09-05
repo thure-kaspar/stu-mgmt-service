@@ -13,8 +13,8 @@ import { GroupId } from "../entities/group.entity";
 @EntityRepository(Assessment)
 export class AssessmentRepository extends Repository<Assessment> {
 
-	async createAssessment(assessmentDto: AssessmentCreateDto, userIds: string[]): Promise<Assessment> {
-		const assessment = this.createEntityFromDto(assessmentDto);
+	async createAssessment(assessmentDto: AssessmentCreateDto, userIds: string[], creatorId: UserId): Promise<Assessment> {
+		const assessment = this.createEntityFromDto({ ...assessmentDto, creatorId });
 		assessment.assessmentUserRelations = userIds.map(userId => {
 			const relation = new AssessmentUserRelation();
 			relation.assignmentId = assessmentDto.assignmentId;

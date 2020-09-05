@@ -1,6 +1,7 @@
 import { AssignmentState, AssignmentType, CollaborationType } from "../../shared/enums";
 import { Assignment as AssignmentEntity, AssignmentId } from "../entities/assignment.entity";
 import { CourseId } from "../entities/course.entity";
+import { AssignmentNotInReviewStateException } from "../exceptions/custom-exceptions";
 
 export class Assignment {
 
@@ -47,6 +48,17 @@ export class Assignment {
 	 */
 	wasStarted(oldState?: AssignmentState): boolean {
 		return this.assignment.state === AssignmentState.IN_PROGRESS && oldState !== AssignmentState.IN_PROGRESS;
+	}
+
+	/**
+	 * Asserts that the assignment is in `IN_REVIEW`.
+	 * @throws `AssignmentNotInReviewStateException`
+	 */
+	mustBeInReview(): Assignment {
+		if (this.state !== AssignmentState.IN_REVIEW) {
+			throw new AssignmentNotInReviewStateException(this.id);
+		}
+		return this;
 	}
 
 }

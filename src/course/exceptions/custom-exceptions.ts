@@ -3,6 +3,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { CourseId } from "../entities/course.entity";
 import { GroupId } from "../entities/group.entity";
 import { UserId } from "../../shared/entities/user.entity";
+import { AssignmentId } from "../entities/assignment.entity";
 
 export class CourseClosedException extends ForbiddenException {
 	constructor(courseId: CourseId) {
@@ -58,8 +59,15 @@ export class InvalidPasswordException extends ForbiddenException {
 	}
 }
 
+export class AssignmentNotInReviewStateException extends ForbiddenException {
+	constructor(assignmentId: AssignmentId) {
+		super(`Assignment ${assignmentId} is not in the required state (IN_REVIEW) for this action.`, "AssignmentNotInReviewStateException");
+	}
+}
+
 // ### Export for swagger ###
 enum StudentMgmtExceptions {
+	AssignmentNotInReviewStateException = "AssignmentNotInReviewStateException",
 	EntityAlreadyExistsError = "EntityAlreadyExistsError",
 	CourseClosedException = "CourseClosedException",
 	NotACourseMemberException = "NotACourseMemberException",
