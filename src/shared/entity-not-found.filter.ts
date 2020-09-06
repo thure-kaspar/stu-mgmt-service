@@ -20,6 +20,7 @@ export class EntityNotFoundFilter implements ExceptionFilter {
 			.json({
 				statusCode: 404,
 				path: request.url,
+				error: "NotFound",
 				message: "The requested resource was not found."
 			});
 	}
