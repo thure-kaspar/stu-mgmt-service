@@ -72,7 +72,7 @@ export class CsvController {
 		description: "Retrieves a .csv containing all registered groups and their members for the specified assignment. Requires LECTURER or TUTOR role."
 	})
 	@Header("content-type", "text/csv")
-	@Get("courses/:courseId/assignments/:assignmentId")
+	@Get("courses/:courseId/assignments/:assignmentId/registrations")
 	@UseGuards(CourseMemberGuard, TeachingStaffGuard)
 	async getRegisteredGroups(
 		@Res() response: Response,
