@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional, OmitType, PartialType } from "@nestjs/swagger";
 import { AssignmentState, AssignmentType, CollaborationType } from "../../../shared/enums";
+import { LinkDto } from "../../../shared/dto/link.dto";
 
 export class AssignmentDto {
 	/** Unique identifier of this assignment. */
@@ -42,9 +43,7 @@ export class AssignmentDto {
 	@ApiPropertyOptional({ description: "Additional information or description of this assignment." })
 	comment?: string;
 
-	/** Additional link to a .pdf or website. */
-	@ApiPropertyOptional({ description: "Additional link to a .pdf or website." })
-	link?: string;
+	links?: LinkDto[];
 }
 
 export class AssignmentUpdateDto extends OmitType(PartialType(AssignmentDto), ["id"]) { }

@@ -3,6 +3,7 @@ import { Assignment } from "./assignment.entity";
 import { CourseConfig } from "./course-config.entity";
 import { Participant } from "./participant.entity";
 import { Group } from "./group.entity";
+import { LinkDto } from "../../shared/dto/link.dto";
 
 export type CourseId = string;
 
@@ -24,8 +25,8 @@ export class Course {
     @Column()
     isClosed: boolean;
 
-    @Column({ nullable: true })
-	link?: string;
+    @Column({ type: "json", nullable: true })
+	links?: LinkDto[];
 
     @OneToMany(type => Participant, participants => participants.course, { cascade: ["insert"] })
 	participants: Participant[];

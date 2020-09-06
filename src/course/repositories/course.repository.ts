@@ -131,7 +131,7 @@ export class CourseRepository extends Repository<Course> {
 		course.semester = courseDto.semester;
 		course.title = courseDto.title;
 		course.isClosed = courseDto.isClosed;
-		course.link = courseDto.link;
+		course.links = courseDto.links?.length > 0 ? courseDto.links : null;
     
 		return this.save(course);
 	}
@@ -152,7 +152,7 @@ export class CourseRepository extends Repository<Course> {
 		course.shortname = courseDto.shortname;
 		course.semester = courseDto.semester;
 		course.title = courseDto.title;
-		course.link = courseDto.link;
+		course.links = courseDto.links?.length > 0 ? courseDto.links : null;
 		course.isClosed = courseDto.isClosed;
 
 		course.config = new CourseConfig();

@@ -2,6 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColum
 import { AssignmentState, AssignmentType, CollaborationType } from "../../shared/enums";
 import { Assessment } from "./assessment.entity";
 import { Course, CourseId } from "./course.entity";
+import { LinkDto } from "../../shared/dto/link.dto";
 
 export type AssignmentId = string;
 
@@ -25,8 +26,8 @@ export class Assignment {
 	@Column({ nullable: true })
 	comment?: string;
 
-	@Column({ nullable: true })
-	link?: string;
+	@Column({ type: "json", nullable: true })
+	links?: LinkDto[];
 
 	@Column({ type: "enum", enum: AssignmentType, default: AssignmentType.HOMEWORK })
 	type: AssignmentType;

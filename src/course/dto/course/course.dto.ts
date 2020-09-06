@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { LinkDto } from "../../../shared/dto/link.dto";
 
 export class CourseDto {
 	/** Unique identifier of this course. */
@@ -21,7 +22,5 @@ export class CourseDto {
 	@ApiProperty({ description: "Determines, wether changes (i.e joining this course) can be made to this course." })
 	isClosed: boolean;
 	
-	/** Additional link to another website. */
-	@ApiPropertyOptional({ description: "Additional link to another website." })
-	link?: string;
+	links?: LinkDto[];
 }

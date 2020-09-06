@@ -49,6 +49,7 @@ export class AssignmentRepository extends Repository<Assignment> {
 	private createEntityFromDto(courseId: CourseId, assignmentDto: AssignmentDto): Assignment {
 		const assignment = this.create(assignmentDto);
 		assignment.courseId = courseId;
+		assignment.links = assignmentDto.links?.length > 0 ? assignmentDto.links : null;
 		return assignment;
 	}
 

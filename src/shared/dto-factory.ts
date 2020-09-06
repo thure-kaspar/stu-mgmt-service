@@ -29,7 +29,7 @@ export abstract class DtoFactory {
 			semester: course.semester,
 			title: course.title,
 			isClosed: course.isClosed,
-			link: course.link ?? undefined
+			links: course.links ?? undefined
 		};
 
 		return courseDto;
@@ -135,7 +135,7 @@ export abstract class DtoFactory {
 			startDate: assignment.startDate ?? undefined,
 			endDate: assignment.endDate ?? undefined,
 			comment: assignment.comment ?? undefined,
-			link: assignment.link ?? undefined,
+			links: assignment.links ?? undefined,
 			type: assignment.type,
 			points: assignment.points,
 			bonusPoints: assignment.bonusPoints ?? undefined,

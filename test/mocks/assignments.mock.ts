@@ -11,7 +11,12 @@ export const ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP: AssignmentDto = {
 	state: AssignmentState.IN_PROGRESS,
 	collaboration: CollaborationType.GROUP,
 	startDate: new Date(2020, 8, 3),
-	endDate: new Date(2020, 8, 10)
+	endDate: new Date(2020, 8, 10),
+	comment: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione ab, quaerat minus corrupti quia nostrum facere quibusdam, repellendus, reprehenderit officiis rerum nemo modi perspiciatis ex obcaecati consectetur nisi voluptatum veritatis.",
+	links: [{
+		name: "Example URL",
+		url: "https://example-url.com"
+	}]
 };
 
 export const ASSIGNMENT_JAVA_CLOSED: AssignmentDto = {
