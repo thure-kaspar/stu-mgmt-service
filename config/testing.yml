@@ -15,5 +15,9 @@ jwt:
   secret: "jwt-dev-secret"
 
 logger:
+  levels:
+    - error
+    - warn
+    - debug
   requests: false
   dbErrors: true

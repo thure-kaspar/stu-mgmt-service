@@ -21,7 +21,9 @@ async function bootstrap(): Promise<void> {
 	const port = process.env.SERVER_PORT || serverConfig.port;
 
 	logger.verbose("Creating application...");
-	const app = await NestFactory.create<NestExpressApplication>(AppModule, { logger: ["error", "warn", "verbose", "debug"] });
+	const logLevels = config.get("logger.levels");
+	console.log("Log levels:", logLevels);
+	const app = await NestFactory.create<NestExpressApplication>(AppModule, { logger: logLevels });
 	logger.verbose("Application created!");
 
 	app.useGlobalFilters(new EntityNotFoundFilter());

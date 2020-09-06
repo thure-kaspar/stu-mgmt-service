@@ -23,5 +23,11 @@ jwt:
   expiresIn: 36000
 
 logger:
+  levels:
+    - log
+    - error
+    - warn
+    - debug
+    - verbose
   requests: false
   dbErrors: false
