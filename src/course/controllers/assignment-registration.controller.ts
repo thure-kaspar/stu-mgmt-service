@@ -168,7 +168,7 @@ export class AssignmentRegistrationController {
 		@Param("assignmentId") assignmentId: AssignmentId,
 	): Promise<void> {
 
-		return this.registrations.removeAllRegistrations(assignmentId);
+		return this.registrations.removeAllRegistrations(courseId, assignmentId);
 	}
 
 }

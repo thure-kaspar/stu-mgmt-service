@@ -22,6 +22,8 @@ import { GroupSettingsRepository } from "../repositories/group-settings.reposito
 import { GroupMergeStrategy } from "./group-merge.strategy";
 import { CourseWithGroupSettings } from "../models/course-with-group-settings.model";
 import { Group } from "../models/group.model";
+import { RegistrationsCreated } from "../events/assignment/registrations-created.event";
+import { RegistrationsRemoved } from "../events/assignment/registrations-removed.event";
 
 @Injectable()
 export class AssignmentRegistrationService {
@@ -53,6 +55,7 @@ export class AssignmentRegistrationService {
 		}
 
 		await this.registrations.createRegistrations(assignmentId, groups);
+		this.events.publish(new RegistrationsCreated(course.id, assignmentId));
 	}
 
 	/**
@@ -130,8 +133,9 @@ export class AssignmentRegistrationService {
 	/**
 	 * Removes all registrations for the specified assignment.
 	 */
-	async removeAllRegistrations(assignmentId: AssignmentId): Promise<void> {
+	async removeAllRegistrations(courseId: CourseId, assignmentId: AssignmentId): Promise<void> {
 		await this.registrations.removeRegistrations(assignmentId);
+		this.events.publish(new RegistrationsRemoved(courseId, assignmentId));
 	}
 
 }

@@ -24,6 +24,8 @@ import { GroupUnregisteredNotificationHandler } from "./events/assignment/group-
 import { UserRegisteredNotificationHandler } from "./events/assignment/user-registered.event";
 import { UserUnregisteredNotificationHandler } from "./events/assignment/user-unregistered.event";
 import { CourseJoinedHandler_AutomaticGroupJoin } from "./events/participant/automatic-group-join.handler";
+import { RegistrationsCreatedNotificationHandler } from "./events/assignment/registrations-created.event";
+import { RegistrationsRemovedNotificationHandler } from "./events/assignment/registrations-removed.event";
 
 @Module({
 	imports: [
@@ -51,6 +53,8 @@ import { CourseJoinedHandler_AutomaticGroupJoin } from "./events/participant/aut
 		GroupUnregisteredNotificationHandler,
 		UserRegisteredNotificationHandler,
 		UserUnregisteredNotificationHandler,
+		RegistrationsCreatedNotificationHandler,
+		RegistrationsRemovedNotificationHandler
 	],
 	exports: [TypeOrmModule, CourseMemberGuard, TeachingStaffGuard, ParticipantIdentityGuard, ...Services]
 })
