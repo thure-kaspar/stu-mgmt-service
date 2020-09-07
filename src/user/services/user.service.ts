@@ -1,15 +1,17 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CourseDto } from "src/course/dto/course/course.dto";
+import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
 import { AssessmentDto } from "../../course/dto/assessment/assessment.dto";
 import { GroupEventDto } from "../../course/dto/group/group-event.dto";
 import { GroupDto } from "../../course/dto/group/group.dto";
 import { Assessment } from "../../course/entities/assessment.entity";
 import { AssignmentRegistration } from "../../course/entities/assignment-group-registration.entity";
-import { Assignment } from "../../course/entities/assignment.entity";
+import { Assignment, AssignmentId } from "../../course/entities/assignment.entity";
 import { CourseId } from "../../course/entities/course.entity";
 import { GroupEvent } from "../../course/entities/group-event.entity";
 import { Group } from "../../course/entities/group.entity";
+import { Participant } from "../../course/models/participant.model";
 import { AssessmentRepository } from "../../course/repositories/assessment.repository";
 import { AssignmentRegistrationRepository } from "../../course/repositories/assignment-registration.repository";
 import { AssignmentRepository } from "../../course/repositories/assignment.repository";
@@ -20,8 +22,8 @@ import { UserDto, UserUpdateDto } from "../../shared/dto/user.dto";
 import { User, UserId } from "../../shared/entities/user.entity";
 import { AssignmentState } from "../../shared/enums";
 import { AssignmentGroupTuple } from "../dto/assignment-group-tuple.dto";
-import { UserRepository } from "../repositories/user.repository";
 import { UserFilter } from "../dto/user.filter";
+import { UserRepository } from "../repositories/user.repository";
 
 @Injectable()
 export class UserService {
@@ -88,6 +90,32 @@ export class UserService {
 	 */
 	async getGroupOfAllAssignments(userId: UserId, courseId: CourseId): Promise<AssignmentGroupTuple[]> {
 		return this.registrations.getAllRegisteredGroupsOfUserInCourse(courseId, userId);
+	}
+
+	/**
+	 * Return the user's assessment for the specified assignment.
+	 * If `participant` is `STUDENT`, the assignment must be in `EVALUATED` state.
+	 * @throws `EntityNotFoundError` if assessment does not exists, or it exists but requested by `STUDENT`
+	 * and not `EVALUATED`.
+	 */
+	async getAssessment(participant: Participant, assignmentId: AssignmentId): Promise<AssessmentDto> {
+		if (participant.isStudent()) {
+			// Only return assessment, if the assignment is in EVALUATED state
+			const assignment = await this.assignmentRepository.getAssignmentById(assignmentId);
+			if (assignment.state !== AssignmentState.EVALUATED) {
+				throw new EntityNotFoundError(AssessmentDto, { assignmentId, userId: participant.userId });
+			}
+		}
+
+		const [assessments] = await this.assessmentRepository.getAssessmentsForAssignment(assignmentId, {
+			userId: participant.userId
+		});
+
+		if (assessments.length == 0) {
+			throw new EntityNotFoundError(AssessmentDto, { assignmentId, userId: participant.userId });
+		}
+
+		return DtoFactory.createAssessmentDto(assessments[0]);
 	}
 
 	async getAssessmentsOfUserForCourse(userId: UserId, courseId: CourseId): Promise<AssessmentDto[]> {

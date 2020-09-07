@@ -4,12 +4,16 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 import { CourseDto } from "src/course/dto/course/course.dto";
 import { Roles } from "../../auth/decorators/roles.decorator";
+import { RoleGuard } from "../../auth/guards/role.guard";
+import { GetParticipant } from "../../course/decorators/decorators";
 import { AssessmentDto } from "../../course/dto/assessment/assessment.dto";
 import { GroupEventDto } from "../../course/dto/group/group-event.dto";
 import { GroupDto } from "../../course/dto/group/group.dto";
 import { CourseId } from "../../course/entities/course.entity";
+import { AssignmentGuard } from "../../course/guards/assignment.guard";
 import { CourseMemberGuard } from "../../course/guards/course-member.guard";
 import { ParticipantIdentityGuard } from "../../course/guards/identity.guard";
+import { Participant } from "../../course/models/participant.model";
 import { UserDto, UserUpdateDto } from "../../shared/dto/user.dto";
 import { UserId } from "../../shared/entities/user.entity";
 import { UserRole } from "../../shared/enums";
@@ -18,7 +22,6 @@ import { AssignmentGroupTuple } from "../dto/assignment-group-tuple.dto";
 import { UserFilter } from "../dto/user.filter";
 import { IdentityGuard } from "../guards/identity.guard";
 import { UserService } from "../services/user.service";
-import { RoleGuard } from "../../auth/guards/role.guard";
 
 @ApiBearerAuth()
 @ApiTags("users")
@@ -130,6 +133,23 @@ export class UserController {
 	): Promise<GroupDto> {
 
 		return this.userService.getGroupOfAssignment(userId, courseId, assignmentId);
+	}
+
+	@ApiOperation({
+		operationId: "getAssessmentOfUser",
+		summary: "Get assessment of user.",
+		description: "Retrieves the assessment of a user for a specific assignment. If requested by PARTICIPANT, assessment must be EVALUATED."
+	})
+	@Get(":userId/courses/:courseId/assignments/:assignmentId/assessment")
+	@UseGuards(CourseMemberGuard, ParticipantIdentityGuard, AssignmentGuard)
+	getAssessmentOfUser(
+		@Param("userId") userId: UserId,
+		@Param("courseId") courseId: CourseId,
+		@Param("assignmentId") assignmentId: string,
+		@GetParticipant() participant: Participant,
+	): Promise<AssessmentDto> {
+
+		return this.userService.getAssessment(participant, assignmentId);
 	}
 
 	@ApiOperation({
