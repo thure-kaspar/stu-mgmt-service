@@ -60,7 +60,7 @@ export class CourseParticipantsController {
 		description: "Returns a collection of users that are signed up for this course."
 	})
 	@Get()
-	@UseGuards(CourseMemberGuard)
+	@UseGuards(CourseMemberGuard, TeachingStaffGuard)
 	async getUsersOfCourse(
 		@Req() request: Request,
 		@Param("courseId") courseId: CourseId,
