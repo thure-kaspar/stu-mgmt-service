@@ -44,7 +44,6 @@ export class AuthService {
 			// User does not exist, create account in this system
 			user = await this.createUser(authInfo);
 		}
-		
 		return this.generateAuthToken(user);
 	}
 
@@ -52,7 +51,7 @@ export class AuthService {
 		const username = authInfo.user.username;
 		const displayName = authInfo.user.fullName?.length > 0 ? authInfo.user.fullName : authInfo.user.username;
 		const role = this.determineRole(authInfo.user.role);
-		const email = authInfo.user.settings?.email_address;
+		const email = authInfo.user.settings?.emailAddress;
 
 		return this.userRepository.createUser({ username, displayName, email, role });
 	}

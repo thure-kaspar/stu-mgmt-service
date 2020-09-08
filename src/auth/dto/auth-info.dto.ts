@@ -20,8 +20,8 @@ interface User {
 
 interface Settings {
 	wantsAi: boolean;
-	email_receive: boolean;
-	email_address: string;
+	emailReceive: boolean;
+	emailAddress: string;
 }
 
 interface PasswordDto {
