@@ -10,6 +10,8 @@ import { Course } from "../models/course.model";
 import { AssignmentRepository } from "../repositories/assignment.repository";
 import { AssignmentRegistrationService } from "./assignment-registration.service";
 import { AssignmentCreated } from "../events/assignment/assignment-created.event";
+import { AssignmentRemoved } from "../events/assignment/assignment-removed.event";
+import { AssignmentId } from "../entities/assignment.entity";
 
 @Injectable()
 export class AssignmentService {
@@ -66,8 +68,12 @@ export class AssignmentService {
 		return DtoFactory.createAssignmentDto(updated);
 	}
 
-	async deleteAssignment(assignmentId: string): Promise<boolean> {
-		return this.assignmentRepository.deleteAssignment(assignmentId);
+	async deleteAssignment(courseId: CourseId, assignmentId: AssignmentId): Promise<boolean> {
+		const deleted = await this.assignmentRepository.deleteAssignment(assignmentId);
+		if (deleted) {
+			this.events.publish(new AssignmentRemoved(courseId, assignmentId));
+		}
+		return deleted;
 	}
 
 }

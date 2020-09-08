@@ -94,7 +94,7 @@ export class AssignmentController {
 	): Promise<void> {
 
 		return throwIfRequestFailed(
-			this.assignmentService.deleteAssignment(assignmentId),
+			this.assignmentService.deleteAssignment(courseId, assignmentId),
 			`Failed to delete assignment (${assignmentId}).`
 		);
 	}
