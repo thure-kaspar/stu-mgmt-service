@@ -23,7 +23,10 @@ export class AssignmentStateChangedNotificationHandler implements IEventHandler<
 		this.notifications.send({
 			event: Event.ASSIGNMENT_STATE_CHANGED,
 			courseId: event.assignment.courseId,
-			assignmentId: event.assignment.id
+			assignmentId: event.assignment.id,
+			payload: {
+				state: event.assignment.state
+			}
 		});
 	}
 
