@@ -25,7 +25,8 @@ export class UserRegisteredNotificationHandler implements IEventHandler<UserRegi
 			event: Event.USER_REGISTERED,
 			courseId: event.courseId,
 			assignmentId: event.assignmentId,
-			userId: event.userId
+			userId: event.userId,
+			groupId: event.groupId
 		});
 	}
 
