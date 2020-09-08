@@ -18,7 +18,7 @@ export class RegistrationsCreatedNotificationHandler implements IEventHandler<Re
 
 	async handle(event: RegistrationsCreated): Promise<void> {
 		this.notifications.send({
-			event: Event.REGISTRATIONS_REMOVED,
+			event: Event.REGISTRATIONS_CREATED,
 			courseId: event.courseId,
 			assignmentId: event.assignmentId,
 		});
