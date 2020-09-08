@@ -28,6 +28,16 @@ Published when a new assignment has been created.
 }
 ```
 
+### AssignmentRemoved
+Published when an assignment has been removed.
+```
+{
+	event: Event.ASSIGNMENT_REMOVED,
+	courseId: event.courseId,
+	assignmentId: event.assignmentId
+}
+```
+
 ### AssignmentStateChanged
 Published when the assignment has been updated with a new state (i.e. `INVISIBLE` to `IN_PROGRESS`). It will be triggered by manual updates as well as by scheduled start/stops of assignments.
 ```
@@ -103,5 +113,42 @@ Triggered when an individual user's registration gets removed (user is removed f
 	courseId: event.courseId,
 	assignmentId: event.assignmentId,
 	userId: event.userId
+}
+```
+
+## Participant-related events
+
+### CourseJoined
+Triggered when a user joins a course.
+```
+{
+	event: Event.COURSE_JOINED,
+	courseId: event.courseId,
+	userId: event.userId
+}
+```
+
+## Group-related events
+These events are about the "global" group list and not related to the assignment registrations!
+
+### UserJoinedGroup
+Triggered when a user joins a group or is added to it.
+```
+{
+	event: Event.USER_JOINED_GROUP,
+	courseId: event.courseId,
+	userId: event.userId,
+	groupId: event.groupId
+}
+```
+
+### UserLeftGroup
+Triggered when a user leaves his current group or is removed from it.
+```
+{
+	event: Event.USER_LEFT_GROUP,
+	courseId: event.courseId,
+	userId: event.userId,
+	groupId: event.groupId
 }
 ```
