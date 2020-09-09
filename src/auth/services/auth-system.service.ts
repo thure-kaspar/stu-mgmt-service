@@ -8,14 +8,14 @@ const authSystemConfig = config.get("authSystem");
 @Injectable()
 export class AuthSystemService {
 
-	private readonly authenticateCheckUrl = authSystemConfig.url;
+	private readonly authSystemUrl = authSystemConfig.url;
 
 	constructor(private http: HttpService) { }
 
 	async checkAuthentication(credentials: AuthSystemCredentials): Promise<AuthInfo> {
 		try {
 			// Call external auth system's /authenticate/verify method token as query parameter
-			const url = `${this.authenticateCheckUrl}?jwtToken=${credentials.token}`;
+			const url = `${this.authSystemUrl}/api/v1/authenticate/verify?jwtToken=${credentials.token}`;
 			const response = await this.http.get<AuthInfo>(url).toPromise();
 
 			// Return AuthInfo, if user is authenticated
