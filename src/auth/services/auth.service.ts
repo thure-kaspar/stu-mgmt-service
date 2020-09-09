@@ -58,7 +58,7 @@ export class AuthService {
 		return this.userRepository.updateUser(user.id, {
 			...user,
 			email: authInfo.user.settings.emailAddress,
-			displayName: authInfo.user.fullName
+			displayName: authInfo.user.fullName ?? user.username
 		});
 	}
 
