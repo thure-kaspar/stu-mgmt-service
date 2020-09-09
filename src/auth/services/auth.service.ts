@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, NotImplementedException } from "@nestjs/common";
+import { Injectable, BadRequestException, NotImplementedException, Logger } from "@nestjs/common";
 import { AuthCredentialsDto, AuthSystemCredentials } from "../dto/auth-credentials.dto";
 import { JwtService } from "@nestjs/jwt";
 import { JwtPayload } from "../jwt/jwt-payload.interface";
@@ -35,16 +35,39 @@ export class AuthService {
 		// Check if user is authenticated in authentication system
 		const authInfo = await this.authSystem.checkAuthentication(credentials);
 		if (!authInfo) throw new BadRequestException("Invalid credentials");
-
+		
 		// Try to find user in this system
 		let user: User;
 		user = await this.userRepository.tryGetUserByUsername(authInfo.user.username);
 
+		await this.updateUser(user, authInfo);
 		if (!user) {
 			// User does not exist, create account in this system
 			user = await this.createUser(authInfo);
+		} else if (this.userInfoHasChanged(user, authInfo)) {
+			user = await this.updateUser(user, authInfo);
 		}
+
 		return this.generateAuthToken(user);
+	}
+
+	/**
+	 * Updates the user's `email` and `displayName` according to the information received
+	 * from Sparkyservice.
+	 */
+	private async updateUser(user: User, authInfo: AuthInfo): Promise<User> {
+		return this.userRepository.updateUser(user.id, {
+			...user,
+			email: authInfo.user.settings.emailAddress,
+			displayName: authInfo.user.fullName
+		});
+	}
+
+	/**
+	 * Returns `true`, if the user's `email` or `displayName` have been changed by Sparkyservice.
+	 */
+	private userInfoHasChanged(user: User, authInfo: AuthInfo): boolean {
+		return user.email !== authInfo.user.settings.emailAddress || user.displayName !== authInfo.user.fullName;
 	}
 
 	private async createUser(authInfo: AuthInfo) {
