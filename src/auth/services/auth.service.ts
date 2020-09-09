@@ -40,7 +40,6 @@ export class AuthService {
 		let user: User;
 		user = await this.userRepository.tryGetUserByUsername(authInfo.user.username);
 
-		await this.updateUser(user, authInfo);
 		if (!user) {
 			// User does not exist, create account in this system
 			user = await this.createUser(authInfo);
