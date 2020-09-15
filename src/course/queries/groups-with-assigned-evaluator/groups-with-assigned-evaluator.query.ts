@@ -3,8 +3,8 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { DtoFactory } from "../../../shared/dto-factory";
 import { Assessment } from "../../entities/assessment.entity";
+import { AssignmentRegistration } from "../../entities/assignment-group-registration.entity";
 import { CourseId } from "../../entities/course.entity";
-import { Group } from "../../entities/group.entity";
 import { AssignedEvaluatorFilter, GroupWithAssignedEvaluatorDto } from "./group-with-assigned-evaluator.dto";
 
 /**
@@ -22,19 +22,22 @@ export class GroupsWithAssignedEvaluatorQuery {
 @QueryHandler(GroupsWithAssignedEvaluatorQuery)
 export class GroupsWithAssignedEvaluatorHandler implements IQueryHandler<GroupsWithAssignedEvaluatorQuery> {
 
-	constructor(@InjectRepository(Group) private groupRepo: Repository<Group>) { }
+	constructor(
+		@InjectRepository(AssignmentRegistration) private registrations: Repository<AssignmentRegistration>
+	) { }
 
 	async execute(query: GroupsWithAssignedEvaluatorQuery): Promise<[GroupWithAssignedEvaluatorDto[], number]> {
 		const { courseId, assignmentId } = query;
 		const { assignedEvaluatorId, excludeAlreadyReviewed, nameOfGroupOrUser, skip, take } = query.filter || { };
 		
 		// Query groups of course and join assessment allocation, if available to retrieve id of assigned evaluator.
-		const groupQuery = this.groupRepo.createQueryBuilder("group")
-			.where("group.courseId = :courseId", { courseId })
-			.leftJoinAndSelect("group.assessmentAllocations", "allocation", "allocation.assignmentId = :assignmentId", { assignmentId });
-
-		if (skip) groupQuery.skip(skip);
-		if (take) groupQuery.take(take);
+		const groupQuery = this.registrations.createQueryBuilder("registration")
+			.where("registration.assignmentId = :assignmentId", { assignmentId })
+			.andWhere("group.courseId = :courseId", { courseId })
+			.innerJoinAndSelect("registration.group", "group")
+			.leftJoinAndSelect("group.assessmentAllocations", "allocation", "allocation.assignmentId = :assignmentId", { assignmentId })
+			.skip(skip)
+			.take(take);
 
 		if (assignedEvaluatorId) {
 			// Filter by evaluator
@@ -47,7 +50,7 @@ export class GroupsWithAssignedEvaluatorHandler implements IQueryHandler<GroupsW
 
 		if (excludeAlreadyReviewed) {
 			// Subquery to find all ids of groups that have been reviewed
-			const reviewedGroupsSubQuery = this.groupRepo.manager.getRepository(Assessment)
+			const reviewedGroupsSubQuery = this.registrations.manager.getRepository(Assessment)
 				.createQueryBuilder("assessment")
 				.where("assessment.assignmentId = :assignmentId", { assignmentId })
 				.andWhere("assessment.groupId IS NOT NULL")
@@ -60,9 +63,9 @@ export class GroupsWithAssignedEvaluatorHandler implements IQueryHandler<GroupsW
 			groupQuery.leftJoinAndSelect("group.assessments", "assessment", "assessment.assignmentId = :assignmentId", { assignmentId });
 		}
 
-		const [groups, count] = await groupQuery.getManyAndCount();
+		const [registrations, count] = await groupQuery.getManyAndCount();
 		
-		const dtos = groups.map(group => ({
+		const dtos = registrations.map(({ group }) => ({
 			group: DtoFactory.createGroupDto(group),
 			assignedEvaluatorId: group.assessmentAllocations[0]?.assignedEvaluatorId,
 			assessmentId: group.assessments?.length > 0 ? group.assessments[0].id : undefined
