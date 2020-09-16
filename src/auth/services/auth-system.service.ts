@@ -1,6 +1,6 @@
-import { Injectable, HttpService } from "@nestjs/common";
-import { AuthSystemCredentials } from "../dto/auth-credentials.dto";
+import { HttpService, Injectable } from "@nestjs/common";
 import * as config from "config";
+import { AuthSystemCredentials } from "../dto/auth-credentials.dto";
 import { AuthInfo } from "../dto/auth-info.dto";
 
 const authSystemConfig = config.get("authSystem");
@@ -21,6 +21,8 @@ export class AuthSystemService {
 			// Return AuthInfo, if user is authenticated
 			return response.data;
 		} catch(error) {
+			console.log("Login failed:", error);
+
 			// Return null, if authentication failed
 			return null;
 		}
