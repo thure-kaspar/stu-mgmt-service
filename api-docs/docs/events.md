@@ -109,7 +109,7 @@ Triggered when an participant is added to a registered group, after the initial 
 Triggered when an individual user's registration gets removed (user is removed from the group). It won't be triggered together with [RegistrationsRemoved](#registrationsremoved).
 ```
 {
-	event: Event.USER_REGISTERED,
+	event: Event.USER_UNREGISTERED,
 	courseId: event.courseId,
 	assignmentId: event.assignmentId,
 	userId: event.userId
