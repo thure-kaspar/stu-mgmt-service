@@ -1,9 +1,10 @@
 import { ApiProperty, ApiPropertyOptional, OmitType } from "@nestjs/swagger";
+import { Min } from "class-validator";
 import { UserDto } from "../../../shared/dto/user.dto";
-import { GroupDto } from "../group/group.dto";
-import { PartialAssessmentDto } from "./partial-assessment.dto";
 import { AssignmentDto } from "../assignment/assignment.dto";
 import { ParticipantDto } from "../course-participant/participant.dto";
+import { GroupDto } from "../group/group.dto";
+import { PartialAssessmentDto } from "./partial-assessment.dto";
 
 export class AssessmentDto {
 	/** Unique identifier of this assessment. */
@@ -18,6 +19,7 @@ export class AssessmentDto {
 
 	/** The amount of points that the student or group achieved with their submission. */
 	@ApiProperty({ description: "The amount of points that the student or group achieved with their submission."})
+	@Min(0)
 	achievedPoints: number;
 
 	/** A comment providing additional feedback. */
