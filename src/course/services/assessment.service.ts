@@ -124,10 +124,9 @@ export class AssessmentService {
 	 * @returns Updated assessment.
 	 */
 	async updateAssessment(assessmentId: string, update: AssessmentUpdateDto, updatedBy: string): Promise<AssessmentDto> {
-		// Check that assignment is in IN_REVIEW state
 		const original = await this.assessmentRepository.getAssessmentById(assessmentId);
-		if (original.assignment.state !== AssignmentState.IN_REVIEW) {
-			throw new BadRequestException("Assignment not IN_REVIEW state.");
+		if (original.assignment.state === AssignmentState.EVALUATED) {
+			throw new BadRequestException("Assignment is in EVALUATED state. Updating Assessments is not allowed.");
 		}
 
 		// Ensure that update only includes valid values
