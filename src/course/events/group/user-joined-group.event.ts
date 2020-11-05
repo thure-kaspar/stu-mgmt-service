@@ -7,9 +7,11 @@ import { UserId } from "../../../shared/entities/user.entity";
 import { NotificationService } from "../../services/notification.service";
 import { UserLeftGroupEvent } from "./user-left-group.event";
 import { Event } from "..";
+import { CourseId } from "../../entities/course.entity";
 
 export class UserJoinedGroupEvent {
 	constructor(
+		public readonly courseId: CourseId,
 		public readonly groupId: GroupId,
 		public readonly userId: UserId
 	) { }
@@ -31,7 +33,7 @@ export class UserJoinedGroupNotificationHandler implements IEventHandler<UserJoi
 
 	constructor(private notifications: NotificationService) { }
 
-	async handle(event: UserLeftGroupEvent): Promise<void> {
+	async handle(event: UserJoinedGroupEvent): Promise<void> {
 		this.notifications.send({
 			event: Event.USER_JOINED_GROUP,
 			courseId: event.courseId,

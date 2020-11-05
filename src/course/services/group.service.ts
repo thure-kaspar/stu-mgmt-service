@@ -175,7 +175,7 @@ export class GroupService {
 
 		const added = await this.groupRepository.addUserToGroup(course.id, group.id, selectedParticipant.userId);
 		if (added) {
-			this.events.publish(new UserJoinedGroupEvent(group.id, selectedParticipant.userId));
+			this.events.publish(new UserJoinedGroupEvent(course.id, group.id, selectedParticipant.userId));
 		} else {
 			throw new BadRequestException(`Failed to add user (${selectedParticipant.userId}) to group (${group.id})`);
 		}
@@ -187,7 +187,7 @@ export class GroupService {
 	async addUserToGroup_Force(courseId: CourseId, groupId: GroupId, userId: UserId): Promise<void> {
 		const added = await this.groupRepository.addUserToGroup(courseId, groupId, userId);
 		if (added) {
-			this.events.publish(new UserJoinedGroupEvent(groupId, userId));
+			this.events.publish(new UserJoinedGroupEvent(courseId, groupId, userId));
 		} else {
 			throw new BadRequestException("Failed to add user to group.");
 		}
