@@ -23,7 +23,7 @@ export class PartialAssessment {
 	@Column({ nullable: true, enum: Severity })
 	severity?: Severity;
 
-	@Column({ nullable: true })
+	@Column({ type: "float", nullable: true })
 	points?: number;
 
 	@Column({ nullable: true })

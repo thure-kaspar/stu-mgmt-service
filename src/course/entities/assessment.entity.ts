@@ -10,7 +10,7 @@ export class Assessment {
 	@PrimaryGeneratedColumn("uuid")
 	id: string;
 	
-	@Column()
+	@Column({ type: "float" })
 	achievedPoints: number;
 	
 	@Column({ nullable: true })

@@ -32,10 +32,10 @@ export class Assignment {
 	@Column({ type: "enum", enum: AssignmentType, default: AssignmentType.HOMEWORK })
 	type: AssignmentType;
 
-	@Column()
+	@Column({ type: "float" })
 	points: number;
 
-	@Column({ nullable: true })
+	@Column({ type: "float", nullable: true })
 	bonusPoints?: number;
 
 	@Column({ type: "enum", enum: CollaborationType, default: CollaborationType.GROUP_OR_SINGLE })

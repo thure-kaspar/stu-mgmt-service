@@ -30,10 +30,10 @@ export class AssignmentTemplate {
 	@Column({ type: "enum", enum: CollaborationType, default: CollaborationType.GROUP_OR_SINGLE, nullable: true })
 	collaboration?: CollaborationType;
 
-	@Column({ nullable: true })
+	@Column({ type: "float", nullable: true })
 	points?: number;
 
-	@Column({ nullable: true })
+	@Column({ type: "float", nullable: true })
 	bonusPoints?: number;
 
 	@Column({ nullable: true })
