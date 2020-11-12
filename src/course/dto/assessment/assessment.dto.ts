@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional, OmitType } from "@nestjs/swagger";
 import { Min } from "class-validator";
 import { UserDto } from "../../../shared/dto/user.dto";
+import { UserId } from "../../../shared/entities/user.entity";
 import { AssignmentDto } from "../assignment/assignment.dto";
 import { ParticipantDto } from "../course-participant/participant.dto";
 import { GroupDto } from "../group/group.dto";
@@ -48,11 +49,22 @@ export class AssessmentDto {
 	/** The creator of this assessment. */
 	//@ApiPropertyOptional({ description: "The creator of this assessment.", type: () => UserDto })
 	creator?: UserDto;
+
+	@ApiPropertyOptional({ description: "Identifier of the last user that updated this assessment."})
+	lastUpdatedById?: UserId;
+	lastUpdatedBy?: UserDto;
+
+	creationDate?: Date;
+	updateDate?: Date;
+
 	partialAssessments?: PartialAssessmentDto[];
 }
 
 /** Version of AssessmentDto containing only properties that can used for creation. */
-export class AssessmentCreateDto extends OmitType(AssessmentDto, ["group", "participant", "assignment", "creator", "creatorId", "id"]) { }
+export class AssessmentCreateDto extends OmitType(AssessmentDto, [
+	"group", "participant", "assignment", "creator", "creatorId", 
+	"id", "lastUpdatedBy", "lastUpdatedById", "creationDate", "updateDate"
+]) { }
 /** Version of AssessmentDto containing only properties that can be updated. */
 export class AssessmentUpdateDto {
 	

@@ -81,7 +81,7 @@ export abstract class DtoFactory {
 		};
 	}
     
-	static createUserDto(user: User, courseRole?: CourseRole, options?: { removeEmail: boolean }): UserDto {
+	static createUserDto(user: User, options?: { removeEmail: boolean }): UserDto {
 		const userDto: UserDto = {
 			id: user.id,
 			email: options?.removeEmail ? undefined : user.email,
@@ -152,6 +152,9 @@ export abstract class DtoFactory {
 			achievedPoints: assessment.achievedPoints,
 			comment: assessment.comment ?? undefined,
 			creatorId: assessment.creatorId,
+			lastUpdatedById: assessment.lastUpdatedById ?? undefined,
+			creationDate: assessment.creationDate,
+			updateDate: assessment.updateDate,
 			partialAssessments: assessment.partialAssessments?.map(p => p.toDto())
 		};
 
@@ -177,7 +180,8 @@ export abstract class DtoFactory {
 		}
 
 		// If creator was loaded
-		if (assessment.creator) assessmentDto.creator = this.createUserDto(assessment.creator, CourseRole.TUTOR, { removeEmail: true });
+		if (assessment.creator) assessmentDto.creator = this.createUserDto(assessment.creator, { removeEmail: true });
+		if (assessment.lastUpdatedBy) assessmentDto.lastUpdatedBy = this.createUserDto(assessment.lastUpdatedBy, { removeEmail: true });
 
 		if (assessment.group) {
 			assessmentDto.group = this.createGroupDto(assessment.group);

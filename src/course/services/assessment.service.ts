@@ -17,6 +17,7 @@ import { AssessmentRepository } from "../repositories/assessment.repository";
 import { AssignmentRepository } from "../repositories/assignment.repository";
 import { GroupService } from "./group.service";
 import { Assignment } from "../models/assignment.model";
+import { UserId } from "../../shared/entities/user.entity";
 
 @Injectable()
 export class AssessmentService {
@@ -123,7 +124,7 @@ export class AssessmentService {
 	 * @param updatedBy UserId of the user, who triggered the update.
 	 * @returns Updated assessment.
 	 */
-	async updateAssessment(assessmentId: string, update: AssessmentUpdateDto, updatedBy: string): Promise<AssessmentDto> {
+	async updateAssessment(assessmentId: string, update: AssessmentUpdateDto, updatedBy: UserId): Promise<AssessmentDto> {
 		const original = await this.assessmentRepository.getAssessmentById(assessmentId);
 		if (original.assignment.state === AssignmentState.EVALUATED) {
 			throw new BadRequestException("Assignment is in EVALUATED state. Updating Assessments is not allowed.");
@@ -132,7 +133,7 @@ export class AssessmentService {
 		// Ensure that update only includes valid values
 		this.validatePartialsForUpdate(update, assessmentId);
 
-		const updated = await this.assessmentRepository.updateAssessment(assessmentId, update);
+		const updated = await this.assessmentRepository.updateAssessment(assessmentId, update, updatedBy);
 
 		// Store event, if achieved points changed
 		if (original.achievedPoints !== updated.achievedPoints) {

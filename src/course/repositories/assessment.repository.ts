@@ -48,6 +48,7 @@ export class AssessmentRepository extends Repository<Assessment> {
 			.leftJoinAndSelect("userRelation.user", "user")
 			.innerJoinAndSelect("assessment.assignment", "assignment")
 			.leftJoinAndSelect("assessment.creator", "creator")
+			.leftJoinAndSelect("assessment.lastUpdatedBy", "lastUpdatedBy")
 			.orderBy("partial.id", "ASC");
 
 		const result = await query.getOne();
@@ -70,6 +71,7 @@ export class AssessmentRepository extends Repository<Assessment> {
 		const query = this.createQueryBuilder("assessment")
 			.where("assessment.assignmentId = :assignmentId", { assignmentId })
 			.leftJoinAndSelect("assessment.creator", "creator")
+			.leftJoinAndSelect("assessment.lastUpdatedBy", "lastUpdatedBy")
 			.leftJoinAndSelect("assessment.group", "group") // Include group, if it exists
 			.leftJoinAndSelect("assessment.assessmentUserRelations", "userRelation")
 			.leftJoinAndSelect("userRelation.user", "user")
@@ -118,6 +120,7 @@ export class AssessmentRepository extends Repository<Assessment> {
 	async getAssessmentsOfUserForCourse(courseId: CourseId, userId: UserId): Promise<Assessment[]> {
 		return this.createQueryBuilder("assessment")
 			.leftJoinAndSelect("assessment.creator", "creator")
+			.leftJoinAndSelect("assessment.lastUpdatedBy", "lastUpdatedBy")
 			.leftJoinAndSelect("assessment.partialAssessments", "partials") // Include partial assessments, if they exist
 			.leftJoinAndSelect("assessment.group", "group") // Include group, if it exists
 			.innerJoin("assessment.assessmentUserRelations", "userRelation", "userRelation.userId = :userId", { userId }) // User condition
@@ -139,6 +142,7 @@ export class AssessmentRepository extends Repository<Assessment> {
 			.where("assessment.groupId = :groupId", { groupId })
 			.innerJoinAndSelect("assessment.assignment", "assignment")
 			.leftJoinAndSelect("assessment.creator", "creator")
+			.leftJoinAndSelect("assessment.lastUpdatedBy", "lastUpdatedBy")
 			.leftJoinAndSelect("assessment.partialAssessments", "partials") // Include partial assessments, if they exist
 			.orderBy("assessment.creationDate", "DESC")
 			.getMany();
@@ -147,11 +151,13 @@ export class AssessmentRepository extends Repository<Assessment> {
 	/**
 	 * Updates the assessment including its partial assessments.
 	 */
-	async updateAssessment(assessmentId: string, updateDto: AssessmentUpdateDto): Promise<Assessment> {
+	async updateAssessment(assessmentId: string, updateDto: AssessmentUpdateDto, updatedBy: UserId): Promise<Assessment> {
 		const { achievedPoints, comment } = updateDto;
 		const assessment = await this.findOneOrFail(assessmentId, { 
 			relations: ["partialAssessments"]
 		});
+
+		assessment.lastUpdatedById = updatedBy;
 
 		// Update achievedPoints, if included (check for undefined or null, because 0 is allowed)
 		if (achievedPoints !== undefined && achievedPoints !== null) {
