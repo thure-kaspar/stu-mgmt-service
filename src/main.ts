@@ -12,7 +12,6 @@ import { StudentMgmtException } from "./course/exceptions/custom-exceptions";
 import { EntityAlreadyExistsFilter } from "./shared/entity-already-exists.filter";
 import { EntityNotFoundFilter } from "./shared/entity-not-found.filter";
 import { RoundingBehavior } from "./utils/math";
-import { UnauthorizedFilter } from "./shared/unauthorized.filter";
 
 async function bootstrap(): Promise<void> {
 	const logger = new Logger("Bootstrap");
@@ -26,10 +25,6 @@ async function bootstrap(): Promise<void> {
 	console.log("Log levels:", logLevels);
 	const app = await NestFactory.create<NestExpressApplication>(AppModule, { logger: logLevels });
 	logger.verbose("Application created!");
-
-	if (process.env.NODE_ENV == "demo" || process.env.NODE_ENV == "development") {
-		app.useGlobalFilters(new UnauthorizedFilter());
-	}
 	
 	app.useGlobalFilters(new EntityNotFoundFilter());
 	app.useGlobalFilters(new EntityAlreadyExistsFilter());
