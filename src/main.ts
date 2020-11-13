@@ -15,14 +15,14 @@ import { RoundingBehavior } from "./utils/math";
 
 async function bootstrap(): Promise<void> {
 	const logger = new Logger("Bootstrap");
-	logger.verbose(`Environment: ${process.env.NODE_ENV}`);
-
+	const logLevels = config.get("logger.levels");
+	console.log(`Environment: ${process.env.NODE_ENV}`);
+	console.log("Log levels:", logLevels);
+	
 	const serverConfig = config.get("server");
 	const port = process.env.SERVER_PORT || serverConfig.port;
-
+	
 	logger.verbose("Creating application...");
-	const logLevels = config.get("logger.levels");
-	console.log("Log levels:", logLevels);
 	const app = await NestFactory.create<NestExpressApplication>(AppModule, { logger: logLevels });
 	logger.verbose("Application created!");
 	
