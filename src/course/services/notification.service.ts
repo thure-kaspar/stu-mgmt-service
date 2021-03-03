@@ -6,21 +6,23 @@ import * as config from "config";
 export class NotificationService { 
 
 	private readonly logger = new Logger(NotificationService.name);
-	private url = process.env.JAVA_URL ?? config.get("notifications.java");
+	private urls: string[] = config.get("notifications.java");
 
 	constructor(private http: HttpService) {
-		this.logger.verbose(`Event notifications will be send to: ${this.url}`);
+		if (this.urls) {
+			this.logger.verbose(`Notifications will be send to:\n${this.urls.join("\n")}`);
+		}
 	}
 
 	/**
-	 * Sends the UpdateMessage via http-post to the URL specified by the course.
+	 * Sends the UpdateMessage via http-post to the URLs specified in the config (notifications > java).
 	 */
 	send(notification: NotificationDto): void {
-		if (this.url && notification) {
-			this.logger.verbose("Sending notification to: " + this.url);
-			this.http.post(this.url, notification).toPromise()
+		this.urls?.forEach(url => {
+			this.logger.verbose("Sending notification to: " + url);
+			this.http.post(url, notification).toPromise()
 				.catch(err  => this.logger.error(err.message));
-		}
+		});
 	}
 
 }
