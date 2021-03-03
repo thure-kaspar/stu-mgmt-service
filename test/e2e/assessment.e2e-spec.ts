@@ -9,7 +9,7 @@ import { COURSE_JAVA_1920 } from "../mocks/courses.mock";
 import { DbMockService } from "../mocks/db-mock.service";
 import { copy } from "../utils/object-helper";
 import { PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW, PARTIAL_ASSESSMENT_2_JAVA_IN_REVIEW, PARTIAL_ASSESSMENT_MOCK } from "../mocks/partial-assessments.mock";
-import { USER_STUDENT_JAVA, USER_STUDENT_3_JAVA_TUTOR } from "../mocks/users.mock";
+import { USER_STUDENT_JAVA, USER_STUDENT_3_JAVA_TUTOR, USER_SYSTEM_ADMIN } from "../mocks/users.mock";
 import { Severity } from "../../src/course/dto/assessment/partial-assessment.dto";
 import { GROUP_1_JAVA } from "../mocks/groups/groups.mock";
 import { PARTICIPANT_JAVA_1920_STUDENT, PARTICIPANT_JAVA_1920_TUTOR } from "../mocks/participants/participants.mock";
@@ -206,7 +206,6 @@ describe("POST-REQUESTS of AssessmentController (e2e)", () => {
 	});
 
 	it("(POST) /courses/{courseId}/assignments/{assignmentId}/assessments Creates the given (group-)assessment and returns it", () => {
-		const assignment = copy(ASSIGNMENT_JAVA_EVALUATED);
 		const assessment = copy(ASSESSMENT_JAVA_EVALUATED_GROUP_1);
 
 		const expected = copy(assessment);
@@ -222,7 +221,6 @@ describe("POST-REQUESTS of AssessmentController (e2e)", () => {
 	});
 
 	it("(POST) /courses/{courseId}/assignments/{assignmentId}/assessments Creates the given (user-)assessment and returns it", () => {
-		const assignment = copy(ASSIGNMENT_JAVA_TESTAT_EVALUATED_SINGLE);
 		const assessment = copy(ASSESSMENT_JAVA_TESTAT_USER_1);
 
 		const expected = copy(assessment);
@@ -238,7 +236,6 @@ describe("POST-REQUESTS of AssessmentController (e2e)", () => {
 	});
 
 	it("(POST) /courses/{courseId}/assignments/{assignmentId}/assessments Assessment with partial assessments -> Creates partial assessments", () => {
-		const assignment = copy(ASSIGNMENT_JAVA_IN_REVIEW_SINGLE);
 		const assessment = copy(ASSESSMENT_JAVA_IN_REVIEW);
 		assessment.partialAssessments = [PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW, PARTIAL_ASSESSMENT_2_JAVA_IN_REVIEW];
 		const expected = copy(assessment);
@@ -255,7 +252,6 @@ describe("POST-REQUESTS of AssessmentController (e2e)", () => {
 
 	it("(POST) /courses/{courseId}/assignments/{assignmentId}/assessments/{assessmentId} Adds partial assignment", async () => {
 		await dbMockService.createAssessments();
-		const assignment = copy(ASSIGNMENT_JAVA_IN_REVIEW_SINGLE);
 		const assessment = copy(ASSESSMENT_JAVA_IN_REVIEW);
 		const partialAssessment = copy(PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW);
 		console.assert(partialAssessment.assessmentId === assessment.id);		
@@ -360,8 +356,13 @@ describe("PATCH-REQUESTS of AssessmentController (e2e)", () => {
 			// Joined relations
 			tmp.assignment = ASSIGNMENT_JAVA_IN_REVIEW_SINGLE;
 			tmp.creator = USER_STUDENT_3_JAVA_TUTOR;
+			tmp.creator.email = undefined;
 			tmp.participant = PARTICIPANT_JAVA_1920_TUTOR.participant;
 			tmp.partialAssessments = update.addPartialAssessments; // Add new partials
+			tmp.lastUpdatedBy = USER_SYSTEM_ADMIN;
+			tmp.lastUpdatedById = USER_SYSTEM_ADMIN.id;
+			tmp.lastUpdatedBy.email = undefined;
+
 			const expected = JSON.parse(JSON.stringify(tmp)); // Avoids issues with date types
 
 			return request(app.getHttpServer())
@@ -370,6 +371,8 @@ describe("PATCH-REQUESTS of AssessmentController (e2e)", () => {
 				.expect(200)
 				.expect(({ body }) => {
 					const result = body as AssessmentDto;
+					result.updateDate = undefined;
+
 					expect(result.partialAssessments[0].id).toBeDefined();
 					result.partialAssessments.forEach(p => p.id = undefined); // Remove ids for easier comparison
 					expect(result).toEqual(expected);
@@ -393,7 +396,11 @@ describe("PATCH-REQUESTS of AssessmentController (e2e)", () => {
 			// Joined relations
 			tmp.assignment = ASSIGNMENT_JAVA_IN_REVIEW_SINGLE;
 			tmp.creator = USER_STUDENT_3_JAVA_TUTOR;
+			tmp.creator.email = undefined;
 			tmp.participant = PARTICIPANT_JAVA_1920_STUDENT.participant;
+			tmp.lastUpdatedBy = USER_SYSTEM_ADMIN;
+			tmp.lastUpdatedById = USER_SYSTEM_ADMIN.id;
+			tmp.lastUpdatedBy.email = undefined;
 
 			const expected = JSON.parse(JSON.stringify(tmp)); // Avoids issues with date types
 
@@ -403,6 +410,8 @@ describe("PATCH-REQUESTS of AssessmentController (e2e)", () => {
 				.expect(200)
 				.expect(({ body }) => {
 					const result = body as AssessmentDto;
+					result.updateDate = undefined;
+
 					expect(result).toEqual(expected);
 				});
 		});
@@ -423,6 +432,8 @@ describe("PATCH-REQUESTS of AssessmentController (e2e)", () => {
 			tmp.assignment = ASSIGNMENT_JAVA_IN_REVIEW_SINGLE;
 			tmp.creator = USER_STUDENT_3_JAVA_TUTOR;
 			tmp.participant = PARTICIPANT_JAVA_1920_STUDENT.participant;
+			tmp.lastUpdatedBy = USER_SYSTEM_ADMIN;
+			tmp.lastUpdatedBy.email = undefined;
 
 			const expected = JSON.parse(JSON.stringify(tmp)); // Avoids issues with date types
 
@@ -432,6 +443,8 @@ describe("PATCH-REQUESTS of AssessmentController (e2e)", () => {
 				.expect(200)
 				.expect(({ body }) => {
 					const result = body as AssessmentDto;
+					result.updateDate = undefined;
+
 					expect(result).toEqual(expected);
 				});
 		});
