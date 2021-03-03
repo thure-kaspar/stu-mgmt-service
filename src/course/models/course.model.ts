@@ -2,7 +2,6 @@ import { Course as CourseEntity, CourseId } from "../entities/course.entity";
 import { CourseClosedException } from "../exceptions/custom-exceptions";
 
 export class Course {
-
 	readonly id: CourseId;
 	readonly shortname: string;
 	readonly semester: string;
@@ -34,8 +33,7 @@ export class Course {
 			.isNotClosed()
 			.allowsGroupCreation();
 	 */
-	with<T extends Course, DType>(type: (new(c: CourseEntity, d: DType) => T), data: DType): T {
+	with<T extends Course, DType>(type: new (c: CourseEntity, d: DType) => T, data: DType): T {
 		return new type(this.course, data);
 	}
-
 }

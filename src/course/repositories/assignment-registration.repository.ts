@@ -16,24 +16,29 @@ import { Group } from "../models/group.model";
 
 @EntityRepository(AssignmentRegistration)
 export class AssignmentRegistrationRepository extends Repository<AssignmentRegistration> {
-
 	private readonly groupRelationsRepository = getRepository(GroupRegistrationRelation);
 
 	/**
 	 * Creates a registration for specified group and its members.
-	 * @throws `EntityAlreadyExistsError` if group or member is already registered. 
+	 * @throws `EntityAlreadyExistsError` if group or member is already registered.
 	 */
-	async createGroupRegistration(assignmentId: AssignmentId, groupId: GroupId, members: Participant[]): Promise<AssignmentRegistration> {
+	async createGroupRegistration(
+		assignmentId: AssignmentId,
+		groupId: GroupId,
+		members: Participant[]
+	): Promise<AssignmentRegistration> {
 		const registration = new AssignmentRegistration({
 			assignmentId,
 			groupId,
-			groupRelations: members.map(member => this.createGroupRegistrationRelationEntity(assignmentId, member.id))
+			groupRelations: members.map(member =>
+				this.createGroupRegistrationRelationEntity(assignmentId, member.id)
+			)
 		});
-		
+
 		try {
 			const created = await this.save(registration);
 			return created;
-		} catch(error) {
+		} catch (error) {
 			if (error.code === DbException.PG_UNIQUE_VIOLATION) {
 				throw new EntityAlreadyExistsError();
 			}
@@ -42,9 +47,14 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 
 	/**
 	 * Creates a registration for the specified user.
-	 * @throws `Error`, if user is already registered. 
+	 * @throws `Error`, if user is already registered.
 	 */
-	async createRegistration(assignmentId: AssignmentId, groupId: GroupId, userId: UserId, participantId: number): Promise<AssignmentRegistration> {
+	async createRegistration(
+		assignmentId: AssignmentId,
+		groupId: GroupId,
+		userId: UserId,
+		participantId: number
+	): Promise<AssignmentRegistration> {
 		// Check if group is already registered
 		const groupRegistration = await this.tryGetRegistration(assignmentId, groupId);
 
@@ -53,33 +63,45 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 			const registration = new AssignmentRegistration({
 				assignmentId,
 				groupId,
-				groupRelations: [this.createGroupRegistrationRelationEntity(assignmentId, participantId)]
+				groupRelations: [
+					this.createGroupRegistrationRelationEntity(assignmentId, participantId)
+				]
 			});
 
 			return this.save(registration);
-		} 
-		
+		}
+
 		// If group registration already exists, add registration relation for this participant
 		const registrationRelation = this.createGroupRegistrationRelationEntity(
-			assignmentId, 
-			participantId, 
+			assignmentId,
+			participantId,
 			groupRegistration.id
 		);
 		await this.groupRelationsRepository.insert(registrationRelation);
 
-		return this.findOne(groupRegistration.id, { 
-			relations: ["groupRelations", "groupRelations.participant", "groupRelations.participant.user"]
+		return this.findOne(groupRegistration.id, {
+			relations: [
+				"groupRelations",
+				"groupRelations.participant",
+				"groupRelations.participant.user"
+			]
 		});
 	}
 
-	private async tryGetRegistration(assignmentId: AssignmentId, groupId: GroupId): Promise<AssignmentRegistration> {
-		return this.findOne({ where: { assignmentId, groupId }});
+	private async tryGetRegistration(
+		assignmentId: AssignmentId,
+		groupId: GroupId
+	): Promise<AssignmentRegistration> {
+		return this.findOne({ where: { assignmentId, groupId } });
 	}
 
 	/**
 	 * Creates registrations for all users in the given groups.
 	 */
-	createRegistrations(assignmentId: AssignmentId, groups: Group[]): Promise<AssignmentRegistration[]> {
+	createRegistrations(
+		assignmentId: AssignmentId,
+		groups: Group[]
+	): Promise<AssignmentRegistration[]> {
 		const registrations = this.buildRegistrations(groups, assignmentId);
 		if (registrations.length == 0) return [] as any;
 		return this.save(registrations);
@@ -93,18 +115,23 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 		const registrations = groups.map(group => {
 			const registration = new AssignmentRegistration({
 				assignmentId,
-				groupId: group.id,
+				groupId: group.id
 			});
-			
-			registration.groupRelations = group.members.map(member => 
-				this.createGroupRegistrationRelationEntity(assignmentId, member.id));
+
+			registration.groupRelations = group.members.map(member =>
+				this.createGroupRegistrationRelationEntity(assignmentId, member.id)
+			);
 
 			return registration;
 		});
 		return registrations;
 	}
 
-	private createGroupRegistrationRelationEntity(assignmentId: string, participantId: number, registrationId?: number): GroupRegistrationRelation {
+	private createGroupRegistrationRelationEntity(
+		assignmentId: string,
+		participantId: number,
+		registrationId?: number
+	): GroupRegistrationRelation {
 		return new GroupRegistrationRelation({
 			assignmentId,
 			participantId: participantId,
@@ -117,8 +144,11 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 	 * Includes relations:
 	 * - Group (with members)
 	 */
-	async getRegisteredGroupsWithMembers(assignmentId: AssignmentId, filter?: AssignmentRegistrationFilter): Promise<[GroupDto[], number]> {
-		const { groupname, skip, take } = filter || { };
+	async getRegisteredGroupsWithMembers(
+		assignmentId: AssignmentId,
+		filter?: AssignmentRegistrationFilter
+	): Promise<[GroupDto[], number]> {
+		const { groupname, skip, take } = filter || {};
 
 		const query = this.createQueryBuilder("registration")
 			.where("registration.assignmentId = :assignmentId", { assignmentId })
@@ -129,13 +159,13 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 			.orderBy("group.name", "ASC")
 			.skip(skip)
 			.take(take);
-	
+
 		if (groupname) {
 			query.andWhere("group.name ILIKE :groupname", { groupname: `%${groupname}%` });
 		}
 
 		const [result, count] = await query.getManyAndCount();
-		
+
 		const groups: GroupDto[] = result.map(registration => this._buildGroupDto(registration));
 		return [groups, count];
 	}
@@ -145,7 +175,10 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 	 * Includes relations:
 	 * - Group (with members)
 	 */
-	async getRegisteredGroupWithMembers(assignmentId: AssignmentId, groupId: GroupId): Promise<GroupDto> {
+	async getRegisteredGroupWithMembers(
+		assignmentId: AssignmentId,
+		groupId: GroupId
+	): Promise<GroupDto> {
 		const query = await this.createQueryBuilder("registration")
 			.where("registration.assignmentId = :assignmentId", { assignmentId })
 			.andWhere("registration.groupId = :groupId", { groupId })
@@ -156,7 +189,7 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 			.getOne();
 
 		if (!query) throw new EntityNotFoundError(AssignmentRegistration, null);
-		
+
 		return this._buildGroupDto(query);
 	}
 
@@ -184,13 +217,16 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 	 * Includes relations:
 	 * - Group (with members)
 	 */
-	async tryGetRegisteredGroupOfUser(assignmentId: AssignmentId, userId: UserId): Promise<GroupDto> {
+	async tryGetRegisteredGroupOfUser(
+		assignmentId: AssignmentId,
+		userId: UserId
+	): Promise<GroupDto> {
 		const query = await this.createQueryBuilder("registration")
 			.where("registration.assignmentId = :assignmentId", { assignmentId })
 			.andWhere("searchedParticipant.userId = :userId", { userId })
 			.innerJoinAndSelect("registration.group", "group")
 			.innerJoinAndSelect("registration.groupRelations", "searchedGroupRelations")
-			.innerJoinAndSelect("searchedGroupRelations.participant", "searchedParticipant") 
+			.innerJoinAndSelect("searchedGroupRelations.participant", "searchedParticipant")
 			.innerJoinAndSelect("registration.groupRelations", "groupRelations") // Join groupRelation twice (with different alias) to keep all members (WHERE filters by userId)
 			.innerJoinAndSelect("groupRelations.participant", "participant")
 			.innerJoinAndSelect("participant.user", "user")
@@ -201,7 +237,10 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 		return this._buildGroupDto(query);
 	}
 
-	async getAllRegisteredGroupsOfUserInCourse(courseId: CourseId, userId: UserId): Promise<AssignmentGroupTuple[]> {
+	async getAllRegisteredGroupsOfUserInCourse(
+		courseId: CourseId,
+		userId: UserId
+	): Promise<AssignmentGroupTuple[]> {
 		const query = await this.createQueryBuilder("registration")
 			.where("searchedParticipant.userId = :userId", { userId })
 			.andWhere("group.courseId = :courseId", { courseId })
@@ -214,7 +253,7 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 			.innerJoinAndSelect("participant.user", "user")
 			.orderBy("assignment.endDate", "ASC", "NULLS LAST")
 			.getMany();
-		
+
 		const tuples: AssignmentGroupTuple[] = query.map(registration => {
 			const group = this._buildGroupDto(registration);
 			return {
@@ -230,7 +269,7 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 	 * Returns `true`, if any there exist any `AssignmentGroupRegistration` for this assignment.
 	 */
 	async hasRegistrations(assignmentId: AssignmentId): Promise<boolean> {
-		const exists = await this.findOne({ where: { assignmentId }});
+		const exists = await this.findOne({ where: { assignmentId } });
 		return !!exists;
 	}
 
@@ -238,19 +277,31 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 	 * Removes the registration of a user.
 	 */
 	async removeRegistrationForUser(assignmentId: AssignmentId, userId: UserId): Promise<boolean> {
-		const relation = await this.groupRelationsRepository.createQueryBuilder("relation")
-			.innerJoin("relation.assignmentRegistration", "registration", "registration.assignmentId = :assignmentId", { assignmentId })
-			.innerJoin("relation.participant", "participant", "participant.userId = :userId", { userId })
+		const relation = await this.groupRelationsRepository
+			.createQueryBuilder("relation")
+			.innerJoin(
+				"relation.assignmentRegistration",
+				"registration",
+				"registration.assignmentId = :assignmentId",
+				{ assignmentId }
+			)
+			.innerJoin("relation.participant", "participant", "participant.userId = :userId", {
+				userId
+			})
 			.getOne();
 
-		if (!relation) throw new EntityNotFoundError(GroupRegistrationRelation, { assignmentId, userId });
+		if (!relation)
+			throw new EntityNotFoundError(GroupRegistrationRelation, { assignmentId, userId });
 		return !!(await this.groupRelationsRepository.remove(relation));
 	}
 
 	/**
 	 * Removes the registration of a group and thereby removes the registrations of all members.
 	 */
-	async removeRegistrationForGroup(assignmentId: AssignmentId, groupId: GroupId): Promise<boolean> {
+	async removeRegistrationForGroup(
+		assignmentId: AssignmentId,
+		groupId: GroupId
+	): Promise<boolean> {
 		const registrations = await this.find({
 			where: {
 				assignmentId,
@@ -269,5 +320,4 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 	async removeRegistrations(assignmentId: AssignmentId): Promise<void> {
 		await this.delete({ assignmentId });
 	}
-
 }

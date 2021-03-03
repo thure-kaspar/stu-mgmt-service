@@ -1,4 +1,15 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards } from "@nestjs/common";
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Param,
+	Patch,
+	Post,
+	Query,
+	Req,
+	UseGuards
+} from "@nestjs/common";
 import { QueryBus } from "@nestjs/cqrs";
 import { AuthGuard } from "@nestjs/passport";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
@@ -16,12 +27,10 @@ import { CourseService } from "../services/course.service";
 import { RoleGuard } from "../../auth/guards/role.guard";
 
 @ApiBearerAuth()
-@ApiTags("courses") 
+@ApiTags("courses")
 @Controller("courses")
 export class CourseController {
-
-	constructor(private courseService: CourseService,
-				private queryBus: QueryBus) { }
+	constructor(private courseService: CourseService, private queryBus: QueryBus) {}
 
 	/**
 	 * Creates a new course.
@@ -37,7 +46,7 @@ export class CourseController {
 	createCourse(@Body() courseDto: CourseCreateDto): Promise<CourseDto> {
 		return this.courseService.createCourse(courseDto);
 	}
-	
+
 	/**
 	 * Returns all courses that match the given filter.
 	 */
@@ -47,10 +56,7 @@ export class CourseController {
 		description: "Returns all courses that match the given filter."
 	})
 	@Get()
-	getCourses(
-		@Req() request: Request,
-		@Query() filter?: CourseFilter
-	): Promise<CourseDto[]> {
+	getCourses(@Req() request: Request, @Query() filter?: CourseFilter): Promise<CourseDto[]> {
 		return PaginatedResult(this.courseService.getCourses(filter), request);
 	}
 
@@ -82,7 +88,6 @@ export class CourseController {
 		@Param("name") name: string,
 		@Param("semester") semester: string
 	): Promise<CourseDto> {
-
 		return this.courseService.getCourseByNameAndSemester(name, semester);
 	}
 
@@ -100,7 +105,6 @@ export class CourseController {
 		@Param("courseId") courseId: CourseId,
 		@Body() courseDto: CourseDto
 	): Promise<CourseDto> {
-
 		return this.courseService.updateCourse(courseId, courseDto);
 	}
 
@@ -114,14 +118,10 @@ export class CourseController {
 	})
 	@Delete(":courseId")
 	@UseGuards(AuthGuard(), CourseMemberGuard, TeachingStaffGuard)
-	deleteCourse(
-		@Param("courseId") courseId: CourseId,
-	): Promise<void> {
-
+	deleteCourse(@Param("courseId") courseId: CourseId): Promise<void> {
 		return throwIfRequestFailed(
 			this.courseService.deleteCourse(courseId),
 			`Failed to delete course (${courseId}).`
 		);
 	}
-
 }

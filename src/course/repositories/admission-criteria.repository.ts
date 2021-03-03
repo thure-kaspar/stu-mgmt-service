@@ -6,13 +6,15 @@ import { CourseId } from "../entities/course.entity";
 
 @EntityRepository(AdmissionCriteria)
 export class AdmissionCriteriaRepository extends Repository<AdmissionCriteria> {
-	
 	/** Inserts the admission criteria into the database and returns it. */
-	async createAdmissionCriteria(configId: number, criteriaDto: AdmissionCriteriaDto): Promise<AdmissionCriteria> {
+	async createAdmissionCriteria(
+		configId: number,
+		criteriaDto: AdmissionCriteriaDto
+	): Promise<AdmissionCriteria> {
 		const criteria = new AdmissionCriteria();
 		criteria.courseConfigId = configId;
 		criteria.admissionCriteria = criteriaDto;
-		
+
 		const saved = await this.save(criteria);
 		return saved;
 	}
@@ -36,12 +38,15 @@ export class AdmissionCriteriaRepository extends Repository<AdmissionCriteria> {
 			.innerJoin("criteria.courseConfig", "c")
 			.where("c.courseId = :courseId", { courseId })
 			.getOne();
-	
+
 		return criteria;
 	}
 
 	/** Updates the admission criteria. */
-	async updateAdmissionCriteria(courseId: CourseId, criteriaDto: AdmissionCriteriaDto): Promise<AdmissionCriteria> {
+	async updateAdmissionCriteria(
+		courseId: CourseId,
+		criteriaDto: AdmissionCriteriaDto
+	): Promise<AdmissionCriteria> {
 		const criteria = await this.getByCourseId(courseId);
 		criteria.admissionCriteria = criteriaDto;
 		return this.save(criteria);
@@ -53,5 +58,4 @@ export class AdmissionCriteriaRepository extends Repository<AdmissionCriteria> {
 		const deleted = await this.remove(criteria);
 		return !!deleted;
 	}
-
 }

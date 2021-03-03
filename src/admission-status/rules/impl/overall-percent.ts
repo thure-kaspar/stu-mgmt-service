@@ -5,7 +5,6 @@ import { OverallPercentRule } from "../abstract-rules";
 import { RuleCheckResult } from "../../dto/rule-check-result.dto";
 
 export class OverallPercentRuleImpl extends OverallPercentRule {
-
 	private overallPoints: number;
 	private round: (value: number) => number;
 
@@ -15,7 +14,10 @@ export class OverallPercentRuleImpl extends OverallPercentRule {
 
 		const relevantAssignments = this.filterAssignmentsByType(assignments);
 		this.overallPoints = sumOf(relevantAssignments, a => a.points);
-		this.round = RoundingMethod(this.achievedPercentRounding.type, this.achievedPercentRounding.decimals);
+		this.round = RoundingMethod(
+			this.achievedPercentRounding.type,
+			this.achievedPercentRounding.decimals
+		);
 	}
 
 	/**
@@ -47,5 +49,4 @@ export class OverallPercentRuleImpl extends OverallPercentRule {
 			_assignmentType: this.assignmentType
 		};
 	}
-
 }

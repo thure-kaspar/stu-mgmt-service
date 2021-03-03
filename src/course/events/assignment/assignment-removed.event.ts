@@ -5,16 +5,12 @@ import { NotificationService } from "../../services/notification.service";
 import { Event } from "..";
 
 export class AssignmentRemoved {
-	constructor(
-		readonly courseId: CourseId,
-		readonly assignmentId: AssignmentId
-	) { }
+	constructor(readonly courseId: CourseId, readonly assignmentId: AssignmentId) {}
 }
 
 @EventsHandler(AssignmentRemoved)
 export class AssignmentRemovedNotificationHandler implements IEventHandler<AssignmentRemoved> {
-
-	constructor(private notifications: NotificationService) { }
+	constructor(private notifications: NotificationService) {}
 
 	async handle(event: AssignmentRemoved): Promise<void> {
 		this.notifications.send({
@@ -23,5 +19,4 @@ export class AssignmentRemovedNotificationHandler implements IEventHandler<Assig
 			assignmentId: event.assignmentId
 		});
 	}
-
 }

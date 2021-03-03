@@ -27,12 +27,14 @@ import { RegistrationsRemoved } from "../events/assignment/registrations-removed
 
 @Injectable()
 export class AssignmentRegistrationService {
-
-	constructor(@InjectRepository(AssignmentRegistration) private registrations: AssignmentRegistrationRepository,
-				@InjectRepository(GroupEntity) private groups: GroupRepository,
-				@InjectRepository(GroupSettings) private groupSettings: GroupSettingsRepository,
-				private groupMergeStrategy: GroupMergeStrategy,
-				private events: EventBus) { }
+	constructor(
+		@InjectRepository(AssignmentRegistration)
+		private registrations: AssignmentRegistrationRepository,
+		@InjectRepository(GroupEntity) private groups: GroupRepository,
+		@InjectRepository(GroupSettings) private groupSettings: GroupSettingsRepository,
+		private groupMergeStrategy: GroupMergeStrategy,
+		private events: EventBus
+	) {}
 
 	/**
 	 * Registers the current groups of a course and their members for this assignment.
@@ -48,7 +50,7 @@ export class AssignmentRegistrationService {
 		let groups = groupEntities
 			.filter(g => g.userGroupRelations.length > 0) // Remove empty groups
 			.map(g => new Group(g));
-	
+
 		if (groupSettings.mergeGroupsOnAssignmentStarted) {
 			const _course = course.with(CourseWithGroupSettings, groupSettings);
 			groups = this.groupMergeStrategy.merge(groups, _course);
@@ -61,7 +63,11 @@ export class AssignmentRegistrationService {
 	/**
 	 * Registers a group and its current members for the specified assignment.
 	 */
-	async registerGroup(course: Course, assignmentId: AssignmentId, groupId: GroupId): Promise<void> {
+	async registerGroup(
+		course: Course,
+		assignmentId: AssignmentId,
+		groupId: GroupId
+	): Promise<void> {
 		const group = await this.groups.getGroupWithUsers(groupId);
 		const members = group.userGroupRelations.map(relation => relation.participant);
 		await this.registrations.createGroupRegistration(assignmentId, groupId, members);
@@ -71,28 +77,49 @@ export class AssignmentRegistrationService {
 	/**
 	 * Registers an individual participant for the assignment as member of the specified group.
 	 */
-	async registerUserToGroup(course: Course, assignmentId: AssignmentId, groupId: GroupId, selectedParticipant: Participant): Promise<void> {
-		const isAlreadyRegistered = await this.registrations.tryGetRegisteredGroupOfUser(assignmentId, selectedParticipant.userId);
+	async registerUserToGroup(
+		course: Course,
+		assignmentId: AssignmentId,
+		groupId: GroupId,
+		selectedParticipant: Participant
+	): Promise<void> {
+		const isAlreadyRegistered = await this.registrations.tryGetRegisteredGroupOfUser(
+			assignmentId,
+			selectedParticipant.userId
+		);
 
 		if (isAlreadyRegistered) {
 			throw new AlreadyInGroupException(selectedParticipant.userId, isAlreadyRegistered.id);
 		}
 
-		await this.registrations.createRegistration(assignmentId, groupId, selectedParticipant.userId, selectedParticipant.id);
-		this.events.publish(new UserRegistered(course.id, assignmentId, selectedParticipant.userId, groupId));
+		await this.registrations.createRegistration(
+			assignmentId,
+			groupId,
+			selectedParticipant.userId,
+			selectedParticipant.id
+		);
+		this.events.publish(
+			new UserRegistered(course.id, assignmentId, selectedParticipant.userId, groupId)
+		);
 	}
 
 	/**
 	 * Returns all groups and their members that are registered for this assignment.
 	 */
-	async getRegisteredGroupsWithMembers(assignmentId: AssignmentId, filter?: AssignmentRegistrationFilter): Promise<[GroupDto[], number]> {
+	async getRegisteredGroupsWithMembers(
+		assignmentId: AssignmentId,
+		filter?: AssignmentRegistrationFilter
+	): Promise<[GroupDto[], number]> {
 		return await this.registrations.getRegisteredGroupsWithMembers(assignmentId, filter);
 	}
 
 	/**
 	 * Returns a group and its members for the specified assignment.
 	 */
-	async getRegisteredGroupWithMembers(assignmentId: AssignmentId, groupId: GroupId): Promise<GroupDto> {
+	async getRegisteredGroupWithMembers(
+		assignmentId: AssignmentId,
+		groupId: GroupId
+	): Promise<GroupDto> {
 		return this.registrations.getRegisteredGroupWithMembers(assignmentId, groupId);
 	}
 
@@ -113,7 +140,11 @@ export class AssignmentRegistrationService {
 	/**
 	 * Removes the registration of a user for this assignment.
 	 */
-	async unregisterUser(courseId: CourseId, assignmentId: AssignmentId, userId: UserId): Promise<void> {
+	async unregisterUser(
+		courseId: CourseId,
+		assignmentId: AssignmentId,
+		userId: UserId
+	): Promise<void> {
 		const removed = await this.registrations.removeRegistrationForUser(assignmentId, userId);
 		if (removed) {
 			this.events.publish(new UserUnregistered(courseId, assignmentId, userId));
@@ -123,7 +154,11 @@ export class AssignmentRegistrationService {
 	/**
 	 * Removes the registration of a group and its members for this assignment.
 	 */
-	async unregisterGroup(courseId: CourseId, assignmentId: AssignmentId, groupId: GroupId): Promise<void> {
+	async unregisterGroup(
+		courseId: CourseId,
+		assignmentId: AssignmentId,
+		groupId: GroupId
+	): Promise<void> {
 		const removed = await this.registrations.removeRegistrationForGroup(assignmentId, groupId);
 		if (removed) {
 			this.events.publish(new GroupUnregistered(courseId, assignmentId, groupId));
@@ -137,5 +172,4 @@ export class AssignmentRegistrationService {
 		await this.registrations.removeRegistrations(assignmentId);
 		this.events.publish(new RegistrationsRemoved(courseId, assignmentId));
 	}
-
 }

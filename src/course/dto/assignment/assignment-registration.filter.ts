@@ -2,7 +2,6 @@ import { PaginationFilter } from "../../../shared/pagination.filter";
 import { ApiPropertyOptional } from "@nestjs/swagger";
 
 export class AssignmentRegistrationFilter extends PaginationFilter {
-
 	@ApiPropertyOptional()
 	groupname?: string;
 
@@ -10,5 +9,4 @@ export class AssignmentRegistrationFilter extends PaginationFilter {
 		super(filter);
 		this.groupname = filter?.groupname;
 	}
-
 }

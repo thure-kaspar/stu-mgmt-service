@@ -1,7 +1,10 @@
 import { EventBus } from "@nestjs/cqrs";
 import { Test, TestingModule } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { AssessmentDto, AssessmentUpdateDto } from "../../../src/course/dto/assessment/assessment.dto";
+import {
+	AssessmentDto,
+	AssessmentUpdateDto
+} from "../../../src/course/dto/assessment/assessment.dto";
 import { PartialAssessmentDto } from "../../../src/course/dto/assessment/partial-assessment.dto";
 import { GroupDto } from "../../../src/course/dto/group/group.dto";
 import { AssessmentEvent } from "../../../src/course/entities/assessment-event.entity";
@@ -16,21 +19,40 @@ import { AssignmentRepository } from "../../../src/course/repositories/assignmen
 import { AssessmentService } from "../../../src/course/services/assessment.service";
 import { GroupService } from "../../../src/course/services/group.service";
 import { DtoFactory } from "../../../src/shared/dto-factory";
-import { ASSESSMENT_JAVA_EVALUATED_GROUP_1, ASSESSMENT_JAVA_EVALUATED_GROUP_2, ASSESSMENT_JAVA_IN_REVIEW, ASSESSMENT_JAVA_TESTAT_USER_1 } from "../../mocks/assessments.mock";
-import { ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA_EVALUATED, ASSIGNMENT_JAVA_IN_REVIEW_SINGLE } from "../../mocks/assignments.mock";
+import {
+	ASSESSMENT_JAVA_EVALUATED_GROUP_1,
+	ASSESSMENT_JAVA_EVALUATED_GROUP_2,
+	ASSESSMENT_JAVA_IN_REVIEW,
+	ASSESSMENT_JAVA_TESTAT_USER_1
+} from "../../mocks/assessments.mock";
+import {
+	ASSIGNMENT_JAVA_CLOSED,
+	ASSIGNMENT_JAVA_EVALUATED,
+	ASSIGNMENT_JAVA_IN_REVIEW_SINGLE
+} from "../../mocks/assignments.mock";
 import { GROUP_1_JAVA } from "../../mocks/groups/groups.mock";
 import { UserGroupRelationsMock } from "../../mocks/groups/user-group-relations.mock";
-import { PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW, PARTIAL_ASSESSMENT_MOCK } from "../../mocks/partial-assessments.mock";
-import { PARTICIPANT_JAVA_1920_STUDENT, PARTICIPANT_JAVA_1920_STUDENT_2 } from "../../mocks/participants/participants.mock";
+import {
+	PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW,
+	PARTIAL_ASSESSMENT_MOCK
+} from "../../mocks/partial-assessments.mock";
+import {
+	PARTICIPANT_JAVA_1920_STUDENT,
+	PARTICIPANT_JAVA_1920_STUDENT_2
+} from "../../mocks/participants/participants.mock";
 import { convertToEntity, copy } from "../../utils/object-helper";
 
 const mock_AssessmentRepository = () => ({
-	createAssessment: jest.fn().mockResolvedValue(convertToEntity(Assessment, ASSESSMENT_JAVA_EVALUATED_GROUP_1)),
-	addPartialAssessment: jest.fn().mockResolvedValue(convertToEntity(PartialAssessment, PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW)),
+	createAssessment: jest
+		.fn()
+		.mockResolvedValue(convertToEntity(Assessment, ASSESSMENT_JAVA_EVALUATED_GROUP_1)),
+	addPartialAssessment: jest
+		.fn()
+		.mockResolvedValue(convertToEntity(PartialAssessment, PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW)),
 	getAssessmentsForAssignment: jest.fn().mockImplementation(() => {
 		const data = [
 			convertToEntity(Assessment, ASSESSMENT_JAVA_EVALUATED_GROUP_1),
-			convertToEntity(Assessment, ASSESSMENT_JAVA_EVALUATED_GROUP_2),
+			convertToEntity(Assessment, ASSESSMENT_JAVA_EVALUATED_GROUP_2)
 		];
 		const count = 2;
 
@@ -43,12 +65,16 @@ const mock_AssessmentRepository = () => ({
 		assessment.partialAssessments = [];
 		return assessment;
 	}),
-	updateAssessment: jest.fn().mockResolvedValue(convertToEntity(Assessment, ASSESSMENT_JAVA_EVALUATED_GROUP_1)),
-	deleteAssessment: jest.fn().mockResolvedValue(true),
+	updateAssessment: jest
+		.fn()
+		.mockResolvedValue(convertToEntity(Assessment, ASSESSMENT_JAVA_EVALUATED_GROUP_1)),
+	deleteAssessment: jest.fn().mockResolvedValue(true)
 });
 
 const mock_AssignmentRepository = () => ({
-	getAssignmentById: jest.fn().mockResolvedValue(convertToEntity(Assignment, ASSIGNMENT_JAVA_IN_REVIEW_SINGLE))
+	getAssignmentById: jest
+		.fn()
+		.mockResolvedValue(convertToEntity(Assignment, ASSIGNMENT_JAVA_IN_REVIEW_SINGLE))
 });
 
 function getGroupMock(): Group {
@@ -74,9 +100,7 @@ function getGroupFromAssignmentMock(): GroupDto {
 	return group;
 }
 
-const mock_Repository = () => ({
-	
-});
+const mock_Repository = () => ({});
 
 const mock_GroupService = () => ({
 	getGroupFromAssignment: jest.fn().mockResolvedValue(getGroupFromAssignmentMock())
@@ -87,7 +111,6 @@ const mock_EventBus = () => ({
 });
 
 describe("AssessmentService", () => {
-
 	let service: AssessmentService;
 	let assessmentRepository: AssessmentRepository;
 	let assignmentRepository: AssignmentRepository;
@@ -105,9 +128,9 @@ describe("AssessmentService", () => {
 				{ provide: getRepositoryToken(AssessmentEvent), useFactory: mock_Repository },
 				{ provide: GroupService, useFactory: mock_GroupService },
 				{ provide: EventBus, useFactory: mock_EventBus }
-			],
+			]
 		}).compile();
-		
+
 		DtoFactory.createAssessmentDto = jest.fn();
 
 		service = module.get<AssessmentService>(AssessmentService);
@@ -123,7 +146,6 @@ describe("AssessmentService", () => {
 	});
 
 	describe("createAssessment", () => {
-	
 		it("Returns Dto", async () => {
 			await service.createAssessment(assessmentDto.assignmentId, assessmentDto);
 			expect(DtoFactory.createAssessmentDto).toHaveBeenCalled();
@@ -134,8 +156,14 @@ describe("AssessmentService", () => {
 
 			await service.createAssessment(assessmentDto.assignmentId, assessmentDto);
 
-			expect(groupService.getGroupFromAssignment).toHaveBeenCalledWith(assessmentDto.groupId, assessmentDto.assignmentId);
-			expect(assessmentRepository.createAssessment).toBeCalledWith(assessmentDto, expectedUserIds);
+			expect(groupService.getGroupFromAssignment).toHaveBeenCalledWith(
+				assessmentDto.groupId,
+				assessmentDto.assignmentId
+			);
+			expect(assessmentRepository.createAssessment).toBeCalledWith(
+				assessmentDto,
+				expectedUserIds
+			);
 		});
 
 		it("Assessment for user -> Uses userId from Dto", async () => {
@@ -144,14 +172,17 @@ describe("AssessmentService", () => {
 
 			await service.createAssessment(assessmentDto.assignmentId, assessmentDto);
 
-			expect(assessmentRepository.createAssessment).toBeCalledWith(assessmentDto, expectedUserIds);
+			expect(assessmentRepository.createAssessment).toBeCalledWith(
+				assessmentDto,
+				expectedUserIds
+			);
 		});
 
 		it("AssignmentId from params differs from Dto -> Throws Exception", async () => {
 			try {
 				await service.createAssessment("wrong_Id", assessmentDto);
 				expect(true).toEqual(false);
-			} catch(error) {
+			} catch (error) {
 				expect(error).toBeTruthy();
 				expect(error.status).toEqual(400);
 			}
@@ -164,16 +195,14 @@ describe("AssessmentService", () => {
 			try {
 				await service.createAssessment(assessmentDto.assignmentId, assessmentDto);
 				expect(true).toEqual(false);
-			} catch(error) {
+			} catch (error) {
 				expect(error).toBeTruthy();
 				expect(error.status).toEqual(400);
 			}
 		});
-	
 	});
 
 	describe("addPartialAssessment", () => {
-	
 		let partialAssessment: PartialAssessmentDto;
 
 		beforeEach(() => {
@@ -183,8 +212,12 @@ describe("AssessmentService", () => {
 		it("Assignment is IN_REVIEW -> Creates partial assessment", async () => {
 			const assignmentId = "assignment_id_1";
 			const expected = copy(partialAssessment);
-			
-			const result = await service.addPartialAssessment(assignmentId, partialAssessment.assessmentId, partialAssessment);
+
+			const result = await service.addPartialAssessment(
+				assignmentId,
+				partialAssessment.assessmentId,
+				partialAssessment
+			);
 
 			expect(assignmentRepository.getAssignmentById).toHaveBeenCalledWith(assignmentId);
 			expect(result).toEqual(expected);
@@ -192,12 +225,18 @@ describe("AssessmentService", () => {
 
 		it("Assignment not IN_REVIEW -> Throws Exception", async () => {
 			const assignmentNotInReview = copy(ASSIGNMENT_JAVA_CLOSED);
-			assignmentRepository.getAssignmentById = jest.fn().mockResolvedValueOnce(convertToEntity(Assignment, assignmentNotInReview));
+			assignmentRepository.getAssignmentById = jest
+				.fn()
+				.mockResolvedValueOnce(convertToEntity(Assignment, assignmentNotInReview));
 
 			try {
-				await service.addPartialAssessment(assignmentNotInReview.id, partialAssessment.assessmentId, partialAssessment);
+				await service.addPartialAssessment(
+					assignmentNotInReview.id,
+					partialAssessment.assessmentId,
+					partialAssessment
+				);
 				expect(true).toEqual(false);
-			} catch(error) {
+			} catch (error) {
 				expect(error).toBeTruthy();
 				expect(error.status).toEqual(400);
 			}
@@ -209,20 +248,24 @@ describe("AssessmentService", () => {
 			console.assert(partialAssessment.assessmentId !== different_assessment_Id);
 
 			try {
-				await service.addPartialAssessment(assignmentId, different_assessment_Id, partialAssessment);
+				await service.addPartialAssessment(
+					assignmentId,
+					different_assessment_Id,
+					partialAssessment
+				);
 				expect(true).toEqual(false);
-			} catch(error) {
+			} catch (error) {
 				expect(error).toBeTruthy();
 				expect(error.status).toEqual(400);
 			}
 		});
-	
 	});
 
 	describe("getAssessmentsForAssignment", () => {
-		
 		it("Returns Dtos and count", async () => {
-			const [dtos, count] = await service.getAssessmentsForAssignment(assessmentDto.assignmentId);
+			const [dtos, count] = await service.getAssessmentsForAssignment(
+				assessmentDto.assignmentId
+			);
 			expect(DtoFactory.createAssessmentDto).toHaveBeenCalled();
 			expect(dtos).toBeTruthy();
 			expect(count).toBeTruthy();
@@ -231,13 +274,14 @@ describe("AssessmentService", () => {
 		it("Calls repository for retrieval", async () => {
 			const filter = undefined;
 			await service.getAssessmentsForAssignment(assessmentDto.assignmentId);
-			expect(assessmentRepository.getAssessmentsForAssignment).toHaveBeenCalledWith(assessmentDto.assignmentId, filter);
+			expect(assessmentRepository.getAssessmentsForAssignment).toHaveBeenCalledWith(
+				assessmentDto.assignmentId,
+				filter
+			);
 		});
-	
 	});
 
 	describe("getAssessmentById", () => {
-	
 		it("Returns Dto", async () => {
 			await service.getAssessmentById(assessmentDto.assignmentId);
 			expect(DtoFactory.createAssessmentDto).toHaveBeenCalled();
@@ -245,38 +289,53 @@ describe("AssessmentService", () => {
 
 		it("Calls repository for retrieval", async () => {
 			await service.getAssessmentById(assessmentDto.assignmentId);
-			expect(assessmentRepository.getAssessmentById).toHaveBeenCalledWith(assessmentDto.assignmentId);
+			expect(assessmentRepository.getAssessmentById).toHaveBeenCalledWith(
+				assessmentDto.assignmentId
+			);
 		});
-	
 	});
 
 	describe("updateAssessment", () => {
-		
 		const updatedBy = "user_id";
 		let validAssessmentForUpdate: AssessmentDto;
 
 		const assessmentBeforeUpdate = () => {
 			const assessment = convertToEntity(Assessment, ASSESSMENT_JAVA_IN_REVIEW);
 			assessment.assignment = convertToEntity(Assignment, ASSIGNMENT_JAVA_IN_REVIEW_SINGLE);
-			assessment.partialAssessments = PARTIAL_ASSESSMENT_MOCK.filter(p => p.assessmentId === assessment.id)
-				.map(dto => convertToEntity(PartialAssessment, dto));
+			assessment.partialAssessments = PARTIAL_ASSESSMENT_MOCK.filter(
+				p => p.assessmentId === assessment.id
+			).map(dto => convertToEntity(PartialAssessment, dto));
 			return assessment;
 		};
 
 		beforeEach(() => {
 			validAssessmentForUpdate = copy(ASSESSMENT_JAVA_IN_REVIEW);
-			validAssessmentForUpdate.partialAssessments = PARTIAL_ASSESSMENT_MOCK.filter(p => p.assessmentId === validAssessmentForUpdate.id);
-			assessmentRepository.getAssessmentById = jest.fn().mockImplementationOnce(assessmentBeforeUpdate);
+			validAssessmentForUpdate.partialAssessments = PARTIAL_ASSESSMENT_MOCK.filter(
+				p => p.assessmentId === validAssessmentForUpdate.id
+			);
+			assessmentRepository.getAssessmentById = jest
+				.fn()
+				.mockImplementationOnce(assessmentBeforeUpdate);
 		});
 
 		it("Returns Dto", async () => {
-			await service.updateAssessment(validAssessmentForUpdate.id, validAssessmentForUpdate, updatedBy);
+			await service.updateAssessment(
+				validAssessmentForUpdate.id,
+				validAssessmentForUpdate,
+				updatedBy
+			);
 			expect(DtoFactory.createAssessmentDto).toHaveBeenCalled();
 		});
 
 		it("Calls repository to retrieve original assessment", async () => {
-			await service.updateAssessment(validAssessmentForUpdate.id, validAssessmentForUpdate, updatedBy);
-			expect(assessmentRepository.getAssessmentById).toHaveBeenCalledWith(validAssessmentForUpdate.id);
+			await service.updateAssessment(
+				validAssessmentForUpdate.id,
+				validAssessmentForUpdate,
+				updatedBy
+			);
+			expect(assessmentRepository.getAssessmentById).toHaveBeenCalledWith(
+				validAssessmentForUpdate.id
+			);
 		});
 
 		it("Assessment state not IN_REVIEW -> Throws exception", async () => {
@@ -289,30 +348,40 @@ describe("AssessmentService", () => {
 			try {
 				await service.updateAssessment(assessmentDto.id, assessmentDto, updatedBy);
 				expect(true).toEqual(false);
-			} catch(error) {
+			} catch (error) {
 				expect(error).toBeTruthy();
 				expect(error.status).toEqual(400);
 			}
 		});
 
 		it("Assessment state IN_REVIEW -> Calls repository for update", async () => {
-			await service.updateAssessment(validAssessmentForUpdate.id, validAssessmentForUpdate, updatedBy);
-			expect(assessmentRepository.updateAssessment).toBeCalledWith(validAssessmentForUpdate.id, validAssessmentForUpdate);
-		});	
+			await service.updateAssessment(
+				validAssessmentForUpdate.id,
+				validAssessmentForUpdate,
+				updatedBy
+			);
+			expect(assessmentRepository.updateAssessment).toBeCalledWith(
+				validAssessmentForUpdate.id,
+				validAssessmentForUpdate
+			);
+		});
 
 		it("Assessment state IN_REVIEW -> Points changed -> Triggers AssessmentScoreChangedEvent", async () => {
 			const newScore = 123;
-			const withChangedScore =  assessmentBeforeUpdate();
+			const withChangedScore = assessmentBeforeUpdate();
 			withChangedScore.achievedPoints = newScore;
-			assessmentRepository.updateAssessment = jest.fn().mockImplementationOnce(() => withChangedScore);
+			assessmentRepository.updateAssessment = jest
+				.fn()
+				.mockImplementationOnce(() => withChangedScore);
 
 			await service.updateAssessment(withChangedScore.id, withChangedScore, updatedBy);
-			expect(events.publish).toHaveBeenCalledWith(new AssessmentScoreChanged(
-				validAssessmentForUpdate.id, 
-				updatedBy, 
-				{ newScore: withChangedScore.achievedPoints, oldScore: assessmentBeforeUpdate().achievedPoints }
-			));
-		});	
+			expect(events.publish).toHaveBeenCalledWith(
+				new AssessmentScoreChanged(validAssessmentForUpdate.id, updatedBy, {
+					newScore: withChangedScore.achievedPoints,
+					oldScore: assessmentBeforeUpdate().achievedPoints
+				})
+			);
+		});
 
 		it("Partial assessment contains incorrect id -> Throws exception", async () => {
 			const invalidAssessment = copy(assessmentDto);
@@ -322,11 +391,11 @@ describe("AssessmentService", () => {
 			const invalidUpdate: AssessmentUpdateDto = {
 				updatePartialAssignments: [partial]
 			};
-		
+
 			try {
 				await service.updateAssessment(invalidAssessment.id, invalidUpdate, updatedBy);
 				expect(true).toEqual(false);
-			} catch(error) {
+			} catch (error) {
 				expect(error).toBeTruthy();
 				expect(error.status).toEqual(400);
 			}
@@ -341,20 +410,18 @@ describe("AssessmentService", () => {
 				updatePartialAssignments: [partial],
 				removePartialAssignments: [partial]
 			};
-		
+
 			try {
 				await service.updateAssessment(invalidAssessment.id, invalidUpdate, updatedBy);
 				expect(true).toEqual(false);
-			} catch(error) {
+			} catch (error) {
 				expect(error).toBeTruthy();
 				expect(error.status).toEqual(400);
 			}
 		});
-	
 	});
 
 	describe("deleteAssessment", () => {
-	
 		it("Calls repository for deletion", async () => {
 			await service.deleteAssessment(assessmentDto.id);
 			expect(assessmentRepository.deleteAssessment).toHaveBeenCalledWith(assessmentDto.id);
@@ -364,7 +431,5 @@ describe("AssessmentService", () => {
 			const result = await service.deleteAssessment(assessmentDto.id);
 			expect(result).toEqual(true);
 		});
-	
 	});
-
 });

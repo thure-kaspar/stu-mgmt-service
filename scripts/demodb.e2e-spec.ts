@@ -1,15 +1,15 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
-import { AppModule } from '../src/app.module';
-import { getConnection } from 'typeorm';
+import { Test, TestingModule } from "@nestjs/testing";
+import { INestApplication } from "@nestjs/common";
+import { AppModule } from "../src/app.module";
+import { getConnection } from "typeorm";
 import { DbMockService } from "../test/mocks/db-mock.service";
 
-describe('Demo-Database Creation', () => {
+describe("Demo-Database Creation", () => {
 	let app: INestApplication;
 
 	beforeAll(async () => {
 		const moduleFixture: TestingModule = await Test.createTestingModule({
-			imports: [AppModule],
+			imports: [AppModule]
 		}).compile();
 
 		app = moduleFixture.createNestApplication();
@@ -28,5 +28,4 @@ describe('Demo-Database Creation', () => {
 	it("Fills the Database with demo data", () => {
 		expect(true).toBeTruthy();
 	});
-
 });

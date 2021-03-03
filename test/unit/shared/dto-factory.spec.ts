@@ -12,7 +12,10 @@ import { DtoFactory } from "../../../src/shared/dto-factory";
 import { UserDto } from "../../../src/shared/dto/user.dto";
 import { User } from "../../../src/shared/entities/user.entity";
 import { CourseRole } from "../../../src/shared/enums";
-import { ASSESSMENT_JAVA_EVALUATED_GROUP_1, ASSESSMENT_JAVA_TESTAT_USER_1 } from "../../mocks/assessments.mock";
+import {
+	ASSESSMENT_JAVA_EVALUATED_GROUP_1,
+	ASSESSMENT_JAVA_TESTAT_USER_1
+} from "../../mocks/assessments.mock";
 import { ASSIGNMENT_JAVA_CLOSED } from "../../mocks/assignments.mock";
 import { COURSE_INFO_2_2020, COURSE_JAVA_1920 } from "../../mocks/courses.mock";
 import { GROUP_1_JAVA } from "../../mocks/groups/groups.mock";
@@ -20,27 +23,22 @@ import { USER_STUDENT_JAVA } from "../../mocks/users.mock";
 import { convertToEntity, copy } from "../../utils/object-helper";
 
 describe("DtoFactory", () => {
-
 	describe("createCourseDto", () => {
-
 		let course: Course;
 		let expected: CourseDto;
 
 		beforeEach(() => {
 			course = convertToEntity(Course, COURSE_JAVA_1920);
 			expected = copy(COURSE_JAVA_1920);
-
 		});
 
 		it("No relations loaded -> Returns Dto", () => {
 			const result = DtoFactory.createCourseDto(course);
 			expect(result).toEqual(expected);
 		});
-
 	});
 
 	describe("createUserDto", () => {
-
 		let user: User;
 		let expected: UserDto;
 
@@ -56,7 +54,7 @@ describe("DtoFactory", () => {
 
 		it("Participant loaded -> Returns Dto with courses", () => {
 			const course1 = convertToEntity(Course, COURSE_JAVA_1920);
-			const course2 = convertToEntity(Course, COURSE_INFO_2_2020);		
+			const course2 = convertToEntity(Course, COURSE_INFO_2_2020);
 
 			const rel1 = new Participant();
 			rel1.user = user;
@@ -76,14 +74,12 @@ describe("DtoFactory", () => {
 			expected.courses = [copy(COURSE_JAVA_1920), copy(COURSE_INFO_2_2020)];
 
 			const result = DtoFactory.createUserDto(user);
-			
+
 			expect(result).toEqual(expected);
 		});
-
 	});
 
 	describe("createGroupDto", () => {
-
 		let group: Group;
 		let expected: GroupDto;
 
@@ -91,7 +87,7 @@ describe("DtoFactory", () => {
 			group = convertToEntity(Group, GROUP_1_JAVA);
 			expected = copy(GROUP_1_JAVA);
 
-			// Password should be exluded 
+			// Password should be exluded
 			expected.password = undefined;
 		});
 
@@ -104,11 +100,9 @@ describe("DtoFactory", () => {
 			const result = DtoFactory.createGroupDto(group);
 			expect(result.password).toBeUndefined();
 		});
-		
 	});
 
 	describe("createAssignmentDto", () => {
-
 		let assignment: Assignment;
 		let expected: AssignmentDto;
 
@@ -116,16 +110,14 @@ describe("DtoFactory", () => {
 			assignment = convertToEntity(Assignment, ASSIGNMENT_JAVA_CLOSED);
 			expected = copy(ASSIGNMENT_JAVA_CLOSED);
 		});
-		
+
 		it("No relations loaded -> Returns Dto", () => {
 			const result = DtoFactory.createAssignmentDto(assignment);
 			expect(result).toEqual(expected);
 		});
-
 	});
 
 	describe("createAssessmentDto", () => {
-
 		let assessment: Assessment;
 		let expected: AssessmentDto;
 
@@ -164,7 +156,5 @@ describe("DtoFactory", () => {
 
 			expect(result).toEqual(expected);
 		});
-
 	});
-
 });

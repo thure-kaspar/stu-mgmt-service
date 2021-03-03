@@ -27,12 +27,16 @@ export class OverallPercentRuleDto extends AdmissionRuleDto {
 export function toString(rule: AdmissionRuleDto): string {
 	const baseString = `${rule.type} ### ${rule.assignmentType}`;
 	const requiredPercent = `Required: ${rule.requiredPercent}%`;
-	const pointsRounding = `Rounding: ${rule.achievedPercentRounding.type}` + (rule.achievedPercentRounding.decimals ? ` (${rule.achievedPercentRounding.decimals})` : "");
+	const pointsRounding =
+		`Rounding: ${rule.achievedPercentRounding.type}` +
+		(rule.achievedPercentRounding.decimals
+			? ` (${rule.achievedPercentRounding.decimals})`
+			: "");
 
 	let result = baseString + " ### " + requiredPercent + " ### " + pointsRounding;
 
 	if (rule.type === RuleType.INDIVIDUAL_PERCENT_WITH_ALLOWED_FAILURES) {
-		const ruleAs = (rule as IndividualPercentWithAllowedFailuresRuleDto);
+		const ruleAs = rule as IndividualPercentWithAllowedFailuresRuleDto;
 		result += ` ### Allowed failures: ${ruleAs.allowedFailures}`;
 	}
 

@@ -10,7 +10,7 @@ export enum AssignmentState {
 
 export enum AssignmentType {
 	HOMEWORK = "HOMEWORK",
-	TESTAT = "TESTAT", // TODO: english name ? 
+	TESTAT = "TESTAT", // TODO: english name ?
 	SEMINAR = "SEMINAR",
 	PROJECT = "PROJECT",
 	OTHER = "OTHER"

@@ -8,8 +8,7 @@ import { UserRole } from "../../shared/enums";
  */
 @Injectable()
 export class IdentityGuard implements CanActivate {
-
-	async canActivate(context: ExecutionContext): Promise<boolean> {	
+	async canActivate(context: ExecutionContext): Promise<boolean> {
 		const request = context.switchToHttp().getRequest();
 		const userId = request.params.userId;
 		const user = request.user as UserDto;
@@ -19,11 +18,16 @@ export class IdentityGuard implements CanActivate {
 			return true;
 		}
 
-		if (user.role === UserRole.SYSTEM_ADMIN || user.role === UserRole.MGMT_ADMIN || user.role === UserRole.ADMIN_TOOL) {
+		if (
+			user.role === UserRole.SYSTEM_ADMIN ||
+			user.role === UserRole.MGMT_ADMIN ||
+			user.role === UserRole.ADMIN_TOOL
+		) {
 			return true;
 		}
 
-		throw new ForbiddenException("Resource can only be accessed by its owner or privileged users.");
+		throw new ForbiddenException(
+			"Resource can only be accessed by its owner or privileged users."
+		);
 	}
-
 }

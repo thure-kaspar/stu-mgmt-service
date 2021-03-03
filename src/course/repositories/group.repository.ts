@@ -13,7 +13,6 @@ import { CourseRole } from "../../shared/enums";
 
 @EntityRepository(Group)
 export class GroupRepository extends Repository<Group> {
-
 	/**
 	 * Inserts the given group into the database.
 	 */
@@ -43,11 +42,10 @@ export class GroupRepository extends Repository<Group> {
 		userGroupRelation.groupId = groupId;
 		userGroupRelation.userId = userId;
 		userGroupRelation.participantId = participant.id;
-		await userGroupRelationRepo.save(userGroupRelation)
-			.catch((error) => {
-				if (error.code === "23505")
-					throw new ConflictException("This user is already a member of this group.");
-			});
+		await userGroupRelationRepo.save(userGroupRelation).catch(error => {
+			if (error.code === "23505")
+				throw new ConflictException("This user is already a member of this group.");
+		});
 		return userGroupRelation ? true : false;
 	}
 
@@ -80,7 +78,12 @@ export class GroupRepository extends Repository<Group> {
 	 */
 	async getGroupWithUsers(groupId: GroupId): Promise<Group> {
 		return this.findOneOrFail(groupId, {
-			relations: ["course", "userGroupRelations", "userGroupRelations.participant", "userGroupRelations.participant.user"]
+			relations: [
+				"course",
+				"userGroupRelations",
+				"userGroupRelations.participant",
+				"userGroupRelations.participant.user"
+			]
 		});
 	}
 
@@ -96,21 +99,23 @@ export class GroupRepository extends Repository<Group> {
 			.leftJoinAndSelect("group.course", "course") // Load course
 			.leftJoinAndSelect("course.config", "config") // Load course config
 			.innerJoinAndSelect("config.groupSettings", "groupSettings") // Load group settings (of course config)
-			.innerJoinAndSelect("course.participants", "relation", "relation.userId = :userId", { userId }) // Load specific course-user, error if not a member of course
+			.innerJoinAndSelect("course.participants", "relation", "relation.userId = :userId", {
+				userId
+			}) // Load specific course-user, error if not a member of course
 			.getOne();
-		
+
 		if (!group) throw new EntityNotFoundError(Group, null);
 		return group;
 	}
 
 	/**
 	 * Returns all groups that belong to the given course and match the specified filter.
-	 * 
+	 *
 	 * Includes relations:
 	 * - Group members
 	 */
 	async getGroupsOfCourse(courseId: CourseId, filter?: GroupFilter): Promise<[Group[], number]> {
-		const { name, isClosed, minSize, maxSize, skip, take } = filter || { };
+		const { name, isClosed, minSize, maxSize, skip, take } = filter || {};
 
 		const query = this.createQueryBuilder("group")
 			.where("group.courseId = :courseId", { courseId })
@@ -120,7 +125,7 @@ export class GroupRepository extends Repository<Group> {
 			.orderBy("group.name", "ASC")
 			.skip(skip)
 			.take(take);
-		
+
 		if (name) {
 			query.andWhere("group.name ILIKE :name", { name: `%${name}%` });
 		}
@@ -144,7 +149,7 @@ export class GroupRepository extends Repository<Group> {
 	}
 
 	/**
-	 * Returns the current group of a user in a course. 
+	 * Returns the current group of a user in a course.
 	 * Throws EntityNotFoundError, if no group is found.
 	 */
 	async getGroupOfUserForCourse(courseId: CourseId, userId: UserId): Promise<Group> {
@@ -153,7 +158,7 @@ export class GroupRepository extends Repository<Group> {
 			.innerJoin("group.userGroupRelations", "userRelation")
 			.where("userRelation.userId = :userId", { userId })
 			.getOne();
-		
+
 		if (!group) throw new EntityNotFoundError(Group, null);
 		return group;
 	}
@@ -168,7 +173,7 @@ export class GroupRepository extends Repository<Group> {
 			.andWhere("group.name ILIKE :schema", { schema: `%${schema}%` })
 			.orderBy("group.createdAt", "DESC")
 			.getMany();
-		
+
 		return this.tryFindAvailableName(groups, schema);
 	}
 
@@ -208,15 +213,17 @@ export class GroupRepository extends Repository<Group> {
 		} else if (update.password) {
 			group.password = update.password;
 		}
-		
+
 		group.name = update.name ?? group.name;
 		group.isClosed = update.isClosed ?? group.isClosed;
-		
+
 		return this.save(group);
 	}
 
 	async removeUser(groupId: GroupId, userId: UserId): Promise<boolean> {
-		const removed = await this.manager.getRepository(UserGroupRelation).delete({ groupId, userId });
+		const removed = await this.manager
+			.getRepository(UserGroupRelation)
+			.delete({ groupId, userId });
 		return removed.affected == 1;
 	}
 
@@ -236,5 +243,4 @@ export class GroupRepository extends Repository<Group> {
 		group.isClosed = groupDto.isClosed ? true : false;
 		return group;
 	}
-
 }

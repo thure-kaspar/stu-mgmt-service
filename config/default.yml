@@ -1,33 +1,33 @@
 server:
-  port: 3000
+    port: 3000
 
-db: 
-  type: "postgres"
-  port: 5432
-  database: "StudentMgmtDb"
+db:
+    type: "postgres"
+    port: 5432
+    database: "StudentMgmtDb"
 
 notifications:
-  java: null
+    java: null
 
 smtp:
-  server: "smtp_server"
-  useSecureConnection: true
-  username: "user@example.com"
-  password: "example_password"
-  port: 465
+    server: "smtp_server"
+    useSecureConnection: true
+    username: "user@example.com"
+    password: "example_password"
+    port: 465
 
 authSystem:
-  url: "http://147.172.178.30:8080"
+    url: "http://147.172.178.30:8080"
 
 jwt:
-  expiresIn: 36000
+    expiresIn: 36000
 
 logger:
-  levels:
-    - log
-    - error
-    - warn
-    - debug
-    - verbose
-  requests: false
-  dbErrors: false
+    levels:
+        - log
+        - error
+        - warn
+        - debug
+        - verbose
+    requests: false
+    dbErrors: false

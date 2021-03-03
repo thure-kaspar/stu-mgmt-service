@@ -15,10 +15,9 @@ import { UserId } from "../../shared/entities/user.entity";
  */
 @Injectable()
 export class SelectedParticipantGuard implements CanActivate {
-	
-	constructor(@InjectRepository(ParticipantEntity) private participants: ParticipantRepository) { }
+	constructor(@InjectRepository(ParticipantEntity) private participants: ParticipantRepository) {}
 
-	async canActivate(context: ExecutionContext): Promise<boolean> {	
+	async canActivate(context: ExecutionContext): Promise<boolean> {
 		const request = context.switchToHttp().getRequest();
 		const courseId: CourseId = request.params.courseId;
 		const userId: UserId = request.params.userId;
@@ -27,7 +26,7 @@ export class SelectedParticipantGuard implements CanActivate {
 			const participant = await this.participants.getParticipant(courseId, userId);
 			request.selectedParticipant = new Participant(participant);
 			return true;
-		} catch(error) {
+		} catch (error) {
 			if (error instanceof EntityNotFoundError) {
 				throw new NotACourseMemberException(courseId, userId);
 			}
@@ -35,5 +34,4 @@ export class SelectedParticipantGuard implements CanActivate {
 
 		return false;
 	}
-
 }

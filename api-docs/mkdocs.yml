@@ -3,28 +3,28 @@ repo_name: Student-Management-System/StudentMgmt-Backend
 repo_url: https://github.com/Student-Management-System/StudentMgmt-Backend/api-docs
 
 nav:
-  - index.md
-  - fundamental-concepts.md
-  - getting-started.md
-  - authentication.md
-  - Using the API:
-    - course-creation.md
-    - course-updating.md
-    - searching-courses.md
-    - joining-courses.md
-    - course-participants.md
-    - assignments.md
-    - assignment-registrations.md
-    - assessments.md
-    - groups.md
-    - events.md
-  - faq.md
+    - index.md
+    - fundamental-concepts.md
+    - getting-started.md
+    - authentication.md
+    - Using the API:
+          - course-creation.md
+          - course-updating.md
+          - searching-courses.md
+          - joining-courses.md
+          - course-participants.md
+          - assignments.md
+          - assignment-registrations.md
+          - assessments.md
+          - groups.md
+          - events.md
+    - faq.md
 
 theme:
-  name: material
-  palette:
-    primary: teal
-    accent: grey
+    name: material
+    palette:
+        primary: teal
+        accent: grey
 
 markdown_extensions:
     - codehilite

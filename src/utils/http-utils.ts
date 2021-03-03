@@ -25,7 +25,10 @@ export function setTotalCountHeader(request: Request, count: number): void {
 	}
 	```
  */
-export async function PaginatedResult<T>(promisedData: Promise<[T[], number]>, request: Request): Promise<T[]> {
+export async function PaginatedResult<T>(
+	promisedData: Promise<[T[], number]>,
+	request: Request
+): Promise<T[]> {
 	const [data, count] = await promisedData;
 	setTotalCountHeader(request, count);
 	return data;
@@ -39,12 +42,12 @@ export async function PaginatedResult<T>(promisedData: Promise<[T[], number]>, r
  */
 export function sanitizeEnum<Enum>(target: Enum, values?: unknown[]): Enum[] | undefined {
 	if (!values) return undefined;
-	
+
 	if (Array.isArray(values as unknown)) {
-		return (values).filter(value => Object.values(target).includes(value)) as Enum[];
+		return values.filter(value => Object.values(target).includes(value)) as Enum[];
 	} else {
 		if (Object.values(target).includes(values as unknown)) {
-			return [values] as unknown as Enum[];
+			return ([values] as unknown) as Enum[];
 		} else {
 			return undefined;
 		}
@@ -62,14 +65,14 @@ export function transformArray<T>(values?: T[]): T[] | undefined {
 	if (Array.isArray(values as unknown)) {
 		return values;
 	} else {
-		return [values] as any as T[];
+		return ([values] as any) as T[];
 	}
 }
 
 /**
  * Returns the boolean value of a string. Incoming data over HTTP is always a string,
  * therefore we must transform "true" -> true and "false" -> false.
- * If the given value is ```null``` or ```undefined```, returns ```undefined```.  
+ * If the given value is ```null``` or ```undefined```, returns ```undefined```.
  * If the given value is already a number, returns the boolean.
  * If the app is using the ```ValidationPipe``` with ```transform``` enabled,
  * calling this function is only necessary for nested properties of Query-Objects.
@@ -84,7 +87,7 @@ export function transformBoolean(bool: unknown): boolean | undefined {
 }
 
 /**
- * Returns the numeric value of a string. 
+ * Returns the numeric value of a string.
  * If the given value is ```null``` or ```undefined```, returns ```undefined```.
  * If the given value is already a number, returns the value.
  */
@@ -108,7 +111,10 @@ export function transformNumber(value: unknown): number | undefined {
 		);
 	}
  */
-export async function throwIfRequestFailed(promise: Promise<boolean>, errorMessage?: string): Promise<void> {
+export async function throwIfRequestFailed(
+	promise: Promise<boolean>,
+	errorMessage?: string
+): Promise<void> {
 	const success = await promise;
 	if (!success) {
 		throw new BadRequestException(errorMessage);

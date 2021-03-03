@@ -1,25 +1,25 @@
-db: 
-  host: "localhost"
-  username: "postgres"
-  password: "admin"
-  synchronize: true
-  dropSchema: true
+db:
+    host: "localhost"
+    username: "postgres"
+    password: "admin"
+    synchronize: true
+    dropSchema: true
 
 smtp:
-  server: "smtp_server"
-  useSecureConnection: true
-  username: "user@example.com"
-  password: "example_password"
-  port: 465
+    server: "smtp_server"
+    useSecureConnection: true
+    username: "user@example.com"
+    password: "example_password"
+    port: 465
 
 jwt:
-  secret: "jwt-dev-secret"
+    secret: "jwt-dev-secret"
 
 logger:
-  levels:
-    - error
-    - warn
-    - debug
-    - verbose
-  requests: false
-  dbErrors: true
+    levels:
+        - error
+        - warn
+        - debug
+        - verbose
+    requests: false
+    dbErrors: true

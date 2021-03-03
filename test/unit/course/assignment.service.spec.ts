@@ -31,7 +31,7 @@
 // 				{ provide: AssignmentRepository, useFactory: mock_AssignmentRepository }
 // 			],
 // 		}).compile();
-		
+
 // 		DtoFactory.createAssignmentDto = jest.fn();
 
 // 		service = module.get<AssignmentService>(AssignmentService);
@@ -44,7 +44,7 @@
 // 	});
 
 // 	describe("createAssignment", () => {
-	
+
 // 		it("Calls AssignmentRepository for creation", async () => {
 // 			await service.createAssignment(assignmentDto.courseId, assignmentDto);
 // 			expect(assignmentRepository.createAssignment).toHaveBeenCalledWith(assignmentDto);
@@ -53,7 +53,7 @@
 // 		it("Returns Dto", async () => {
 // 			await service.createAssignment(assignmentDto.courseId, assignmentDto);
 // 			expect(DtoFactory.createAssignmentDto).toHaveBeenCalled();
-// 		});	
+// 		});
 
 // 		it("CourseId of param != CourseId of Dto -> Throws Exception", async () => {
 // 			const differentCourseId = "different_id";
@@ -68,7 +68,7 @@
 // 	});
 
 // 	describe("getAssignments", () => {
-	
+
 // 		it("Calls AssignmentRepository for retrieval", async () => {
 // 			await service.getAssignments(assignmentDto.courseId);
 // 			expect(assignmentRepository.getAssignments).toHaveBeenCalledWith(assignmentDto.courseId);
@@ -78,11 +78,11 @@
 // 			await service.getAssignments(assignmentDto.courseId);
 // 			expect(DtoFactory.createAssignmentDto).toHaveBeenCalled();
 // 		});
-	
+
 // 	});
 
 // 	describe("getAssignmentById", () => {
-	
+
 // 		it("Calls AssignmentRepository for retrieval", async () => {
 // 			await service.getAssignmentById(assignmentDto.id);
 // 			expect(assignmentRepository.getAssignmentById).toHaveBeenCalledWith(assignmentDto.id);
@@ -92,11 +92,11 @@
 // 			await service.getAssignmentById(assignmentDto.id);
 // 			expect(DtoFactory.createAssignmentDto).toHaveBeenCalled();
 // 		});
-	
+
 // 	});
 
 // 	describe("updateAssignment", () => {
-	
+
 // 		it("Calls AssignmentRepository for update", async () => {
 // 			await service.updateAssignment(assignmentDto.id, assignmentDto);
 // 			expect(assignmentRepository.updateAssignment).toHaveBeenCalledWith(assignmentDto.id, assignmentDto);
@@ -117,16 +117,16 @@
 // 				expect(error.status).toEqual(400);
 // 			}
 // 		});
-	
+
 // 	});
 
 // 	describe("deleteAssignment", () => {
-	
+
 // 		it("Calls AssignmentRepository for deletion", async () => {
 // 			await service.deleteAssignment(assignmentDto.id);
 // 			expect(assignmentRepository.deleteAssignment).toHaveBeenCalledWith(assignmentDto.id);
 // 		});
-		
+
 // 	});
 
 // });

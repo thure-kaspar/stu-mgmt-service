@@ -9,14 +9,13 @@ export class UserUnregistered {
 	constructor(
 		readonly courseId: CourseId,
 		readonly assignmentId: AssignmentId,
-		readonly userId: UserId,
-	) { }
+		readonly userId: UserId
+	) {}
 }
 
 @EventsHandler(UserUnregistered)
 export class UserUnregisteredNotificationHandler implements IEventHandler<UserUnregistered> {
-
-	constructor(private notifications: NotificationService) { }
+	constructor(private notifications: NotificationService) {}
 
 	async handle(event: UserUnregistered): Promise<void> {
 		this.notifications.send({
@@ -26,5 +25,4 @@ export class UserUnregisteredNotificationHandler implements IEventHandler<UserUn
 			userId: event.userId
 		});
 	}
-
 }

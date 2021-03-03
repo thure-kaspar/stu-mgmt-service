@@ -29,15 +29,9 @@ export const GROUP_4_JAVA: GroupDto = {
 	isClosed: false
 };
 
-export const GROUPS_JAVA_1920: GroupDto[] = [
-	GROUP_1_JAVA, 
-	GROUP_2_JAVA, 
-	GROUP_4_JAVA
-];
+export const GROUPS_JAVA_1920: GroupDto[] = [GROUP_1_JAVA, GROUP_2_JAVA, GROUP_4_JAVA];
 
-export const GROUPS_JAVA_2020: GroupDto[] = [
-	GROUP_3_JAVA2020
-];
+export const GROUPS_JAVA_2020: GroupDto[] = [GROUP_3_JAVA2020];
 
 export const GROUPS_ALL: { groups: GroupDto[]; courseId: CourseId }[] = [
 	{ groups: GROUPS_JAVA_1920, courseId: COURSE_JAVA_1920.id },

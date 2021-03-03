@@ -5,23 +5,19 @@ import { CourseId } from "../../entities/course.entity";
 import { NotificationService } from "../../services/notification.service";
 
 export class RegistrationsCreated {
-	constructor(
-		readonly courseId: CourseId,
-		readonly assignmentId: AssignmentId
-	) { }
+	constructor(readonly courseId: CourseId, readonly assignmentId: AssignmentId) {}
 }
 
 @EventsHandler(RegistrationsCreated)
-export class RegistrationsCreatedNotificationHandler implements IEventHandler<RegistrationsCreated> {
-
-	constructor(private notifications: NotificationService) { }
+export class RegistrationsCreatedNotificationHandler
+	implements IEventHandler<RegistrationsCreated> {
+	constructor(private notifications: NotificationService) {}
 
 	async handle(event: RegistrationsCreated): Promise<void> {
 		this.notifications.send({
 			event: Event.REGISTRATIONS_CREATED,
 			courseId: event.courseId,
-			assignmentId: event.assignmentId,
+			assignmentId: event.assignmentId
 		});
 	}
-
 }

@@ -3,7 +3,6 @@ import { ApiPropertyOptional } from "@nestjs/swagger";
 import { transformBoolean, transformNumber } from "../../../../test/utils/http-utils";
 
 export class GroupFilter extends PaginationFilter {
-
 	@ApiPropertyOptional({ description: "Name of the group. Compared with ILIKE %name%." })
 	name?: string;
 	@ApiPropertyOptional({ description: "If true, only includes" })
@@ -20,5 +19,4 @@ export class GroupFilter extends PaginationFilter {
 		this.minSize = transformNumber(filter?.minSize);
 		this.maxSize = transformNumber(filter?.maxSize);
 	}
-
 }

@@ -1,4 +1,12 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import {
+	Column,
+	Entity,
+	ManyToOne,
+	OneToMany,
+	PrimaryGeneratedColumn,
+	CreateDateColumn,
+	UpdateDateColumn
+} from "typeorm";
 import { User, UserId } from "../../shared/entities/user.entity";
 import { AssessmentUserRelation } from "./assessment-user-relation.entity";
 import { Assignment } from "./assignment.entity";
@@ -9,20 +17,20 @@ import { PartialAssessment } from "./partial-assessment.entity";
 export class Assessment {
 	@PrimaryGeneratedColumn("uuid")
 	id: string;
-	
+
 	@Column({ type: "float" })
 	achievedPoints: number;
-	
+
 	@Column({ nullable: true })
 	comment: string;
-	
+
 	@ManyToOne(type => Assignment, assignment => assignment.assessments, { onDelete: "CASCADE" })
 	assignment: Assignment;
 
 	@Column()
 	assignmentId: string;
 
-	@ManyToOne(type => Group, group => group.assessments, { onDelete: "SET NULL"})
+	@ManyToOne(type => Group, group => group.assessments, { onDelete: "SET NULL" })
 	group: Group;
 
 	@Column({ nullable: true })
@@ -46,11 +54,16 @@ export class Assessment {
 	@UpdateDateColumn({ nullable: true })
 	updateDate?: Date;
 
-	@OneToMany(type => PartialAssessment, partialAssessment => partialAssessment.assessment, { cascade: ["insert"] })
+	@OneToMany(type => PartialAssessment, partialAssessment => partialAssessment.assessment, {
+		cascade: ["insert"]
+	})
 	partialAssessments: PartialAssessment[];
 
 	// We need to assign the points to users individually, in case they switch group
-	@OneToMany(type => AssessmentUserRelation, assessmentUserRelation => assessmentUserRelation.assessment, { cascade: ["insert"] })
+	@OneToMany(
+		type => AssessmentUserRelation,
+		assessmentUserRelation => assessmentUserRelation.assessment,
+		{ cascade: ["insert"] }
+	)
 	assessmentUserRelations: AssessmentUserRelation[];
-
 }

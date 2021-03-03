@@ -29,30 +29,33 @@ import { AssessmentRepository } from "../repositories/assessment.repository";
 
 @Injectable()
 export class GroupService {
-
-	constructor(@InjectRepository(GroupEntity) private groupRepository: GroupRepository,
-				@InjectRepository(GroupSettings) private groupSettingsRepository: GroupSettingsRepository,
-				@InjectRepository(GroupEvent) private groupEventRepository: GroupEventRepository,
-				@InjectRepository(Assignment) private assignmentRepository: AssignmentRepository,
-				@InjectRepository(AssessmentRepository) private assessmentRepository: AssessmentRepository, 
-				private registrations: AssignmentRegistrationService,
-				private events: EventBus) { }
+	constructor(
+		@InjectRepository(GroupEntity) private groupRepository: GroupRepository,
+		@InjectRepository(GroupSettings) private groupSettingsRepository: GroupSettingsRepository,
+		@InjectRepository(GroupEvent) private groupEventRepository: GroupEventRepository,
+		@InjectRepository(Assignment) private assignmentRepository: AssignmentRepository,
+		@InjectRepository(AssessmentRepository) private assessmentRepository: AssessmentRepository,
+		private registrations: AssignmentRegistrationService,
+		private events: EventBus
+	) {}
 
 	/**
-	 * Creates a new group in the specified course.  
+	 * Creates a new group in the specified course.
 	 * Students will automatically join the group.
 	 */
-	async createGroup(course: Course, participant: Participant, groupDto: GroupDto): Promise<GroupDto> {
+	async createGroup(
+		course: Course,
+		participant: Participant,
+		groupDto: GroupDto
+	): Promise<GroupDto> {
 		const groupSettings = await this.getGroupSettingsOfCourse(course.id);
-		
-		course.with(CourseWithGroupSettings, groupSettings)
-			.isNotClosed()
-			.allowsGroupCreation();
-		
+
+		course.with(CourseWithGroupSettings, groupSettings).isNotClosed().allowsGroupCreation();
+
 		if (participant.isStudent()) {
 			participant.hasNoGroup();
 		}
-		
+
 		if (participant.isStudent()) {
 			// Create group according to group settings and automatically add student
 			return this.createGroupAsStudent(course, groupDto, participant.userId, groupSettings);
@@ -79,7 +82,12 @@ export class GroupService {
 	 * @param userId
 	 * @returns The created group.
 	 */
-	private async createGroupAsStudent(course: Course, groupDto: GroupDto, userId: UserId, groupSettings: GroupSettings): Promise<GroupDto> {
+	private async createGroupAsStudent(
+		course: Course,
+		groupDto: GroupDto,
+		userId: UserId,
+		groupSettings: GroupSettings
+	): Promise<GroupDto> {
 		groupDto.name = await this.determineName(course, groupSettings, groupDto);
 
 		if (groupSettings.sizeMin > 1) {
@@ -96,11 +104,18 @@ export class GroupService {
 	 * If course uses a name schema the name will use the schema, otherwise it will return the specified name from the dto.
 	 * @throws `Error` if name is empty or undefined.
 	 */
-	async determineName(course: Course, groupSettings: GroupSettings, groupDto: GroupDto): Promise<string> {
+	async determineName(
+		course: Course,
+		groupSettings: GroupSettings,
+		groupDto: GroupDto
+	): Promise<string> {
 		let name: string;
 
 		if (groupSettings.nameSchema) {
-			name = await this.groupRepository.getAvailableGroupNameForSchema(course.id, groupSettings.nameSchema);
+			name = await this.groupRepository.getAvailableGroupNameForSchema(
+				course.id,
+				groupSettings.nameSchema
+			);
 		} else {
 			name = groupDto.name;
 		}
@@ -115,7 +130,10 @@ export class GroupService {
 	/**
 	 * Creates multiple groups at once, using the given names or naming schema and count.
 	 */
-	async createMultipleGroups(courseId: CourseId, groupCreateBulk: GroupCreateBulkDto): Promise<GroupDto[]> {
+	async createMultipleGroups(
+		courseId: CourseId,
+		groupCreateBulk: GroupCreateBulkDto
+	): Promise<GroupDto[]> {
 		const { names, nameSchema, count } = groupCreateBulk;
 		let groups: GroupDto[] = [];
 
@@ -131,7 +149,11 @@ export class GroupService {
 		return createdGroups.map(g => DtoFactory.createGroupDto(g));
 	}
 
-	private createGroupsWithSchemaAndCount(courseId: string, nameSchema: string, count: number): GroupDto[] {
+	private createGroupsWithSchemaAndCount(
+		courseId: string,
+		nameSchema: string,
+		count: number
+	): GroupDto[] {
 		const groups: GroupDto[] = [];
 		for (let i = 1; i <= count; i++) {
 			groups.push({ isClosed: false, name: nameSchema + i });
@@ -148,43 +170,57 @@ export class GroupService {
 		if (new Set(names).size !== names.length) {
 			throw new BadRequestException("Duplicated group names are not allowed.");
 		}
-		
+
 		// Create groups using given names
 		return names.map(name => ({ courseId, isClosed: false, name }));
 	}
-	
+
 	/**
 	 * Adds the user to the group, if the following conditions are fulfilled:
 	 *   - Group is not closed
 	 *   - Group has not reached the allowed maximum capacity
 	 *   - Given password matches the group's password
 	 */
-	async addUserToGroup(course: Course, group: Group, participant: Participant, selectedParticipant: Participant, password?: string): Promise<void> {
+	async addUserToGroup(
+		course: Course,
+		group: Group,
+		participant: Participant,
+		selectedParticipant: Participant,
+		password?: string
+	): Promise<void> {
 		selectedParticipant.hasNoGroup();
 
 		const groupSettings = await this.getGroupSettingsOfCourse(course.id);
-		course.with(CourseWithGroupSettings, groupSettings)
-			.isNotClosed();
-		
+		course.with(CourseWithGroupSettings, groupSettings).isNotClosed();
+
 		if (participant.isStudent()) {
-			group
-				.isNotClosed()
-				.hasCapacity(groupSettings.sizeMax)
-				.acceptsPassword(password);
+			group.isNotClosed().hasCapacity(groupSettings.sizeMax).acceptsPassword(password);
 		}
 
-		const added = await this.groupRepository.addUserToGroup(course.id, group.id, selectedParticipant.userId);
+		const added = await this.groupRepository.addUserToGroup(
+			course.id,
+			group.id,
+			selectedParticipant.userId
+		);
 		if (added) {
-			this.events.publish(new UserJoinedGroupEvent(course.id, group.id, selectedParticipant.userId));
+			this.events.publish(
+				new UserJoinedGroupEvent(course.id, group.id, selectedParticipant.userId)
+			);
 		} else {
-			throw new BadRequestException(`Failed to add user (${selectedParticipant.userId}) to group (${group.id})`);
+			throw new BadRequestException(
+				`Failed to add user (${selectedParticipant.userId}) to group (${group.id})`
+			);
 		}
 	}
 
 	/**
-	 * Adds the user to the group without checking any constraints. 
+	 * Adds the user to the group without checking any constraints.
 	 */
-	async addUserToGroup_Force(courseId: CourseId, groupId: GroupId, userId: UserId): Promise<void> {
+	async addUserToGroup_Force(
+		courseId: CourseId,
+		groupId: GroupId,
+		userId: UserId
+	): Promise<void> {
 		const added = await this.groupRepository.addUserToGroup(courseId, groupId, userId);
 		if (added) {
 			this.events.publish(new UserJoinedGroupEvent(courseId, groupId, userId));
@@ -196,7 +232,10 @@ export class GroupService {
 	/**
 	 * Returns all groups of a course and their members.
 	 */
-	async getGroupsOfCourse(courseId: CourseId, filter?: GroupFilter): Promise<[GroupDto[], number]> {
+	async getGroupsOfCourse(
+		courseId: CourseId,
+		filter?: GroupFilter
+	): Promise<[GroupDto[], number]> {
 		const [groups, count] = await this.groupRepository.getGroupsOfCourse(courseId, filter);
 		const dtos = groups.map(group => DtoFactory.createGroupDto(group));
 		return [dtos, count];
@@ -237,7 +276,10 @@ export class GroupService {
 	/**
 	 * Returns all groups and their members that are registered for this assignment.
 	 */
-	async getGroupsFromAssignment(courseId: CourseId, assignmentId: string): Promise<[GroupDto[], number]> {
+	async getGroupsFromAssignment(
+		courseId: CourseId,
+		assignmentId: string
+	): Promise<[GroupDto[], number]> {
 		return this.registrations.getRegisteredGroupsWithMembers(assignmentId);
 	}
 
@@ -249,13 +291,10 @@ export class GroupService {
 	async updateGroup(course: Course, group: Group, update: GroupUpdateDto): Promise<GroupDto> {
 		const groupSettings = await this.getGroupSettingsOfCourse(course.id);
 
-		const _course = course.with(CourseWithGroupSettings, groupSettings)
-			.isNotClosed();
-		
+		const _course = course.with(CourseWithGroupSettings, groupSettings).isNotClosed();
+
 		if (group.wantsToChangeName(update)) {
-			_course
-				.allowsSelfManagedGroups()
-				.allowsGroupToRename();
+			_course.allowsSelfManagedGroups().allowsGroupToRename();
 		}
 
 		if (group.wantsToClose(update)) {
@@ -266,31 +305,37 @@ export class GroupService {
 		return DtoFactory.createGroupDto(updated);
 	}
 
-
 	/**
 	 * Removes the `selectedParticipant` from the given `group`.
 	 * If the requesting `participant` is a `STUDENT`, he must be ...
 	 * - member of the group
 	 * - allowed to remove group members
 	 */
-	async removeUser(course: Course, group: Group, participant: Participant, selectedParticipant: Participant, reason?: string): Promise<void> {
+	async removeUser(
+		course: Course,
+		group: Group,
+		participant: Participant,
+		selectedParticipant: Participant,
+		reason?: string
+	): Promise<void> {
 		course.isNotClosed();
 
 		if (participant.isStudent()) {
-			participant
-				.isMemberOfGroup(group)
-				.isAllowedToRemoveGroupMember(selectedParticipant);
-			
+			participant.isMemberOfGroup(group).isAllowedToRemoveGroupMember(selectedParticipant);
+
 			const groupSettings = await this.getGroupSettingsOfCourse(course.id);
-			course.with(CourseWithGroupSettings, groupSettings)
-				.allowsSelfManagedGroups();
+			course.with(CourseWithGroupSettings, groupSettings).allowsSelfManagedGroups();
 		}
 
 		const removed = await this.groupRepository.removeUser(group.id, selectedParticipant.userId);
 		if (removed) {
-			this.events.publish(new UserLeftGroupEvent(course.id, group.id, selectedParticipant.userId, reason));
+			this.events.publish(
+				new UserLeftGroupEvent(course.id, group.id, selectedParticipant.userId, reason)
+			);
 		} else {
-			throw new BadRequestException(`Failed to remove user (${selectedParticipant.userId}) from group (${group.id}).`);
+			throw new BadRequestException(
+				`Failed to remove user (${selectedParticipant.userId}) from group (${group.id}).`
+			);
 		}
 	}
 
@@ -299,10 +344,9 @@ export class GroupService {
 
 		if (participant.isStudent()) {
 			participant.isAllowedToRemoveTheirGroup();
-			
+
 			const groupSettings = await this.getGroupSettingsOfCourse(course.id);
-			course.with(CourseWithGroupSettings, groupSettings)
-				.allowsSelfManagedGroups();
+			course.with(CourseWithGroupSettings, groupSettings).allowsSelfManagedGroups();
 		}
 
 		return this.groupRepository.deleteGroup(group.id);
@@ -311,5 +355,4 @@ export class GroupService {
 	private getGroupSettingsOfCourse(courseId: CourseId): Promise<GroupSettings> {
 		return this.groupSettingsRepository.getByCourseId(courseId);
 	}
-
 }

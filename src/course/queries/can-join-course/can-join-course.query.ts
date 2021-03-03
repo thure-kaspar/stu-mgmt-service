@@ -6,33 +6,37 @@ import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
 import { CanJoinCourseDto } from "./can-join-course.dto";
 import { UserId } from "../../../shared/entities/user.entity";
 
-export class CanJoinCourseQuery { 
-	constructor(
-		public readonly courseId: CourseId, 
-		public readonly userId: UserId
-	) { }
+export class CanJoinCourseQuery {
+	constructor(public readonly courseId: CourseId, public readonly userId: UserId) {}
 }
 
 @QueryHandler(CanJoinCourseQuery)
 export class CanJoinCourseHandler implements IQueryHandler<CanJoinCourseQuery> {
-
-	constructor(@InjectRepository(Course) private courseRepo: CourseRepository) { }
+	constructor(@InjectRepository(Course) private courseRepo: CourseRepository) {}
 
 	async execute(query: CanJoinCourseQuery): Promise<CanJoinCourseDto> {
 		// Load course, courseConfig and join user if he's a member
-		const course = await this.courseRepo.createQueryBuilder("course")
+		const course = await this.courseRepo
+			.createQueryBuilder("course")
 			.where("course.id = :courseId", { courseId: query.courseId })
-			.innerJoinAndSelect("course.config", "config", "config.courseId = :courseId", { courseId: query.courseId })
-			.leftJoinAndSelect("course.participants", "userRelation", "userRelation.userId = :userId", { userId: query.userId })
+			.innerJoinAndSelect("course.config", "config", "config.courseId = :courseId", {
+				courseId: query.courseId
+			})
+			.leftJoinAndSelect(
+				"course.participants",
+				"userRelation",
+				"userRelation.userId = :userId",
+				{ userId: query.userId }
+			)
 			.getOne();
 
 		if (!course) throw new EntityNotFoundError(Course, null);
-		
+
 		if (course.participants.length == 1) {
 			// User is already a member of the course
 			return {
 				canJoin: false,
-				reason: "IS_MEMBER"	
+				reason: "IS_MEMBER"
 			};
 		}
 
@@ -50,5 +54,4 @@ export class CanJoinCourseHandler implements IQueryHandler<CanJoinCourseQuery> {
 			requiresPassword: course.config.password ? true : false
 		};
 	}
-
 }

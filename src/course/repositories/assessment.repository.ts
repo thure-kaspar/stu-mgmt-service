@@ -1,6 +1,10 @@
 import { Repository, EntityRepository, EntityManager, Brackets } from "typeorm";
 import { Assessment } from "../entities/assessment.entity";
-import { AssessmentDto, AssessmentCreateDto, AssessmentUpdateDto } from "../dto/assessment/assessment.dto";
+import {
+	AssessmentDto,
+	AssessmentCreateDto,
+	AssessmentUpdateDto
+} from "../dto/assessment/assessment.dto";
 import { AssessmentUserRelation } from "../entities/assessment-user-relation.entity";
 import { PartialAssessmentDto } from "../dto/assessment/partial-assessment.dto";
 import { PartialAssessment } from "../entities/partial-assessment.entity";
@@ -12,8 +16,11 @@ import { GroupId } from "../entities/group.entity";
 
 @EntityRepository(Assessment)
 export class AssessmentRepository extends Repository<Assessment> {
-
-	async createAssessment(assessmentDto: AssessmentCreateDto, userIds: string[], creatorId: UserId): Promise<Assessment> {
+	async createAssessment(
+		assessmentDto: AssessmentCreateDto,
+		userIds: string[],
+		creatorId: UserId
+	): Promise<Assessment> {
 		const assessment = this.createEntityFromDto({ ...assessmentDto, creatorId });
 		assessment.assessmentUserRelations = userIds.map(userId => {
 			const relation = new AssessmentUserRelation();
@@ -24,7 +31,9 @@ export class AssessmentRepository extends Repository<Assessment> {
 		return this.save(assessment);
 	}
 
-	async addPartialAssessment(partialAssessmentDto: PartialAssessmentDto): Promise<PartialAssessment> {
+	async addPartialAssessment(
+		partialAssessmentDto: PartialAssessmentDto
+	): Promise<PartialAssessment> {
 		const partialRepo = this.manager.getRepository(PartialAssessment);
 		const partial = partialRepo.create(partialAssessmentDto);
 		return partialRepo.save(partial);
@@ -65,8 +74,11 @@ export class AssessmentRepository extends Repository<Assessment> {
 	 * - Group (is group assessment)
 	 * - User (if user assessment)
 	 */
-	async getAssessmentsForAssignment(assignmentId: string, filter?: AssessmentFilter): Promise<[Assessment[], number]> {
-		const { name, groupId, userId, creatorId, minScore, skip, take } = filter || { };
+	async getAssessmentsForAssignment(
+		assignmentId: string,
+		filter?: AssessmentFilter
+	): Promise<[Assessment[], number]> {
+		const { name, groupId, userId, creatorId, minScore, skip, take } = filter || {};
 
 		const query = this.createQueryBuilder("assessment")
 			.where("assessment.assignmentId = :assignmentId", { assignmentId })
@@ -83,11 +95,13 @@ export class AssessmentRepository extends Repository<Assessment> {
 			.take(take);
 
 		if (name) {
-			query.andWhere(new Brackets(qb => {
-				qb.where("group.name ILIKE :name", { name: `%${name}%` });
-				qb.orWhere("user.displayName ILIKE :name", { name: `%${name}%` });
-				qb.orWhere("user.username ILIKE :name", { name: `%${name}%` });
-			}));
+			query.andWhere(
+				new Brackets(qb => {
+					qb.where("group.name ILIKE :name", { name: `%${name}%` });
+					qb.orWhere("user.displayName ILIKE :name", { name: `%${name}%` });
+					qb.orWhere("user.username ILIKE :name", { name: `%${name}%` });
+				})
+			);
 		}
 
 		if (groupId) {
@@ -123,8 +137,18 @@ export class AssessmentRepository extends Repository<Assessment> {
 			.leftJoinAndSelect("assessment.lastUpdatedBy", "lastUpdatedBy")
 			.leftJoinAndSelect("assessment.partialAssessments", "partials") // Include partial assessments, if they exist
 			.leftJoinAndSelect("assessment.group", "group") // Include group, if it exists
-			.innerJoin("assessment.assessmentUserRelations", "userRelation", "userRelation.userId = :userId", { userId }) // User condition
-			.innerJoinAndSelect("assessment.assignment", "assignment", "assignment.courseId = :courseId", { courseId }) // Course condition
+			.innerJoin(
+				"assessment.assessmentUserRelations",
+				"userRelation",
+				"userRelation.userId = :userId",
+				{ userId }
+			) // User condition
+			.innerJoinAndSelect(
+				"assessment.assignment",
+				"assignment",
+				"assignment.courseId = :courseId",
+				{ courseId }
+			) // Course condition
 			.orderBy("assessment.creationDate", "DESC")
 			.getMany();
 	}
@@ -151,9 +175,13 @@ export class AssessmentRepository extends Repository<Assessment> {
 	/**
 	 * Updates the assessment including its partial assessments.
 	 */
-	async updateAssessment(assessmentId: string, updateDto: AssessmentUpdateDto, updatedBy: UserId): Promise<Assessment> {
+	async updateAssessment(
+		assessmentId: string,
+		updateDto: AssessmentUpdateDto,
+		updatedBy: UserId
+	): Promise<Assessment> {
 		const { achievedPoints, comment } = updateDto;
-		const assessment = await this.findOneOrFail(assessmentId, { 
+		const assessment = await this.findOneOrFail(assessmentId, {
 			relations: ["partialAssessments"]
 		});
 
@@ -166,14 +194,14 @@ export class AssessmentRepository extends Repository<Assessment> {
 
 		// Update comment, if included (allow setting to null)
 		if (comment !== undefined) {
-			assessment.comment = comment?.length > 0 ? comment : null; 
-		} 
+			assessment.comment = comment?.length > 0 ? comment : null;
+		}
 
 		// Perform insert/update/delete in one transaction
 		await this.manager.transaction(async transaction => {
 			// Update assessment itself
 			await transaction.save(assessment);
-			
+
 			// Insert/Update/Remove partials
 			await this.updatePartials(transaction, updateDto, assessment.partialAssessments);
 		});
@@ -181,9 +209,17 @@ export class AssessmentRepository extends Repository<Assessment> {
 		return this.getAssessmentById(assessment.id);
 	}
 
-	private async updatePartials(transaction: EntityManager, updateDto: AssessmentUpdateDto, originalPartials: PartialAssessment[]): Promise<void> {
-		const { addPartialAssessments, updatePartialAssignments, removePartialAssignments } = updateDto;
-		
+	private async updatePartials(
+		transaction: EntityManager,
+		updateDto: AssessmentUpdateDto,
+		originalPartials: PartialAssessment[]
+	): Promise<void> {
+		const {
+			addPartialAssessments,
+			updatePartialAssignments,
+			removePartialAssignments
+		} = updateDto;
+
 		if (removePartialAssignments?.length > 0) {
 			const ids = removePartialAssignments.map(p => p.id);
 			await transaction.delete(PartialAssessment, ids);
@@ -196,7 +232,7 @@ export class AssessmentRepository extends Repository<Assessment> {
 
 		// Update partials
 		if (updatePartialAssignments?.length > 0) {
-			updatePartialAssignments.forEach(async (update) => {
+			updatePartialAssignments.forEach(async update => {
 				// Ensure that partial actually existed in assessment
 				if (originalPartials.find(p => p.id == update.id)) {
 					await transaction.update(PartialAssessment, { id: update.id }, update);
@@ -212,8 +248,7 @@ export class AssessmentRepository extends Repository<Assessment> {
 
 	private createEntityFromDto(assessmentDto: AssessmentDto): Assessment {
 		const assessment = this.create(assessmentDto);
-		assessment.partialAssessments?.forEach(p => p.assessmentId = null); // Id can't be known prior to insert -> prevent insert with wrong id
+		assessment.partialAssessments?.forEach(p => (p.assessmentId = null)); // Id can't be known prior to insert -> prevent insert with wrong id
 		return assessment;
 	}
-
 }

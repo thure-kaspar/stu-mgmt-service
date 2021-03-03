@@ -9,16 +9,16 @@ import { CourseRepository } from "../repositories/course.repository";
 
 @Injectable()
 export class CourseService {
-
-	constructor(@InjectRepository(Course) private courseRepository: CourseRepository) { }
+	constructor(@InjectRepository(Course) private courseRepository: CourseRepository) {}
 
 	async createCourse(courseDto: CourseCreateDto): Promise<CourseDto> {
 		if (!courseDto.config) throw new BadRequestException("CourseConfig is missing.");
-		if (!courseDto.config.groupSettings) throw new BadRequestException("GroupSettings are missing.");
+		if (!courseDto.config.groupSettings)
+			throw new BadRequestException("GroupSettings are missing.");
 
 		// If no id was supplied, <shortname-semester> will be the id
-		if (!courseDto.id || courseDto.id === "")  {
-			courseDto.id = courseDto.shortname + "-" + courseDto.semester; 
+		if (!courseDto.id || courseDto.id === "") {
+			courseDto.id = courseDto.shortname + "-" + courseDto.semester;
 		}
 
 		const course = await this.courseRepository.createCourse(courseDto, courseDto.config);
@@ -48,5 +48,4 @@ export class CourseService {
 	async deleteCourse(courseId: CourseId): Promise<boolean> {
 		return this.courseRepository.deleteCourse(courseId);
 	}
-
 }

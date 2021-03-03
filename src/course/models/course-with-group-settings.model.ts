@@ -6,7 +6,6 @@ import { Course } from "./course.model";
 import { Group } from "./group.model";
 
 export class CourseWithGroupSettings extends Course {
-
 	readonly groupSettings: GroupSettings;
 
 	constructor(course: CourseEntity, groupSettings: GroupSettings) {
@@ -28,7 +27,7 @@ export class CourseWithGroupSettings extends Course {
 	}
 
 	wantsAutomaticGroupJoins(): boolean {
-		return this.groupSettings.autoJoinGroupOnCourseJoined; 
+		return this.groupSettings.autoJoinGroupOnCourseJoined;
 	}
 
 	hasGroupNameSchema(): boolean {

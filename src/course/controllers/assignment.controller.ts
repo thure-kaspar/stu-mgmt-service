@@ -18,7 +18,7 @@ import { TeachingStaffGuard } from "../guards/teaching-staff.guard";
 @UseGuards(AuthGuard(), CourseMemberGuard)
 @Controller("courses/:courseId/assignments")
 export class AssignmentController {
-	constructor(private assignmentService: AssignmentService) { }
+	constructor(private assignmentService: AssignmentService) {}
 
 	@ApiOperation({
 		operationId: "createAssignment",
@@ -32,7 +32,6 @@ export class AssignmentController {
 		@Body() assignmentDto: AssignmentDto,
 		@GetCourse() course: Course
 	): Promise<AssignmentDto> {
-
 		return this.assignmentService.createAssignment(course, assignmentDto);
 	}
 
@@ -42,10 +41,7 @@ export class AssignmentController {
 		summary: "Get assignments of course.",
 		description: "Retrieves all assignments of the course."
 	})
-	getAssignmentsOfCourse(
-		@Param("courseId") courseId: CourseId,
-	): Promise<AssignmentDto[]> {
-
+	getAssignmentsOfCourse(@Param("courseId") courseId: CourseId): Promise<AssignmentDto[]> {
 		return this.assignmentService.getAssignments(courseId);
 	}
 
@@ -57,9 +53,8 @@ export class AssignmentController {
 	})
 	getAssignmentById(
 		@Param("courseId") courseId: CourseId,
-		@Param("assignmentId") assignmentId: string 
+		@Param("assignmentId") assignmentId: string
 	): Promise<AssignmentDto> {
-
 		return this.assignmentService.getAssignmentById(assignmentId);
 	}
 
@@ -77,7 +72,6 @@ export class AssignmentController {
 		@GetAssignment() assignment: Assignment,
 		@Body() update: AssignmentUpdateDto
 	): Promise<AssignmentDto> {
-
 		return this.assignmentService.updateAssignment(course, assignment, update);
 	}
 
@@ -92,11 +86,9 @@ export class AssignmentController {
 		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string
 	): Promise<void> {
-
 		return throwIfRequestFailed(
 			this.assignmentService.deleteAssignment(courseId, assignmentId),
 			`Failed to delete assignment (${assignmentId}).`
 		);
 	}
-
 }

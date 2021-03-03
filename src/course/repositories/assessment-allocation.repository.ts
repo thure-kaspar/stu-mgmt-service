@@ -4,7 +4,6 @@ import { AssessmentAllocationDto } from "../dto/assessment-allocation/assessment
 
 @EntityRepository(AssessmentAllocation)
 export class AssessmentAllocationRepository extends Repository<AssessmentAllocation> {
-
 	/**
 	 * Creates an AssessmentAllocation for an assignment.
 	 * If the allocation already exists and currently maps to a different evaluator, updates the existing entity.
@@ -20,7 +19,7 @@ export class AssessmentAllocationRepository extends Repository<AssessmentAllocat
 		} else if (allocation.userId) {
 			where = { ...where, userId: allocation.userId };
 		}
-		
+
 		const existing = await this.getAllocation(where);
 
 		// Update if it exists
@@ -37,7 +36,9 @@ export class AssessmentAllocationRepository extends Repository<AssessmentAllocat
 	/**
 	 * Creates multiple AssessmentAllocations at once.
 	 */
-	async createAllocations(allocations: AssessmentAllocationDto[]): Promise<AssessmentAllocation[]> {
+	async createAllocations(
+		allocations: AssessmentAllocationDto[]
+	): Promise<AssessmentAllocation[]> {
 		const allocationEntities = allocations.map(a => this.create(a));
 		return this.save(allocationEntities);
 	}
@@ -51,14 +52,20 @@ export class AssessmentAllocationRepository extends Repository<AssessmentAllocat
 		});
 	}
 
-	async getAllocationsOfAssignmentForGroups(assignmentId: string, groupIds: string[]): Promise<AssessmentAllocation[]> {
+	async getAllocationsOfAssignmentForGroups(
+		assignmentId: string,
+		groupIds: string[]
+	): Promise<AssessmentAllocation[]> {
 		return this.createQueryBuilder("allocation")
 			.where("allocation.assignmentId = :assignmentId", { assignmentId })
 			.andWhereInIds(groupIds.map(id => ({ groupId: id })))
 			.getMany();
 	}
 
-	async getAllocationsOfAssignmentForUsers(assignmentId: string, userIds: string[]): Promise<AssessmentAllocation[]> {
+	async getAllocationsOfAssignmentForUsers(
+		assignmentId: string,
+		userIds: string[]
+	): Promise<AssessmentAllocation[]> {
 		return this.createQueryBuilder("allocation")
 			.where("allocation.assignmentId = :assignmentId", { assignmentId })
 			.andWhereInIds(userIds.map(id => ({ userId: id })))
@@ -69,7 +76,9 @@ export class AssessmentAllocationRepository extends Repository<AssessmentAllocat
 	 * Tries to find an allocation with the given conditions.
 	 * @returns The found allocation or undefined.
 	 */
-	async getAllocation(where: Partial<AssessmentAllocationDto>): Promise<AssessmentAllocation | undefined> {
+	async getAllocation(
+		where: Partial<AssessmentAllocationDto>
+	): Promise<AssessmentAllocation | undefined> {
 		return this.findOne({ where: where });
 	}
 
@@ -94,12 +103,10 @@ export class AssessmentAllocationRepository extends Repository<AssessmentAllocat
 		return result.affected == 1;
 	}
 
-
 	/**
 	 * Removes all allocations that have been made for the specfied assignment.
 	 */
 	async removeAllAllocationsOfAssignment(assignmentId: string): Promise<void> {
 		await this.delete({ assignmentId });
 	}
-
 }

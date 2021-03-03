@@ -14,8 +14,14 @@ import { TeachingStaffGuard } from "./guards/teaching-staff.guard";
 import { QueryHandlers } from "./queries";
 import { Repositories } from "./repositories";
 import { Services } from "./services";
-import { UserJoinedGroupHandler, UserJoinedGroupNotificationHandler } from "./events/group/user-joined-group.event";
-import { UserLeftGroupHandler, UserLeftGroupNotificationHandler } from "./events/group/user-left-group.event";
+import {
+	UserJoinedGroupHandler,
+	UserJoinedGroupNotificationHandler
+} from "./events/group/user-joined-group.event";
+import {
+	UserLeftGroupHandler,
+	UserLeftGroupNotificationHandler
+} from "./events/group/user-left-group.event";
 import { AssessmentScoreChangedHandler } from "./events/assessment/assessment-score-changed.event";
 import { AssignmentCreatedNotificationHandler } from "./events/assignment/assignment-created.event";
 import { AssignmentStateChangedNotificationHandler } from "./events/assignment/assignment-state-changed.event";
@@ -31,7 +37,12 @@ import { CourseJoinedNotificationHandler } from "./events/participant/course-joi
 
 @Module({
 	imports: [
-		TypeOrmModule.forFeature([...Repositories, UserRepository, AssessmentEvent, GroupRegistrationRelation]),
+		TypeOrmModule.forFeature([
+			...Repositories,
+			UserRepository,
+			AssessmentEvent,
+			GroupRegistrationRelation
+		]),
 		CqrsModule,
 		HttpModule,
 		AuthModule
@@ -43,10 +54,10 @@ import { CourseJoinedNotificationHandler } from "./events/participant/course-joi
 		...QueryHandlers,
 		// EventHandlers that are used internally:
 		CourseJoinedHandler_AutomaticGroupJoin,
-		UserJoinedGroupHandler, 
-		UserLeftGroupHandler, 
+		UserJoinedGroupHandler,
+		UserLeftGroupHandler,
 		AssessmentScoreChangedHandler,
-		
+
 		// EventHandlers that publish events to other systems:
 		CourseJoinedNotificationHandler,
 		UserJoinedGroupNotificationHandler,
@@ -61,6 +72,12 @@ import { CourseJoinedNotificationHandler } from "./events/participant/course-joi
 		RegistrationsCreatedNotificationHandler,
 		RegistrationsRemovedNotificationHandler
 	],
-	exports: [TypeOrmModule, CourseMemberGuard, TeachingStaffGuard, ParticipantIdentityGuard, ...Services]
+	exports: [
+		TypeOrmModule,
+		CourseMemberGuard,
+		TeachingStaffGuard,
+		ParticipantIdentityGuard,
+		...Services
+	]
 })
-export class CourseModule { }
+export class CourseModule {}

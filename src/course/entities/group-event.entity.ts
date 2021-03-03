@@ -1,4 +1,12 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinTable } from "typeorm";
+import {
+	BaseEntity,
+	Entity,
+	PrimaryGeneratedColumn,
+	Column,
+	CreateDateColumn,
+	ManyToOne,
+	JoinTable
+} from "typeorm";
 import { Group, GroupId } from "./group.entity";
 import { User, UserId } from "../../shared/entities/user.entity";
 import { GroupEventDto } from "../dto/group/group-event.dto";
@@ -29,12 +37,14 @@ export class GroupEvent extends EventEntity {
 			timestamp: this.timestamp
 		};
 	}
-	
 }
 
 /** Replays the events by iterating from oldest to newest event and executes the given funtion for each event. */
-export function replayEvents(events: GroupEvent[], processEvent: (event: GroupEvent) => void): void {
-	for (let i = events.length - 1; i >= 0; i--){
+export function replayEvents(
+	events: GroupEvent[],
+	processEvent: (event: GroupEvent) => void
+): void {
+	for (let i = events.length - 1; i >= 0; i--) {
 		processEvent(events[i]);
 	}
 }

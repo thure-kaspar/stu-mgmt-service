@@ -6,7 +6,9 @@ import { sanitizeEnum } from "../../../utils/http-utils";
 export class CourseParticipantsFilter extends PaginationFilter {
 	@ApiPropertyOptional({ enum: CourseRole, type: CourseRole, isArray: true })
 	courseRole?: CourseRole[];
-	@ApiPropertyOptional({ description: "Compared to the participant's username and displayName with ILIKE %name%." })
+	@ApiPropertyOptional({
+		description: "Compared to the participant's username and displayName with ILIKE %name%."
+	})
 	name?: string;
 
 	constructor(filter?: Partial<CourseParticipantsFilter>) {
@@ -14,5 +16,4 @@ export class CourseParticipantsFilter extends PaginationFilter {
 		this.name = filter?.name;
 		this.courseRole = sanitizeEnum(CourseRole, filter?.courseRole) as any;
 	}
-
 }

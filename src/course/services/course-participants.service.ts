@@ -17,13 +17,14 @@ import { ParticipantRepository } from "../repositories/participant.repository";
 
 @Injectable()
 export class CourseParticipantsService {
-	
-	constructor(@InjectRepository(CourseEntity) private courseRepo: CourseRepository,
-				@InjectRepository(ParticipantEntity) private participantRepo: ParticipantRepository,
-				private events: EventBus) { }
+	constructor(
+		@InjectRepository(CourseEntity) private courseRepo: CourseRepository,
+		@InjectRepository(ParticipantEntity) private participantRepo: ParticipantRepository,
+		private events: EventBus
+	) {}
 
 	/**
-	 * Adds the user to the course. 
+	 * Adds the user to the course.
 	 * If the course requires a password, the given password must match the specified password.
 	 * Throws exception, if course is closed or password does not match.
 	 */
@@ -38,20 +39,27 @@ export class CourseParticipantsService {
 			throw new BadRequestException("The given password was incorrect.");
 		}
 
-		const participant = await this.participantRepo.createParticipant(courseId, userId, CourseRole.STUDENT);
+		const participant = await this.participantRepo.createParticipant(
+			courseId,
+			userId,
+			CourseRole.STUDENT
+		);
 
 		const courseModel = new CourseWithGroupSettings(course, course.config.groupSettings);
 		this.events.publish(new CourseJoined(courseModel, new Participant(participant)));
 	}
 
-	async getParticipants(courseId: CourseId, filter?: CourseParticipantsFilter): Promise<[ParticipantDto[], number]> {
+	async getParticipants(
+		courseId: CourseId,
+		filter?: CourseParticipantsFilter
+	): Promise<[ParticipantDto[], number]> {
 		const [participants, count] = await this.participantRepo.getParticipants(courseId, filter);
 		return [toDtos(participants), count];
 	}
 
 	/**
 	 * Returns a specific participant of a course.
-	 * 
+	 *
 	 * Includes relations:
 	 * - Group (if exists, includes members)
 	 */
@@ -67,5 +75,4 @@ export class CourseParticipantsService {
 	async removeUser(courseId: CourseId, userId: UserId): Promise<boolean> {
 		return await this.participantRepo.removeUser(courseId, userId);
 	}
-
 }

@@ -1,14 +1,12 @@
-
-import {Body, Controller, Post } from "@nestjs/common";
-import {MailingService} from "../services/mailing.service";
-import {MailDto} from "../dto/mail.dto";
+import { Body, Controller, Post } from "@nestjs/common";
+import { MailingService } from "../services/mailing.service";
+import { MailDto } from "../dto/mail.dto";
 import { ApiTags, ApiOperation } from "@nestjs/swagger";
 
 @ApiTags("mail")
 @Controller("mail")
 export class MailingController {
-
-	constructor(private mailingService: MailingService) { }
+	constructor(private mailingService: MailingService) {}
 
 	@Post("send")
 	@ApiOperation({
@@ -19,5 +17,4 @@ export class MailingController {
 	send(@Body() mailDto: MailDto): Promise<void> {
 		return this.mailingService.send(mailDto);
 	}
-
 }

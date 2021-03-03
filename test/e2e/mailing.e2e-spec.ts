@@ -10,7 +10,6 @@ let dbMockService: DbMockService;
 let mail: MailDto;
 
 describe("POST-Requests of MailingController (e2e)", () => {
-
 	beforeAll(async () => {
 		app = await createApplication();
 
@@ -33,10 +32,6 @@ describe("POST-Requests of MailingController (e2e)", () => {
 	});
 
 	it("(POST) /mail/send Valid mail -> Sends the mail", () => {
-		return request(app.getHttpServer())
-			.post("/mail/send")
-			.send(mail)
-			.expect(201);
+		return request(app.getHttpServer()).post("/mail/send").send(mail).expect(201);
 	});
-
 });

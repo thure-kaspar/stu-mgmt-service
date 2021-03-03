@@ -6,13 +6,12 @@ import { CourseId } from "../entities/course.entity";
 
 @EntityRepository(GroupSettings)
 export class GroupSettingsRepository extends Repository<GroupSettings> {
-
 	/** Inserts the group settings into the database and returns them. */
 	createGroupSettings(configId: number, settingsDto: GroupSettingsDto): Promise<GroupSettings> {
 		const settings = this.create(settingsDto);
 		return this.save(settings);
 	}
-	
+
 	/** Retrieves the group settings. Throws error, if not found. */
 	getById(id: number): Promise<GroupSettings> {
 		return this.findOneOrFail(id);
@@ -25,15 +24,17 @@ export class GroupSettingsRepository extends Repository<GroupSettings> {
 			.where("c.courseId = :courseId", { courseId })
 			.getOne();
 
-		if(!settings) throw new EntityNotFoundError(GroupSettings, null);
+		if (!settings) throw new EntityNotFoundError(GroupSettings, null);
 		return settings;
 	}
 
 	/** Partially updates the group settings and returns them. */
-	async updateGroupSettings(courseId: CourseId, partial: Partial<GroupSettings>): Promise<GroupSettings> {
+	async updateGroupSettings(
+		courseId: CourseId,
+		partial: Partial<GroupSettings>
+	): Promise<GroupSettings> {
 		const settings = await this.getByCourseId(courseId);
-		const updated = this.create({...settings, ...partial});
+		const updated = this.create({ ...settings, ...partial });
 		return this.save(updated);
 	}
-
 }

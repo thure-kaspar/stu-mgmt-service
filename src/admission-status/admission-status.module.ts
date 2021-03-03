@@ -5,10 +5,7 @@ import { AdmissionStatusController } from "./admission-status.controller";
 import { AdmissionStatusService } from "./admission-status.service";
 
 @Module({
-	imports: [
-		AuthModule,
-		CourseModule
-	],
+	imports: [AuthModule, CourseModule],
 	controllers: [AdmissionStatusController],
 	providers: [AdmissionStatusService],
 	exports: [AdmissionStatusService]

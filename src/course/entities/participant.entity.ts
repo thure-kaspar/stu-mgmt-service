@@ -1,4 +1,13 @@
-import { Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn, OneToOne } from "typeorm";
+import {
+	Column,
+	CreateDateColumn,
+	Entity,
+	Index,
+	JoinColumn,
+	ManyToOne,
+	PrimaryGeneratedColumn,
+	OneToOne
+} from "typeorm";
 import { User, UserId } from "../../shared/entities/user.entity";
 import { CourseRole } from "../../shared/enums";
 import { Course, CourseId } from "./course.entity";
@@ -10,11 +19,13 @@ import { DtoFactory } from "../../shared/dto-factory";
 @Entity()
 @Index("INDEX_CourseId_UserId", ["courseId", "userId"], { unique: true }) // Unique index to prevent user from joining same course multiple times
 export class Participant implements ToDto<ParticipantDto> {
-
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@ManyToOne(type => Course, course => course.participants, { primary: true, onDelete: "CASCADE" })
+	@ManyToOne(type => Course, course => course.participants, {
+		primary: true,
+		onDelete: "CASCADE"
+	})
 	@JoinColumn()
 	course?: Course;
 
@@ -28,14 +39,16 @@ export class Participant implements ToDto<ParticipantDto> {
 	@Column()
 	userId: UserId;
 
-	@OneToOne(type => UserGroupRelation, userGroupRelation => userGroupRelation.participant, { nullable: true })
+	@OneToOne(type => UserGroupRelation, userGroupRelation => userGroupRelation.participant, {
+		nullable: true
+	})
 	groupRelation?: UserGroupRelation;
 
 	// @Column({ nullable: true })
 	// groupRelationId?: number;
 
 	@Column({ type: "enum", enum: CourseRole, default: CourseRole.STUDENT })
-	role: CourseRole;  
+	role: CourseRole;
 
 	@CreateDateColumn()
 	joinedAt: Date;
@@ -52,8 +65,9 @@ export class Participant implements ToDto<ParticipantDto> {
 			displayName: this.user?.displayName,
 			email: this.user?.email,
 			groupId: this.groupRelation?.groupId,
-			group: this.groupRelation?.group ? DtoFactory.createGroupDto(this.groupRelation.group) : undefined,
+			group: this.groupRelation?.group
+				? DtoFactory.createGroupDto(this.groupRelation.group)
+				: undefined
 		};
 	}
-
 }

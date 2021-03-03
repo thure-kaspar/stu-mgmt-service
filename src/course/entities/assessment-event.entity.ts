@@ -7,7 +7,6 @@ import { EventEntity } from "../../shared/entities/event.entity";
 
 @Entity()
 export class AssessmentEvent extends EventEntity {
-
 	@ManyToOne(type => Assessment, { onDelete: "CASCADE" })
 	assessment: Assessment;
 

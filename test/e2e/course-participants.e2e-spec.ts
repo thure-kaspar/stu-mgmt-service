@@ -8,7 +8,10 @@ import { createApplication } from "../mocks/application.mock";
 import { COURSE_JAVA_1819, COURSE_JAVA_1920, COURSE_JAVA_2020 } from "../mocks/courses.mock";
 import { DbMockService } from "../mocks/db-mock.service";
 import { USER_NOT_IN_COURSE, USER_STUDENT_JAVA } from "../mocks/users.mock";
-import { COURSE_PARTICIPANTS_ALL, COURSE_JAVA_1920_PARTICIPANTS } from "../mocks/participants/participants.mock";
+import {
+	COURSE_PARTICIPANTS_ALL,
+	COURSE_JAVA_1920_PARTICIPANTS
+} from "../mocks/participants/participants.mock";
 
 let app: INestApplication;
 let dbMockService: DbMockService; // Should be initialized in every describe-block that requires data in db
@@ -16,7 +19,6 @@ let dbMockService: DbMockService; // Should be initialized in every describe-blo
 const course = COURSE_JAVA_1920; // the course that will be used for testing
 
 describe("GET-REQUESTS of CourseController (e2e)", () => {
-	
 	beforeAll(async () => {
 		app = await createApplication();
 
@@ -31,7 +33,6 @@ describe("GET-REQUESTS of CourseController (e2e)", () => {
 	});
 
 	describe("/courses/{courseId}/users - getUsersOfCourse", () => {
-	
 		const route = `/courses/${course.id}/users`;
 		const expected = COURSE_JAVA_1920_PARTICIPANTS;
 
@@ -51,7 +52,9 @@ describe("GET-REQUESTS of CourseController (e2e)", () => {
 
 		it("Filters STUDENTs", () => {
 			const role = CourseRole.STUDENT;
-			const expected = COURSE_JAVA_1920_PARTICIPANTS.filter(p => p.participant.participant.role === role);
+			const expected = COURSE_JAVA_1920_PARTICIPANTS.filter(
+				p => p.participant.participant.role === role
+			);
 			console.assert(expected.length > 0, "Expecting >1 STUDENT.");
 
 			const queryString = `courseRole=${role}`;
@@ -71,7 +74,9 @@ describe("GET-REQUESTS of CourseController (e2e)", () => {
 
 		it("Filters TUTORs", () => {
 			const role = CourseRole.TUTOR;
-			const expected = COURSE_JAVA_1920_PARTICIPANTS.filter(p => p.participant.participant.role === role);
+			const expected = COURSE_JAVA_1920_PARTICIPANTS.filter(
+				p => p.participant.participant.role === role
+			);
 			console.assert(expected.length > 0, "Expecting >1 TUTOR.");
 
 			const queryString = `courseRole=${role}`;
@@ -89,10 +94,11 @@ describe("GET-REQUESTS of CourseController (e2e)", () => {
 				});
 		});
 
-		
 		it("Filters LECTURERs", () => {
 			const role = CourseRole.LECTURER;
-			const expected = COURSE_JAVA_1920_PARTICIPANTS.filter(p => p.participant.participant.role === role);
+			const expected = COURSE_JAVA_1920_PARTICIPANTS.filter(
+				p => p.participant.participant.role === role
+			);
 			console.assert(expected.length > 0, "Expecting >1 LECTURER.");
 
 			const queryString = `courseRole=${role}`;
@@ -113,7 +119,11 @@ describe("GET-REQUESTS of CourseController (e2e)", () => {
 		it("Filters LECTURERs and TUTORs at once", () => {
 			const role1 = CourseRole.LECTURER;
 			const role2 = CourseRole.TUTOR;
-			const expected = COURSE_JAVA_1920_PARTICIPANTS.filter(p => p.participant.participant.role === role1 || p.participant.participant.role === role2);
+			const expected = COURSE_JAVA_1920_PARTICIPANTS.filter(
+				p =>
+					p.participant.participant.role === role1 ||
+					p.participant.participant.role === role2
+			);
 
 			const queryString = `courseRole=${role1}&courseRole=${role2}`;
 
@@ -128,8 +138,11 @@ describe("GET-REQUESTS of CourseController (e2e)", () => {
 
 		it("Filters by name", () => {
 			const name = "m";
-			const expected = COURSE_JAVA_1920_PARTICIPANTS.filter(p => p.participant.participant.username.includes(name)
-			|| p.participant.participant.displayName.includes(name));
+			const expected = COURSE_JAVA_1920_PARTICIPANTS.filter(
+				p =>
+					p.participant.participant.username.includes(name) ||
+					p.participant.participant.displayName.includes(name)
+			);
 			console.assert(expected.length > 1, "Expecting >1 participants to match name");
 
 			const queryString = `name=${name}`;
@@ -157,7 +170,6 @@ describe("GET-REQUESTS of CourseController (e2e)", () => {
 					expect(result.length).toEqual(2);
 				});
 		});
-	
 	});
 
 	describe("/courses/{courseId}/users/{userId}", () => {
@@ -175,18 +187,20 @@ describe("GET-REQUESTS of CourseController (e2e)", () => {
 
 		it("User is not a participant -> Throws 404", () => {
 			const notParticipant = USER_NOT_IN_COURSE;
-			console.assert(!COURSE_PARTICIPANTS_ALL.find(x => x.courseId === course.id && x.participant.userId === notParticipant.id),
-				"User should not be participant of this course");
+			console.assert(
+				!COURSE_PARTICIPANTS_ALL.find(
+					x => x.courseId === course.id && x.participant.userId === notParticipant.id
+				),
+				"User should not be participant of this course"
+			);
 
 			return request(app.getHttpServer())
 				.get(`/courses/${course.id}/users/${notParticipant.id}`)
 				.expect(404);
 		});
-	
 	});
 
 	describe("/courses/{courseId}/users/query/compare-participants-list", () => {
-	
 		it("Returns a comparison of participants", () => {
 			const queryString = `compareToCourseIds=${COURSE_JAVA_2020.id}&compareToCourseIds=${COURSE_JAVA_1819.id}`;
 
@@ -196,16 +210,16 @@ describe("GET-REQUESTS of CourseController (e2e)", () => {
 				.expect(({ body }) => {
 					const result = body as ParticipantsComparisonDto;
 					expect(result.inComparedCourses.length).toEqual(2);
-					expect(result.notInComparedCourses.length).toEqual(5); // TODO: Scalable conditions 
+					expect(result.notInComparedCourses.length).toEqual(5); // TODO: Scalable conditions
 				});
 		});
 
 		it("Throws 404 if no courseIds for comparison were specified", () => {
 			return request(app.getHttpServer())
-				.get(`/courses/${course.id}/users/query/compare-participants-list?compareToCourseIds=`)
+				.get(
+					`/courses/${course.id}/users/query/compare-participants-list?compareToCourseIds=`
+				)
 				.expect(400);
 		});
-	
 	});
-
 });

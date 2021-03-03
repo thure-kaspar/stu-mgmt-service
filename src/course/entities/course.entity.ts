@@ -10,33 +10,33 @@ export type CourseId = string;
 @Entity("courses")
 @Index("IDX_Shortname_Semester", ["shortname", "semester"], { unique: true })
 export class Course {
-    @PrimaryColumn()
-    id: CourseId;
+	@PrimaryColumn()
+	id: CourseId;
 
-    @Column()
-    shortname: string;
+	@Column()
+	shortname: string;
 
-    @Column()
-    semester: string;
+	@Column()
+	semester: string;
 
-    @Column()
-    title: string;
+	@Column()
+	title: string;
 
-    @Column()
-    isClosed: boolean;
+	@Column()
+	isClosed: boolean;
 
-    @Column({ type: "json", nullable: true })
+	@Column({ type: "json", nullable: true })
 	links?: LinkDto[];
 
-    @OneToMany(type => Participant, participants => participants.course, { cascade: ["insert"] })
+	@OneToMany(type => Participant, participants => participants.course, { cascade: ["insert"] })
 	participants: Participant[];
-	
+
 	@OneToMany(type => Group, group => group.course)
-    groups: Group[];
-    
-    @OneToMany(type => Assignment, assignment => assignment.course)
+	groups: Group[];
+
+	@OneToMany(type => Assignment, assignment => assignment.course)
 	assignments: Assignment[];
-	
+
 	@OneToOne(type => CourseConfig, config => config.course, { cascade: ["insert"] })
 	config: CourseConfig;
 }

@@ -12,14 +12,13 @@ import { AssignmentState } from "../shared/enums";
 
 @Injectable()
 export class AssignmentSchedulerService {
-
 	private logger = new Logger(AssignmentSchedulerService.name);
 
 	constructor(
 		private schedulerRegistry: SchedulerRegistry,
 		private assignmentService: AssignmentService,
 		@InjectRepository(AssignmentEntity) private assignmentRepository: AssignmentRepository
-	) { }
+	) {}
 
 	@Cron("1 * * * *", { name: "startAssignments" })
 	async startAssignments(): Promise<void> {
@@ -28,7 +27,9 @@ export class AssignmentSchedulerService {
 		const assignments = await this.findAssignmentsThatShouldBeStarted();
 
 		this.logger.debug(`Found ${assignments.length} that should be started.`);
-		console.log(assignments.map(a => ({ name: a.name, state: a.state, startDate: a.startDate })));
+		console.log(
+			assignments.map(a => ({ name: a.name, state: a.state, startDate: a.startDate }))
+		);
 
 		assignments.forEach(async a => {
 			await this.tryUpdateAssignment(a, AssignmentState.IN_PROGRESS);
@@ -36,7 +37,7 @@ export class AssignmentSchedulerService {
 	}
 
 	private findAssignmentsThatShouldBeStarted(): Promise<AssignmentEntity[]> {
-		return this.assignmentRepository.find({ 
+		return this.assignmentRepository.find({
 			where: {
 				state: AssignmentState.INVISIBLE,
 				startDate: LessThanOrEqual(new Date())
@@ -48,10 +49,12 @@ export class AssignmentSchedulerService {
 	@Cron("1 * * * *", { name: "stopAssignments" })
 	async stopAssignments(): Promise<void> {
 		this.logger.verbose("Starting job: 'stopAssignments'");
-		
+
 		const assignments = await this.findAssignmentsThatShouldBeStopped();
 		this.logger.debug(`Found ${assignments.length} that should be stopped.`);
-		console.log(assignments.map(a => ({ name: a.name, state: a.state, startDate: a.startDate })));
+		console.log(
+			assignments.map(a => ({ name: a.name, state: a.state, startDate: a.startDate }))
+		);
 
 		assignments.forEach(async a => {
 			await this.tryUpdateAssignment(a, AssignmentState.IN_REVIEW);
@@ -64,15 +67,18 @@ export class AssignmentSchedulerService {
 			const course = new Course(a.course);
 			const update: AssignmentUpdateDto = { state };
 			await this.assignmentService.updateAssignment(course, assignment, update);
-			this.logger.verbose(`Set assignment ${a.name} (${a.id}) of course ${a.courseId} to ${state}.`);
-		}
-		catch (error) {
-			this.logger.error(`Set assignment ${a.name} (${a.id}) of course ${a.courseId} to ${state}.`);
+			this.logger.verbose(
+				`Set assignment ${a.name} (${a.id}) of course ${a.courseId} to ${state}.`
+			);
+		} catch (error) {
+			this.logger.error(
+				`Set assignment ${a.name} (${a.id}) of course ${a.courseId} to ${state}.`
+			);
 		}
 	}
 
 	private findAssignmentsThatShouldBeStopped(): Promise<AssignmentEntity[]> {
-		return this.assignmentRepository.find({ 
+		return this.assignmentRepository.find({
 			where: {
 				state: AssignmentState.IN_PROGRESS,
 				endDate: LessThanOrEqual(new Date())
@@ -80,5 +86,4 @@ export class AssignmentSchedulerService {
 			relations: ["course"]
 		});
 	}
-
 }

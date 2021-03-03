@@ -4,10 +4,19 @@ import { createApplication } from "../mocks/application.mock";
 import { DbMockService } from "../mocks/db-mock.service";
 import { getConnection } from "typeorm";
 import { AssessmentAllocationDto } from "../../src/course/dto/assessment-allocation/assessment-allocation.dto";
-import { ASSESSMENT_ALLOCATION_1_ASSIGNMENT_JAVA_IN_REVIEW, ASSESSMENT_ALLOCATIONS_MOCK } from "../mocks/assessment-allocation.mock";
+import {
+	ASSESSMENT_ALLOCATION_1_ASSIGNMENT_JAVA_IN_REVIEW,
+	ASSESSMENT_ALLOCATIONS_MOCK
+} from "../mocks/assessment-allocation.mock";
 import { GROUP_4_JAVA } from "../mocks/groups/groups.mock";
 import { COURSE_JAVA_1920 } from "../mocks/courses.mock";
-import { ASSIGNMENT_JAVA_IN_REVIEW_SINGLE, ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA2020_GROUP, ASSIGNMENT_JAVA2020_SINGLE, ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP } from "../mocks/assignments.mock";
+import {
+	ASSIGNMENT_JAVA_IN_REVIEW_SINGLE,
+	ASSIGNMENT_JAVA_CLOSED,
+	ASSIGNMENT_JAVA2020_GROUP,
+	ASSIGNMENT_JAVA2020_SINGLE,
+	ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP
+} from "../mocks/assignments.mock";
 import { USER_STUDENT_2_JAVA, USER_MGMT_ADMIN_JAVA_LECTURER } from "../mocks/users.mock";
 import { copy } from "../utils/object-helper";
 
@@ -18,7 +27,6 @@ const course = COURSE_JAVA_1920;
 const assignment = ASSIGNMENT_JAVA_IN_REVIEW_SINGLE;
 
 describe("POST-REQUESTS of AssessmentController (e2e)", () => {
-
 	beforeEach(async () => {
 		app = await createApplication();
 
@@ -33,11 +41,13 @@ describe("POST-REQUESTS of AssessmentController (e2e)", () => {
 	});
 
 	describe("(POST) courses/:courseId/assignments/:assignmentId/assessment-allocation", () => {
-	
 		it("Already assigned to different evaluator -> Changes the evaluator", () => {
 			// Change assigned evaluator of existing allocation
 			const allocation = copy(ASSESSMENT_ALLOCATION_1_ASSIGNMENT_JAVA_IN_REVIEW);
-			console.assert(USER_MGMT_ADMIN_JAVA_LECTURER.id !== allocation.assignedEvaluatorId, "Assigned evaluator should change.");
+			console.assert(
+				USER_MGMT_ADMIN_JAVA_LECTURER.id !== allocation.assignedEvaluatorId,
+				"Assigned evaluator should change."
+			);
 			allocation.assignedEvaluatorId = USER_MGMT_ADMIN_JAVA_LECTURER.id;
 
 			return request(app.getHttpServer())
@@ -51,13 +61,14 @@ describe("POST-REQUESTS of AssessmentController (e2e)", () => {
 		});
 
 		describe("Allocation does not exists -> Create the allocation", () => {
-			
 			it("For group", () => {
 				const allocation = copy(ASSESSMENT_ALLOCATION_1_ASSIGNMENT_JAVA_IN_REVIEW);
 				allocation.groupId = GROUP_4_JAVA.id;
 
 				return request(app.getHttpServer())
-					.post(`/courses/${course.id}/assignments/${assignment.id}/assessment-allocations`)
+					.post(
+						`/courses/${course.id}/assignments/${assignment.id}/assessment-allocations`
+					)
 					.send(allocation)
 					.expect(201)
 					.expect(({ body }) => {
@@ -72,7 +83,9 @@ describe("POST-REQUESTS of AssessmentController (e2e)", () => {
 				allocation.userId = USER_STUDENT_2_JAVA.id;
 
 				return request(app.getHttpServer())
-					.post(`/courses/${course.id}/assignments/${assignment.id}/assessment-allocations`)
+					.post(
+						`/courses/${course.id}/assignments/${assignment.id}/assessment-allocations`
+					)
 					.send(allocation)
 					.expect(201)
 					.expect(({ body }) => {
@@ -80,50 +93,63 @@ describe("POST-REQUESTS of AssessmentController (e2e)", () => {
 						expect(result).toEqual(allocation);
 					});
 			});
-		
 		});
 
 		describe("Invalid Dto", () => {
-
 			it("Wrong assignmentId -> Throws error", () => {
 				const invalidAllocation = copy(ASSESSMENT_ALLOCATION_1_ASSIGNMENT_JAVA_IN_REVIEW);
-				console.assert(invalidAllocation.assignmentId !== ASSIGNMENT_JAVA_CLOSED.id, "Assignment ids should be different before the change.");
+				console.assert(
+					invalidAllocation.assignmentId !== ASSIGNMENT_JAVA_CLOSED.id,
+					"Assignment ids should be different before the change."
+				);
 				invalidAllocation.assignmentId = ASSIGNMENT_JAVA_CLOSED.id;
 
 				return request(app.getHttpServer())
-					.post(`/courses/${course.id}/assignments/${assignment.id}/assessment-allocations`)
+					.post(
+						`/courses/${course.id}/assignments/${assignment.id}/assessment-allocations`
+					)
 					.send(invalidAllocation)
 					.expect(400);
 			});
-		
+
 			it("No groupId or userid -> Throws error", () => {
 				const invalidAllocation = copy(ASSESSMENT_ALLOCATION_1_ASSIGNMENT_JAVA_IN_REVIEW);
 				invalidAllocation.groupId = undefined;
 				invalidAllocation.userId = undefined;
 
 				return request(app.getHttpServer())
-					.post(`/courses/${course.id}/assignments/${assignment.id}/assessment-allocations`)
+					.post(
+						`/courses/${course.id}/assignments/${assignment.id}/assessment-allocations`
+					)
 					.send(invalidAllocation)
 					.expect(400);
 			});
-		
 		});
 	});
 
 	describe("(POST) courses/:courseId/assignments/:assignmentId/assessment-allocation/from-existing/:existingAssignmentId", () => {
-	
 		it("Existing assignment has allocations -> Creates allocations for new assignment", () => {
 			const newAssignment = ASSIGNMENT_JAVA2020_GROUP;
 			const existingAssignment = assignment;
-			console.assert(newAssignment.id !== existingAssignment.id, "Assignments should be different.");
+			console.assert(
+				newAssignment.id !== existingAssignment.id,
+				"Assignments should be different."
+			);
 
 			// Expect same data with new assignment id
-			const expected = copy(ASSESSMENT_ALLOCATIONS_MOCK).filter(a => a.assignmentId === existingAssignment.id);
-			expected.forEach(a => a.assignmentId = newAssignment.id);
-			console.assert(expected.length > 1, "Database should contain multipe assessment allocations.");
+			const expected = copy(ASSESSMENT_ALLOCATIONS_MOCK).filter(
+				a => a.assignmentId === existingAssignment.id
+			);
+			expected.forEach(a => (a.assignmentId = newAssignment.id));
+			console.assert(
+				expected.length > 1,
+				"Database should contain multipe assessment allocations."
+			);
 
 			return request(app.getHttpServer())
-				.post(`/courses/${course.id}/assignments/${newAssignment.id}/assessment-allocations/from-existing/${existingAssignment.id}`)
+				.post(
+					`/courses/${course.id}/assignments/${newAssignment.id}/assessment-allocations/from-existing/${existingAssignment.id}`
+				)
 				.expect(201)
 				.expect(({ body }) => {
 					const result = body as AssessmentAllocationDto[];
@@ -135,25 +161,25 @@ describe("POST-REQUESTS of AssessmentController (e2e)", () => {
 			const newAssignment = ASSIGNMENT_JAVA2020_GROUP;
 			const existingAssignment = ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP;
 			console.assert(
-				ASSESSMENT_ALLOCATIONS_MOCK.filter(a => a.assignmentId === existingAssignment.id).length == 0, 
+				ASSESSMENT_ALLOCATIONS_MOCK.filter(a => a.assignmentId === existingAssignment.id)
+					.length == 0,
 				"There should be no allocations for this assignment."
 			);
 
 			return request(app.getHttpServer())
-				.post(`/courses/${course.id}/assignments/${newAssignment.id}/assessment-allocations/from-existing/${existingAssignment.id}`)
+				.post(
+					`/courses/${course.id}/assignments/${newAssignment.id}/assessment-allocations/from-existing/${existingAssignment.id}`
+				)
 				.expect(201)
 				.expect(({ body }) => {
 					const result = body as AssessmentAllocationDto[];
 					expect(result.length).toEqual(0);
 				});
 		});
-	
 	});
-
 });
 
 describe("GET-REQUESTS of AssessmentController (e2e)", () => {
-
 	beforeAll(async () => {
 		app = await createApplication();
 
@@ -168,11 +194,15 @@ describe("GET-REQUESTS of AssessmentController (e2e)", () => {
 	});
 
 	describe("(GET) courses/:courseId/assignments/:assignmentId/assessment-allocation", () => {
-	
 		it("Retrieves the allocations for an assignment", () => {
-			const expected = ASSESSMENT_ALLOCATIONS_MOCK.filter(a => a.assignmentId === assignment.id);
-			console.assert(expected.length > 1, "Testdata should contain multiple allocations for this assigment.");
-			
+			const expected = ASSESSMENT_ALLOCATIONS_MOCK.filter(
+				a => a.assignmentId === assignment.id
+			);
+			console.assert(
+				expected.length > 1,
+				"Testdata should contain multiple allocations for this assigment."
+			);
+
 			return request(app.getHttpServer())
 				.get(`/courses/${course.id}/assignments/${assignment.id}/assessment-allocations`)
 				.expect(200)
@@ -181,13 +211,10 @@ describe("GET-REQUESTS of AssessmentController (e2e)", () => {
 					expect(result).toEqual(expected);
 				});
 		});
-
 	});
-
 });
-	
-describe("DELETE-REQUESTS of AssessmentController (e2e)", () => {
 
+describe("DELETE-REQUESTS of AssessmentController (e2e)", () => {
 	beforeEach(async () => {
 		app = await createApplication();
 
@@ -202,16 +229,18 @@ describe("DELETE-REQUESTS of AssessmentController (e2e)", () => {
 	});
 
 	describe("(DELETE) courses/:courseId/assignments/:assignmentId/assessment-allocation", () => {
-	
 		it("Removes the Allocation", () => {
 			const allocationToRemove = ASSESSMENT_ALLOCATION_1_ASSIGNMENT_JAVA_IN_REVIEW;
-			console.assert(!!allocationToRemove.groupId, "Allocation should have a defined groupId");
+			console.assert(
+				!!allocationToRemove.groupId,
+				"Allocation should have a defined groupId"
+			);
 
 			return request(app.getHttpServer())
-				.delete(`/courses/${course.id}/assignments/${assignment.id}/assessment-allocations?groupId=${allocationToRemove.groupId}`)
+				.delete(
+					`/courses/${course.id}/assignments/${assignment.id}/assessment-allocations?groupId=${allocationToRemove.groupId}`
+				)
 				.expect(200);
 		});
-
 	});
-
 });

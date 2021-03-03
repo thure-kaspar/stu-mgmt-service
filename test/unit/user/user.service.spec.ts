@@ -16,20 +16,18 @@ import { USER_STUDENT_JAVA } from "../../mocks/users.mock";
 import { COURSE_JAVA_1920 } from "../../mocks/courses.mock";
 import { UserLeftGroupEvent } from "../../../src/course/events/group/user-left-group.event";
 
-const mock_UserRepository = () => ({
-
-});
+const mock_UserRepository = () => ({});
 
 const mock_GroupRepository = () => ({
 	getGroupById: jest.fn().mockResolvedValue(convertToEntity(Group, GROUP_1_JAVA))
 });
 
-const mock_AssessmentRepository = () => ({
-
-});
+const mock_AssessmentRepository = () => ({});
 
 const mock_AssignmentRepository = () => ({
-	getAssignmentById: jest.fn().mockResolvedValue(convertToEntity(Assignment, ASSIGNMENT_JAVA_CLOSED))
+	getAssignmentById: jest
+		.fn()
+		.mockResolvedValue(convertToEntity(Assignment, ASSIGNMENT_JAVA_CLOSED))
 });
 
 const mock_GroupEventRepository = () => ({
@@ -52,9 +50,9 @@ describe("UserService", () => {
 				{ provide: UserRepository, useFactory: mock_UserRepository },
 				{ provide: GroupRepository, useFactory: mock_GroupRepository },
 				{ provide: AssessmentRepository, useFactory: mock_AssessmentRepository },
-				{ provide: AssignmentRepository, useFactory: mock_AssignmentRepository},
+				{ provide: AssignmentRepository, useFactory: mock_AssignmentRepository },
 				{ provide: GroupEventRepository, useFactory: mock_GroupEventRepository }
-			],
+			]
 		}).compile();
 
 		service = module.get(UserService);
@@ -68,7 +66,6 @@ describe("UserService", () => {
 	});
 
 	describe("getGroupOfAssignment", () => {
-		
 		const user = USER_STUDENT_JAVA;
 		const course = COURSE_JAVA_1920;
 		const assignment = ASSIGNMENT_JAVA_CLOSED;
@@ -92,7 +89,10 @@ describe("UserService", () => {
 				const lastEventBeforeAssignment = new GroupEvent();
 				lastEventBeforeAssignment.event = UserLeftGroupEvent.name;
 				lastEventBeforeAssignment.timestamp = new Date(1999, 1, 1);
-				console.assert(lastEventBeforeAssignment.timestamp.getTime() < assignment.endDate.getTime(), "Last event should happen before assignment end");
+				console.assert(
+					lastEventBeforeAssignment.timestamp.getTime() < assignment.endDate.getTime(),
+					"Last event should happen before assignment end"
+				);
 				return [lastEventBeforeAssignment];
 			});
 
@@ -110,11 +110,9 @@ describe("UserService", () => {
 			try {
 				await service.getGroupOfAssignment(user.id, course.id, assignment.id);
 				expect(true).toEqual(false);
-			} catch(error) {
+			} catch (error) {
 				expect(error).toBeTruthy();
 			}
 		});
-	
 	});
-
 });

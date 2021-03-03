@@ -14,24 +14,21 @@ export class UserJoinedGroupEvent {
 		public readonly courseId: CourseId,
 		public readonly groupId: GroupId,
 		public readonly userId: UserId
-	) { }
+	) {}
 }
 
 @EventsHandler(UserJoinedGroupEvent)
 export class UserJoinedGroupHandler implements IEventHandler<UserJoinedGroupEvent> {
-
-	constructor(@InjectRepository(GroupEvent) private groupEvents: Repository<GroupEvent>) { }
+	constructor(@InjectRepository(GroupEvent) private groupEvents: Repository<GroupEvent>) {}
 
 	handle(event: UserJoinedGroupEvent): void {
-		this.groupEvents.insert({...event, event: UserJoinedGroupEvent.name });
+		this.groupEvents.insert({ ...event, event: UserJoinedGroupEvent.name });
 	}
-	
 }
 
 @EventsHandler(UserJoinedGroupEvent)
 export class UserJoinedGroupNotificationHandler implements IEventHandler<UserJoinedGroupEvent> {
-
-	constructor(private notifications: NotificationService) { }
+	constructor(private notifications: NotificationService) {}
 
 	async handle(event: UserJoinedGroupEvent): Promise<void> {
 		this.notifications.send({
@@ -41,5 +38,4 @@ export class UserJoinedGroupNotificationHandler implements IEventHandler<UserJoi
 			groupId: event.groupId
 		});
 	}
-	
 }

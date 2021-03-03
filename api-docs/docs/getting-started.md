@@ -8,7 +8,7 @@ the request objects to/from JSON.
 
 The automatically generated [OpenAPI-Specification](https://en.wikipedia.org/wiki/OpenAPI_Specification) of the system can be found here:
 
-- [API-Specification](http://147.172.178.30:3000/api-json)
+-   [API-Specification](http://147.172.178.30:3000/api-json)
 
 This specification can be inserted into tools like [Swagger-Editor](https://editor.swagger.io/), which support the generation of such clients.
 In the future, we might also support the download of prepackaged .jar's and npm packages.
@@ -27,22 +27,20 @@ The client must know the url of our server in order to issue requests.
 There are multiple ways to configure the base path.
 
 === "Angular"
-	```typescript
-	ApiModule.forRoot(() => new Configuration({
-		basePath: "http://example.com/api"
-	}))
+```typescript
+ApiModule.forRoot(() => new Configuration({
+basePath: "http://example.com/api"
+}))
 
-	// or (BASE_PATH is imported from the API-client library)
-	
-	providers: [
-		{ provide: BASE_PATH, useValue: "http://example.com/api" },
-	]
-	```
+    // or (BASE_PATH is imported from the API-client library)
+
+    providers: [
+    	{ provide: BASE_PATH, useValue: "http://example.com/api" },
+    ]
+    ```
 
 === "Java"
-	```java
-	// TODO
-	```
+`java // TODO `
 
 ## Ready to go
 
@@ -57,15 +55,7 @@ Tag "Courses" with Route "/courses" will be available as `CourseService.getCours
 You can create requests as displayed here:
 
 === "TypeScript"
-	```typescript
-		// Get all Java-courses
-		this.courseService.getCourses("java").subscribe(
-			result => console.log(result);
-			error => console.log(error)
-		);
-	```
+`typescript // Get all Java-courses this.courseService.getCourses("java").subscribe( result => console.log(result); error => console.log(error) ); `
 
 === "Java"
-	```java
-	// TODO
-	```
+`java // TODO `

@@ -8,8 +8,8 @@ import { PartialType, OmitType, ApiPropertyOptional } from "@nestjs/swagger";
  */
 export class CourseConfigDto {
 	@ApiPropertyOptional({ description: "Unique identifier of the configuration." })
-	id?: number; 
-	
+	id?: number;
+
 	/** Settings that determine wether groups are allowed, allowed group sizes, etc. */
 	//@ApiPropertyOptional({ description: "Settings that determine wether groups are allowed, allowed group sizes, etc.", type: GroupSettingsDto })
 	groupSettings?: GroupSettingsDto;
@@ -27,8 +27,9 @@ export class CourseConfigDto {
 	password?: string;
 
 	/** The route that update messages (i.e user left group or assignment submission closed) should be send to. Messages be send via HTTP-POST. */
-	@ApiPropertyOptional({ 
-		description: "The route that update messages (i.e user left group or assignment submission closed) should be send to. Will be send via HTTP-POST.",
+	@ApiPropertyOptional({
+		description:
+			"The route that update messages (i.e user left group or assignment submission closed) should be send to. Will be send via HTTP-POST.",
 		example: "http://update.me/api"
 	})
 	subscriptionUrl?: string;
@@ -36,10 +37,5 @@ export class CourseConfigDto {
 
 /** Version of CourseConfigDto that only contains editable properties. */
 export class CourseConfigUpdateDto extends PartialType(
-	OmitType(CourseConfigDto, [
-		"id",
-		"groupSettings", 
-		"admissionCriteria", 
-		"assignmentTemplates"
-	])) { }
-
+	OmitType(CourseConfigDto, ["id", "groupSettings", "admissionCriteria", "assignmentTemplates"])
+) {}

@@ -9,15 +9,14 @@ import { CourseRepository } from "../repositories/course.repository";
 /**
  * Only allows requests for users, that are either member of the group or teaching staff.
  * Assumes that request body has requesting `participant` attached to it (done by `CourseMemberGuard`).
- * 
+ *
  * @throws `NotACourseMemberException`
  */
 @Injectable()
 export class GroupMemberGuard implements CanActivate {
-	
-	constructor(@InjectRepository(CourseEntity) private courses: CourseRepository) { }
+	constructor(@InjectRepository(CourseEntity) private courses: CourseRepository) {}
 
-	async canActivate(context: ExecutionContext): Promise<boolean> {	
+	async canActivate(context: ExecutionContext): Promise<boolean> {
 		const request = context.switchToHttp().getRequest();
 		const participant: Participant = request.participant;
 		const groupId: GroupId = request.params.groupId;
@@ -28,5 +27,4 @@ export class GroupMemberGuard implements CanActivate {
 			throw new NotAGroupMemberException(groupId, participant.userId);
 		}
 	}
-
 }

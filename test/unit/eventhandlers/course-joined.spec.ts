@@ -87,28 +87,26 @@ const mock_GroupService = () => ({
 
 const createMockCourse = (settings: Partial<GroupSettings>, course?: Partial<Course>) => {
 	let _course = convertToEntity(Course, copy(COURSE_JAVA_1920));
-	if (course) _course = {..._course, ...course };
+	if (course) _course = { ..._course, ...course };
 	return new CourseWithGroupSettings(_course, new GroupSettings(settings));
 };
 
 //#endregion
 
 describe("CourseJoinedHandler (Automatically adds students to groups)", () => {
-
 	let event: CourseJoined;
 	let course: CourseWithGroupSettings;
 	let participant: Participant;
 
 	let courseJoinedHandler: CourseJoinedHandler_AutomaticGroupJoin;
 	let groupService: GroupService;
-	
 
 	beforeEach(async () => {
 		const module: TestingModule = await Test.createTestingModule({
 			providers: [
 				CourseJoinedHandler_AutomaticGroupJoin,
-				{ provide: GroupService, useFactory: mock_GroupService },
-			],
+				{ provide: GroupService, useFactory: mock_GroupService }
+			]
 		}).compile();
 
 		courseJoinedHandler = module.get(CourseJoinedHandler_AutomaticGroupJoin);
@@ -122,12 +120,14 @@ describe("CourseJoinedHandler (Automatically adds students to groups)", () => {
 			sizeMax: 3
 		});
 
-		participant = new Participant(new ParticipantEntity({
-			id: 1,
-			userId: USER_STUDENT_JAVA.id,
-			user: convertToEntity(User, USER_STUDENT_JAVA),
-			role: CourseRole.STUDENT
-		}));
+		participant = new Participant(
+			new ParticipantEntity({
+				id: 1,
+				userId: USER_STUDENT_JAVA.id,
+				user: convertToEntity(User, USER_STUDENT_JAVA),
+				role: CourseRole.STUDENT
+			})
+		);
 
 		event = new CourseJoined(course, participant);
 	});
@@ -137,7 +137,6 @@ describe("CourseJoinedHandler (Automatically adds students to groups)", () => {
 	});
 
 	describe("Groups exist that are below required minimum size", () => {
-
 		const expectedGroupId = groupWithOneMember_NoPassword_Joinable().id;
 
 		beforeEach(() => {
@@ -156,13 +155,15 @@ describe("CourseJoinedHandler (Automatically adds students to groups)", () => {
 
 		it("Adds participant to the biggest of these groups", async () => {
 			await courseJoinedHandler.handle(event);
-			expect(groupService.addUserToGroup_Force).toHaveBeenCalledWith(course.id, expectedGroupId, participant.userId);
+			expect(groupService.addUserToGroup_Force).toHaveBeenCalledWith(
+				course.id,
+				expectedGroupId,
+				participant.userId
+			);
 		});
-	
 	});
 
 	describe("All groups are at minSize or bigger", () => {
-
 		const expectedGroupId = groupWithTwoMembers_NoPassword_Joinable().id;
 
 		beforeEach(() => {
@@ -172,7 +173,8 @@ describe("CourseJoinedHandler (Automatically adds students to groups)", () => {
 			groupAtMinSize_Closed_NotJoinable.isClosed = true;
 
 			const groupAtMinSize_WithPassword_NotJoinable = groupWithTwoMembers_NoPassword_Joinable();
-			groupAtMinSize_WithPassword_NotJoinable.name = "groupAtMinSize_WithPassword_NotJoinable";
+			groupAtMinSize_WithPassword_NotJoinable.name =
+				"groupAtMinSize_WithPassword_NotJoinable";
 			groupAtMinSize_WithPassword_NotJoinable.id = "groupAtMinSize_WithPassword_NotJoinable";
 			groupAtMinSize_WithPassword_NotJoinable.hasPassword = true;
 
@@ -189,33 +191,39 @@ describe("CourseJoinedHandler (Automatically adds students to groups)", () => {
 
 		it("Adds participant to the smallest of these groups", async () => {
 			await courseJoinedHandler.handle(event);
-			expect(groupService.addUserToGroup_Force).toHaveBeenCalledWith(course.id, expectedGroupId, participant.userId);
+			expect(groupService.addUserToGroup_Force).toHaveBeenCalledWith(
+				course.id,
+				expectedGroupId,
+				participant.userId
+			);
 		});
-	
 	});
 
 	describe("No open groups", () => {
-	
 		beforeEach(() => {
-			groupService.getGroupsOfCourse = jest.fn().mockResolvedValueOnce([
-				[
-					groupWithOneMember_IsClosed_NotJoinable(),
-					groupWithThreeMembers_NoPassword_Full_NotJoinable(),
-					groupWithOneMember_WithPassword_NotJoinable()
-				],
-				0
-			]);
+			groupService.getGroupsOfCourse = jest
+				.fn()
+				.mockResolvedValueOnce([
+					[
+						groupWithOneMember_IsClosed_NotJoinable(),
+						groupWithThreeMembers_NoPassword_Full_NotJoinable(),
+						groupWithOneMember_WithPassword_NotJoinable()
+					],
+					0
+				]);
 		});
 
 		it("Creates new group", async () => {
 			await courseJoinedHandler.handle(event);
-			expect(groupService.createGroup).toHaveBeenCalledWith(course, participant, expect.anything());
+			expect(groupService.createGroup).toHaveBeenCalledWith(
+				course,
+				participant,
+				expect.anything()
+			);
 		});
-	
 	});
 
 	describe("Course disabled automatic group joins", () => {
-	
 		it("Nothing happens", async () => {
 			const _event: CourseJoined = {
 				participant: participant,
@@ -225,11 +233,9 @@ describe("CourseJoinedHandler (Automatically adds students to groups)", () => {
 			expect(groupService.addUserToGroup_Force).toHaveBeenCalledTimes(0);
 			expect(groupService.createGroup).toHaveBeenCalledTimes(0);
 		});
-	
 	});
 
 	describe("Course disabled groups", () => {
-	
 		it("Nothing happens", async () => {
 			const _event: CourseJoined = {
 				participant: participant,
@@ -239,8 +245,5 @@ describe("CourseJoinedHandler (Automatically adds students to groups)", () => {
 			expect(groupService.addUserToGroup_Force).toHaveBeenCalledTimes(0);
 			expect(groupService.createGroup).toHaveBeenCalledTimes(0);
 		});
-	
 	});
-
-
 });

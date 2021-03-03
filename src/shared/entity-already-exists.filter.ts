@@ -11,14 +11,12 @@ export class EntityAlreadyExistsFilter implements ExceptionFilter {
 		const ctx = host.switchToHttp();
 		const response = ctx.getResponse<Response>();
 		const request = ctx.getRequest<Request>();
-		
-		response
-			.status(409)
-			.json({
-				statusCode: 409,
-				path: request.url,
-				error: "EntityAlreadyExistsError",
-				message: exception.message ?? "Failed to create the entity, because it already exists."
-			});
+
+		response.status(409).json({
+			statusCode: 409,
+			path: request.url,
+			error: "EntityAlreadyExistsError",
+			message: exception.message ?? "Failed to create the entity, because it already exists."
+		});
 	}
 }

@@ -5,15 +5,14 @@ import { GroupRepository } from "../repositories/group.repository";
 import { Group } from "../models/group.model";
 
 /**
- * Attaches the `group` (including members) to the `request`.  
+ * Attaches the `group` (including members) to the `request`.
  * Always returns `true`, unless the group does not exist.
  */
 @Injectable()
 export class GroupGuard implements CanActivate {
-	
-	constructor(@InjectRepository(GroupEntity) private groups: GroupRepository) { }
+	constructor(@InjectRepository(GroupEntity) private groups: GroupRepository) {}
 
-	async canActivate(context: ExecutionContext): Promise<boolean> {	
+	async canActivate(context: ExecutionContext): Promise<boolean> {
 		const request = context.switchToHttp().getRequest();
 
 		const group = await this.groups.getGroupWithUsers(request.params.groupId);
@@ -21,5 +20,4 @@ export class GroupGuard implements CanActivate {
 
 		return true;
 	}
-
 }

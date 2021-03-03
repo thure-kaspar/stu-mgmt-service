@@ -13,15 +13,14 @@ import { Participant } from "../models/participant.model";
  * Assumes that request body has requesting `user` attached to it (done by `AuthGuard`).
  * Attaches `participant` and `course` to the request to allow following guards or controllers to access
  * information about this participant (i.e. `role`) and course (i.e. `isClosed`).
- * 
+ *
  * @throws `NotACourseMemberException`
  */
 @Injectable()
 export class CourseMemberGuard implements CanActivate {
-	
-	constructor(@InjectRepository(CourseEntity) private courses: CourseRepository) { }
+	constructor(@InjectRepository(CourseEntity) private courses: CourseRepository) {}
 
-	async canActivate(context: ExecutionContext): Promise<boolean> {	
+	async canActivate(context: ExecutionContext): Promise<boolean> {
 		const request = context.switchToHttp().getRequest();
 		const user: UserDto = request.user;
 		const courseId: CourseId = request.params.courseId;
@@ -32,7 +31,7 @@ export class CourseMemberGuard implements CanActivate {
 			course.participants = undefined;
 			request.course = new Course(course);
 			return true;
-		} catch(error) {
+		} catch (error) {
 			if (error instanceof EntityNotFoundError) {
 				throw new NotACourseMemberException(courseId, user.id);
 			}
@@ -40,5 +39,4 @@ export class CourseMemberGuard implements CanActivate {
 
 		return false;
 	}
-
 }

@@ -1,4 +1,13 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
+import {
+	Column,
+	CreateDateColumn,
+	Entity,
+	JoinColumn,
+	ManyToOne,
+	OneToMany,
+	PrimaryGeneratedColumn,
+	Unique
+} from "typeorm";
 import { AssessmentAllocation } from "./assessment-allocation.entity";
 import { Assessment } from "./assessment.entity";
 import { Course, CourseId } from "./course.entity";
@@ -10,10 +19,10 @@ export type GroupId = string;
 @Entity("groups")
 @Unique("Unique_Name_CourseId", ["name", "courseId"]) // Enforce unique group names in course
 export class Group {
-    @PrimaryGeneratedColumn("uuid")
-    id: GroupId;
+	@PrimaryGeneratedColumn("uuid")
+	id: GroupId;
 
-    @Column()
+	@Column()
 	name: string;
 
 	@Column({ nullable: true })
@@ -24,11 +33,11 @@ export class Group {
 
 	@CreateDateColumn()
 	createdAt: Date;
-	
+
 	@ManyToOne(type => Course, course => course.groups, { onDelete: "CASCADE" })
 	@JoinColumn()
 	course: Course;
-	
+
 	@Column()
 	courseId: CourseId;
 
@@ -37,7 +46,7 @@ export class Group {
 
 	@OneToMany(type => Assessment, assessment => assessment.group)
 	assessments: Assessment[];
-	
+
 	@OneToMany(type => GroupEvent, groupEvent => groupEvent.group)
 	history: GroupEvent[];
 

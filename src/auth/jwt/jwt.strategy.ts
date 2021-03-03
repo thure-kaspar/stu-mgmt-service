@@ -15,7 +15,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
 	/**
 	 * Validates the received authentication token (JWT) and attaches the decrypted user information
-	 * to the request body. 
+	 * to the request body.
 	 */
 	async validate(payload: JwtPayload): Promise<Partial<UserDto>> {
 		const { userId, username, role } = payload;

@@ -1,4 +1,15 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards } from "@nestjs/common";
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Param,
+	Patch,
+	Post,
+	Query,
+	Req,
+	UseGuards
+} from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
@@ -28,8 +39,7 @@ import { UserService } from "../services/user.service";
 @Controller("users")
 @UseGuards(AuthGuard(), RoleGuard)
 export class UserController {
-
-	constructor(private userService: UserService) { }
+	constructor(private userService: UserService) {}
 
 	@ApiOperation({
 		operationId: "createUser",
@@ -49,10 +59,7 @@ export class UserController {
 	})
 	@Get()
 	@Roles(UserRole.SYSTEM_ADMIN, UserRole.MGMT_ADMIN)
-	getUsers(
-		@Req() request: Request,
-		@Query() filter?: UserFilter
-	): Promise<UserDto[]> {
+	getUsers(@Req() request: Request, @Query() filter?: UserFilter): Promise<UserDto[]> {
 		return PaginatedResult(this.userService.getUsers(new UserFilter(filter)), request);
 	}
 
@@ -98,24 +105,23 @@ export class UserController {
 	@UseGuards(CourseMemberGuard, ParticipantIdentityGuard)
 	getGroupOfUserForCourse(
 		@Param("userId") userId: UserId,
-		@Param("courseId") courseId: CourseId,
+		@Param("courseId") courseId: CourseId
 	): Promise<GroupDto> {
-
 		return this.userService.getGroupOfUserForCourse(userId, courseId);
 	}
 
 	@ApiOperation({
 		operationId: "getGroupHistoryOfUser",
 		summary: "Get group history of user for course.",
-		description: "Retrieves the group history of a user in a course. Events are sorted by timestamp in descending order (new to old)."
+		description:
+			"Retrieves the group history of a user in a course. Events are sorted by timestamp in descending order (new to old)."
 	})
 	@Get(":userId/courses/:courseId/group-history")
 	@UseGuards(CourseMemberGuard, ParticipantIdentityGuard)
 	getGroupHistoryOfUser(
 		@Param("userId") userId: UserId,
-		@Param("courseId") courseId: CourseId,
+		@Param("courseId") courseId: CourseId
 	): Promise<GroupEventDto[]> {
-
 		return this.userService.getGroupHistoryOfUser(userId, courseId);
 	}
 
@@ -131,14 +137,14 @@ export class UserController {
 		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string
 	): Promise<GroupDto> {
-
 		return this.userService.getGroupOfAssignment(userId, courseId, assignmentId);
 	}
 
 	@ApiOperation({
 		operationId: "getAssessmentOfUser",
 		summary: "Get assessment of user.",
-		description: "Retrieves the assessment of a user for a specific assignment. If requested by PARTICIPANT, assessment must be EVALUATED."
+		description:
+			"Retrieves the assessment of a user for a specific assignment. If requested by PARTICIPANT, assessment must be EVALUATED."
 	})
 	@Get(":userId/courses/:courseId/assignments/:assignmentId/assessment")
 	@UseGuards(CourseMemberGuard, ParticipantIdentityGuard, AssignmentGuard)
@@ -146,16 +152,16 @@ export class UserController {
 		@Param("userId") userId: UserId,
 		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string,
-		@GetParticipant() participant: Participant,
+		@GetParticipant() participant: Participant
 	): Promise<AssessmentDto> {
-
 		return this.userService.getAssessment(participant, assignmentId);
 	}
 
 	@ApiOperation({
 		operationId: "getGroupOfAllAssignments",
 		summary: "Get group of all assignments.",
-		description: "Maps all assignments of a course to the user's group for the corresponding assignment."
+		description:
+			"Maps all assignments of a course to the user's group for the corresponding assignment."
 	})
 	@Get(":userId/courses/:courseId/assignments/groups")
 	@UseGuards(CourseMemberGuard, ParticipantIdentityGuard)
@@ -169,15 +175,15 @@ export class UserController {
 	@ApiOperation({
 		operationId: "getAssessmentsOfUserForCourse",
 		summary: "Get assessments.",
-		description: "Returns all assessments of the user in the given course. Includes the group, if assessment specified a group."
+		description:
+			"Returns all assessments of the user in the given course. Includes the group, if assessment specified a group."
 	})
 	@Get(":userId/courses/:courseId/assessments")
 	@UseGuards(CourseMemberGuard, ParticipantIdentityGuard)
 	getAssessmentsOfUserForCourse(
 		@Param("userId") userId: UserId,
-		@Param("courseId") courseId: CourseId,
+		@Param("courseId") courseId: CourseId
 	): Promise<AssessmentDto[]> {
-
 		return this.userService.getAssessmentsOfUserForCourse(userId, courseId);
 	}
 
@@ -188,10 +194,7 @@ export class UserController {
 	})
 	@Patch(":userId")
 	@Roles(UserRole.SYSTEM_ADMIN, UserRole.MGMT_ADMIN)
-	updateUser(
-		@Param("userId") userId: UserId,
-		@Body() userDto: UserUpdateDto
-	): Promise<UserDto> {
+	updateUser(@Param("userId") userId: UserId, @Body() userDto: UserUpdateDto): Promise<UserDto> {
 		return this.userService.updateUser(userId, userDto);
 	}
 
@@ -203,7 +206,6 @@ export class UserController {
 	@Delete(":userId")
 	@Roles(UserRole.SYSTEM_ADMIN, UserRole.MGMT_ADMIN)
 	deleteUser(@Param("userId") userId: UserId): Promise<void> {
-		
 		return throwIfRequestFailed(
 			this.userService.deleteUser(userId),
 			`Failed to delete user (${userId})`

@@ -6,7 +6,7 @@ export class AssignmentTemplateDto extends PartialType(OmitType(AssignmentDto, [
 	id?: number;
 
 	/** The name of the template. */
-	@ApiProperty({ description: "The name of this template."})
+	@ApiProperty({ description: "The name of this template." })
 	templateName: string;
 
 	/** Time between start and end of the assignment (in days). */

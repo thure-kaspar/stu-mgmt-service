@@ -1,5 +1,11 @@
-import { PartialAssessmentDto, Severity } from "../../src/course/dto/assessment/partial-assessment.dto";
-import { ASSESSMENT_JAVA_IN_REVIEW, ASSESSMENT_JAVA_IN_REVIEW_GROUP_PARTIALS } from "./assessments.mock";
+import {
+	PartialAssessmentDto,
+	Severity
+} from "../../src/course/dto/assessment/partial-assessment.dto";
+import {
+	ASSESSMENT_JAVA_IN_REVIEW,
+	ASSESSMENT_JAVA_IN_REVIEW_GROUP_PARTIALS
+} from "./assessments.mock";
 
 export const PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW: PartialAssessmentDto = {
 	id: 1,

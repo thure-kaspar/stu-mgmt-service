@@ -15,14 +15,13 @@ import { CourseConfigDto } from "../dto/course-config/course-config.dto";
 
 @EntityRepository(Course)
 export class CourseRepository extends Repository<Course> {
-
 	/**
 	 * Inserts a new course in the database. Includes the CourseConfig (with child-entities).
 	 * If lecturers are included in the Dto, the Participants will also be created.
 	 */
 	async createCourse(courseDto: CourseCreateDto, config: CourseConfigDto): Promise<Course> {
 		const course = this.createInsertableEntity(courseDto, config);
-		
+
 		if (courseDto.lecturers?.length > 0) {
 			const userRepo = this.manager.getRepository(User);
 			const lecturers = await userRepo.find({
@@ -51,16 +50,18 @@ export class CourseRepository extends Repository<Course> {
 			query.take(filter?.take);
 			if (!filter.title) filter.title = ""; // Need something for 1st where (?)
 			query.where("course.title ilike :title", { title: "%" + filter.title + "%" });
-			if (filter.shortname) query.andWhere("course.shortname = :shortname", { shortname: filter.shortname });
-			if (filter.semester) query.andWhere("course.semester = :semester", { semester: filter.semester });
+			if (filter.shortname)
+				query.andWhere("course.shortname = :shortname", { shortname: filter.shortname });
+			if (filter.semester)
+				query.andWhere("course.semester = :semester", { semester: filter.semester });
 
 			return query.getManyAndCount();
 		}
-		
+
 		// If no filter was supplied, return everything
 		return this.findAndCount();
 	}
-	
+
 	/**
 	 * Retrieves the course with the specified id.
 	 */
@@ -83,7 +84,7 @@ export class CourseRepository extends Repository<Course> {
 	}
 
 	/**
-	 * Retrieves a course with a specific participant.  
+	 * Retrieves a course with a specific participant.
 	 * Includes relations:
 	 * - Participants (1)
 	 * - Participant.User
@@ -92,11 +93,16 @@ export class CourseRepository extends Repository<Course> {
 	async getCourseWithParticipant(id: CourseId, userId: UserId): Promise<Course> {
 		const query = this.createQueryBuilder("course")
 			.where("course.id = :id", { id })
-			.innerJoinAndSelect("course.participants", "participant", "participant.userId = :userId", { userId })
+			.innerJoinAndSelect(
+				"course.participants",
+				"participant",
+				"participant.userId = :userId",
+				{ userId }
+			)
 			.innerJoinAndSelect("participant.user", "user")
 			.leftJoinAndSelect("participant.groupRelation", "groupRelation")
 			.leftJoinAndSelect("groupRelation.group", "group");
-		
+
 		const course = await query.getOne();
 
 		if (!course) throw new EntityNotFoundError(Course, { id, userId });
@@ -132,7 +138,7 @@ export class CourseRepository extends Repository<Course> {
 		course.title = courseDto.title;
 		course.isClosed = courseDto.isClosed;
 		course.links = courseDto.links?.length > 0 ? courseDto.links : null;
-    
+
 		return this.save(course);
 	}
 
@@ -158,7 +164,7 @@ export class CourseRepository extends Repository<Course> {
 		course.config = new CourseConfig();
 		course.config.password = configDto.password?.length > 0 ? configDto.password : null; // Replace empty string with null
 		course.config.subscriptionUrl = configDto.subscriptionUrl;
-	
+
 		course.config.groupSettings = new GroupSettings();
 		Object.assign(course.config.groupSettings, configDto.groupSettings);
 
@@ -175,5 +181,4 @@ export class CourseRepository extends Repository<Course> {
 
 		return course;
 	}
-
 }

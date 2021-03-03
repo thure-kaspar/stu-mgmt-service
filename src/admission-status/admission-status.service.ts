@@ -16,12 +16,13 @@ import { AdmissionRule } from "./rules/abstract-rules";
 import { AdmissionRuleFactory } from "./rules/factory";
 import { AdmissionRuleDto } from "./dto/admission-rule.dto";
 
-@Injectable() 
+@Injectable()
 export class AdmissionStatusService {
-
-	constructor(@InjectRepository(Participant) private participants: ParticipantRepository,
-				@InjectRepository(AdmissionCriteria) private admissionCriteria: AdmissionCriteriaRepository,
-				private assignmentService: AssignmentService) { }
+	constructor(
+		@InjectRepository(Participant) private participants: ParticipantRepository,
+		@InjectRepository(AdmissionCriteria) private admissionCriteria: AdmissionCriteriaRepository,
+		private assignmentService: AssignmentService
+	) {}
 
 	async getAdmissionStatusOfParticipants(courseId: CourseId): Promise<AdmissionStatusDto[]> {
 		const [students, assignments, admissionCriteria] = await Promise.all([
@@ -29,22 +30,40 @@ export class AdmissionStatusService {
 			this.assignmentService.getAssignments(courseId),
 			this.admissionCriteria.getByCourseId(courseId)
 		]);
-			
-		return this._getAdmissionStatusOfParticipants(courseId, assignments, admissionCriteria, students);
+
+		return this._getAdmissionStatusOfParticipants(
+			courseId,
+			assignments,
+			admissionCriteria,
+			students
+		);
 	}
 
-	async getAdmissionStatusOfParticipant(courseId: CourseId, userId: UserId): Promise<AdmissionStatusDto> {
+	async getAdmissionStatusOfParticipant(
+		courseId: CourseId,
+		userId: UserId
+	): Promise<AdmissionStatusDto> {
 		const [student, assignments, admissionCriteria] = await Promise.all([
 			this.participants.getStudentWithAssessments(courseId, userId),
 			this.assignmentService.getAssignments(courseId),
 			this.admissionCriteria.getByCourseId(courseId)
 		]);
 
-		const results = this._getAdmissionStatusOfParticipants(courseId, assignments, admissionCriteria, [student]);
+		const results = this._getAdmissionStatusOfParticipants(
+			courseId,
+			assignments,
+			admissionCriteria,
+			[student]
+		);
 		return results[0];
 	}
 
-	private _getAdmissionStatusOfParticipants(courseId: string, assignments: AssignmentDto[], admissionCriteria: AdmissionCriteria, students: Participant[]) {
+	private _getAdmissionStatusOfParticipants(
+		courseId: string,
+		assignments: AssignmentDto[],
+		admissionCriteria: AdmissionCriteria,
+		students: Participant[]
+	) {
 		const evaluated = assignments.filter(a => a.state === AssignmentState.EVALUATED);
 		const rules = admissionCriteria.admissionCriteria?.rules;
 
@@ -52,36 +71,42 @@ export class AdmissionStatusService {
 			throw new BadRequestException(`Course (${courseId}) does not have admission criteria.`);
 		}
 
-		const criteria = rules.map(rule => AdmissionRuleFactory.create(rule, evaluated)); 
+		const criteria = rules.map(rule => AdmissionRuleFactory.create(rule, evaluated));
 		return this.computeAdmissionStatusOfEachStudent(students, criteria);
 	}
-			
+
 	private courseHasNoAdmissionCriteria(rules?: AdmissionRuleDto[]) {
 		return !(rules?.length > 0);
 	}
 
-	private computeAdmissionStatusOfEachStudent(students: Participant[], criteria: AdmissionRule[]): AdmissionStatusDto[] {
+	private computeAdmissionStatusOfEachStudent(
+		students: Participant[],
+		criteria: AdmissionRule[]
+	): AdmissionStatusDto[] {
 		return students.map(student => this.computeAdmissionStatus(student, criteria));
 	}
-			
-	private computeAdmissionStatus(student: Participant, criteria: AdmissionRule[]): AdmissionStatusDto {
+
+	private computeAdmissionStatus(
+		student: Participant,
+		criteria: AdmissionRule[]
+	): AdmissionStatusDto {
 		const assessments = student.user.assessmentUserRelations.map(aur => aur.assessment);
 		const studentDto = student.toDto();
-			
+
 		const results = criteria.map(rule => rule.check(assessments));
 		const hasAdmission = results.every(rule => rule.passed);
-					
+
 		return {
 			participant: studentDto,
 			hasAdmission,
-			results,
+			results
 		};
 	}
 
 	async getPointsOverview(courseId: CourseId): Promise<PointsOverviewDto> {
 		const [students, assignments] = await Promise.all([
 			this.participants.getStudentsWithAssessments(courseId),
-			this.assignmentService.getAssignments(courseId),
+			this.assignmentService.getAssignments(courseId)
 		]);
 
 		const evaluated = this.filterEvaluatedAssignments(assignments);
@@ -90,14 +115,17 @@ export class AdmissionStatusService {
 			assignments: evaluated,
 			results: students.map(student => this.getStudentResults(student, evaluated))
 		};
-		
+
 		return overview;
 	}
 
-	async getPointsOverviewOfStudent(courseId: CourseId, userId: UserId): Promise<PointsOverviewDto> {
+	async getPointsOverviewOfStudent(
+		courseId: CourseId,
+		userId: UserId
+	): Promise<PointsOverviewDto> {
 		const [student, assignments] = await Promise.all([
 			this.participants.getStudentWithAssessments(courseId, userId),
-			this.assignmentService.getAssignments(courseId),
+			this.assignmentService.getAssignments(courseId)
 		]);
 
 		const evaluated = this.filterEvaluatedAssignments(assignments);
@@ -106,7 +134,7 @@ export class AdmissionStatusService {
 			assignments: evaluated,
 			results: [this.getStudentResults(student, evaluated)]
 		};
-		
+
 		return overview;
 	}
 
@@ -129,5 +157,4 @@ export class AdmissionStatusService {
 	private filterEvaluatedAssignments(assignments: AssignmentDto[]): AssignmentDto[] {
 		return assignments.filter(a => a.state === AssignmentState.EVALUATED);
 	}
-
 }

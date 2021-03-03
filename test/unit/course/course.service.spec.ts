@@ -15,16 +15,20 @@ import { CourseCreateDto } from "../../../src/course/dto/course/course-create.dt
 
 const mock_CourseRepository = () => ({
 	createCourse: jest.fn().mockResolvedValue(convertToEntity(Course, COURSE_JAVA_1920)),
-	getCourses: jest.fn().mockResolvedValue([
-		convertToEntity(Course, COURSE_JAVA_1920),
-		convertToEntity(Course, COURSE_INFO_2_2020)
-	]),
+	getCourses: jest
+		.fn()
+		.mockResolvedValue([
+			convertToEntity(Course, COURSE_JAVA_1920),
+			convertToEntity(Course, COURSE_INFO_2_2020)
+		]),
 	getCourseById: jest.fn().mockResolvedValue(COURSE_JAVA_1920),
 	getCourseByNameAndSemester: jest.fn(),
-	getCourseWithUsers: jest.fn().mockResolvedValue([
-		convertToEntity(User, USER_STUDENT_JAVA),
-		convertToEntity(User, USER_STUDENT_2_JAVA)
-	]),
+	getCourseWithUsers: jest
+		.fn()
+		.mockResolvedValue([
+			convertToEntity(User, USER_STUDENT_JAVA),
+			convertToEntity(User, USER_STUDENT_2_JAVA)
+		]),
 	getCourseWithConfig: jest.fn().mockImplementation(() => {
 		const course = convertToEntity(Course, COURSE_JAVA_1920);
 		course.config = convertToEntity(CourseConfig, COURSE_CONFIG_JAVA_1920);
@@ -36,7 +40,6 @@ const mock_CourseRepository = () => ({
 });
 
 describe("CourseService", () => {
-
 	let service: CourseService;
 	let courseRepository: CourseRepository;
 	let courseDto: CourseDto;
@@ -46,16 +49,15 @@ describe("CourseService", () => {
 			providers: [
 				CourseService,
 				{ provide: CourseRepository, useFactory: mock_CourseRepository }
-			],
+			]
 		}).compile();
-		
+
 		// Mock DtoFactory
 		DtoFactory.createCourseDto = jest.fn();
 
 		service = module.get<CourseService>(CourseService);
 		courseRepository = module.get<CourseRepository>(CourseRepository);
 		courseDto = copy(COURSE_JAVA_1920);
-
 	});
 
 	it("should be defined", () => {
@@ -65,10 +67,10 @@ describe("CourseService", () => {
 	describe("createCourse", () => {
 		let courseCreateDto: CourseCreateDto;
 
-		beforeEach(() => { 
-			courseCreateDto = {...courseDto, config: copy(COURSE_CONFIG_JAVA_1920) };
-		});		
-		
+		beforeEach(() => {
+			courseCreateDto = { ...courseDto, config: copy(COURSE_CONFIG_JAVA_1920) };
+		});
+
 		it("Calls repository for creation", async () => {
 			await service.createCourse(courseCreateDto);
 			expect(courseRepository.createCourse).toHaveBeenCalledWith(courseDto);
@@ -99,11 +101,9 @@ describe("CourseService", () => {
 			await service.createCourse(courseCreateDto);
 			expect(DtoFactory.createCourseDto).toHaveBeenCalled();
 		});
-
 	});
 
 	describe("getCourses", () => {
-
 		it("No filter -> Calls repository for retrieval", async () => {
 			await service.getCourses();
 			expect(courseRepository.getCourses).toHaveBeenCalled();
@@ -111,7 +111,7 @@ describe("CourseService", () => {
 
 		it("With filter -> Calls repository for retrieval with filter", async () => {
 			const filter: CourseFilter = { title: "Java" };
-			
+
 			await service.getCourses(filter);
 
 			expect(courseRepository.getCourses).toHaveBeenCalledWith(filter);
@@ -121,11 +121,9 @@ describe("CourseService", () => {
 			await service.getCourses();
 			expect(DtoFactory.createCourseDto).toHaveBeenCalled();
 		});
-
 	});
 
 	describe("getCourseById", () => {
-
 		it("Calls repository for retrieval", async () => {
 			const id = courseDto.id;
 			await service.getCourseById(id);
@@ -137,18 +135,19 @@ describe("CourseService", () => {
 			await service.getCourseById(id);
 			expect(DtoFactory.createCourseDto).toHaveBeenCalled();
 		});
-
 	});
 
 	describe("getCourseByNameAndSemester", () => {
-
 		it("Calls repository for retrieval", async () => {
 			const name = "java";
 			const semester = "wise1920";
 
 			await service.getCourseByNameAndSemester(name, semester);
 
-			expect(courseRepository.getCourseByNameAndSemester).toHaveBeenCalledWith(name, semester);
+			expect(courseRepository.getCourseByNameAndSemester).toHaveBeenCalledWith(
+				name,
+				semester
+			);
 		});
 
 		it("Returns Dto", async () => {
@@ -162,7 +161,6 @@ describe("CourseService", () => {
 	});
 
 	describe("updateCourse", () => {
-	
 		it("Calls repository for update", async () => {
 			await service.updateCourse(courseDto.id, courseDto);
 			expect(courseRepository.updateCourse).toHaveBeenCalledWith(courseDto.id, courseDto);
@@ -170,18 +168,14 @@ describe("CourseService", () => {
 
 		it("Returns Dto", async () => {
 			await service.updateCourse(courseDto.id, courseDto);
-			expect(DtoFactory.createCourseDto).toHaveBeenCalled(); 
+			expect(DtoFactory.createCourseDto).toHaveBeenCalled();
 		});
-	
 	});
 
 	describe("deleteCourse", () => {
-	
 		it("Calls repository for deletion", async () => {
 			await service.deleteCourse(courseDto.id);
 			expect(courseRepository.deleteCourse).toHaveBeenCalledWith(courseDto.id);
 		});
-	
 	});
-
 });

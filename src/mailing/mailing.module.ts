@@ -8,10 +8,7 @@ import { AuthModule } from "../auth/auth.module";
 
 @Module({
 	controllers: [MailingController],
-	imports: [
-		TypeOrmModule.forFeature([MailTemplateRepository]),
-		AuthModule
-	],
+	imports: [TypeOrmModule.forFeature([MailTemplateRepository]), AuthModule],
 	providers: [MailingService, NodemailerService],
 	exports: [MailingService]
 })

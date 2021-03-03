@@ -4,15 +4,8 @@
 	"testEnvironment": "node",
 	"testMatch": ["<rootDir>/test/unit/**/*.spec.ts"],
 	"transform": {
-	  "^.+\\.(t|j)s$": "ts-jest"
+		"^.+\\.(t|j)s$": "ts-jest"
 	},
-    "collectCoverageFrom": [
-		"src/**/*.ts",
-		"!src/**/*.module.ts",
-		"!src/main.ts",
-		"!src/test"
-    ],
-    "coveragePathIgnorePatterns": [
-    ]
-  }
-  
+	"collectCoverageFrom": ["src/**/*.ts", "!src/**/*.module.ts", "!src/main.ts", "!src/test"],
+	"coveragePathIgnorePatterns": []
+}

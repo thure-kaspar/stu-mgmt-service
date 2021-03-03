@@ -5,5 +5,5 @@ export class Settings {
 	auth: {
 		user: string;
 		pass: string;
-	}
+	};
 }

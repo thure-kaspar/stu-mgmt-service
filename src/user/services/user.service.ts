@@ -27,13 +27,15 @@ import { UserRepository } from "../repositories/user.repository";
 
 @Injectable()
 export class UserService {
-
-	constructor(@InjectRepository(User) private userRepository: UserRepository,
-				@InjectRepository(Group) private groupRepository: GroupRepository,
-				@InjectRepository(Assignment) private assignmentRepository: AssignmentRepository,
-				@InjectRepository(Assessment) private assessmentRepository: AssessmentRepository,
-				@InjectRepository(GroupEvent) private groupEventRepository: GroupEventRepository,
-				@InjectRepository(AssignmentRegistration) private registrations: AssignmentRegistrationRepository) { }
+	constructor(
+		@InjectRepository(User) private userRepository: UserRepository,
+		@InjectRepository(Group) private groupRepository: GroupRepository,
+		@InjectRepository(Assignment) private assignmentRepository: AssignmentRepository,
+		@InjectRepository(Assessment) private assessmentRepository: AssessmentRepository,
+		@InjectRepository(GroupEvent) private groupEventRepository: GroupEventRepository,
+		@InjectRepository(AssignmentRegistration)
+		private registrations: AssignmentRegistrationRepository
+	) {}
 
 	async createUser(userDto: UserDto): Promise<UserDto> {
 		const createdUser = await this.userRepository.createUser(userDto);
@@ -71,7 +73,7 @@ export class UserService {
 
 	/**
 	 * Returns all group events of the user in the course.
-	 * Events are sorted by their timestamp in descending order (new to old). 
+	 * Events are sorted by their timestamp in descending order (new to old).
 	 */
 	async getGroupHistoryOfUser(userId: UserId, courseId: CourseId): Promise<GroupEventDto[]> {
 		const history = await this.groupEventRepository.getGroupHistoryOfUser(userId, courseId);
@@ -81,14 +83,21 @@ export class UserService {
 	/**
 	 * Returns the group that the user was a registered member of.
 	 */
-	async getGroupOfAssignment(userId: UserId, courseId: CourseId, assignmentId: string): Promise<GroupDto> {
+	async getGroupOfAssignment(
+		userId: UserId,
+		courseId: CourseId,
+		assignmentId: string
+	): Promise<GroupDto> {
 		return this.registrations.getRegisteredGroupOfUser(assignmentId, userId);
 	}
 
 	/**
-	 * Returns tuples mapping assignments to the user's registered groups. 
+	 * Returns tuples mapping assignments to the user's registered groups.
 	 */
-	async getGroupOfAllAssignments(userId: UserId, courseId: CourseId): Promise<AssignmentGroupTuple[]> {
+	async getGroupOfAllAssignments(
+		userId: UserId,
+		courseId: CourseId
+	): Promise<AssignmentGroupTuple[]> {
 		return this.registrations.getAllRegisteredGroupsOfUserInCourse(courseId, userId);
 	}
 
@@ -98,28 +107,46 @@ export class UserService {
 	 * @throws `EntityNotFoundError` if assessment does not exists, or it exists but requested by `STUDENT`
 	 * and not `EVALUATED`.
 	 */
-	async getAssessment(participant: Participant, assignmentId: AssignmentId): Promise<AssessmentDto> {
+	async getAssessment(
+		participant: Participant,
+		assignmentId: AssignmentId
+	): Promise<AssessmentDto> {
 		if (participant.isStudent()) {
 			// Only return assessment, if the assignment is in EVALUATED state
 			const assignment = await this.assignmentRepository.getAssignmentById(assignmentId);
 			if (assignment.state !== AssignmentState.EVALUATED) {
-				throw new EntityNotFoundError(AssessmentDto, { assignmentId, userId: participant.userId });
+				throw new EntityNotFoundError(AssessmentDto, {
+					assignmentId,
+					userId: participant.userId
+				});
 			}
 		}
 
-		const [assessments] = await this.assessmentRepository.getAssessmentsForAssignment(assignmentId, {
-			userId: participant.userId
-		});
+		const [assessments] = await this.assessmentRepository.getAssessmentsForAssignment(
+			assignmentId,
+			{
+				userId: participant.userId
+			}
+		);
 
 		if (assessments.length == 0) {
-			throw new EntityNotFoundError(AssessmentDto, { assignmentId, userId: participant.userId });
+			throw new EntityNotFoundError(AssessmentDto, {
+				assignmentId,
+				userId: participant.userId
+			});
 		}
 
 		return DtoFactory.createAssessmentDto(assessments[0]);
 	}
 
-	async getAssessmentsOfUserForCourse(userId: UserId, courseId: CourseId): Promise<AssessmentDto[]> {
-		const assessments = await this.assessmentRepository.getAssessmentsOfUserForCourse(courseId, userId);
+	async getAssessmentsOfUserForCourse(
+		userId: UserId,
+		courseId: CourseId
+	): Promise<AssessmentDto[]> {
+		const assessments = await this.assessmentRepository.getAssessmentsOfUserForCourse(
+			courseId,
+			userId
+		);
 		const evaluated = assessments.filter(a => a.assignment.state === AssignmentState.EVALUATED);
 		return evaluated.map(a => DtoFactory.createAssessmentDto(a));
 	}
@@ -128,9 +155,8 @@ export class UserService {
 		const user = await this.userRepository.updateUser(userId, userDto);
 		return DtoFactory.createUserDto(user);
 	}
-	
+
 	async deleteUser(userId: UserId): Promise<boolean> {
 		return this.userRepository.deleteUser(userId);
 	}
-    
 }

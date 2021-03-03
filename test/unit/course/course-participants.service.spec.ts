@@ -18,16 +18,20 @@ import { CourseConfigDto } from "../../../src/course/dto/course-config/course-co
 
 const mock_CourseRepository = () => ({
 	createCourse: jest.fn().mockResolvedValue(convertToEntity(Course, COURSE_JAVA_1920)),
-	getCourses: jest.fn().mockResolvedValue([
-		convertToEntity(Course, COURSE_JAVA_1920),
-		convertToEntity(Course, COURSE_INFO_2_2020)
-	]),
+	getCourses: jest
+		.fn()
+		.mockResolvedValue([
+			convertToEntity(Course, COURSE_JAVA_1920),
+			convertToEntity(Course, COURSE_INFO_2_2020)
+		]),
 	getCourseById: jest.fn().mockResolvedValue(COURSE_JAVA_1920),
 	getCourseByNameAndSemester: jest.fn(),
-	getCourseWithUsers: jest.fn().mockResolvedValue([
-		convertToEntity(User, USER_STUDENT_JAVA),
-		convertToEntity(User, USER_STUDENT_2_JAVA)
-	]),
+	getCourseWithUsers: jest
+		.fn()
+		.mockResolvedValue([
+			convertToEntity(User, USER_STUDENT_JAVA),
+			convertToEntity(User, USER_STUDENT_2_JAVA)
+		]),
 	getCourseWithConfig: jest.fn().mockImplementation(() => {
 		const course = convertToEntity(Course, COURSE_JAVA_1920);
 		course.config = convertToEntity(CourseConfig, COURSE_CONFIG_JAVA_1920);
@@ -48,7 +52,6 @@ const mock_ParticipantRepository = () => ({
 });
 
 describe("CourseParticipantsService", () => {
-
 	let service: CourseParticipantsService;
 	let courseRepository: CourseRepository;
 	let participantRepository: ParticipantRepository;
@@ -62,9 +65,9 @@ describe("CourseParticipantsService", () => {
 				{ provide: CourseRepository, useFactory: mock_CourseRepository },
 				{ provide: ParticipantRepository, useFactory: mock_ParticipantRepository },
 				{ provide: ParticipantRepository, useFactory: mock_ParticipantRepository }
-			],
+			]
 		}).compile();
-		
+
 		// Mock DtoFactory
 		DtoFactory.createCourseDto = jest.fn();
 
@@ -73,7 +76,6 @@ describe("CourseParticipantsService", () => {
 		participantRepository = module.get(ParticipantRepository);
 		courseUserRepository = module.get(ParticipantRepository);
 		courseDto = copy(COURSE_JAVA_1920);
-
 	});
 
 	it("should be defined", () => {
@@ -94,10 +96,14 @@ describe("CourseParticipantsService", () => {
 
 			await service.addParticipant(courseDto.id, userId, config.password);
 
-			expect(participantRepository.createParticipant).toBeCalledWith(courseDto.id, userId, role);
+			expect(participantRepository.createParticipant).toBeCalledWith(
+				courseDto.id,
+				userId,
+				role
+			);
 		});
 
-		it("No password required -> Calls repository for relation creation", async () => {	
+		it("No password required -> Calls repository for relation creation", async () => {
 			// Mock should return course that doesn't require a password
 			courseRepository.getCourseWithConfig = jest.fn().mockImplementationOnce(() => {
 				const course = convertToEntity(Course, COURSE_JAVA_1920);
@@ -111,7 +117,11 @@ describe("CourseParticipantsService", () => {
 
 			await service.addParticipant(courseDto.id, userId);
 
-			expect(participantRepository.createParticipant).toBeCalledWith(courseDto.id, userId, role);
+			expect(participantRepository.createParticipant).toBeCalledWith(
+				courseDto.id,
+				userId,
+				role
+			);
 		});
 
 		it("Incorrect password -> Throws Exception", async () => {
@@ -122,27 +132,23 @@ describe("CourseParticipantsService", () => {
 			try {
 				await service.addParticipant(courseDto.id, userId, password);
 				expect(true).toEqual(false);
-			} catch(error) {
+			} catch (error) {
 				expect(error).toBeTruthy();
 				expect(error.status).toEqual(400);
 			}
 		});
-
 	});
 
 	describe("getUsersOfCourse", () => {
-
 		it("Calls repository to load with users", async () => {
 			const id = courseDto.id;
 			const filter = undefined;
 			await service.getParticipants(id);
 			expect(courseUserRepository.getParticipants).toHaveBeenCalledWith(id, filter);
 		});
-
 	});
 
 	describe("updateRole", () => {
-	
 		it("Calls repository for update of role", async () => {
 			const courseId = courseDto.id;
 			const userId = "user_id";
@@ -152,7 +158,5 @@ describe("CourseParticipantsService", () => {
 
 			expect(participantRepository.updateRole).toHaveBeenCalledWith(courseId, userId, role);
 		});
-	
 	});
-
 });

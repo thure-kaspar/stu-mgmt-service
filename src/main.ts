@@ -5,7 +5,10 @@ import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import * as config from "config";
 import { getConnection } from "typeorm";
 import { DbMockService } from "../test/mocks/db-mock.service";
-import { OverallPercentRuleDto, IndividualPercentWithAllowedFailuresRuleDto } from "./admission-status/dto/admission-rule.dto";
+import {
+	OverallPercentRuleDto,
+	IndividualPercentWithAllowedFailuresRuleDto
+} from "./admission-status/dto/admission-rule.dto";
 import { AppModule } from "./app.module";
 import { StudentMgmtEvent } from "./course/events";
 import { StudentMgmtException } from "./course/exceptions/custom-exceptions";
@@ -18,25 +21,27 @@ async function bootstrap(): Promise<void> {
 	const logLevels = config.get("logger.levels");
 	console.log(`Environment: ${process.env.NODE_ENV}`);
 	console.log("Log levels:", logLevels);
-	
+
 	const serverConfig = config.get("server");
 	const port = process.env.SERVER_PORT || serverConfig.port;
-	
+
 	logger.verbose("Creating application...");
 	const app = await NestFactory.create<NestExpressApplication>(AppModule, { logger: logLevels });
 	logger.verbose("Application created!");
-	
+
 	app.useGlobalFilters(new EntityNotFoundFilter());
 	app.useGlobalFilters(new EntityAlreadyExistsFilter());
 	app.useGlobalPipes(new ValidationPipe({ transform: true })); // Automatically transform primitive params to their type
 	app.enableCors({ exposedHeaders: "x-total-count" });
 	app.disable("x-powered-by");
 	//app.setGlobalPrefix("mgmt/v1");
-	
+
 	const options = new DocumentBuilder()
 		.addBearerAuth()
 		.setTitle("Student-Management-System-API")
-		.setDescription("The Student-Management-Sytem-API. <a href='http://localhost:3000/api-json'>JSON</a>") // TODO: Replace hard-coded link
+		.setDescription(
+			"The Student-Management-Sytem-API. <a href='http://localhost:3000/api-json'>JSON</a>"
+		) // TODO: Replace hard-coded link
 		.setVersion("1.0")
 		.addTag("authentication")
 		.addTag("courses")
@@ -54,21 +59,20 @@ async function bootstrap(): Promise<void> {
 		.addTag("test")
 		.build();
 
-	const document = SwaggerModule.createDocument(app, options, { 
+	const document = SwaggerModule.createDocument(app, options, {
 		extraModels: [
-			StudentMgmtException, 
-			StudentMgmtEvent, 
+			StudentMgmtException,
+			StudentMgmtEvent,
 			RoundingBehavior,
 			IndividualPercentWithAllowedFailuresRuleDto,
 			OverallPercentRuleDto
-		] 
+		]
 	});
 
 	SwaggerModule.setup("api", app, document);
 
 	// If demo environment, populate database with test data
 	if (process.env.NODE_ENV == "demo") {
-		
 		const dbMockService = new DbMockService(getConnection());
 		await dbMockService.createAll();
 	}

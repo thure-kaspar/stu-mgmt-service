@@ -7,7 +7,9 @@ export class AdmissionCriteria {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@OneToOne(type => CourseConfig, courseConfig => courseConfig.admissionCriteria, { onDelete: "CASCADE" })
+	@OneToOne(type => CourseConfig, courseConfig => courseConfig.admissionCriteria, {
+		onDelete: "CASCADE"
+	})
 	@JoinColumn()
 	courseConfig: CourseConfig;
 
@@ -20,5 +22,4 @@ export class AdmissionCriteria {
 	toDto(): AdmissionCriteriaDto {
 		return this.admissionCriteria;
 	}
-
 }

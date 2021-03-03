@@ -9,8 +9,7 @@ import { UserRepository } from "../repositories/user.repository";
 @ApiTags("user-mgmt")
 @Controller("user-mgmt")
 export class UserManagementController {
-
-	constructor(@InjectRepository(User) private userRepository: UserRepository) { }
+	constructor(@InjectRepository(User) private userRepository: UserRepository) {}
 
 	@ApiOperation({
 		operationId: "setUserRole",
@@ -19,8 +18,6 @@ export class UserManagementController {
 	})
 	@Post("users/:userId/role")
 	setUserRole(role: { role: UserRole }): Promise<void> {
-
 		throw new NotImplementedException();
 	}
-
 }

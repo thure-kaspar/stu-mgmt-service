@@ -10,13 +10,12 @@ export class GroupUnregistered {
 		readonly courseId: CourseId,
 		readonly assignmentId: AssignmentId,
 		readonly groupId: GroupId
-	) { }
+	) {}
 }
 
 @EventsHandler(GroupUnregistered)
 export class GroupUnregisteredNotificationHandler implements IEventHandler<GroupUnregistered> {
-
-	constructor(private notifications: NotificationService) { }
+	constructor(private notifications: NotificationService) {}
 
 	async handle(event: GroupUnregistered): Promise<void> {
 		this.notifications.send({
@@ -26,5 +25,4 @@ export class GroupUnregisteredNotificationHandler implements IEventHandler<Group
 			groupId: event.groupId
 		});
 	}
-
 }

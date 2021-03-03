@@ -3,8 +3,8 @@ import { ApiProperty } from "@nestjs/swagger";
 // export const EventHandlers = [
 // 	// EventHandlers that are used internally:
 // 	CourseJoinedHandler_AutomaticGroupJoin,
-// 	UserJoinedGroupHandler, 
-// 	UserLeftGroupHandler, 
+// 	UserJoinedGroupHandler,
+// 	UserLeftGroupHandler,
 // 	AssessmentScoreChangedHandler,
 
 // 	// EventHandlers that publish events to other systems:

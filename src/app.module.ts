@@ -37,6 +37,6 @@ const optionalProviders = (): Provider<any>[] => {
 		TaskSchedulingModule
 	],
 	controllers: [AppController],
-	providers: [...optionalProviders()],
+	providers: [...optionalProviders()]
 })
-export class AppModule { }
+export class AppModule {}

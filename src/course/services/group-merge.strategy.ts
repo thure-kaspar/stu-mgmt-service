@@ -2,13 +2,12 @@ import { Group } from "../models/group.model";
 import { CourseWithGroupSettings } from "../models/course-with-group-settings.model";
 
 export class GroupMergeStrategy {
-	
 	/**
 	 * Merges invalid groups or adds them to open groups according to the following rules:
 	 * 1. Merge invalid group with other invalid group, repeat until group is valid
 	 * 2. Remaining invalid groups: Try to find joinable group, prioritize merged groups instead of touching existing groups
 	 * 3. If no joinable group is found, group is allowed to stay invalid
-	 * 
+	 *
 	 * Groups won't be split up in this strategy!
 	 */
 	merge(groups: Group[], course: CourseWithGroupSettings): Group[] {
@@ -25,8 +24,7 @@ export class GroupMergeStrategy {
 		mergedGroups.forEach(group => {
 			if (group.size >= sizeMin && group.isJoinable(sizeMax)) {
 				newOpenGroups.push(group);
-			}
-			else if (group.size < sizeMin) {
+			} else if (group.size < sizeMin) {
 				remainingInvalidGroups.push(group);
 			}
 		});
@@ -59,12 +57,10 @@ export class GroupMergeStrategy {
 
 				if (mergedGroupSize > sizeMax) {
 					canBeMerged = false;
-				}
-				else if (mergedGroupSize == sizeMax) {
+				} else if (mergedGroupSize == sizeMax) {
 					this.mergeIntoFirstGroup(group, groups[i]);
 					canBeMerged = false;
-				}
-				else {
+				} else {
 					currentGroupSize = mergedGroupSize;
 					this.mergeIntoFirstGroup(group, groups[i]);
 					i++;
@@ -86,7 +82,11 @@ export class GroupMergeStrategy {
 	 * Returns a tuple containing `[invalidGroups, openGroups, fullGroups]`.
 	 * @param sortedGroups Groups sorted by size in ascending order
 	 */
-	private splitGroups(sortedGroups: Group[], sizeMin: number, sizeMax: number): [Group[], Group[]] {
+	private splitGroups(
+		sortedGroups: Group[],
+		sizeMin: number,
+		sizeMax: number
+	): [Group[], Group[]] {
 		const invalidGroups: Group[] = [];
 		const openGroups: Group[] = [];
 
@@ -103,7 +103,7 @@ export class GroupMergeStrategy {
 				break;
 			}
 		}
-		
+
 		return [invalidGroups, openGroups];
 	}
 

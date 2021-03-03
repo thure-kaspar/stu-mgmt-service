@@ -4,8 +4,7 @@ import { CourseId } from "../entities/course.entity";
 import { AssignmentNotInReviewStateException } from "../exceptions/custom-exceptions";
 
 export class Assignment {
-
-	readonly id: AssignmentId; 
+	readonly id: AssignmentId;
 	readonly courseId: CourseId;
 	readonly collaboration: CollaborationType;
 	readonly state: AssignmentState;
@@ -23,12 +22,15 @@ export class Assignment {
 		this.type = assignment.type;
 		this.points = assignment.points;
 		this.bonusPoints = assignment.bonusPoints;
-		this.startDate = assignment.startDate;	
+		this.startDate = assignment.startDate;
 		this.endDate = assignment.endDate;
 	}
 
 	allowsGroups(): boolean {
-		return this.collaboration === CollaborationType.GROUP || this.collaboration === CollaborationType.GROUP_OR_SINGLE;
+		return (
+			this.collaboration === CollaborationType.GROUP ||
+			this.collaboration === CollaborationType.GROUP_OR_SINGLE
+		);
 	}
 
 	allowsSubmissions(): boolean {
@@ -47,7 +49,10 @@ export class Assignment {
 	 * `oldState` was a different state.
 	 */
 	wasStarted(oldState?: AssignmentState): boolean {
-		return this.assignment.state === AssignmentState.IN_PROGRESS && oldState !== AssignmentState.IN_PROGRESS;
+		return (
+			this.assignment.state === AssignmentState.IN_PROGRESS &&
+			oldState !== AssignmentState.IN_PROGRESS
+		);
 	}
 
 	/**
@@ -60,5 +65,4 @@ export class Assignment {
 		}
 		return this;
 	}
-
 }

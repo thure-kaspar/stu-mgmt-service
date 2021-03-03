@@ -2,7 +2,10 @@ import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
 import { getConnection } from "typeorm";
 import { createApplication } from "../mocks/application.mock";
-import { ASSIGNMENT_JAVA_INVISIBLE, ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP } from "../mocks/assignments.mock";
+import {
+	ASSIGNMENT_JAVA_INVISIBLE,
+	ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP
+} from "../mocks/assignments.mock";
 import { COURSE_JAVA_1920 } from "../mocks/courses.mock";
 import { DbMockService } from "../mocks/db-mock.service";
 import { UserId } from "../../src/shared/entities/user.entity";
@@ -18,7 +21,6 @@ const courseId = COURSE_JAVA_1920.id;
 const baseRoute = `/courses/${courseId}/assignments`;
 
 describe("As LECTURER", () => {
-
 	beforeEach(async () => {
 		app = await createApplication();
 
@@ -33,31 +35,26 @@ describe("As LECTURER", () => {
 	});
 
 	describe("POST-REQUESTS of AssignmentRegistrationController", () => {
-
 		describe("/courses/{courseId}/assignments/{assignmentId}/registrations - _registerAllGroups", () => {
-		
 			let assignmentId;
 			const route = () => `${baseRoute}/${assignmentId}/registrations`;
-	
+
 			beforeEach(() => {
 				assignmentId = ASSIGNMENT_JAVA_INVISIBLE.id;
 			});
 
 			it("Creates registrations for all groups", () => {
-				return request(app.getHttpServer())
-					.post(route())
-					.expect(201);
+				return request(app.getHttpServer()).post(route()).expect(201);
 			});
-		
 		});
 
 		describe("courses/{courseId}/assignments/{assignmentId}/registrations/groups/{groupId}/members/{userId} - registerParticipantAsGroupMember", () => {
-		
 			let assignmentId;
 			let groupId: GroupId;
 			let userId: UserId;
-			const route = () => `${baseRoute}/${assignmentId}/registrations/groups/${groupId}/members/${userId}`;
-	
+			const route = () =>
+				`${baseRoute}/${assignmentId}/registrations/groups/${groupId}/members/${userId}`;
+
 			beforeEach(() => {
 				assignmentId = ASSIGNMENT_JAVA_INVISIBLE.id;
 				groupId = GROUP_1_JAVA.id;
@@ -65,22 +62,17 @@ describe("As LECTURER", () => {
 			});
 
 			it("Creates registration user as member of group", () => {
-				return request(app.getHttpServer())
-					.post(route())
-					.expect(201);
+				return request(app.getHttpServer()).post(route()).expect(201);
 			});
-		
 		});
-	
 	});
 
 	describe("DELETE-REQUESTS of AssignmentRegistrationController", () => {
-	
 		let assignmentId: AssignmentId;
 		let groupId: GroupId;
 		let userId: UserId;
 		const route = () => `${baseRoute}/${assignmentId}/registrations`;
-	
+
 		beforeEach(() => {
 			assignmentId = ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP.id;
 			groupId = GROUP_1_JAVA.id;
@@ -88,47 +80,36 @@ describe("As LECTURER", () => {
 		});
 
 		describe("/courses/{courseId}/assignments/{assignmentId}/registrations/groups/{groupId} - unregisterGroup", () => {
-		
 			it("Unregisters the group", () => {
 				return request(app.getHttpServer())
 					.delete(`${route()}/groups/${groupId}`)
 					.expect(200);
 			});
-		
 		});
 
 		describe("/courses/{courseId}/assignments/{assignmentId}/registrations/users/{userId} - unregisterUser", () => {
-		
 			it("Unregisters the user", () => {
 				return request(app.getHttpServer())
 					.delete(`${route()}/users/${userId}`)
 					.expect(200);
 			});
-		
 		});
 
 		describe("/courses/{courseId}/assignments/{assignmentId}/registrations - unregisterAll", () => {
-
 			it("Unregisters all users", () => {
-				return request(app.getHttpServer())
-					.delete(route())
-					.expect(200);
+				return request(app.getHttpServer()).delete(route()).expect(200);
 			});
-		
 		});
-
 	});
-
 });
 
 describe("GET-REQUESTS of AssignmentRegistrationController", () => {
-
 	const assignmentId = ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP.id;
 	const baseRoute = `/courses/${courseId}/assignments/${assignmentId}/registrations`;
 
 	beforeAll(async () => {
 		app = await createApplication();
-		
+
 		// Setup mocks
 		dbMockService = new DbMockService(getConnection());
 		await dbMockService.createAll();
@@ -140,7 +121,6 @@ describe("GET-REQUESTS of AssignmentRegistrationController", () => {
 	});
 
 	describe("/course/{courseId}/assignments/{assignmentId}/registrations - getRegisteredGroups", () => {
-	
 		it("Assignment IN_PROGRESS -> Returns registered groups", () => {
 			return request(app.getHttpServer())
 				.get(`${baseRoute}/groups`)
@@ -152,11 +132,9 @@ describe("GET-REQUESTS of AssignmentRegistrationController", () => {
 					expect(result[0].members.length).toBeGreaterThan(0);
 				});
 		});
-	
 	});
 
 	describe("/course/{courseId}/assignments/{assignmentId}/registrations/groups/{groupId} - getRegisteredGroup", () => {
-	
 		let groupId: GroupId;
 		const route = () => `${baseRoute}/groups/${groupId}`;
 
@@ -174,11 +152,9 @@ describe("GET-REQUESTS of AssignmentRegistrationController", () => {
 					expect(result.members.length).toBeGreaterThan(1);
 				});
 		});
-	
 	});
 
 	describe("/course/{courseId}/assignments/{assignmentId}/registrations/users/{userId} - getRegisteredGroupOfUser", () => {
-	
 		let userId: UserId;
 		const route = () => `${baseRoute}/users/${userId}`;
 
@@ -196,8 +172,5 @@ describe("GET-REQUESTS of AssignmentRegistrationController", () => {
 					expect(result.members.length).toBeGreaterThan(1);
 				});
 		});
-	
 	});
-
 });
-

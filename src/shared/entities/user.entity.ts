@@ -9,35 +9,37 @@ export type UserId = string;
 
 @Entity()
 export class User {
-    @PrimaryGeneratedColumn("uuid")
-    id: string;
+	@PrimaryGeneratedColumn("uuid")
+	id: string;
 
-    @Column({ nullable: true })
+	@Column({ nullable: true })
 	email: string;
-	
+
 	@Column({ unique: true })
 	username: string;
 
 	@Column()
 	displayName: string;
 
-    @Column({ type: "enum", enum: UserRole, default: UserRole.USER })
-    role: UserRole;
-    
-    @OneToMany(type => Participant, participants => participants.user)
+	@Column({ type: "enum", enum: UserRole, default: UserRole.USER })
+	role: UserRole;
+
+	@OneToMany(type => Participant, participants => participants.user)
 	participations: Participant[];
-	
+
 	@OneToMany(type => UserGroupRelation, userGroupRelation => userGroupRelation.user)
-    userGroupRelations: UserGroupRelation[];
-    
-    @OneToMany(type => AssessmentUserRelation, assessmentUserRelation => assessmentUserRelation.user)
+	userGroupRelations: UserGroupRelation[];
+
+	@OneToMany(
+		type => AssessmentUserRelation,
+		assessmentUserRelation => assessmentUserRelation.user
+	)
 	assessmentUserRelations: AssessmentUserRelation[];
-	
+
 	@OneToMany(type => AssessmentAllocation, allocation => allocation.user)
 	assessmentAllocations: AssessmentAllocation[];
 
 	constructor(partial?: Partial<User>) {
 		if (partial) Object.assign(this, partial);
 	}
-
 }

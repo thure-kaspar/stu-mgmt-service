@@ -5,20 +5,20 @@ import { NotificationService } from "../../services/notification.service";
 import { Assignment } from "../../models/assignment.model";
 
 export class AssignmentStateChanged {
-	constructor(
-		readonly assignment: Assignment
-	) { }
+	constructor(readonly assignment: Assignment) {}
 }
 
 @EventsHandler(AssignmentStateChanged)
-export class AssignmentStateChangedNotificationHandler implements IEventHandler<AssignmentStateChanged> {
-
+export class AssignmentStateChangedNotificationHandler
+	implements IEventHandler<AssignmentStateChanged> {
 	private logger = new Logger(AssignmentStateChangedNotificationHandler.name);
 
-	constructor(private notifications: NotificationService) { }
+	constructor(private notifications: NotificationService) {}
 
 	async handle(event: AssignmentStateChanged): Promise<void> {
-		this.logger.verbose(`Assignment (${event.assignment.id}) changed to ${event.assignment.state}.`);
+		this.logger.verbose(
+			`Assignment (${event.assignment.id}) changed to ${event.assignment.state}.`
+		);
 
 		this.notifications.send({
 			event: Event.ASSIGNMENT_STATE_CHANGED,
@@ -29,5 +29,4 @@ export class AssignmentStateChangedNotificationHandler implements IEventHandler<
 			}
 		});
 	}
-
 }

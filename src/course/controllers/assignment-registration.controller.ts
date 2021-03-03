@@ -22,22 +22,21 @@ import { SelectedParticipantGuard } from "../guards/selected-participant.guard";
 @UseGuards(AuthGuard(), CourseMemberGuard)
 @Controller("courses/:courseId/assignments/:assignmentId/registrations")
 export class AssignmentRegistrationController {
-
-	constructor(private registrations: AssignmentRegistrationService) { }
+	constructor(private registrations: AssignmentRegistrationService) {}
 
 	@ApiOperation({
 		operationId: "_registerAllGroups",
 		summary: "Registers all groups.",
-		description: "Registers all groups with their current members for the assignment. Should only be used for testing or when automatic registration fails."
+		description:
+			"Registers all groups with their current members for the assignment. Should only be used for testing or when automatic registration fails."
 	})
 	@Post()
 	@UseGuards(TeachingStaffGuard)
 	_registerAllGroups(
 		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: AssignmentId,
-		@GetCourse() course: Course,
+		@GetCourse() course: Course
 	): Promise<void> {
-
 		return this.registrations.registerGroupsForAssignment(course, assignmentId);
 	}
 
@@ -52,16 +51,16 @@ export class AssignmentRegistrationController {
 		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: AssignmentId,
 		@Param("groupId") groupId: GroupId,
-		@GetCourse() course: Course,
+		@GetCourse() course: Course
 	): Promise<void> {
-
 		return this.registrations.registerGroup(course, assignmentId, groupId);
 	}
 
 	@ApiOperation({
 		operationId: "registerParticipantAsGroupMember",
 		summary: "Register participant as group member.",
-		description: "Registers a participant as a member of the specified group for the assignment."
+		description:
+			"Registers a participant as a member of the specified group for the assignment."
 	})
 	@Post("groups/:groupId/members/:userId")
 	@UseGuards(TeachingStaffGuard, SelectedParticipantGuard)
@@ -73,14 +72,19 @@ export class AssignmentRegistrationController {
 		@GetCourse() course: Course,
 		@GetSelectedParticipant() selectedParticipant: Participant
 	): Promise<void> {
-
-		return this.registrations.registerUserToGroup(course, assignmentId, groupId, selectedParticipant);
+		return this.registrations.registerUserToGroup(
+			course,
+			assignmentId,
+			groupId,
+			selectedParticipant
+		);
 	}
 
 	@ApiOperation({
 		operationId: "getRegisteredGroups",
 		summary: "Get registered groups.",
-		description: "Retrieves all registered groups and their members for the specified assignment."
+		description:
+			"Retrieves all registered groups and their members for the specified assignment."
 	})
 	@Get("groups")
 	@UseGuards(TeachingStaffGuard)
@@ -90,14 +94,17 @@ export class AssignmentRegistrationController {
 		@Param("assignmentId") assignmentId: AssignmentId,
 		@Query() filter?: AssignmentRegistrationFilter
 	): Promise<GroupDto[]> {
-
-		return PaginatedResult(this.registrations.getRegisteredGroupsWithMembers(assignmentId, filter), request);
+		return PaginatedResult(
+			this.registrations.getRegisteredGroupsWithMembers(assignmentId, filter),
+			request
+		);
 	}
 
 	@ApiOperation({
 		operationId: "getRegisteredGroup",
 		summary: "Get registered group.",
-		description: "Retrieves all registered groups and their members for the specified assignment."
+		description:
+			"Retrieves all registered groups and their members for the specified assignment."
 	})
 	@Get("groups/:groupId")
 	getRegisteredGroup(
@@ -105,14 +112,14 @@ export class AssignmentRegistrationController {
 		@Param("assignmentId") assignmentId: AssignmentId,
 		@Param("groupId") groupId: GroupId
 	): Promise<GroupDto> {
-
 		return this.registrations.getRegisteredGroupWithMembers(assignmentId, groupId);
 	}
 
 	@ApiOperation({
 		operationId: "getRegisteredGroupOfUser",
 		summary: "Get registered group of user.",
-		description: "Retrieves the group that the participant is registered with for the specified assignment."
+		description:
+			"Retrieves the group that the participant is registered with for the specified assignment."
 	})
 	@Get("users/:userId")
 	getRegisteredGroupOfUser(
@@ -120,7 +127,6 @@ export class AssignmentRegistrationController {
 		@Param("assignmentId") assignmentId: AssignmentId,
 		@Param("userId") userId: UserId
 	): Promise<GroupDto> {
-
 		return this.registrations.getRegisteredGroupOfUser(assignmentId, userId);
 	}
 
@@ -136,7 +142,6 @@ export class AssignmentRegistrationController {
 		@Param("assignmentId") assignmentId: AssignmentId,
 		@Param("groupId") groupId: GroupId
 	): Promise<void> {
-
 		return this.registrations.unregisterGroup(courseId, assignmentId, groupId);
 	}
 
@@ -152,7 +157,6 @@ export class AssignmentRegistrationController {
 		@Param("assignmentId") assignmentId: AssignmentId,
 		@Param("userId") userId: UserId
 	): Promise<void> {
-
 		return this.registrations.unregisterUser(courseId, assignmentId, userId);
 	}
 
@@ -165,10 +169,8 @@ export class AssignmentRegistrationController {
 	@Delete()
 	unregisterAll(
 		@Param("courseId") courseId: CourseId,
-		@Param("assignmentId") assignmentId: AssignmentId,
+		@Param("assignmentId") assignmentId: AssignmentId
 	): Promise<void> {
-
 		return this.registrations.removeAllRegistrations(courseId, assignmentId);
 	}
-
 }

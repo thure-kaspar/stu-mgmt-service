@@ -6,18 +6,15 @@ import { COURSE_JAVA_1920 } from "../../mocks/courses.mock";
 import { Course } from "../../../src/course/entities/course.entity";
 
 describe("CourseRepository", () => {
-
 	let repository: CourseRepository;
 	let courseDto: CourseDto;
 	let expected: Course;
 
 	beforeEach(async () => {
 		const module: TestingModule = await Test.createTestingModule({
-			providers: [
-				CourseRepository,
-			],
+			providers: [CourseRepository]
 		}).compile();
-		
+
 		repository = module.get<CourseRepository>(CourseRepository);
 		courseDto = copy(COURSE_JAVA_1920);
 		expected = convertToEntity(Course, COURSE_JAVA_1920);
@@ -26,5 +23,4 @@ describe("CourseRepository", () => {
 	it("Should be defined", () => {
 		expect(repository).toBeDefined();
 	});
-
 });

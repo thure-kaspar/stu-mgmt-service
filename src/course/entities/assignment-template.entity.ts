@@ -8,7 +8,9 @@ export class AssignmentTemplate {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@ManyToOne(type => CourseConfig, courseConfig => courseConfig.assignmentTemplates, { onDelete: "CASCADE" })
+	@ManyToOne(type => CourseConfig, courseConfig => courseConfig.assignmentTemplates, {
+		onDelete: "CASCADE"
+	})
 	@JoinColumn()
 	courseConfig: CourseConfig;
 
@@ -21,13 +23,28 @@ export class AssignmentTemplate {
 	@Column({ nullable: true })
 	name?: string;
 
-	@Column({ type: "enum", enum: AssignmentState, default: AssignmentState.IN_PROGRESS, nullable: true })
+	@Column({
+		type: "enum",
+		enum: AssignmentState,
+		default: AssignmentState.IN_PROGRESS,
+		nullable: true
+	})
 	state?: AssignmentState;
 
-	@Column({ type: "enum", enum: AssignmentType, default: AssignmentType.HOMEWORK, nullable: true })
+	@Column({
+		type: "enum",
+		enum: AssignmentType,
+		default: AssignmentType.HOMEWORK,
+		nullable: true
+	})
 	type?: AssignmentType;
 
-	@Column({ type: "enum", enum: CollaborationType, default: CollaborationType.GROUP_OR_SINGLE, nullable: true })
+	@Column({
+		type: "enum",
+		enum: CollaborationType,
+		default: CollaborationType.GROUP_OR_SINGLE,
+		nullable: true
+	})
 	collaboration?: CollaborationType;
 
 	@Column({ type: "float", nullable: true })

@@ -5,16 +5,12 @@ import { NotificationService } from "../../services/notification.service";
 import { Event } from "..";
 
 export class CourseJoined {
-	constructor(
-		readonly course: CourseWithGroupSettings, 
-		readonly participant: Participant
-	) { }
+	constructor(readonly course: CourseWithGroupSettings, readonly participant: Participant) {}
 }
 
 @EventsHandler(CourseJoined)
 export class CourseJoinedNotificationHandler implements IEventHandler<CourseJoined> {
-
-	constructor(private notifications: NotificationService) { }
+	constructor(private notifications: NotificationService) {}
 
 	async handle(event: CourseJoined): Promise<void> {
 		this.notifications.send({
@@ -23,5 +19,4 @@ export class CourseJoinedNotificationHandler implements IEventHandler<CourseJoin
 			userId: event.participant.userId
 		});
 	}
-
 }

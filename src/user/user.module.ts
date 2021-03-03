@@ -14,7 +14,14 @@ import { CourseModule } from "../course/course.module";
 
 @Module({
 	imports: [
-		TypeOrmModule.forFeature([UserRepository, GroupRepository, GroupEventRepository, AssignmentRepository, AssignmentRegistrationRepository, AssessmentRepository]),
+		TypeOrmModule.forFeature([
+			UserRepository,
+			GroupRepository,
+			GroupEventRepository,
+			AssignmentRepository,
+			AssignmentRegistrationRepository,
+			AssessmentRepository
+		]),
 		AuthModule,
 		CourseModule
 	],

@@ -7,10 +7,9 @@ const authSystemConfig = config.get("authSystem");
 
 @Injectable()
 export class AuthSystemService {
-
 	private readonly authSystemUrl = authSystemConfig.url;
 
-	constructor(private http: HttpService) { }
+	constructor(private http: HttpService) {}
 
 	async checkAuthentication(credentials: AuthSystemCredentials): Promise<AuthInfo> {
 		try {
@@ -20,12 +19,11 @@ export class AuthSystemService {
 
 			// Return AuthInfo, if user is authenticated
 			return response.data;
-		} catch(error) {
+		} catch (error) {
 			console.log("Login failed:", error);
 
 			// Return null, if authentication failed
 			return null;
 		}
 	}
-
 }

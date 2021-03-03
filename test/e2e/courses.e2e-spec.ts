@@ -3,7 +3,10 @@ import * as request from "supertest";
 import { getConnection } from "typeorm";
 import { CourseFilter } from "../../src/course/dto/course/course-filter.dto";
 import { createApplication } from "../mocks/application.mock";
-import { COURSE_CONFIG_COURSE_INFO_2_2020, COURSE_CONFIG_JAVA_1920 } from "../mocks/course-config/course-config.mock";
+import {
+	COURSE_CONFIG_COURSE_INFO_2_2020,
+	COURSE_CONFIG_JAVA_1920
+} from "../mocks/course-config/course-config.mock";
 import { CoursesMock, COURSE_INFO_2_2020, COURSE_JAVA_1920 } from "../mocks/courses.mock";
 import { DbMockService } from "../mocks/db-mock.service";
 import { GROUP_1_JAVA, GROUP_2_JAVA } from "../mocks/groups/groups.mock";
@@ -17,7 +20,6 @@ let dbMockService: DbMockService; // Should be initialized in every describe-blo
 const course = COURSE_JAVA_1920; // the course that will be used for testing
 
 describe("GET-REQUESTS of CourseController (e2e)", () => {
-	
 	beforeAll(async () => {
 		app = await createApplication();
 
@@ -40,9 +42,9 @@ describe("GET-REQUESTS of CourseController (e2e)", () => {
 	});
 
 	it("(GET) /courses With filter -> Retrieves the filtered courses", () => {
-		const filter: CourseFilter = { 
-			shortname: "java", 
-			title: "Programmier" 
+		const filter: CourseFilter = {
+			shortname: "java",
+			title: "Programmier"
 		};
 
 		return request(app.getHttpServer())
@@ -53,12 +55,15 @@ describe("GET-REQUESTS of CourseController (e2e)", () => {
 	});
 
 	it("(GET) /courses With filter -> Retrieves all iterations of the course", () => {
-		const filter: CourseFilter = { 
+		const filter: CourseFilter = {
 			shortname: "java"
 		};
 
 		const expectedLength = CoursesMock.filter(c => c.shortname === filter.shortname).length;
-		console.assert(expectedLength > 1, "The should be multiple course with the same shortname.");
+		console.assert(
+			expectedLength > 1,
+			"The should be multiple course with the same shortname."
+		);
 
 		return request(app.getHttpServer())
 			.get(`/courses?shortname=${filter.shortname}`)
@@ -71,7 +76,7 @@ describe("GET-REQUESTS of CourseController (e2e)", () => {
 		return request(app.getHttpServer())
 			.get(`/courses/${course.id}`)
 			.expect(({ body }) => {
-				expect(body.id).toEqual(course.id); 
+				expect(body.id).toEqual(course.id);
 			});
 	});
 
@@ -79,14 +84,12 @@ describe("GET-REQUESTS of CourseController (e2e)", () => {
 		return request(app.getHttpServer())
 			.get(`/courses/${course.shortname}/semester/${course.semester}`)
 			.expect(({ body }) => {
-				expect(body.id).toEqual(course.id); 
+				expect(body.id).toEqual(course.id);
 			});
 	});
-
 });
 
 describe("POST-REQUESTS of CourseController (empty db) (e2e)", () => {
-
 	beforeEach(async () => {
 		app = await createApplication();
 	});
@@ -97,7 +100,10 @@ describe("POST-REQUESTS of CourseController (empty db) (e2e)", () => {
 	});
 
 	it("(POST) /courses Creates the given course and returns it", () => {
-		const courseToCreate: CourseCreateDto = {...copy(course), config: COURSE_CONFIG_JAVA_1920};
+		const courseToCreate: CourseCreateDto = {
+			...copy(course),
+			config: COURSE_CONFIG_JAVA_1920
+		};
 
 		return request(app.getHttpServer())
 			.post("/courses")
@@ -107,11 +113,9 @@ describe("POST-REQUESTS of CourseController (empty db) (e2e)", () => {
 				expect(body.shortname).toEqual(course.shortname);
 			});
 	});
-
 });
 
 describe("POST-REQUESTS for relations (db contains data) of CourseController (e2e)", () => {
-
 	beforeEach(async () => {
 		app = await createApplication();
 
@@ -131,7 +135,10 @@ describe("POST-REQUESTS for relations (db contains data) of CourseController (e2
 
 	it("(POST) /courses/{courseId}/users/{userId} No password required -> Adds user to course", () => {
 		const courseNoPassword = COURSE_INFO_2_2020;
-		console.assert(COURSE_CONFIG_COURSE_INFO_2_2020.password == undefined, "Course password should be undefined"); 
+		console.assert(
+			COURSE_CONFIG_COURSE_INFO_2_2020.password == undefined,
+			"Course password should be undefined"
+		);
 		const user = USER_STUDENT_JAVA;
 
 		return request(app.getHttpServer())
@@ -168,11 +175,9 @@ describe("POST-REQUESTS for relations (db contains data) of CourseController (e2
 				expect(body.name).toEqual(group.name);
 			});
 	});
-
 });
 
 describe("PATCH-REQUESTS (Db contains data) of CourseController (e2e)", () => {
-
 	beforeEach(async () => {
 		app = await createApplication();
 
@@ -185,11 +190,9 @@ describe("PATCH-REQUESTS (Db contains data) of CourseController (e2e)", () => {
 		await getConnection().dropDatabase(); // Drop database with all tables and data
 		await getConnection().close(); // Close Db-Connection after all tests have been executed
 	});
-
 });
 
 describe("DELETE-REQUESTS (Db contains data) of CourseController (e2e)", () => {
-
 	beforeEach(async () => {
 		app = await createApplication();
 
@@ -204,9 +207,6 @@ describe("DELETE-REQUESTS (Db contains data) of CourseController (e2e)", () => {
 	});
 
 	it("(DELETE) /courses/{courseId} Deletes the course", () => {
-		return request(app.getHttpServer())
-			.delete(`/courses/${course.id}`)
-			.expect(200);
+		return request(app.getHttpServer()).delete(`/courses/${course.id}`).expect(200);
 	});
-
 });

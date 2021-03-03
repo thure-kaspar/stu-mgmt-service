@@ -3,8 +3,7 @@ import { NotificationDto } from "../../shared/dto/notification.dto";
 import * as config from "config";
 
 @Injectable()
-export class NotificationService { 
-
+export class NotificationService {
 	private readonly logger = new Logger(NotificationService.name);
 	private urls: string[] = config.get("notifications.java");
 
@@ -20,9 +19,10 @@ export class NotificationService {
 	send(notification: NotificationDto): void {
 		this.urls?.forEach(url => {
 			this.logger.verbose("Sending notification to: " + url);
-			this.http.post(url, notification).toPromise()
-				.catch(err  => this.logger.error(err.message));
+			this.http
+				.post(url, notification)
+				.toPromise()
+				.catch(err => this.logger.error(err.message));
 		});
 	}
-
 }

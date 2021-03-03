@@ -2,7 +2,7 @@
 
 This article explains how you can create a new course with the Student-Management-System's API.
 Unlike with most entities, course creation allows you to create nested objects along side the course entity.
-This is due to the fact, that some configuration must be stated explicitly and because the frontend client 
+This is due to the fact, that some configuration must be stated explicitly and because the frontend client
 allows copying an entire course's configuration in order to make admins lives easier.
 
 #### Endpoint
@@ -12,9 +12,10 @@ The data expected request body is defined in `CourseCreateDto`.
 A generated client will provide this method through `CourseService.createCourse`.
 Requires `ADMIN` role.
 
-## Mandatory properties 
+## Mandatory properties
 
-First of all, let's take a look at the minimal configuration that we must provide to create a course.   
+First of all, let's take a look at the minimal configuration that we must provide to create a course.
+
 ```json
 {
 	"shortname": "java",
@@ -31,11 +32,12 @@ First of all, let's take a look at the minimal configuration that we must provid
 	}
 }
 ```
+
 The combination of `shortname` and `semester` must be unique, meaning it can only exists once in the system.
 Iterations of a course should always use the same `shortname`. This enables better discoverability when
 a user searches for iterations of a course and allows admins of the platform to easily assign the
 responsibility of managing course (incl. past semesters) to a member of the teaching staff.
-By default, the created course will be assigned an ID formatted like so: 
+By default, the created course will be assigned an ID formatted like so:
 
 `shortname-semester => java-wise2021`
 
@@ -72,6 +74,7 @@ is not supported. The ID must be unique, meaning it can only exist once in the s
 
 It is possible to protect a course by setting a password.
 Users that want to join the course, must then include the correct password in their requests.
+
 ```json
 {
 	// ...
@@ -88,7 +91,8 @@ Subscribing to a course allows you to receive notifications when an event is tri
 This might be the joining of a participant, activities inside of a group, closing of assignment submission and more.
 The topic of course events is covered in depth in this article [here](TODO).
 
-To subscribe to a course, you are required to provide a URL to a system that can listen to HTTP-POST events. 
+To subscribe to a course, you are required to provide a URL to a system that can listen to HTTP-POST events.
+
 ```json
 {
 	// ...
@@ -111,6 +115,7 @@ TODO: Define selfmanaged
 
 If you want to prevent students from creating groups with custom names, you can define a prefix that defines group names.
 All created groups will be named like so: `prefix INDEX`;
+
 ```json
 {
 	// ...
@@ -128,13 +133,11 @@ All created groups will be named like so: `prefix INDEX`;
 
 You can assign the responsible lecturers when creating a course. To do so, you need to specify an array containing the usernames
 of your selected lecturers.
+
 ```json
 {
 	// ...
-	"lecturers": [
-		"mustermann",
-		"mueller"
-	]
+	"lecturers": ["mustermann", "mueller"]
 }
 ```
 
@@ -146,10 +149,5 @@ A detailed description can be found [here](TODO).
 
 ## Assignment templates
 
-The Student-Management-System's API allows you to create templates for assignments. Templates provide the teaching staff with a way 
+The Student-Management-System's API allows you to create templates for assignments. Templates provide the teaching staff with a way
 to easily create assignments with predefined settings. A detailed description can be found [here](TODO).
-
-
-
-
-

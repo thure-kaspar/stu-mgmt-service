@@ -1,5 +1,13 @@
 import { COURSE_JAVA_1920, COURSE_INFO_2_2020, COURSE_JAVA_2020 } from "../courses.mock";
-import { USER_STUDENT_JAVA, USER_STUDENT_2_JAVA, USER_STUDENT_3_JAVA_TUTOR, USER_MGMT_ADMIN_JAVA_LECTURER, USER_ELSHAR, USER_KUNOLD, USER_FROM_AUTH_SYSTEM } from "../users.mock";
+import {
+	USER_STUDENT_JAVA,
+	USER_STUDENT_2_JAVA,
+	USER_STUDENT_3_JAVA_TUTOR,
+	USER_MGMT_ADMIN_JAVA_LECTURER,
+	USER_ELSHAR,
+	USER_KUNOLD,
+	USER_FROM_AUTH_SYSTEM
+} from "../users.mock";
 import { CourseRole } from "../../../src/shared/enums";
 import { ParticipantDto } from "../../../src/course/dto/course-participant/participant.dto";
 import { GROUP_1_JAVA } from "../groups/groups.mock";
@@ -11,10 +19,16 @@ import { UserId } from "../../../src/shared/entities/user.entity";
 
 /** Type alias for course participants creation. */
 type ParticipantDtoWithId = { participant: ParticipantDto; id: number; userId: UserId };
-type CourseIdParticipantWithIds = { courseId: CourseId; participant: ParticipantDtoWithId }[]
+type CourseIdParticipantWithIds = { courseId: CourseId; participant: ParticipantDtoWithId }[];
 
 /** Factory-Method for creating a ParticipantDto. */
-export const PARTICIPANT_DTO = (user: UserDto, course: CourseDto, role: CourseRole, groupId?: string, group?: GroupDto): ParticipantDto => ({
+export const PARTICIPANT_DTO = (
+	user: UserDto,
+	course: CourseDto,
+	role: CourseRole,
+	groupId?: string,
+	group?: GroupDto
+): ParticipantDto => ({
 	userId: user.id,
 	username: user.username,
 	displayName: user.displayName,
@@ -25,14 +39,24 @@ export const PARTICIPANT_DTO = (user: UserDto, course: CourseDto, role: CourseRo
 });
 
 //#region JAVA_1920
-export const PARTICIPANT_JAVA_1920_STUDENT: ParticipantDtoWithId = { 
-	participant: PARTICIPANT_DTO(USER_STUDENT_JAVA, COURSE_JAVA_1920, CourseRole.STUDENT, GROUP_1_JAVA.id), 
+export const PARTICIPANT_JAVA_1920_STUDENT: ParticipantDtoWithId = {
+	participant: PARTICIPANT_DTO(
+		USER_STUDENT_JAVA,
+		COURSE_JAVA_1920,
+		CourseRole.STUDENT,
+		GROUP_1_JAVA.id
+	),
 	id: 1,
 	userId: USER_STUDENT_JAVA.id
 };
 
 export const PARTICIPANT_JAVA_1920_STUDENT_2: ParticipantDtoWithId = {
-	participant: PARTICIPANT_DTO(USER_STUDENT_2_JAVA, COURSE_JAVA_1920, CourseRole.STUDENT, GROUP_1_JAVA.id),
+	participant: PARTICIPANT_DTO(
+		USER_STUDENT_2_JAVA,
+		COURSE_JAVA_1920,
+		CourseRole.STUDENT,
+		GROUP_1_JAVA.id
+	),
 	id: 2,
 	userId: USER_STUDENT_2_JAVA.id
 };
@@ -42,9 +66,13 @@ export const PARTICIPANT_JAVA_1920_TUTOR: ParticipantDtoWithId = {
 	id: 3,
 	userId: USER_STUDENT_3_JAVA_TUTOR.id
 };
-	
+
 export const PARTICIPANT_JAVA_1920_LECTURER: ParticipantDtoWithId = {
-	participant: PARTICIPANT_DTO(USER_MGMT_ADMIN_JAVA_LECTURER, COURSE_JAVA_1920, CourseRole.LECTURER),
+	participant: PARTICIPANT_DTO(
+		USER_MGMT_ADMIN_JAVA_LECTURER,
+		COURSE_JAVA_1920,
+		CourseRole.LECTURER
+	),
 	id: 4,
 	userId: USER_MGMT_ADMIN_JAVA_LECTURER.id
 };
@@ -66,7 +94,7 @@ export const PARTICIPANT_JAVA_1920_STUDENT_FROM_AUTH_SYSTEM: ParticipantDtoWithI
 	id: 7,
 	userId: USER_FROM_AUTH_SYSTEM.id
 };
-	
+
 export const COURSE_JAVA_1920_PARTICIPANTS: CourseIdParticipantWithIds = [
 	{ courseId: COURSE_JAVA_1920.id, participant: PARTICIPANT_JAVA_1920_STUDENT },
 	{ courseId: COURSE_JAVA_1920.id, participant: PARTICIPANT_JAVA_1920_STUDENT_2 },
@@ -84,23 +112,26 @@ export const PARTICIPANT_JAVA_2020_ELSHAR: ParticipantDtoWithId = {
 	id: 8,
 	userId: USER_ELSHAR.id
 };
-	
 
 export const PARTICIPANT_JAVA_2020_KUNOLD: ParticipantDtoWithId = {
 	participant: PARTICIPANT_DTO(USER_KUNOLD, COURSE_JAVA_2020, CourseRole.STUDENT),
 	id: 9,
 	userId: USER_KUNOLD.id
 };
-	
+
 export const COURSE_JAVA_2020_PARTICIPANTS: CourseIdParticipantWithIds = [
 	{ courseId: COURSE_JAVA_2020.id, participant: PARTICIPANT_JAVA_2020_ELSHAR },
-	{ courseId: COURSE_JAVA_2020.id, participant: PARTICIPANT_JAVA_2020_KUNOLD },
+	{ courseId: COURSE_JAVA_2020.id, participant: PARTICIPANT_JAVA_2020_KUNOLD }
 ];
 //#endregion
 
 //#region INFO_2_2020
 export const PARTICIPANT_INFO_2_2020_LECTURER: ParticipantDtoWithId = {
-	participant: PARTICIPANT_DTO(USER_MGMT_ADMIN_JAVA_LECTURER, COURSE_INFO_2_2020, CourseRole.LECTURER),
+	participant: PARTICIPANT_DTO(
+		USER_MGMT_ADMIN_JAVA_LECTURER,
+		COURSE_INFO_2_2020,
+		CourseRole.LECTURER
+	),
 	id: 10,
 	userId: USER_MGMT_ADMIN_JAVA_LECTURER.id
 };

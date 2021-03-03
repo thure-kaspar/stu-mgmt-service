@@ -11,20 +11,24 @@ import { COURSE_JAVA_1920 } from "./courses.mock";
 import { USER_MGMT_ADMIN_JAVA_LECTURER, USER_SYSTEM_ADMIN, USER_STUDENT_JAVA } from "./users.mock";
 import { COURSE_JAVA_1920_PARTICIPANTS } from "./participants/participants.mock";
 
-export class AuthGuardMock { 
+export class AuthGuardMock {
 	canActivate(context: ExecutionContext): boolean {
 		const request = context.switchToHttp().getRequest();
 		request.user = copy(USER_SYSTEM_ADMIN);
-		return true; 
+		return true;
 	}
 }
 
-export class RoleGuardMock { canActivate(): boolean { return true; }}
+export class RoleGuardMock {
+	canActivate(): boolean {
+		return true;
+	}
+}
 
-export class CourseMemberGuardMock_LECTURER { 
-	canActivate(context: ExecutionContext): boolean { 
+export class CourseMemberGuardMock_LECTURER {
+	canActivate(context: ExecutionContext): boolean {
 		const request = context.switchToHttp().getRequest();
-		
+
 		const course = convertToEntity(CourseEntity, COURSE_JAVA_1920);
 		const participant = new ParticipantEntity({
 			id: 4,
@@ -32,18 +36,18 @@ export class CourseMemberGuardMock_LECTURER {
 			user: convertToEntity(User, USER_MGMT_ADMIN_JAVA_LECTURER),
 			role: CourseRole.LECTURER
 		});
-		
+
 		request.course = new Course(course);
 		request.participant = new Participant(participant);
 
-		return true; 
+		return true;
 	}
 }
 
-export class CourseMemberGuardMock_STUDENT { 
-	canActivate(context: ExecutionContext): boolean { 
+export class CourseMemberGuardMock_STUDENT {
+	canActivate(context: ExecutionContext): boolean {
 		const request = context.switchToHttp().getRequest();
-		
+
 		const course = convertToEntity(CourseEntity, COURSE_JAVA_1920);
 		const participant = new ParticipantEntity({
 			id: 1,
@@ -51,10 +55,10 @@ export class CourseMemberGuardMock_STUDENT {
 			user: convertToEntity(User, USER_STUDENT_JAVA),
 			role: CourseRole.STUDENT
 		});
-		
+
 		request.course = new Course(course);
 		request.participant = new Participant(participant);
 
-		return true; 
+		return true;
 	}
 }

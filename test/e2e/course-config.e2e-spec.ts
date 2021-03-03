@@ -21,7 +21,6 @@ let dbMockService: DbMockService;
 const course: CourseDto = COURSE_JAVA_1920;
 
 describe("POST-REQUEST of CourseConfigController (e2e)", () => {
-
 	beforeEach(async () => {
 		app = await createApplication();
 		dbMockService = new DbMockService(getConnection());
@@ -41,7 +40,7 @@ describe("POST-REQUEST of CourseConfigController (e2e)", () => {
 			.post(`/courses/${course.id}/config`)
 			.send(config)
 			.expect(201)
-			.expect(({body}) => {
+			.expect(({ body }) => {
 				const result = body as CourseConfigDto;
 				expect(result).toEqual(expected);
 			});
@@ -57,16 +56,14 @@ describe("POST-REQUEST of CourseConfigController (e2e)", () => {
 			.post(`/courses/${course.id}/config/${config.id}/admission-criteria`)
 			.send(criteria)
 			.expect(201)
-			.expect(({body}) => {
+			.expect(({ body }) => {
 				const result = body as AdmissionCriteriaDto;
 				expect(result).toEqual(expected);
 			});
 	});
-
 });
 
 describe("GET-REQUESTS of CourseConfigConroller (e2e)", () => {
-
 	beforeAll(async () => {
 		app = await createApplication();
 		dbMockService = new DbMockService(getConnection());
@@ -84,7 +81,7 @@ describe("GET-REQUESTS of CourseConfigConroller (e2e)", () => {
 		return request(app.getHttpServer())
 			.get(`/courses/${course.id}/config`)
 			.expect(200)
-			.expect(({body}) => {
+			.expect(({ body }) => {
 				const result = body as CourseConfigDto;
 				expect(result).toEqual(expected);
 			});
@@ -96,7 +93,7 @@ describe("GET-REQUESTS of CourseConfigConroller (e2e)", () => {
 		return request(app.getHttpServer())
 			.get(`/courses/${course.id}/config/group-settings`)
 			.expect(200)
-			.expect(({body}) => {
+			.expect(({ body }) => {
 				const result = body as GroupSettingsDto;
 				expect(result).toEqual(expected);
 			});
@@ -108,7 +105,7 @@ describe("GET-REQUESTS of CourseConfigConroller (e2e)", () => {
 		return request(app.getHttpServer())
 			.get(`/courses/${course.id}/config/admission-criteria`)
 			.expect(200)
-			.expect(({body}) => {
+			.expect(({ body }) => {
 				const result = body as AdmissionCriteriaDto;
 				expect(result).toEqual(expected);
 			});
@@ -120,16 +117,14 @@ describe("GET-REQUESTS of CourseConfigConroller (e2e)", () => {
 		return request(app.getHttpServer())
 			.get(`/courses/${course.id}/config/assignment-templates`)
 			.expect(200)
-			.expect(({body}) => {
+			.expect(({ body }) => {
 				const result = body as AssignmentTemplateDto[];
 				expect(result).toEqual(expected);
 			});
 	});
-
 });
 
 describe("PATCH-REQUEST of CourseConfigController (e2e)", () => {
-
 	beforeEach(async () => {
 		app = await createApplication();
 		dbMockService = new DbMockService(getConnection());
@@ -159,7 +154,7 @@ describe("PATCH-REQUEST of CourseConfigController (e2e)", () => {
 			.patch(`/courses/${course.id}/config`)
 			.send(update)
 			.expect(200)
-			.expect(({body}) => {
+			.expect(({ body }) => {
 				const result = body as CourseConfigDto;
 				expect(result).toEqual(expected);
 			});
@@ -185,7 +180,7 @@ describe("PATCH-REQUEST of CourseConfigController (e2e)", () => {
 			.patch(`/courses/${course.id}/config/group-settings`)
 			.send(update)
 			.expect(200)
-			.expect(({body}) => {
+			.expect(({ body }) => {
 				const result = body as GroupSettingsDto;
 				expect(result).toEqual(groupSettings);
 			});
@@ -200,16 +195,14 @@ describe("PATCH-REQUEST of CourseConfigController (e2e)", () => {
 			.patch(`/courses/${course.id}/config/admission-criteria`)
 			.send(criteria)
 			.expect(200)
-			.expect(({body}) => {
+			.expect(({ body }) => {
 				const result = body as AdmissionCriteriaDto;
 				expect(result).toEqual(criteria);
 			});
 	});
-	
 });
 
 describe("DELETE-REQUEST of CourseConfigController (e2e)", () => {
-
 	beforeEach(async () => {
 		app = await createApplication();
 		dbMockService = new DbMockService(getConnection());
@@ -226,9 +219,7 @@ describe("DELETE-REQUEST of CourseConfigController (e2e)", () => {
 	});
 
 	it("(DELETE) .../config Deletes complete config", () => {
-		return request(app.getHttpServer())
-			.delete(`/courses/${course.id}/config/`)
-			.expect(200);
+		return request(app.getHttpServer()).delete(`/courses/${course.id}/config/`).expect(200);
 	});
 
 	it("(DELETE) .../config/admission-criteria Deletes admission criteria ", () => {
@@ -236,5 +227,4 @@ describe("DELETE-REQUEST of CourseConfigController (e2e)", () => {
 			.delete(`/courses/${course.id}/config/admission-criteria`)
 			.expect(200);
 	});
-
 });

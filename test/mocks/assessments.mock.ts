@@ -1,7 +1,16 @@
 import { AssessmentDto } from "../../src/course/dto/assessment/assessment.dto";
-import { ASSIGNMENT_JAVA_EVALUATED, ASSIGNMENT_JAVA_IN_REVIEW_GROUP, ASSIGNMENT_JAVA_IN_REVIEW_SINGLE, ASSIGNMENT_JAVA_TESTAT_EVALUATED_SINGLE } from "./assignments.mock";
+import {
+	ASSIGNMENT_JAVA_EVALUATED,
+	ASSIGNMENT_JAVA_IN_REVIEW_GROUP,
+	ASSIGNMENT_JAVA_IN_REVIEW_SINGLE,
+	ASSIGNMENT_JAVA_TESTAT_EVALUATED_SINGLE
+} from "./assignments.mock";
 import { GROUP_1_JAVA, GROUP_2_JAVA } from "./groups/groups.mock";
-import { USER_MGMT_ADMIN_JAVA_LECTURER, USER_STUDENT_3_JAVA_TUTOR, USER_STUDENT_JAVA } from "./users.mock";
+import {
+	USER_MGMT_ADMIN_JAVA_LECTURER,
+	USER_STUDENT_3_JAVA_TUTOR,
+	USER_STUDENT_JAVA
+} from "./users.mock";
 
 export const ASSESSMENT_JAVA_EVALUATED_GROUP_1: AssessmentDto = {
 	id: "8f60f844-4129-48a4-a625-7a74c7defd0d",
@@ -29,7 +38,7 @@ export const ASSESSMENT_JAVA_TESTAT_USER_1: AssessmentDto = {
 	achievedPoints: 25,
 	comment: "ASSESSMENT_JAVA_TESTAT_USER_1",
 	userId: USER_STUDENT_JAVA.id,
-	creatorId: USER_STUDENT_3_JAVA_TUTOR.id,
+	creatorId: USER_STUDENT_3_JAVA_TUTOR.id
 };
 
 export const ASSESSMENT_JAVA_IN_REVIEW: AssessmentDto = {
@@ -38,7 +47,7 @@ export const ASSESSMENT_JAVA_IN_REVIEW: AssessmentDto = {
 	achievedPoints: 50,
 	comment: "ASSESSMENT_JAVA_IN_REVIEW",
 	userId: USER_STUDENT_JAVA.id,
-	creatorId: USER_STUDENT_3_JAVA_TUTOR.id,
+	creatorId: USER_STUDENT_3_JAVA_TUTOR.id
 };
 
 export const ASSESSMENT_JAVA_IN_REVIEW_NO_PARTIALS: AssessmentDto = {
@@ -47,7 +56,7 @@ export const ASSESSMENT_JAVA_IN_REVIEW_NO_PARTIALS: AssessmentDto = {
 	achievedPoints: 42,
 	comment: "ASSESSMENT_JAVA_IN_REVIEW_WITH_PARTIALS",
 	userId: USER_STUDENT_3_JAVA_TUTOR.id,
-	creatorId: USER_STUDENT_3_JAVA_TUTOR.id,
+	creatorId: USER_STUDENT_3_JAVA_TUTOR.id
 };
 
 export const ASSESSMENT_JAVA_IN_REVIEW_GROUP_PARTIALS: AssessmentDto = {
@@ -56,7 +65,7 @@ export const ASSESSMENT_JAVA_IN_REVIEW_GROUP_PARTIALS: AssessmentDto = {
 	achievedPoints: 75,
 	comment: "ASSIGNMENT_JAVA_IN_REVIEW_GROUP",
 	groupId: GROUP_1_JAVA.id,
-	creatorId: USER_STUDENT_3_JAVA_TUTOR.id,
+	creatorId: USER_STUDENT_3_JAVA_TUTOR.id
 };
 
 export const AssessmentsMock: AssessmentDto[] = [

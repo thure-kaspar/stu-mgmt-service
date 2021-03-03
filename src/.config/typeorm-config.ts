@@ -33,7 +33,26 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
 	synchronize: process.env.TYPEORM_SYNC || dbConfig.synchronize,
 	dropSchema: dbConfig.dropSchema || false,
 	keepConnectionAlive: true, // prevents AlreadyHasActiveConnectionError, needed for testing // TODO: Check if it should be disabled in production
-	entities: [Course, User, Group, Participant, UserGroupRelation, Assignment, Assessment, AssessmentUserRelation, MailTemplate, AssignmentRegistration,
-		GroupRegistrationRelation, CourseConfig, AssignmentTemplate, GroupSettings, AdmissionCriteria, PartialAssessment, GroupEvent, AssessmentAllocation, AssessmentEvent],
+	entities: [
+		Course,
+		User,
+		Group,
+		Participant,
+		UserGroupRelation,
+		Assignment,
+		Assessment,
+		AssessmentUserRelation,
+		MailTemplate,
+		AssignmentRegistration,
+		GroupRegistrationRelation,
+		CourseConfig,
+		AssignmentTemplate,
+		GroupSettings,
+		AdmissionCriteria,
+		PartialAssessment,
+		GroupEvent,
+		AssessmentAllocation,
+		AssessmentEvent
+	],
 	logging: loggingConfig.dbErrors ? ["error"] : undefined
 };

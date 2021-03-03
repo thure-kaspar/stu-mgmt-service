@@ -8,7 +8,6 @@ import { ASSIGNMENT_JAVA_EVALUATED } from "../../mocks/assignments.mock";
 import { copy } from "../../utils/object-helper";
 
 describe("OVERALL_PERCENT", () => {
-
 	let assessments: AssessmentDto[];
 	let assignments: AssignmentDto[];
 	let rule: Partial<OverallPercentRule>;
@@ -28,12 +27,12 @@ describe("OVERALL_PERCENT", () => {
 
 		// Overall points = 100
 		assignments = [
-			assignment, 				// +25
-			assignment_ignoredType, 	// +0 (ignored)
-			assignment, 				// +25
-			assignment_ignoredType, 	// +0 (ignored)
-			assignment, 				// +25
-			assignment 					// +25
+			assignment, // +25
+			assignment_ignoredType, // +0 (ignored)
+			assignment, // +25
+			assignment_ignoredType, // +0 (ignored)
+			assignment, // +25
+			assignment // +25
 		];
 
 		const achievedPointsArray: Partial<AssessmentDto>[] = assignments.map(a => ({
@@ -55,7 +54,6 @@ describe("OVERALL_PERCENT", () => {
 	});
 
 	describe("No rounding", () => {
-	
 		it("Exceeding required points -> Passed", () => {
 			const ruleImpl = new OverallPercentRuleImpl(rule, assignments);
 			const result = ruleImpl.check(assessments);
@@ -68,7 +66,7 @@ describe("OVERALL_PERCENT", () => {
 		it("Exactly at required points -> Passed", () => {
 			const achievedTotal = 50;
 			const achievedPerAssignment = achievedTotal / 4;
-			assessments.forEach(a => a.achievedPoints = achievedPerAssignment);
+			assessments.forEach(a => (a.achievedPoints = achievedPerAssignment));
 
 			const ruleImpl = new OverallPercentRuleImpl(rule, assignments);
 			const result = ruleImpl.check(assessments);
@@ -81,7 +79,7 @@ describe("OVERALL_PERCENT", () => {
 		it("Not enough points -> Not passed", () => {
 			const achievedTotal = 49.999;
 			const achievedPerAssignment = achievedTotal / 4;
-			assessments.forEach(a => a.achievedPoints = achievedPerAssignment);
+			assessments.forEach(a => (a.achievedPoints = achievedPerAssignment));
 
 			const ruleImpl = new OverallPercentRuleImpl(rule, assignments);
 			const result = ruleImpl.check(assessments);
@@ -90,20 +88,21 @@ describe("OVERALL_PERCENT", () => {
 			expect(result.achievedPercent).toEqual(achievedTotal);
 			expect(result.passed).toEqual(false);
 		});
-	
 	});
 
 	describe("Round to nearest integer", () => {
-	
 		it("First decimal <= 4 -> Rounds down -> Not passed", () => {
 			const achievedTotal = 49.499;
 			const achievedPerAssignment = achievedTotal / 4;
-			assessments.forEach(a => a.achievedPoints = achievedPerAssignment);
+			assessments.forEach(a => (a.achievedPoints = achievedPerAssignment));
 
-			rule = {...rule, achievedPercentRounding: {
-				type: RoundingType.DECIMALS,
-				decimals: 0	
-			}};
+			rule = {
+				...rule,
+				achievedPercentRounding: {
+					type: RoundingType.DECIMALS,
+					decimals: 0
+				}
+			};
 
 			const ruleImpl = new OverallPercentRuleImpl(rule, assignments);
 			const result = ruleImpl.check(assessments);
@@ -116,12 +115,15 @@ describe("OVERALL_PERCENT", () => {
 		it("First decimal >= 5 -> Rounds up -> Passed", () => {
 			const achievedTotal = 49.50123;
 			const achievedPerAssignment = achievedTotal / 4;
-			assessments.forEach(a => a.achievedPoints = achievedPerAssignment);
+			assessments.forEach(a => (a.achievedPoints = achievedPerAssignment));
 
-			rule = {...rule, achievedPercentRounding: {
-				type: RoundingType.DECIMALS,
-				decimals: 0	
-			}};
+			rule = {
+				...rule,
+				achievedPercentRounding: {
+					type: RoundingType.DECIMALS,
+					decimals: 0
+				}
+			};
 
 			const ruleImpl = new OverallPercentRuleImpl(rule, assignments);
 			const result = ruleImpl.check(assessments);
@@ -130,13 +132,11 @@ describe("OVERALL_PERCENT", () => {
 			expect(result.achievedPercent).toEqual(50);
 			expect(result.passed).toEqual(true);
 		});
-	
 	});
 
 	describe("Ignored", () => {
-
 		it("No achievable points -> Passed", () => {
-			assignments.forEach(a => a.points = 0); // All assignments awards 0 points
+			assignments.forEach(a => (a.points = 0)); // All assignments awards 0 points
 
 			const ruleImpl = new OverallPercentRuleImpl(rule, assignments);
 			const result = ruleImpl.check(assessments);
@@ -146,7 +146,5 @@ describe("OVERALL_PERCENT", () => {
 			expect(result.passed).toEqual(true);
 			expect(result.comment).toEqual("No achievable points.");
 		});
-	
 	});
-
 });

@@ -11,11 +11,14 @@ export const ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP: AssignmentDto = {
 	state: AssignmentState.IN_PROGRESS,
 	collaboration: CollaborationType.GROUP,
 	startDate: new Date(2020, 8, 3),
-	comment: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione ab, quaerat minus corrupti quia nostrum facere quibusdam, repellendus, reprehenderit officiis rerum nemo modi perspiciatis ex obcaecati consectetur nisi voluptatum veritatis.",
-	links: [{
-		name: "Example URL",
-		url: "https://example-url.com"
-	}]
+	comment:
+		"Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione ab, quaerat minus corrupti quia nostrum facere quibusdam, repellendus, reprehenderit officiis rerum nemo modi perspiciatis ex obcaecati consectetur nisi voluptatum veritatis.",
+	links: [
+		{
+			name: "Example URL",
+			url: "https://example-url.com"
+		}
+	]
 };
 
 export const ASSIGNMENT_JAVA_CLOSED: AssignmentDto = {
@@ -68,7 +71,7 @@ export const ASSIGNMENT_JAVA_INVISIBLE: AssignmentDto = {
 	points: 100,
 	type: AssignmentType.HOMEWORK,
 	state: AssignmentState.INVISIBLE,
-	collaboration: CollaborationType.GROUP_OR_SINGLE,
+	collaboration: CollaborationType.GROUP_OR_SINGLE
 };
 
 export const ASSIGNMENT_JAVA_TESTAT_IN_PROGRESS_SINGLE: AssignmentDto = {
@@ -78,7 +81,7 @@ export const ASSIGNMENT_JAVA_TESTAT_IN_PROGRESS_SINGLE: AssignmentDto = {
 	type: AssignmentType.TESTAT,
 	state: AssignmentState.IN_PROGRESS,
 	collaboration: CollaborationType.SINGLE,
-	startDate: new Date(2020, 7, 2),
+	startDate: new Date(2020, 7, 2)
 };
 
 export const ASSIGNMENT_JAVA_TESTAT_EVALUATED_SINGLE: AssignmentDto = {
@@ -99,7 +102,7 @@ export const ASSIGNMENT_JAVA2020_GROUP: AssignmentDto = {
 	type: AssignmentType.HOMEWORK,
 	state: AssignmentState.IN_PROGRESS,
 	collaboration: CollaborationType.GROUP,
-	startDate: new Date(2020, 5, 27),
+	startDate: new Date(2020, 5, 27)
 };
 
 export const ASSIGNMENT_JAVA2020_SINGLE: AssignmentDto = {
@@ -109,7 +112,7 @@ export const ASSIGNMENT_JAVA2020_SINGLE: AssignmentDto = {
 	type: AssignmentType.HOMEWORK,
 	state: AssignmentState.IN_PROGRESS,
 	collaboration: CollaborationType.SINGLE,
-	startDate: new Date(2020, 5, 27),
+	startDate: new Date(2020, 5, 27)
 };
 
 export const ASSIGNMENT_JAVA2020_SINGLE_2: AssignmentDto = {
@@ -119,7 +122,7 @@ export const ASSIGNMENT_JAVA2020_SINGLE_2: AssignmentDto = {
 	type: AssignmentType.HOMEWORK,
 	state: AssignmentState.IN_PROGRESS,
 	collaboration: CollaborationType.SINGLE,
-	startDate: new Date(2020, 5, 27),
+	startDate: new Date(2020, 5, 27)
 };
 
 export const ASSIGNMENT_JAVA2020_GROUP_CLOSED: AssignmentDto = {
@@ -129,7 +132,7 @@ export const ASSIGNMENT_JAVA2020_GROUP_CLOSED: AssignmentDto = {
 	type: AssignmentType.HOMEWORK,
 	state: AssignmentState.CLOSED,
 	collaboration: CollaborationType.GROUP,
-	startDate: new Date(2020, 5, 27),
+	startDate: new Date(2020, 5, 27)
 };
 
 export const ASSIGNMENT_INVISIBLE_WILL_BE_STARTED: AssignmentDto = {
@@ -139,7 +142,7 @@ export const ASSIGNMENT_INVISIBLE_WILL_BE_STARTED: AssignmentDto = {
 	type: AssignmentType.HOMEWORK,
 	state: AssignmentState.INVISIBLE,
 	startDate: new Date(),
-	collaboration: CollaborationType.GROUP_OR_SINGLE,
+	collaboration: CollaborationType.GROUP_OR_SINGLE
 };
 
 export const ASSIGNMENT_IN_PROGRESS_WILL_BE_STOPPED: AssignmentDto = {
@@ -179,5 +182,5 @@ export const ASSIGNMENTS_INFO_2020: AssignmentDto[] = [
 export const ASSIGNMENTS_ALL: { assignments: AssignmentDto[]; courseId: CourseId }[] = [
 	{ assignments: ASSIGNMENTS_JAVA_1920, courseId: COURSE_JAVA_1920.id },
 	{ assignments: ASSIGNMENTS_JAVA_2020, courseId: COURSE_JAVA_2020.id },
-	{ assignments: ASSIGNMENTS_INFO_2020, courseId: COURSE_INFO_2_2020.id },
+	{ assignments: ASSIGNMENTS_INFO_2020, courseId: COURSE_INFO_2_2020.id }
 ];

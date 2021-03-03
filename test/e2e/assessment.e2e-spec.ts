@@ -3,16 +3,37 @@ import * as request from "supertest";
 import { getConnection } from "typeorm";
 import { AssessmentDto, AssessmentUpdateDto } from "../../src/course/dto/assessment/assessment.dto";
 import { createApplication } from "../mocks/application.mock";
-import { ASSESSMENT_JAVA_EVALUATED_GROUP_1, ASSESSMENT_JAVA_TESTAT_USER_1, ASSESSMENT_JAVA_IN_REVIEW, ASSESSMENT_JAVA_IN_REVIEW_NO_PARTIALS, AssessmentsMock } from "../mocks/assessments.mock";
-import { ASSIGNMENT_JAVA_EVALUATED, ASSIGNMENT_JAVA_TESTAT_EVALUATED_SINGLE, ASSIGNMENT_JAVA_IN_REVIEW_SINGLE } from "../mocks/assignments.mock";
+import {
+	ASSESSMENT_JAVA_EVALUATED_GROUP_1,
+	ASSESSMENT_JAVA_TESTAT_USER_1,
+	ASSESSMENT_JAVA_IN_REVIEW,
+	ASSESSMENT_JAVA_IN_REVIEW_NO_PARTIALS,
+	AssessmentsMock
+} from "../mocks/assessments.mock";
+import {
+	ASSIGNMENT_JAVA_EVALUATED,
+	ASSIGNMENT_JAVA_TESTAT_EVALUATED_SINGLE,
+	ASSIGNMENT_JAVA_IN_REVIEW_SINGLE
+} from "../mocks/assignments.mock";
 import { COURSE_JAVA_1920 } from "../mocks/courses.mock";
 import { DbMockService } from "../mocks/db-mock.service";
 import { copy } from "../utils/object-helper";
-import { PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW, PARTIAL_ASSESSMENT_2_JAVA_IN_REVIEW, PARTIAL_ASSESSMENT_MOCK } from "../mocks/partial-assessments.mock";
-import { USER_STUDENT_JAVA, USER_STUDENT_3_JAVA_TUTOR, USER_SYSTEM_ADMIN } from "../mocks/users.mock";
+import {
+	PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW,
+	PARTIAL_ASSESSMENT_2_JAVA_IN_REVIEW,
+	PARTIAL_ASSESSMENT_MOCK
+} from "../mocks/partial-assessments.mock";
+import {
+	USER_STUDENT_JAVA,
+	USER_STUDENT_3_JAVA_TUTOR,
+	USER_SYSTEM_ADMIN
+} from "../mocks/users.mock";
 import { Severity } from "../../src/course/dto/assessment/partial-assessment.dto";
 import { GROUP_1_JAVA } from "../mocks/groups/groups.mock";
-import { PARTICIPANT_JAVA_1920_STUDENT, PARTICIPANT_JAVA_1920_TUTOR } from "../mocks/participants/participants.mock";
+import {
+	PARTICIPANT_JAVA_1920_STUDENT,
+	PARTICIPANT_JAVA_1920_TUTOR
+} from "../mocks/participants/participants.mock";
 
 let app: INestApplication;
 let dbMockService: DbMockService;
@@ -20,7 +41,6 @@ let dbMockService: DbMockService;
 const course = COURSE_JAVA_1920; // the course that will be used for testing
 
 describe("GET-REQUESTS of AssessmentController (e2e)", () => {
-
 	beforeAll(async () => {
 		app = await createApplication();
 
@@ -35,10 +55,9 @@ describe("GET-REQUESTS of AssessmentController (e2e)", () => {
 	});
 
 	describe("(GET) /courses/{courseId}/assignments/{assignmentId}/assessments", () => {
-	
 		it("Retrieves all assessments for the assignment", () => {
 			const assignment = ASSIGNMENT_JAVA_EVALUATED;
-	
+
 			return request(app.getHttpServer())
 				.get(`/courses/${course.id}/assignments/${assignment.id}/assessments`)
 				.expect(({ body }) => {
@@ -49,13 +68,18 @@ describe("GET-REQUESTS of AssessmentController (e2e)", () => {
 		it("Retrieves assessment of group for the assignment", () => {
 			const assignment = ASSIGNMENT_JAVA_EVALUATED;
 			const assessment = ASSESSMENT_JAVA_EVALUATED_GROUP_1;
-			console.assert(assignment.id === assessment.assignmentId, "Assessment should belong to assignment.");
+			console.assert(
+				assignment.id === assessment.assignmentId,
+				"Assessment should belong to assignment."
+			);
 
 			// If we specify groupId, we expect one assessment to be returned
 			const queryString = `groupId=${assessment.groupId}`;
 
 			return request(app.getHttpServer())
-				.get(`/courses/${course.id}/assignments/${assignment.id}/assessments?${queryString}`)
+				.get(
+					`/courses/${course.id}/assignments/${assignment.id}/assessments?${queryString}`
+				)
 				.expect(({ body }) => {
 					const result = body as AssessmentDto[];
 					expect(result.length).toEqual(1);
@@ -70,11 +94,13 @@ describe("GET-REQUESTS of AssessmentController (e2e)", () => {
 			const assessment = ASSESSMENT_JAVA_IN_REVIEW;
 			const user = USER_STUDENT_JAVA;
 			console.assert(user.id === assessment.userId, "Should be the same user");
-			
+
 			const queryString = `name=${user.username}`;
 
 			return request(app.getHttpServer())
-				.get(`/courses/${course.id}/assignments/${assignment.id}/assessments?${queryString}`)
+				.get(
+					`/courses/${course.id}/assignments/${assignment.id}/assessments?${queryString}`
+				)
 				.expect(({ body }) => {
 					const result = body as AssessmentDto[];
 					expect(result.length).toEqual(1);
@@ -89,14 +115,19 @@ describe("GET-REQUESTS of AssessmentController (e2e)", () => {
 			const assignment = ASSIGNMENT_JAVA_EVALUATED;
 			const assessment = ASSESSMENT_JAVA_EVALUATED_GROUP_1;
 			const group = GROUP_1_JAVA;
-			console.assert(assignment.id === assessment.assignmentId, "Assessment should belong to assignment.");
+			console.assert(
+				assignment.id === assessment.assignmentId,
+				"Assessment should belong to assignment."
+			);
 			console.assert(assessment.groupId === group.id, "Should be the same group");
 
 			// If we specify groupId, we expect one assessment to be returned
 			const queryString = `name=${group.name}`;
 
 			return request(app.getHttpServer())
-				.get(`/courses/${course.id}/assignments/${assignment.id}/assessments?${queryString}`)
+				.get(
+					`/courses/${course.id}/assignments/${assignment.id}/assessments?${queryString}`
+				)
 				.expect(({ body }) => {
 					const result = body as AssessmentDto[];
 					expect(result.length).toEqual(1);
@@ -113,19 +144,25 @@ describe("GET-REQUESTS of AssessmentController (e2e)", () => {
 			const assignment = ASSIGNMENT_JAVA_EVALUATED;
 			const minScore = 50;
 
-			const expectedCount = AssessmentsMock.filter(a => a.achievedPoints >= minScore && a.assignmentId === assignment.id).length;
-			console.assert(expectedCount > 0, "There should be at least one assessment with achievedPoints >= minScore");
+			const expectedCount = AssessmentsMock.filter(
+				a => a.achievedPoints >= minScore && a.assignmentId === assignment.id
+			).length;
+			console.assert(
+				expectedCount > 0,
+				"There should be at least one assessment with achievedPoints >= minScore"
+			);
 
 			const queryString = `minScore=${minScore}`;
 
 			return request(app.getHttpServer())
-				.get(`/courses/${course.id}/assignments/${assignment.id}/assessments?${queryString}`)
+				.get(
+					`/courses/${course.id}/assignments/${assignment.id}/assessments?${queryString}`
+				)
 				.expect(({ body }) => {
 					const result = body as AssessmentDto[];
 					expect(result.length).toEqual(expectedCount);
 				});
 		});
-	
 	});
 
 	it("(GET) /courses/{courseId}/assignments/{assignmentId}/assessments/{assessmentId} Retrieves the (group) assessment", () => {
@@ -167,7 +204,10 @@ describe("GET-REQUESTS of AssessmentController (e2e)", () => {
 		const assessment = copy(ASSESSMENT_JAVA_IN_REVIEW);
 
 		assessment.assignment = assignment;
-		assessment.partialAssessments = [PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW, PARTIAL_ASSESSMENT_2_JAVA_IN_REVIEW];
+		assessment.partialAssessments = [
+			PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW,
+			PARTIAL_ASSESSMENT_2_JAVA_IN_REVIEW
+		];
 		assessment.participant = PARTICIPANT_JAVA_1920_STUDENT.participant;
 		assessment.userId = USER_STUDENT_JAVA.id;
 		assessment.creator = USER_STUDENT_3_JAVA_TUTOR;
@@ -181,11 +221,9 @@ describe("GET-REQUESTS of AssessmentController (e2e)", () => {
 				expect(result).toEqual(expected);
 			});
 	});
-
 });
 
 describe("POST-REQUESTS of AssessmentController (e2e)", () => {
-
 	beforeEach(async () => {
 		app = await createApplication();
 
@@ -237,7 +275,10 @@ describe("POST-REQUESTS of AssessmentController (e2e)", () => {
 
 	it("(POST) /courses/{courseId}/assignments/{assignmentId}/assessments Assessment with partial assessments -> Creates partial assessments", () => {
 		const assessment = copy(ASSESSMENT_JAVA_IN_REVIEW);
-		assessment.partialAssessments = [PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW, PARTIAL_ASSESSMENT_2_JAVA_IN_REVIEW];
+		assessment.partialAssessments = [
+			PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW,
+			PARTIAL_ASSESSMENT_2_JAVA_IN_REVIEW
+		];
 		const expected = copy(assessment);
 
 		return request(app.getHttpServer())
@@ -254,11 +295,13 @@ describe("POST-REQUESTS of AssessmentController (e2e)", () => {
 		await dbMockService.createAssessments();
 		const assessment = copy(ASSESSMENT_JAVA_IN_REVIEW);
 		const partialAssessment = copy(PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW);
-		console.assert(partialAssessment.assessmentId === assessment.id);		
+		console.assert(partialAssessment.assessmentId === assessment.id);
 		const expected = copy(partialAssessment);
 
 		return request(app.getHttpServer())
-			.post(`/courses/${course.id}/assignments/${assessment.assignmentId}/assessments/${assessment.id}`)
+			.post(
+				`/courses/${course.id}/assignments/${assessment.assignmentId}/assessments/${assessment.id}`
+			)
 			.send(partialAssessment)
 			.expect(201)
 			.expect(({ body }) => {
@@ -266,11 +309,9 @@ describe("POST-REQUESTS of AssessmentController (e2e)", () => {
 				expect(result).toEqual(expected);
 			});
 	});
-
 });
 
 describe("PATCH-REQUESTS of AssessmentController (e2e)", () => {
-
 	beforeEach(async () => {
 		app = await createApplication();
 
@@ -285,16 +326,17 @@ describe("PATCH-REQUESTS of AssessmentController (e2e)", () => {
 	});
 
 	describe("(PATCH) /courses/{courseId}/assignments/{assignmentId}/assessments/{assessmentId}", () => {
-
 		it("Allows score to be set to 0", () => {
 			const assessment = copy(ASSESSMENT_JAVA_IN_REVIEW_NO_PARTIALS);
-	
+
 			// Create clone of original data and perform some changes
 			const changedAssessment: AssessmentUpdateDto = copy(assessment);
 			changedAssessment.achievedPoints = 0;
-	
+
 			return request(app.getHttpServer())
-				.patch(`/courses/${course.id}/assignments/${assessment.assignmentId}/assessments/${assessment.id}`)
+				.patch(
+					`/courses/${course.id}/assignments/${assessment.assignmentId}/assessments/${assessment.id}`
+				)
 				.send(changedAssessment)
 				.expect(200)
 				.expect(({ body }) => {
@@ -306,16 +348,20 @@ describe("PATCH-REQUESTS of AssessmentController (e2e)", () => {
 		it("No partial assessments before -> Updates", () => {
 			const assessment = copy(ASSESSMENT_JAVA_IN_REVIEW_NO_PARTIALS);
 
-			console.assert(PARTIAL_ASSESSMENT_MOCK.filter(p => p.assessmentId === assessment.id).length == 0, 
-				"Assessment should not have partial assessments");
-	
+			console.assert(
+				PARTIAL_ASSESSMENT_MOCK.filter(p => p.assessmentId === assessment.id).length == 0,
+				"Assessment should not have partial assessments"
+			);
+
 			// Create clone of original data and perform some changes
 			const changedAssessment: AssessmentUpdateDto = copy(assessment);
 			changedAssessment.achievedPoints = 99;
 			changedAssessment.comment = "new comment";
-	
+
 			return request(app.getHttpServer())
-				.patch(`/courses/${course.id}/assignments/${assessment.assignmentId}/assessments/${assessment.id}`)
+				.patch(
+					`/courses/${course.id}/assignments/${assessment.assignmentId}/assessments/${assessment.id}`
+				)
 				.send(changedAssessment)
 				.expect(200)
 				.expect(({ body }) => {
@@ -328,8 +374,10 @@ describe("PATCH-REQUESTS of AssessmentController (e2e)", () => {
 		it("No partials before -> Add partial -> Partials added", () => {
 			const assessment = copy(ASSESSMENT_JAVA_IN_REVIEW_NO_PARTIALS);
 
-			console.assert(PARTIAL_ASSESSMENT_MOCK.filter(p => p.assessmentId === assessment.id).length == 0, 
-				"Assessment should not have partial assessments");
+			console.assert(
+				PARTIAL_ASSESSMENT_MOCK.filter(p => p.assessmentId === assessment.id).length == 0,
+				"Assessment should not have partial assessments"
+			);
 
 			const update: AssessmentUpdateDto = {
 				addPartialAssessments: [
@@ -339,7 +387,7 @@ describe("PATCH-REQUESTS of AssessmentController (e2e)", () => {
 						comment: "A comment...",
 						points: 11,
 						severity: Severity.INFORMATIONAL,
-						type: "???",
+						type: "???"
 					},
 					{
 						assessmentId: assessment.id,
@@ -347,7 +395,7 @@ describe("PATCH-REQUESTS of AssessmentController (e2e)", () => {
 						comment: "A comment...",
 						points: 22,
 						severity: Severity.WARNING,
-						type: "???",
+						type: "???"
 					}
 				]
 			};
@@ -366,7 +414,9 @@ describe("PATCH-REQUESTS of AssessmentController (e2e)", () => {
 			const expected = JSON.parse(JSON.stringify(tmp)); // Avoids issues with date types
 
 			return request(app.getHttpServer())
-				.patch(`/courses/${course.id}/assignments/${assessment.assignmentId}/assessments/${assessment.id}`)
+				.patch(
+					`/courses/${course.id}/assignments/${assessment.assignmentId}/assessments/${assessment.id}`
+				)
 				.send(update)
 				.expect(200)
 				.expect(({ body }) => {
@@ -374,15 +424,20 @@ describe("PATCH-REQUESTS of AssessmentController (e2e)", () => {
 					result.updateDate = undefined;
 
 					expect(result.partialAssessments[0].id).toBeDefined();
-					result.partialAssessments.forEach(p => p.id = undefined); // Remove ids for easier comparison
+					result.partialAssessments.forEach(p => (p.id = undefined)); // Remove ids for easier comparison
 					expect(result).toEqual(expected);
 				});
 		});
 
 		it("Partials before -> Update partial -> Partial updated", () => {
 			const assessment = copy(ASSESSMENT_JAVA_IN_REVIEW);
-			assessment.partialAssessments = PARTIAL_ASSESSMENT_MOCK.filter(p => p.assessmentId === assessment.id);
-			console.assert(assessment.partialAssessments.length > 1, "Assessment should have multiple partial assessments.");
+			assessment.partialAssessments = PARTIAL_ASSESSMENT_MOCK.filter(
+				p => p.assessmentId === assessment.id
+			);
+			console.assert(
+				assessment.partialAssessments.length > 1,
+				"Assessment should have multiple partial assessments."
+			);
 
 			// Update partial
 			assessment.partialAssessments[0].title = "Updated title";
@@ -391,7 +446,7 @@ describe("PATCH-REQUESTS of AssessmentController (e2e)", () => {
 			const update: AssessmentUpdateDto = {
 				updatePartialAssignments: [copy(assessment.partialAssessments[0])]
 			};
-			
+
 			const tmp = copy(assessment);
 			// Joined relations
 			tmp.assignment = ASSIGNMENT_JAVA_IN_REVIEW_SINGLE;
@@ -405,7 +460,9 @@ describe("PATCH-REQUESTS of AssessmentController (e2e)", () => {
 			const expected = JSON.parse(JSON.stringify(tmp)); // Avoids issues with date types
 
 			return request(app.getHttpServer())
-				.patch(`/courses/${course.id}/assignments/${assessment.assignmentId}/assessments/${assessment.id}`)
+				.patch(
+					`/courses/${course.id}/assignments/${assessment.assignmentId}/assessments/${assessment.id}`
+				)
 				.send(update)
 				.expect(200)
 				.expect(({ body }) => {
@@ -418,15 +475,20 @@ describe("PATCH-REQUESTS of AssessmentController (e2e)", () => {
 
 		it("Partials before -> Remove partial -> Partials removed", () => {
 			const assessment = copy(ASSESSMENT_JAVA_IN_REVIEW);
-			assessment.partialAssessments = PARTIAL_ASSESSMENT_MOCK.filter(p => p.assessmentId === assessment.id);
-			console.assert(assessment.partialAssessments.length > 1, "Assessment should have multiple partial assessments.");
+			assessment.partialAssessments = PARTIAL_ASSESSMENT_MOCK.filter(
+				p => p.assessmentId === assessment.id
+			);
+			console.assert(
+				assessment.partialAssessments.length > 1,
+				"Assessment should have multiple partial assessments."
+			);
 
 			// Remove partial (by only taking first one)
 			const update: AssessmentUpdateDto = {
 				removePartialAssignments: assessment.partialAssessments.splice(1) // Take everything but the first partial
 			};
 			assessment.partialAssessments = [assessment.partialAssessments[0]]; // Only take the first partial
-			
+
 			const tmp = copy(assessment);
 			// Joined relations
 			tmp.assignment = ASSIGNMENT_JAVA_IN_REVIEW_SINGLE;
@@ -438,7 +500,9 @@ describe("PATCH-REQUESTS of AssessmentController (e2e)", () => {
 			const expected = JSON.parse(JSON.stringify(tmp)); // Avoids issues with date types
 
 			return request(app.getHttpServer())
-				.patch(`/courses/${course.id}/assignments/${assessment.assignmentId}/assessments/${assessment.id}`)
+				.patch(
+					`/courses/${course.id}/assignments/${assessment.assignmentId}/assessments/${assessment.id}`
+				)
 				.send(update)
 				.expect(200)
 				.expect(({ body }) => {
@@ -448,13 +512,10 @@ describe("PATCH-REQUESTS of AssessmentController (e2e)", () => {
 					expect(result).toEqual(expected);
 				});
 		});
-		
 	});
-
 });
 
 describe("DELETE-REQUESTS of AssessmentController (e2e)", () => {
-
 	beforeEach(async () => {
 		app = await createApplication();
 
@@ -473,8 +534,9 @@ describe("DELETE-REQUESTS of AssessmentController (e2e)", () => {
 		const assessment = ASSESSMENT_JAVA_EVALUATED_GROUP_1;
 
 		return request(app.getHttpServer())
-			.delete(`/courses/${course.id}/assignments/${assignment.id}/assessments/${assessment.id}`)
+			.delete(
+				`/courses/${course.id}/assignments/${assignment.id}/assessments/${assessment.id}`
+			)
 			.expect(200);
 	});
-
 });

@@ -9,16 +9,16 @@ export class AssessmentScoreChanged {
 		public assessmentId: string,
 		public userId: UserId,
 		public payload: { oldScore: number; newScore: number }
-	) { }
+	) {}
 }
 
 @EventsHandler(AssessmentScoreChanged)
 export class AssessmentScoreChangedHandler implements IEventHandler<AssessmentScoreChanged> {
-
-	constructor(@InjectRepository(AssessmentEvent) private assessmentEvents: Repository<AssessmentEvent>) { }
+	constructor(
+		@InjectRepository(AssessmentEvent) private assessmentEvents: Repository<AssessmentEvent>
+	) {}
 
 	handle(event: AssessmentScoreChanged): void {
-		this.assessmentEvents.insert({...event, event: AssessmentScoreChanged.name });
+		this.assessmentEvents.insert({ ...event, event: AssessmentScoreChanged.name });
 	}
-
 }

@@ -10,19 +10,21 @@ import { DbException } from "../../shared/database-exceptions";
 
 @EntityRepository(Participant)
 export class ParticipantRepository extends Repository<Participant> {
-	
-	async createParticipant(courseId: CourseId, userId: UserId, role: CourseRole): Promise<Participant> {
+	async createParticipant(
+		courseId: CourseId,
+		userId: UserId,
+		role: CourseRole
+	): Promise<Participant> {
 		const participant = new Participant();
 		participant.courseId = courseId;
 		participant.userId = userId;
 		participant.role = role;
 
-		await this.save(participant)
-			.catch((error) => {
-				if (error.code === DbException.PG_UNIQUE_VIOLATION) {
-					throw new ConflictException("This user is already signed up to the course.");
-				}
-			});
+		await this.save(participant).catch(error => {
+			if (error.code === DbException.PG_UNIQUE_VIOLATION) {
+				throw new ConflictException("This user is already signed up to the course.");
+			}
+		});
 
 		return this.getParticipant(courseId, userId);
 	}
@@ -33,8 +35,11 @@ export class ParticipantRepository extends Repository<Participant> {
 	 * - User
 	 * - Group
 	 */
-	async getParticipants(courseId: CourseId, filter?: CourseParticipantsFilter): Promise<[Participant[], number]> {
-		const { courseRole, name, skip, take } = filter || { };
+	async getParticipants(
+		courseId: CourseId,
+		filter?: CourseParticipantsFilter
+	): Promise<[Participant[], number]> {
+		const { courseRole, name, skip, take } = filter || {};
 
 		const query = this.createQueryBuilder("participant")
 			.where("participant.courseId = :courseId", { courseId })
@@ -47,12 +52,14 @@ export class ParticipantRepository extends Repository<Participant> {
 			.take(take);
 
 		if (name) {
-			query.andWhere(new Brackets(qb => {
-				qb.where("user.username ILIKE :name", { name: `%${name}%` });
-				qb.orWhere("user.displayName ILIKE :name", { name: `%${name}%` });
-			}));
+			query.andWhere(
+				new Brackets(qb => {
+					qb.where("user.username ILIKE :name", { name: `%${name}%` });
+					qb.orWhere("user.displayName ILIKE :name", { name: `%${name}%` });
+				})
+			);
 		}
-	
+
 		if (courseRole?.length > 0) {
 			query.andWhere("participant.role IN (:...courseRole)", { courseRole });
 		}
@@ -67,7 +74,12 @@ export class ParticipantRepository extends Repository<Participant> {
 			.innerJoinAndSelect("participant.user", "user")
 			.leftJoinAndSelect("user.assessmentUserRelations", "aur")
 			.innerJoinAndSelect("aur.assessment", "assessment")
-			.innerJoinAndSelect("assessment.assignment", "assignment", "assignment.courseId = :courseId", { courseId })
+			.innerJoinAndSelect(
+				"assessment.assignment",
+				"assignment",
+				"assignment.courseId = :courseId",
+				{ courseId }
+			)
 			.getMany();
 	}
 
@@ -79,20 +91,25 @@ export class ParticipantRepository extends Repository<Participant> {
 			.innerJoinAndSelect("participant.user", "user")
 			.leftJoinAndSelect("user.assessmentUserRelations", "aur")
 			.innerJoinAndSelect("aur.assessment", "assessment")
-			.innerJoinAndSelect("assessment.assignment", "assignment", "assignment.courseId = :courseId", { courseId })
+			.innerJoinAndSelect(
+				"assessment.assignment",
+				"assignment",
+				"assignment.courseId = :courseId",
+				{ courseId }
+			)
 			.getOne();
 
 		if (!query) {
 			throw new EntityNotFoundError(Participant, { courseId, userId });
 		}
-		
+
 		return query;
 	}
 
 	/**
 	 * Returns a specific participant of a course.
 	 * Throws `EntityNotFoundError` if participant does not exist.
-	 * 
+	 *
 	 * Includes relations:
 	 * - Group (if exists, includes members)
 	 */

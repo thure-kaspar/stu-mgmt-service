@@ -6,8 +6,10 @@ import { AssessmentAllocationDto } from "../dto/assessment-allocation/assessment
 
 @Injectable()
 export class AssessmentAllocationService {
-
-	constructor(@InjectRepository(AssessmentAllocation) private allocationRepo: AssessmentAllocationRepository) { }
+	constructor(
+		@InjectRepository(AssessmentAllocation)
+		private allocationRepo: AssessmentAllocationRepository
+	) {}
 
 	/**
 	 * Creates an allocation and returns it.
@@ -21,9 +23,14 @@ export class AssessmentAllocationService {
 	 * @param newAssignmentId Id of the new assignment, for which the allocations should be created.
 	 * @param existingAssignmentId Id of an existing assignment, whose allocations should be reused.
 	 */
-	async addAllocationsFromExistingAssignment(newAssignmentId: string, existingAssignmentId: string): Promise<AssessmentAllocationDto[]> {
+	async addAllocationsFromExistingAssignment(
+		newAssignmentId: string,
+		existingAssignmentId: string
+	): Promise<AssessmentAllocationDto[]> {
 		// Get allocations from existing assignment
-		const allocations = await this.allocationRepo.getAllocationsOfAssignment(existingAssignmentId);
+		const allocations = await this.allocationRepo.getAllocationsOfAssignment(
+			existingAssignmentId
+		);
 
 		if (allocations.length == 0) {
 			return []; // Return empty array, if no allocations exist
@@ -68,5 +75,4 @@ export class AssessmentAllocationService {
 	async removeAllAllocationsOfAssignment(assignmentId: string): Promise<void> {
 		return this.allocationRepo.removeAllAllocationsOfAssignment(assignmentId);
 	}
-
 }

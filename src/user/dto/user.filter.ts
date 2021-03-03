@@ -4,7 +4,6 @@ import { UserRole } from "../../shared/enums";
 import { sanitizeEnum } from "../../utils/http-utils";
 
 export class UserFilter extends PaginationFilter {
-
 	@ApiPropertyOptional()
 	username?: string;
 
@@ -20,5 +19,4 @@ export class UserFilter extends PaginationFilter {
 		this.displayName = filter?.displayName;
 		this.roles = sanitizeEnum(UserRole, filter?.roles) as any;
 	}
-
 }

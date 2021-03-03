@@ -1,6 +1,12 @@
 import { GroupEventDto } from "../../../src/course/dto/group/group-event.dto";
 import { UserJoinedGroupEvent } from "../../../src/course/events/group/user-joined-group.event";
-import { USER_STUDENT_JAVA, USER_STUDENT_2_JAVA, USER_STUDENT_3_JAVA_TUTOR, USER_ELSHAR, USER_KUNOLD } from "../users.mock";
+import {
+	USER_STUDENT_JAVA,
+	USER_STUDENT_2_JAVA,
+	USER_STUDENT_3_JAVA_TUTOR,
+	USER_ELSHAR,
+	USER_KUNOLD
+} from "../users.mock";
 import { UserLeftGroupEvent } from "../../../src/course/events/group/user-left-group.event";
 import { GroupEvent } from "../../../src/course/entities/group-event.entity";
 import { GROUP_1_JAVA, GROUP_2_JAVA, GROUP_3_JAVA2020, GROUP_4_JAVA } from "./groups.mock";
@@ -66,7 +72,6 @@ export function GROUP_EVENT_REJOIN_SCENARIO(): GroupEventDto[] {
 		payload: null
 	};
 
-
 	const GROUP_EVENT_STUDENT_1_LEFT_GROUP_1: GroupEventDto = {
 		event: UserLeftGroupEvent.name,
 		timestamp: new Date(2020, 1, 2),
@@ -74,7 +79,7 @@ export function GROUP_EVENT_REJOIN_SCENARIO(): GroupEventDto[] {
 		groupId: GROUP_1_JAVA.id,
 		payload: null
 	};
-	
+
 	const GROUP_EVENT_STUDENT_1_JOINED_GROUP_2: GroupEventDto = {
 		event: UserJoinedGroupEvent.name,
 		timestamp: new Date(2020, 1, 3),
@@ -82,7 +87,7 @@ export function GROUP_EVENT_REJOIN_SCENARIO(): GroupEventDto[] {
 		groupId: GROUP_2_JAVA.id,
 		payload: null
 	};
-	
+
 	const GROUP_EVENT_STUDENT_1_LEFT_GROUP_2: GroupEventDto = {
 		event: UserLeftGroupEvent.name,
 		timestamp: new Date(2020, 1, 4),
@@ -90,7 +95,7 @@ export function GROUP_EVENT_REJOIN_SCENARIO(): GroupEventDto[] {
 		groupId: GROUP_2_JAVA.id,
 		payload: null
 	};
-	
+
 	const GROUP_EVENT_STUDENT_1_REJOINED_GROUP_1: GroupEventDto = {
 		event: UserJoinedGroupEvent.name,
 		timestamp: new Date(2020, 1, 5),

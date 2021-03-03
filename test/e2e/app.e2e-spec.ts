@@ -9,7 +9,7 @@ describe("AppController (e2e)", () => {
 
 	beforeEach(async () => {
 		const moduleFixture: TestingModule = await Test.createTestingModule({
-			imports: [AppModule],
+			imports: [AppModule]
 		}).compile();
 
 		app = moduleFixture.createNestApplication();
@@ -24,10 +24,9 @@ describe("AppController (e2e)", () => {
 		return request(app.getHttpServer())
 			.get("/uptime")
 			.expect(200)
-			.expect(({ body}) => {
+			.expect(({ body }) => {
 				expect(body.startTime).toBeTruthy();
 				expect(body.uptime).toBeTruthy();
 			});
 	});
-	
 });

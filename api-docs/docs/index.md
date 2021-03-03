@@ -3,7 +3,7 @@
 This website hosts documentation about the **Student-Management-System's API**.
 The [Swagger-UI](http://147.172.178.30:3000/api/) provides information about the available endpoints and data schemas,
 and will be referenced in the documentation. However, the it does not explain how the API can be used by other systems.
-Therefore, we will use this place to offer additional guidance for developers, that are building applications, which interact with the 
+Therefore, we will use this place to offer additional guidance for developers, that are building applications, which interact with the
 Student-Management-System's API.
 
 Since the Student-Management-System also provides a [frontend client](http://147.172.178.30/WEB-APP/courses), a lot of the described features will already be implemented there.
@@ -19,13 +19,13 @@ Also make sure to check out our [FAQ](/faq).
 
 The Student-Management-System's API provides the ability to...
 
-- Create and manage courses
-- Create and schedule assignments
-- Create groups to collaborate on homework
-- Grade assignments
-- Coordinate grading process among teaching staff
-- Track students learning progress and admission status
-- Subscribe to events in a course (i.e. to receive notification when assignment submission closes)
+-   Create and manage courses
+-   Create and schedule assignments
+-   Create groups to collaborate on homework
+-   Grade assignments
+-   Coordinate grading process among teaching staff
+-   Track students learning progress and admission status
+-   Subscribe to events in a course (i.e. to receive notification when assignment submission closes)
 
 ## Questions, Bug reports and Feature requests
 
@@ -35,7 +35,11 @@ in the [GitHub repository](https://github.com/Student-Management-System/StudentM
 ## Helpful links
 
 #### [FAQ](/faq)
+
 #### [GitHub](https://github.com/Student-Management-System/StudentMgmt-Backend)
+
 #### [Swagger-UI](http://147.172.178.30:3000/api/)
+
 #### [API-Specification](http://147.172.178.30:3000/api-json)
+
 #### [Bug reports](https://github.com/Student-Management-System/StudentMgmt-Backend/issues)

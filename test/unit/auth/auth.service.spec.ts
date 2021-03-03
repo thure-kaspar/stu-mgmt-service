@@ -13,7 +13,7 @@ const user = USER_STUDENT_JAVA;
 
 const mock_authSystemService = () => ({
 	login: jest.fn().mockResolvedValue(true),
-	getUser: jest.fn().mockResolvedValue(user),
+	getUser: jest.fn().mockResolvedValue(user)
 });
 
 const mock_JwtService = () => ({
@@ -26,7 +26,6 @@ const mock_UserRepository = () => ({
 });
 
 describe("AuthService", () => {
-
 	let service: AuthService;
 	let authSystemService: AuthSystemService;
 	let jwtService: JwtService;
@@ -39,7 +38,7 @@ describe("AuthService", () => {
 				{ provide: AuthSystemService, useFactory: mock_authSystemService },
 				{ provide: JwtService, useFactory: mock_JwtService },
 				{ provide: UserRepository, useFactory: mock_UserRepository }
-			],
+			]
 		}).compile();
 
 		service = module.get<AuthService>(AuthService);
@@ -53,7 +52,7 @@ describe("AuthService", () => {
 	});
 
 	// describe("login", () => {
-	
+
 	// 	it("Valid credentials -> Returns AuthToken", async () => {
 	// 		const expected: AuthTokenDto = {
 	// 			accessToken: "xxx.yyy.zzz",
@@ -90,7 +89,6 @@ describe("AuthService", () => {
 	// 		await service.login(authCredentials);
 	// 		expect(jwtService.signAsync).toHaveBeenCalled();
 	// 	});
-	
-	// });
 
+	// });
 });

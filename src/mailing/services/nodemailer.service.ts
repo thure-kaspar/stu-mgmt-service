@@ -5,7 +5,6 @@ import { Settings } from "../settings";
 
 @Injectable()
 export class NodemailerService {
-
 	async send(settings: Settings, mail: MailDto): Promise<any> {
 		const transporter = nodemailer.createTransport(settings);
 		return transporter.sendMail(mail);

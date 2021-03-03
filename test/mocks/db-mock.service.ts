@@ -30,15 +30,20 @@ import { getGroupEventEntities } from "./groups/group-events.mock";
 import { GROUPS_ALL, GROUP_1_JAVA, GROUP_2_JAVA, GROUP_4_JAVA } from "./groups/groups.mock";
 import { UserGroupRelationsMock } from "./groups/user-group-relations.mock";
 import { PARTIAL_ASSESSMENT_MOCK } from "./partial-assessments.mock";
-import { COURSE_PARTICIPANTS_ALL, PARTICIPANT_JAVA_1920_STUDENT, PARTICIPANT_JAVA_1920_STUDENT_2, PARTICIPANT_JAVA_1920_STUDENT_ELSHAR, PARTICIPANT_JAVA_1920_STUDENT_KUNOLD } from "./participants/participants.mock";
+import {
+	COURSE_PARTICIPANTS_ALL,
+	PARTICIPANT_JAVA_1920_STUDENT,
+	PARTICIPANT_JAVA_1920_STUDENT_2,
+	PARTICIPANT_JAVA_1920_STUDENT_ELSHAR,
+	PARTICIPANT_JAVA_1920_STUDENT_KUNOLD
+} from "./participants/participants.mock";
 import { AssessmentUserRelationsMock } from "./relations.mock";
 import { UsersMock } from "./users.mock";
 import { ADMISSION_CRITERIA_MOCK } from "./course-config/admission-criteria.mock";
 
 export class DbMockService {
-
 	private con: EntityManager;
-	courses = CoursesMock
+	courses = CoursesMock;
 	groups = GROUPS_ALL;
 	groupEvents = getGroupEventEntities();
 	users = UsersMock;
@@ -52,8 +57,8 @@ export class DbMockService {
 	admissionCriteria = ADMISSION_CRITERIA_MOCK;
 	configs = COURSE_CONFIGS_MOCK;
 	allocations = ASSESSMENT_ALLOCATIONS_MOCK;
-	
-	constructor(connection: Connection) { 
+
+	constructor(connection: Connection) {
 		this.con = connection.manager;
 	}
 
@@ -83,8 +88,7 @@ export class DbMockService {
 		const repo = this.con.getRepository(Course);
 		const courses = this.courses.map(c => convertToEntityNoRelations(Course, c));
 
-		await repo.insert(courses)
-			.catch(error => console.log(error));
+		await repo.insert(courses).catch(error => console.log(error));
 	}
 
 	async createCourseConfig(): Promise<void> {
@@ -97,8 +101,7 @@ export class DbMockService {
 			configs.push(config);
 		});
 
-		await repo.insert(configs)
-			.catch(error => console.log(error));
+		await repo.insert(configs).catch(error => console.log(error));
 	}
 
 	async createGroupSettings(): Promise<void> {
@@ -106,10 +109,9 @@ export class DbMockService {
 		const settings = repo.create(this.groupSettings);
 
 		let configId = 1;
-		settings.forEach(s => s.courseConfigId = configId++);
+		settings.forEach(s => (s.courseConfigId = configId++));
 
-		await repo.insert(settings)
-			.catch(error => console.error(error));
+		await repo.insert(settings).catch(error => console.error(error));
 	}
 
 	async createAdmissionCriteria(): Promise<void> {
@@ -118,21 +120,24 @@ export class DbMockService {
 		criteria.admissionCriteria = this.admissionCriteria;
 		criteria.courseConfigId = this.configs[0].id;
 
-		await repo.insert(criteria)
-			.catch(error => console.error(error));
+		await repo.insert(criteria).catch(error => console.error(error));
 	}
 
 	async createAssignmentTemplates(): Promise<void> {
 		const repo = this.con.getRepository(AssignmentTemplate);
 		const templates = this.assignmentTemplates.map(t => repo.create(t));
-		templates.forEach(t => t.courseConfigId = 1);
+		templates.forEach(t => (t.courseConfigId = 1));
 
-		await this.con.getRepository(AssignmentTemplate).insert(templates)
+		await this.con
+			.getRepository(AssignmentTemplate)
+			.insert(templates)
 			.catch(error => console.error(error));
 	}
 
 	async createUsers(): Promise<void> {
-		await this.con.getRepository(User).insert(this.users)
+		await this.con
+			.getRepository(User)
+			.insert(this.users)
 			.catch(error => console.error(error));
 	}
 
@@ -141,42 +146,51 @@ export class DbMockService {
 		const groups: Group[] = [];
 		this.groups.forEach(groupsWithCourseId => {
 			const _groups = groupsWithCourseId.groups.map(g => convertToEntity(Group, g));
-			_groups.forEach(g => g.courseId = groupsWithCourseId.courseId);
+			_groups.forEach(g => (g.courseId = groupsWithCourseId.courseId));
 			groups.push(..._groups);
 		});
 
-		await this.con.getRepository(Group).insert(groups)
+		await this.con
+			.getRepository(Group)
+			.insert(groups)
 			.catch(error => console.error(error));
 	}
 
 	async createGroupEvents(): Promise<void> {
-		await this.con.getRepository(GroupEvent).insert(this.groupEvents)
+		await this.con
+			.getRepository(GroupEvent)
+			.insert(this.groupEvents)
 			.catch(error => console.error(error));
 	}
 
 	async createAssignments(): Promise<void> {
 		const assignments: Assignment[] = [];
 		this.assignments.forEach(assignmentsWithCourseId => {
-			const _assignments = assignmentsWithCourseId.assignments.map(a => convertToEntity(Assignment, a));
-			_assignments.forEach(a => a.courseId = assignmentsWithCourseId.courseId);
+			const _assignments = assignmentsWithCourseId.assignments.map(a =>
+				convertToEntity(Assignment, a)
+			);
+			_assignments.forEach(a => (a.courseId = assignmentsWithCourseId.courseId));
 			assignments.push(..._assignments);
 		});
 
-		await this.con.getRepository(Assignment).insert(assignments)
+		await this.con
+			.getRepository(Assignment)
+			.insert(assignments)
 			.catch(error => console.error(error));
 	}
 
 	async createAssessments(): Promise<void> {
 		const assessments = this.assessments.map(a => convertToEntityNoRelations(Assessment, a));
-		await this.con.getRepository(Assessment).insert(assessments)
+		await this.con
+			.getRepository(Assessment)
+			.insert(assessments)
 			.catch(error => console.error(error));
 	}
 
 	async createPartialAssessments(): Promise<void> {
 		const repo = this.con.getRepository(PartialAssessment);
 		const partials = this.partialAssessments.map(p => repo.create(p));
-		await repo.insert(partials)
-			.catch(error => console.error(error));
+		await repo.insert(partials).catch(error => console.error(error));
 	}
 
 	async createParticipants(): Promise<void> {
@@ -189,23 +203,31 @@ export class DbMockService {
 			};
 		});
 
-		await this.con.getRepository(Participant).insert(allParticipants)
+		await this.con
+			.getRepository(Participant)
+			.insert(allParticipants)
 			.catch(error => console.error(error));
 	}
 
 	async createAssessmentUserRelations(): Promise<void> {
-		await this.con.getRepository(AssessmentUserRelation).insert(this.assessmentUserRelations)
+		await this.con
+			.getRepository(AssessmentUserRelation)
+			.insert(this.assessmentUserRelations)
 			.catch(error => console.error(error));
 	}
 
 	async createUserGroupRelations(): Promise<void> {
-		await this.con.getRepository(UserGroupRelation).insert(this.userGroupRelations)
+		await this.con
+			.getRepository(UserGroupRelation)
+			.insert(this.userGroupRelations)
 			.catch(error => console.error(error));
 	}
 
 	async createAssessmentAllocations(): Promise<void> {
 		const allocations = this.allocations.map(a => convertToEntity(AssessmentAllocation, a));
-		await this.con.getRepository(AssessmentAllocation).insert(allocations)
+		await this.con
+			.getRepository(AssessmentAllocation)
+			.insert(allocations)
 			.catch(error => console.error(error));
 	}
 
@@ -213,32 +235,47 @@ export class DbMockService {
 		const repo = this.con.getRepository(AssignmentRegistration);
 
 		const predicate = (a: AssignmentDto): boolean => {
-			return a.state === AssignmentState.IN_PROGRESS || a.state === AssignmentState.IN_REVIEW || a.state === AssignmentState.EVALUATED;
+			return (
+				a.state === AssignmentState.IN_PROGRESS ||
+				a.state === AssignmentState.IN_REVIEW ||
+				a.state === AssignmentState.EVALUATED
+			);
 		};
 
 		const startedAssignments = [
-			...ASSIGNMENTS_JAVA_1920.filter(predicate),
+			...ASSIGNMENTS_JAVA_1920.filter(predicate)
 			//...ASSIGNMENTS_JAVA_2020.filter(predicate)
 		];
 
-		const registrationForGroup = (assignmentId: AssignmentId, groupId: GroupId, participantIds: number[]): AssignmentRegistration => {
+		const registrationForGroup = (
+			assignmentId: AssignmentId,
+			groupId: GroupId,
+			participantIds: number[]
+		): AssignmentRegistration => {
 			return new AssignmentRegistration({
 				assignmentId,
 				groupId,
-				groupRelations: participantIds.map(id => new GroupRegistrationRelation({ participantId: id, assignmentId }))
+				groupRelations: participantIds.map(
+					id => new GroupRegistrationRelation({ participantId: id, assignmentId })
+				)
 			});
 		};
 
 		const registrations: AssignmentRegistration[] = [];
 		startedAssignments.forEach(assignment => {
 			registrations.push(
-				registrationForGroup(assignment.id, GROUP_1_JAVA.id, [PARTICIPANT_JAVA_1920_STUDENT.id, PARTICIPANT_JAVA_1920_STUDENT_2.id]),
-				registrationForGroup(assignment.id, GROUP_4_JAVA.id, [PARTICIPANT_JAVA_1920_STUDENT_ELSHAR.id, PARTICIPANT_JAVA_1920_STUDENT_KUNOLD.id]),
-				registrationForGroup(assignment.id, GROUP_2_JAVA.id, []),
+				registrationForGroup(assignment.id, GROUP_1_JAVA.id, [
+					PARTICIPANT_JAVA_1920_STUDENT.id,
+					PARTICIPANT_JAVA_1920_STUDENT_2.id
+				]),
+				registrationForGroup(assignment.id, GROUP_4_JAVA.id, [
+					PARTICIPANT_JAVA_1920_STUDENT_ELSHAR.id,
+					PARTICIPANT_JAVA_1920_STUDENT_KUNOLD.id
+				]),
+				registrationForGroup(assignment.id, GROUP_2_JAVA.id, [])
 			);
 		});
 
 		await repo.save(registrations).catch(error => console.error(error));
 	}
-
 }

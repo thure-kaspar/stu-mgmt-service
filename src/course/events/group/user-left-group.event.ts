@@ -12,16 +12,15 @@ export class UserLeftGroupEvent {
 	constructor(
 		public readonly courseId: CourseId,
 		public readonly groupId: GroupId,
-		public readonly userId: UserId, 
+		public readonly userId: UserId,
 		public readonly reason?: string
-	) { }
+	) {}
 }
 
 @EventsHandler(UserLeftGroupEvent)
 export class UserLeftGroupHandler implements IEventHandler<UserLeftGroupEvent> {
+	constructor(@InjectRepository(GroupEvent) private groupEvents: Repository<GroupEvent>) {}
 
-	constructor(@InjectRepository(GroupEvent) private groupEvents: Repository<GroupEvent>) { }
-	
 	handle(event: UserLeftGroupEvent): void {
 		this.groupEvents.insert({
 			event: UserLeftGroupEvent.name,
@@ -30,14 +29,12 @@ export class UserLeftGroupHandler implements IEventHandler<UserLeftGroupEvent> {
 			payload: event.reason ? { reason: event.reason } : null
 		});
 	}
-
 }
 
 /** Triggers the transmission of UpdateMessages for subscribed courses. */
 @EventsHandler(UserLeftGroupEvent)
 export class UserLeftGroupNotificationHandler implements IEventHandler<UserLeftGroupEvent> {
-
-	constructor(private notifications: NotificationService) { }
+	constructor(private notifications: NotificationService) {}
 
 	async handle(event: UserLeftGroupEvent): Promise<void> {
 		this.notifications.send({
@@ -47,5 +44,4 @@ export class UserLeftGroupNotificationHandler implements IEventHandler<UserLeftG
 			groupId: event.groupId
 		});
 	}
-	
 }

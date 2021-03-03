@@ -9,7 +9,6 @@ import { CourseId } from "../entities/course.entity";
 
 @EntityRepository(CourseConfig)
 export class CourseConfigRepository extends Repository<CourseConfig> {
-
 	/** Inserts the course config into the database. */
 	createCourseConfig(courseId: CourseId, configDto: CourseConfigDto): Promise<CourseConfig> {
 		const config = this._createInsertableEntity(courseId, configDto);
@@ -30,7 +29,10 @@ export class CourseConfigRepository extends Repository<CourseConfig> {
 	}
 
 	/** Partially updates the course config. Does not update related entites. */
-	async updateCourseConfig(courseId: CourseId, partial: Partial<CourseConfigUpdateDto>): Promise<CourseConfig> {
+	async updateCourseConfig(
+		courseId: CourseId,
+		partial: Partial<CourseConfigUpdateDto>
+	): Promise<CourseConfig> {
 		await this.update({ courseId }, partial);
 		return this.getByCourseId(courseId);
 	}
@@ -47,7 +49,7 @@ export class CourseConfigRepository extends Repository<CourseConfig> {
 		config.courseId = courseId;
 		config.password = configDto.password;
 		config.subscriptionUrl = configDto.subscriptionUrl;
-	
+
 		// Group settings
 		if (configDto.groupSettings) {
 			config.groupSettings = new GroupSettings();
@@ -59,7 +61,7 @@ export class CourseConfigRepository extends Repository<CourseConfig> {
 			config.admissionCriteria = new AdmissionCriteria();
 			config.admissionCriteria.admissionCriteria = configDto.admissionCriteria;
 		}
-		
+
 		// Assignment templates
 		if (configDto.assignmentTemplates?.length > 0) {
 			config.assignmentTemplates = configDto.assignmentTemplates.map((t, index) => {
@@ -71,5 +73,4 @@ export class CourseConfigRepository extends Repository<CourseConfig> {
 
 		return config;
 	}
-	
 }

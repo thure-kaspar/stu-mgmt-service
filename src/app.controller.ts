@@ -2,10 +2,9 @@ import { Controller, Get } from "@nestjs/common";
 
 @Controller()
 export class AppController {
-
 	private startTime = new Date();
 
-	constructor() { }
+	constructor() {}
 
 	@Get("uptime")
 	getUptime(): any {

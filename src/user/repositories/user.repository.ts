@@ -6,26 +6,27 @@ import { UserFilter } from "../dto/user.filter";
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
-
 	async createUser(userDto: UserDto): Promise<User> {
 		const user = this.createEntityFromDto(userDto);
 		return this.save(user);
 	}
 
 	async getUsers(filter?: UserFilter): Promise<[User[], number]> {
-		const { username, displayName, roles, skip, take } = filter || { };
+		const { username, displayName, roles, skip, take } = filter || {};
 
 		const query = this.createQueryBuilder("user")
 			.orderBy("user.username")
 			.skip(skip)
 			.take(take);
-		
+
 		if (username) {
-			query.andWhere("user.username ILIKE :username", { username: `%${username}%`});
+			query.andWhere("user.username ILIKE :username", { username: `%${username}%` });
 		}
 
 		if (displayName) {
-			query.andWhere("user.displayName ILIKE :displayName", { displayName: `%${displayName}%`});
+			query.andWhere("user.displayName ILIKE :displayName", {
+				displayName: `%${displayName}%`
+			});
 		}
 
 		if (roles?.length > 0) {
@@ -60,8 +61,8 @@ export class UserRepository extends Repository<User> {
 	}
 
 	async getCoursesOfUser(userId: UserId): Promise<Course[]> {
-		const user = await this.findOneOrFail(userId, { 
-			relations: ["participations", "participations.course"] 
+		const user = await this.findOneOrFail(userId, {
+			relations: ["participations", "participations.course"]
 		});
 
 		return user.participations.map(relation => relation.course);
@@ -74,9 +75,9 @@ export class UserRepository extends Repository<User> {
 			.innerJoin("user.participations", "participation")
 			.andWhere("participation.courseId = :courseId", { courseId })
 			.getOne();
-			
+
 		return !!user;
-	} 
+	}
 
 	async updateUser(userId: UserId, userDto: UserUpdateDto): Promise<User> {
 		const user = await this.getUserById(userId);
@@ -92,7 +93,7 @@ export class UserRepository extends Repository<User> {
 		const deleted = await this.remove(this.create({ id: userId }));
 		return deleted ? true : false;
 	}
-	
+
 	private createEntityFromDto(userDto: UserDto): User {
 		const user = new User();
 		user.email = userDto.email;

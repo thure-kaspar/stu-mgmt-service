@@ -12,7 +12,6 @@ const mock_authService = () => ({
 });
 
 describe("Auth Controller", () => {
-
 	let controller: AuthController;
 	let authService: AuthService;
 	let authCredentials: AuthCredentialsDto;
@@ -20,9 +19,7 @@ describe("Auth Controller", () => {
 	beforeEach(async () => {
 		const module: TestingModule = await Test.createTestingModule({
 			controllers: [AuthController],
-			providers: [
-				{ provide: AuthService, useFactory: mock_authService }
-			]
+			providers: [{ provide: AuthService, useFactory: mock_authService }]
 		}).compile();
 
 		controller = module.get<AuthController>(AuthController);
@@ -35,16 +32,13 @@ describe("Auth Controller", () => {
 	});
 
 	describe("register", () => {
-	
 		it("Calls authService for registration", () => {
 			controller.register(authCredentials);
 			expect(authService.register).toBeCalledWith(authCredentials);
-		});		
-	
+		});
 	});
 
 	describe("login", () => {
-	
 		it("Calls authService for login", () => {
 			controller.login(authCredentials);
 			expect(authService.login).toHaveBeenCalledWith(authCredentials);
@@ -60,7 +54,7 @@ describe("Auth Controller", () => {
 					displayName: "user_id_1",
 					id: "user_id_1",
 					username: "max_mustermann",
-					role: UserRole.USER,
+					role: UserRole.USER
 				}
 			};
 			authService.login = jest.fn().mockResolvedValue(expected);
@@ -73,11 +67,10 @@ describe("Auth Controller", () => {
 			try {
 				await controller.login(authCredentials);
 				expect(true).toEqual(false);
-			} catch(error) {
+			} catch (error) {
 				expect(error).toBeTruthy();
 				expect(error.status).toEqual(401);
 			}
 		});
-	
 	});
 });

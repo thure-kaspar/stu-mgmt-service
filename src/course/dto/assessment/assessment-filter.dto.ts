@@ -3,14 +3,15 @@ import { transformNumber } from "../../../utils/http-utils";
 import { ApiPropertyOptional } from "@nestjs/swagger";
 
 export class AssessmentFilter extends PaginationFilter {
-
 	@ApiPropertyOptional({ description: "Name of group or user. Matched with ILIKE %name%." })
 	name?: string;
 	@ApiPropertyOptional({ description: "Retrieves assessment of specific group." })
 	groupId?: string;
 	@ApiPropertyOptional({ description: "Retrieves assessment of specific user." })
 	userId?: string;
-	@ApiPropertyOptional({ description: "Only includes assessments with achievedPoints >= minScore, if specified." })
+	@ApiPropertyOptional({
+		description: "Only includes assessments with achievedPoints >= minScore, if specified."
+	})
 	minScore?: number;
 	@ApiPropertyOptional({ description: "Only includes assessments created by specified user." })
 	creatorId?: string;

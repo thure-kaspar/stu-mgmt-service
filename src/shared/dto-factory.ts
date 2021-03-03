@@ -21,7 +21,6 @@ import { CourseRole } from "./enums";
 import { toDtos } from "./interfaces/to-dto.interface";
 
 export abstract class DtoFactory {
-
 	static createCourseDto(course: Course): CourseDto {
 		const courseDto: CourseDto = {
 			id: course.id,
@@ -36,16 +35,18 @@ export abstract class DtoFactory {
 	}
 
 	static createCourseConfigDto(config: CourseConfig, includePriviliged = false): CourseConfigDto {
-		const configDto: CourseConfigDto = { };
-		if (config.admissionCriteria) 
+		const configDto: CourseConfigDto = {};
+		if (config.admissionCriteria)
 			configDto.admissionCriteria = this.createAdmissionCriteriaDto(config.admissionCriteria);
 
 		if (config.groupSettings)
 			configDto.groupSettings = this.createGroupSettingsDto(config.groupSettings);
 
 		if (config.assignmentTemplates)
-			configDto.assignmentTemplates = config.assignmentTemplates.map(t => this.createAssignmentTemplateDto(t));
-		
+			configDto.assignmentTemplates = config.assignmentTemplates.map(t =>
+				this.createAssignmentTemplateDto(t)
+			);
+
 		if (includePriviliged) {
 			configDto.password = config.password;
 			configDto.subscriptionUrl = config.subscriptionUrl;
@@ -80,16 +81,16 @@ export abstract class DtoFactory {
 			points: template.points
 		};
 	}
-    
+
 	static createUserDto(user: User, options?: { removeEmail: boolean }): UserDto {
 		const userDto: UserDto = {
 			id: user.id,
 			email: options?.removeEmail ? undefined : user.email,
 			username: user.username,
 			displayName: user.displayName,
-			role: user.role,
+			role: user.role
 		};
-    
+
 		// Add relational data, if available
 		if (user.participations) {
 			if (user.participations.length == 0) {
@@ -98,16 +99,16 @@ export abstract class DtoFactory {
 				userDto.courses = user.participations.map(rel => this.createCourseDto(rel.course));
 			}
 		}
-    
+
 		return userDto;
 	}
-	
+
 	static createGroupDto(group: Group, options?: { includePassword: boolean }): GroupDto {
 		const groupDto: GroupDto = {
 			id: group.id,
 			name: group.name,
-			isClosed:group.isClosed,
-			password: options?.includePassword ?  group.password : undefined,
+			isClosed: group.isClosed,
+			password: options?.includePassword ? group.password : undefined,
 			hasPassword: !!group.password
 		};
 
@@ -126,7 +127,7 @@ export abstract class DtoFactory {
 
 		return groupDto;
 	}
-    
+
 	static createAssignmentDto(assignment: Assignment): AssignmentDto {
 		const assignmentDto: AssignmentDto = {
 			id: assignment.id,
@@ -143,7 +144,7 @@ export abstract class DtoFactory {
 		};
 		return assignmentDto;
 	}
-    
+
 	static createAssessmentDto(assessment: Assessment): AssessmentDto {
 		const assessmentDto: AssessmentDto = {
 			id: assessment.id,
@@ -180,13 +181,18 @@ export abstract class DtoFactory {
 		}
 
 		// If creator was loaded
-		if (assessment.creator) assessmentDto.creator = this.createUserDto(assessment.creator, { removeEmail: true });
-		if (assessment.lastUpdatedBy) assessmentDto.lastUpdatedBy = this.createUserDto(assessment.lastUpdatedBy, { removeEmail: true });
+		if (assessment.creator)
+			assessmentDto.creator = this.createUserDto(assessment.creator, { removeEmail: true });
+		if (assessment.lastUpdatedBy)
+			assessmentDto.lastUpdatedBy = this.createUserDto(assessment.lastUpdatedBy, {
+				removeEmail: true
+			});
 
 		if (assessment.group) {
 			assessmentDto.group = this.createGroupDto(assessment.group);
 			assessmentDto.group.members = assessment.assessmentUserRelations?.map(rel => {
-				const participant: ParticipantDto = { // TODO: GroupId missing
+				const participant: ParticipantDto = {
+					// TODO: GroupId missing
 					role: CourseRole.STUDENT,
 					userId: rel.userId,
 					username: rel.user.username,
@@ -200,7 +206,4 @@ export abstract class DtoFactory {
 
 		return assessmentDto;
 	}
-
 }
-
-

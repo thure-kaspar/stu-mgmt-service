@@ -17,8 +17,7 @@ import { TeachingStaffGuard } from "../guards/teaching-staff.guard";
 @Controller("courses/:courseId/config")
 @UseGuards(AuthGuard(), CourseMemberGuard)
 export class CourseConfigController {
-
-	constructor(private configService: CourseConfigService) { }
+	constructor(private configService: CourseConfigService) {}
 
 	//#region POST
 	@ApiOperation({
@@ -43,7 +42,7 @@ export class CourseConfigController {
 	@Post(":configId/admission-criteria")
 	@UseGuards(TeachingStaffGuard)
 	createAdmissionCriteria(
-		@Param("courseId") courseId: CourseId, 
+		@Param("courseId") courseId: CourseId,
 		@Param("configId") configId: number,
 		@Body() admissionCriteria: AdmissionCriteriaDto
 	): Promise<AdmissionCriteriaDto> {
@@ -104,11 +103,13 @@ export class CourseConfigController {
 	})
 	@Get("assignment-templates")
 	@UseGuards(TeachingStaffGuard)
-	getAssignmentTemplates(@Param("courseId") courseId: CourseId): Promise<AssignmentTemplateDto[]> {
+	getAssignmentTemplates(
+		@Param("courseId") courseId: CourseId
+	): Promise<AssignmentTemplateDto[]> {
 		return this.configService.getAssignmentTemplates(courseId);
 	}
 	//#endregion
-	
+
 	//#region PATCH
 	@ApiOperation({
 		operationId: "updateCourseConfig",
@@ -119,7 +120,7 @@ export class CourseConfigController {
 	@UseGuards(TeachingStaffGuard)
 	updateCourseConfig(
 		@Param("courseId") courseId: CourseId,
-		@Body() update: CourseConfigUpdateDto,
+		@Body() update: CourseConfigUpdateDto
 	): Promise<CourseConfigDto> {
 		return this.configService.updateCourseConfig(courseId, update);
 	}
@@ -164,7 +165,6 @@ export class CourseConfigController {
 		@Param("id") id: number,
 		@Body() template: AssignmentTemplateDto
 	): Promise<AssignmentTemplateDto> {
-
 		return this.configService.updateAssignmentTemplate(id, template);
 	}
 
@@ -174,7 +174,8 @@ export class CourseConfigController {
 	@ApiOperation({
 		operationId: "removeCourseConfig",
 		summary: "Remove course config.",
-		description: "Removes the complete configuration of a course. Includes group settings, admission criteria and templates."
+		description:
+			"Removes the complete configuration of a course. Includes group settings, admission criteria and templates."
 	})
 	@Delete()
 	@UseGuards(TeachingStaffGuard)

@@ -7,7 +7,7 @@ import { ApiTags, ApiOperation } from "@nestjs/swagger";
 @ApiTags("authentication")
 @Controller("auth")
 export class AuthController {
-	constructor(private authService: AuthService) { }
+	constructor(private authService: AuthService) {}
 
 	@Post("register")
 	@ApiOperation({
@@ -31,17 +31,18 @@ export class AuthController {
 		return this.authService.login(authCredentials);
 	}
 
-
 	/** Logs the user in to the StudentMgmt-Backend via the credentials provided by the external authentication system. */
 	@Post("loginWithToken")
 	@ApiOperation({
 		operationId: "loginWithToken",
 		summary: "Login with token.",
-		description: "Logs the user in to the StudentMgmt-Backend via the credentials provided by the external authentication system."
+		description:
+			"Logs the user in to the StudentMgmt-Backend via the credentials provided by the external authentication system."
 	})
 	@HttpCode(200)
-	loginWithToken(@Body(ValidationPipe) credentials: AuthSystemCredentials): Promise<AuthTokenDto> {
+	loginWithToken(
+		@Body(ValidationPipe) credentials: AuthSystemCredentials
+	): Promise<AuthTokenDto> {
 		return this.authService.loginWithToken(credentials);
 	}
-
 }

@@ -49,5 +49,5 @@ export class Assignment {
 	courseId: CourseId;
 
 	@OneToMany(type => Assessment, assessment => assessment.assignment)
-    assessments: Assessment[];
+	assessments: Assessment[];
 }

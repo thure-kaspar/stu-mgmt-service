@@ -5,16 +5,15 @@ import { CourseParticipantsService } from "../services/course-participants.servi
 
 /**
  * Only allows requests for users, that are either `LECTURER` or `TUTOR`. // TODO: Include tools ?
- * Assumes that `request` has `participant` property (attached by `CourseMemberGuard`). 
- * 
+ * Assumes that `request` has `participant` property (attached by `CourseMemberGuard`).
+ *
  * @return `false`, if participant does not have the required roles.
  */
 @Injectable()
 export class TeachingStaffGuard implements CanActivate {
-	
-	constructor(private courseParticipants: CourseParticipantsService) { }
+	constructor(private courseParticipants: CourseParticipantsService) {}
 
-	async canActivate(context: ExecutionContext): Promise<boolean> {	
+	async canActivate(context: ExecutionContext): Promise<boolean> {
 		const request = context.switchToHttp().getRequest();
 		const participant: Participant = request.participant;
 
@@ -24,5 +23,4 @@ export class TeachingStaffGuard implements CanActivate {
 			throw new NotATeachingStaffMember(request.params.courseId, participant.userId);
 		}
 	}
-
 }

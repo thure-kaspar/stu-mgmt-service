@@ -2,9 +2,7 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { UserController } from "../../../src/user/controllers/user.controller";
 import { UserService } from "../../../src/user/services/user.service";
 
-const mock_UserService = () => ({
-
-});
+const mock_UserService = () => ({});
 
 describe("User Controller", () => {
 	let controller: UserController;

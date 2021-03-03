@@ -5,9 +5,11 @@ import { CourseId } from "../entities/course.entity";
 
 @EntityRepository(AssignmentTemplate)
 export class AssignmentTemplateRepository extends Repository<AssignmentTemplate> {
-
 	/** Inserts a assignment template into the database and returns it. */
-	createAssignmentTemplate(configId: number, templateDto: AssignmentTemplateDto): Promise<AssignmentTemplate> { 
+	createAssignmentTemplate(
+		configId: number,
+		templateDto: AssignmentTemplateDto
+	): Promise<AssignmentTemplate> {
 		const template = this.create(templateDto);
 		template.courseConfigId = configId;
 		return this.save(template);
@@ -27,7 +29,10 @@ export class AssignmentTemplateRepository extends Repository<AssignmentTemplate>
 	}
 
 	/** Partially updates the template and returns it. */
-	async updateTemplate(id: number, partial: Partial<AssignmentTemplate>): Promise<AssignmentTemplate> {
+	async updateTemplate(
+		id: number,
+		partial: Partial<AssignmentTemplate>
+	): Promise<AssignmentTemplate> {
 		await this.update(id, partial);
 		return this.getTemplateById(id);
 	}
@@ -36,5 +41,4 @@ export class AssignmentTemplateRepository extends Repository<AssignmentTemplate>
 	async removeTemplate(id: number): Promise<boolean> {
 		return (await this.delete(id)).affected == 1 ? true : false;
 	}
-
 }

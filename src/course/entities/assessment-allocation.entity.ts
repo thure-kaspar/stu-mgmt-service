@@ -6,9 +6,8 @@ import { Group, GroupId } from "./group.entity";
 
 @Entity()
 @Unique("Unique_AssignmentId_GroupId", ["assignmentId", "groupId"]) // A Group can only be assigned once for every assessment
-@Unique("Unique_AssignmentId_UserId", ["assignmentId", "userId"]) // A User can only be assigned once for every assessment 
+@Unique("Unique_AssignmentId_UserId", ["assignmentId", "userId"]) // A User can only be assigned once for every assessment
 export class AssessmentAllocation {
-
 	@PrimaryGeneratedColumn()
 	id: number;
 
@@ -34,7 +33,7 @@ export class AssessmentAllocation {
 
 	@ManyToOne(type => User, { onDelete: "CASCADE" })
 	assignedEvaluator: User;
-	
+
 	@Column()
 	assignedEvaluatorId: string;
 

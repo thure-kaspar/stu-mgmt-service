@@ -14,13 +14,13 @@ import * as config from "config";
 
 @Injectable()
 export class AuthService {
-
 	private jwtExpiresIn = config.get("jwt.expiresIn");
 
-	constructor(private jwtService: JwtService,
-				private authSystem: AuthSystemService,
-				@InjectRepository(UserRepository) private userRepository: UserRepository) { }
-
+	constructor(
+		private jwtService: JwtService,
+		private authSystem: AuthSystemService,
+		@InjectRepository(UserRepository) private userRepository: UserRepository
+	) {}
 
 	async register(authCredentials: AuthCredentialsDto): Promise<void> {
 		return null;
@@ -28,14 +28,14 @@ export class AuthService {
 
 	/**
 	 * Login via the authentication token provided by the external authentication system.
-	 * If the given token is valid, returns an AuthToken (containing a JWT), 
+	 * If the given token is valid, returns an AuthToken (containing a JWT),
 	 * which allows the user to authenticate himself in future requests.
 	 */
 	async loginWithToken(credentials: AuthSystemCredentials): Promise<AuthTokenDto> {
 		// Check if user is authenticated in authentication system
 		const authInfo = await this.authSystem.checkAuthentication(credentials);
 		if (!authInfo) throw new BadRequestException("Invalid credentials");
-		
+
 		// Try to find user in this system
 		let user: User;
 		user = await this.userRepository.tryGetUserByUsername(authInfo.user.username);
@@ -66,12 +66,16 @@ export class AuthService {
 	 * Returns `true`, if the user's `email` or `displayName` have been changed by Sparkyservice.
 	 */
 	private userInfoHasChanged(user: User, authInfo: AuthInfo): boolean {
-		return user.email !== authInfo.user.settings.emailAddress || user.displayName !== authInfo.user.fullName;
+		return (
+			user.email !== authInfo.user.settings.emailAddress ||
+			user.displayName !== authInfo.user.fullName
+		);
 	}
 
 	private async createUser(authInfo: AuthInfo) {
 		const username = authInfo.user.username;
-		const displayName = authInfo.user.fullName?.length > 0 ? authInfo.user.fullName : authInfo.user.username;
+		const displayName =
+			authInfo.user.fullName?.length > 0 ? authInfo.user.fullName : authInfo.user.username;
 		const role = this.determineRole(authInfo.user.role);
 		const email = authInfo.user.settings?.emailAddress;
 
@@ -84,10 +88,14 @@ export class AuthService {
 	 */
 	private determineRole(role: string): UserRole {
 		switch (role) {
-		case "DEFAULT": return UserRole.USER;
-		case "ADMIN": return UserRole.SYSTEM_ADMIN;
-		case "SERVICE": return UserRole.ADMIN_TOOL;
-		default: return UserRole.USER;
+			case "DEFAULT":
+				return UserRole.USER;
+			case "ADMIN":
+				return UserRole.SYSTEM_ADMIN;
+			case "SERVICE":
+				return UserRole.ADMIN_TOOL;
+			default:
+				return UserRole.USER;
 		}
 	}
 
@@ -107,24 +115,23 @@ export class AuthService {
 		return this.generateAuthToken(user);
 	}
 
-
 	/**
-	 * Returns an AuthToken containing a JWT and information about the user. 
+	 * Returns an AuthToken containing a JWT and information about the user.
 	 */
 	async generateAuthToken(user: User): Promise<AuthTokenDto> {
 		// Generate JWT Token
 		const payload: JwtPayload = { userId: user.id, username: user.username, role: user.role };
 		const accessToken = await this.jwtService.signAsync(payload);
 		const expiresIn = new Date(Date.now() + this.jwtExpiresIn * 1000);
-		
+
 		// Configure the AuthToken, that gets send back to user
-		const authToken: AuthTokenDto = { 
+		const authToken: AuthTokenDto = {
 			accessToken: accessToken, // JWT (encrypted)
 			user: DtoFactory.createUserDto(user),
 			expiration: expiresIn,
 			_expirationInLocale: expiresIn.toLocaleString()
 		};
-		
+
 		return authToken;
 	}
 }

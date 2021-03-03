@@ -1,4 +1,7 @@
-import { OverallPercentRuleDto, IndividualPercentWithAllowedFailuresRuleDto } from "../../../src/admission-status/dto/admission-rule.dto";
+import {
+	OverallPercentRuleDto,
+	IndividualPercentWithAllowedFailuresRuleDto
+} from "../../../src/admission-status/dto/admission-rule.dto";
 import { RuleType } from "../../../src/admission-status/rules/abstract-rules";
 import { AdmissionCriteriaDto } from "../../../src/course/dto/course-config/admission-criteria.dto";
 import { AssignmentType } from "../../../src/shared/enums";
@@ -10,7 +13,7 @@ const ADMISSION_RULE_HOMEWORK_OVERALL_50_PERCENT_ROUNDING_NEXT_INTEGER: OverallP
 	requiredPercent: 50,
 	achievedPercentRounding: {
 		type: RoundingType.UP_NEAREST_INTEGER
-	},
+	}
 };
 
 const ADMISSION_RULE_TESTAT_OVERALL_50_PERCENT_ROUNDING_NEXT_INTEGER: OverallPercentRuleDto = {
@@ -20,7 +23,7 @@ const ADMISSION_RULE_TESTAT_OVERALL_50_PERCENT_ROUNDING_NEXT_INTEGER: OverallPer
 	achievedPercentRounding: {
 		type: RoundingType.DECIMALS,
 		decimals: 0
-	},
+	}
 };
 
 const ADMISSION_RULE_INDIVIDUAL_PERCENT_WITH_ALLOWED_FAILURES: IndividualPercentWithAllowedFailuresRuleDto = {
@@ -28,7 +31,7 @@ const ADMISSION_RULE_INDIVIDUAL_PERCENT_WITH_ALLOWED_FAILURES: IndividualPercent
 	assignmentType: AssignmentType.HOMEWORK,
 	requiredPercent: 50,
 	achievedPercentRounding: {
-		type: RoundingType.NONE,
+		type: RoundingType.NONE
 	},
 	allowedFailures: 2
 };

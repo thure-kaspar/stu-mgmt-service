@@ -1,12 +1,12 @@
 import { IsString, MinLength, IsEmail, IsNotEmpty } from "class-validator";
 
 export class AuthCredentialsDto {
-  @IsEmail()
-  email: string;
+	@IsEmail()
+	email: string;
 
-  @IsString()
-  @MinLength(1)
-  password: string;
+	@IsString()
+	@MinLength(1)
+	password: string;
 }
 
 export class AuthSystemCredentials {

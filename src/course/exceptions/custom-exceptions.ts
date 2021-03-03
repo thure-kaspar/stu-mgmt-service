@@ -13,13 +13,19 @@ export class CourseClosedException extends ForbiddenException {
 
 export class NotACourseMemberException extends ForbiddenException {
 	constructor(courseId: CourseId, userId: UserId) {
-		super(`User (${userId}) is not a member of course (${courseId}).`, "NotACourseMemberException");
+		super(
+			`User (${userId}) is not a member of course (${courseId}).`,
+			"NotACourseMemberException"
+		);
 	}
 }
 
 export class NotATeachingStaffMember extends ForbiddenException {
 	constructor(courseId: CourseId, userId: UserId) {
-		super(`User (${userId}) is not a member of teaching staff in course (${courseId}).`, "NotATeachingStaffMember");
+		super(
+			`User (${userId}) is not a member of teaching staff in course (${courseId}).`,
+			"NotATeachingStaffMember"
+		);
 	}
 }
 
@@ -31,7 +37,10 @@ export class GroupClosedException extends ForbiddenException {
 
 export class NotAGroupMemberException extends ForbiddenException {
 	constructor(groupId: GroupId, userId: UserId) {
-		super(`User (${userId}) is not a member of group (${groupId}).`, "NotAGroupMemberException");
+		super(
+			`User (${userId}) is not a member of group (${groupId}).`,
+			"NotAGroupMemberException"
+		);
 	}
 }
 
@@ -43,7 +52,10 @@ export class GroupsForbiddenException extends ForbiddenException {
 
 export class AlreadyInGroupException extends ConflictException {
 	constructor(userId: UserId, groupId: GroupId) {
-		super(`User (${userId}) is already member of a group (${groupId}).`, "AlreadyInGroupException");
+		super(
+			`User (${userId}) is already member of a group (${groupId}).`,
+			"AlreadyInGroupException"
+		);
 	}
 }
 
@@ -61,7 +73,10 @@ export class InvalidPasswordException extends ForbiddenException {
 
 export class AssignmentNotInReviewStateException extends ForbiddenException {
 	constructor(assignmentId: AssignmentId) {
-		super(`Assignment ${assignmentId} is not in the required state (IN_REVIEW) for this action.`, "AssignmentNotInReviewStateException");
+		super(
+			`Assignment ${assignmentId} is not in the required state (IN_REVIEW) for this action.`,
+			"AssignmentNotInReviewStateException"
+		);
 	}
 }
 

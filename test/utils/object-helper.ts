@@ -15,12 +15,12 @@ export function copy<T>(target: T): T {
 	if (typeof target === "object") {
 		if (typeof target[(Symbol as any).iterator] === "function") {
 			const cp = [] as any[];
-			if ((target as any as any[]).length > 0) {
-				for (const arrayMember of target as any as any[]) {
+			if (((target as any) as any[]).length > 0) {
+				for (const arrayMember of (target as any) as any[]) {
 					cp.push(copy(arrayMember));
 				}
 			}
-			return cp as any as T;
+			return (cp as any) as T;
 		} else {
 			const targetKeys = Object.keys(target);
 			const cp = {};
@@ -38,14 +38,14 @@ export function copy<T>(target: T): T {
 
 /** Assigns all properties of the source to the target-object. */
 export function assignProperties(target: any, source: any): void {
-	Object.keys(source).forEach(key=> {
+	Object.keys(source).forEach(key => {
 		target[key] = source[key];
 	});
 }
 
 /** Assigns only matching properties of the source to the target-object. Does not include nested. */
 export function assignMatchingProperties(target: any, source: any): void {
-	Object.keys(source).forEach(key=> {
+	Object.keys(source).forEach(key => {
 		if (key in target) target[key] = source[key]; // TODO: Figure out a way to implement this so it works with entities
 	});
 }
@@ -55,7 +55,7 @@ export function assignMatchingProperties(target: any, source: any): void {
  * Will only work, if entity and dto share a similar structure. Will not perform any custom mapping between these objects.
  * Does not include nested objects such as relations.
  */
-export function convertToEntityNoRelations<T>(target: (new () => T), dto: unknown): T {
+export function convertToEntityNoRelations<T>(target: new () => T, dto: unknown): T {
 	const entity = new target();
 	assignProperties(entity, copy(dto)); // TODO: Using wrong method while assignMatchingProperties doesn't work
 	return entity;
@@ -66,9 +66,8 @@ export function convertToEntityNoRelations<T>(target: (new () => T), dto: unknow
  * Will only work, if entity and dto share a similar structure. Will not perform any custom mapping between these objects.
  * Nested objects will be assigned, but not instantiated as entities.
  */
-export function convertToEntity<T>(target: (new () => T), dto: unknown): T {
+export function convertToEntity<T>(target: new () => T, dto: unknown): T {
 	const entity = new target();
 	assignProperties(entity, copy(dto));
 	return entity;
 }
-

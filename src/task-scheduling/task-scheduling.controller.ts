@@ -18,11 +18,10 @@ class JobInfoDto {
 @UseGuards(AuthGuard())
 @Roles(UserRole.SYSTEM_ADMIN)
 export class TaskSchedulingController {
-
 	constructor(
 		private schedulerRegistry: SchedulerRegistry,
 		private assignmentScheduler: AssignmentSchedulerService
-	) { }
+	) {}
 
 	@ApiOperation({
 		operationId: "start_startAssignments",
@@ -52,7 +51,7 @@ export class TaskSchedulingController {
 		description: "Requires role: SYSTEM_ADMIN"
 	})
 	@Post("assignment-scheduler/start-assignments/set-time")
-	setTime_StartAssignments(time: { crontime: string}): void {
+	setTime_StartAssignments(time: { crontime: string }): void {
 		const startAssignments = this.schedulerRegistry.getCronJob("startAssignments");
 		startAssignments.setTime(time.crontime);
 	}
@@ -77,8 +76,7 @@ export class TaskSchedulingController {
 				jobName: "stopAssignments",
 				lastDate: (stopAssignments.lastDate() as Date)?.toLocaleString(),
 				nextDate: stopAssignments.nextDate(1)[0]
-			},
+			}
 		];
 	}
-
 }

@@ -14,14 +14,12 @@ export class EntityNotFoundFilter implements ExceptionFilter {
 		const ctx = host.switchToHttp();
 		const response = ctx.getResponse<Response>();
 		const request = ctx.getRequest<Request>();
-		
-		response
-			.status(404)
-			.json({
-				statusCode: 404,
-				path: request.url,
-				error: "NotFound",
-				message: "The requested resource was not found."
-			});
+
+		response.status(404).json({
+			statusCode: 404,
+			path: request.url,
+			error: "NotFound",
+			message: "The requested resource was not found."
+		});
 	}
 }

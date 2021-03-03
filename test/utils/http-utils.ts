@@ -18,7 +18,7 @@ export function setTotalCountHeader(request: Request, count: number): void {
  */
 export function sanitizeEnum<Enum>(target: Enum, values: any[]): any[] | undefined {
 	if (!values) return undefined;
-	
+
 	if (Array.isArray(values as any)) {
 		// Values is of type array: Filter and return all values that actually exist in the enum.
 		return values.filter(value => Object.values(target).includes(value));
@@ -35,7 +35,7 @@ export function sanitizeEnum<Enum>(target: Enum, values: any[]): any[] | undefin
 /**
  * Returns the boolean value of a string. Incoming data over HTTP is always a string,
  * therefore we must transform "true" -> true and "false" -> false.
- * If the given value is ```null``` or ```undefined```, returns ```undefined```.  
+ * If the given value is ```null``` or ```undefined```, returns ```undefined```.
  * If the given value is already a number, returns the boolean.
  * If the app is using the ```ValidationPipe``` with ```transform``` enabled,
  * calling this function is only necessary for nested properties of Query-Objects.
@@ -50,7 +50,7 @@ export function transformBoolean(bool: unknown): boolean | undefined {
 }
 
 /**
- * Returns the numeric value of a string. 
+ * Returns the numeric value of a string.
  * If the given value is ```null``` or ```undefined```, returns ```undefined```.
  * If the given value is already a number, returns the value.
  */

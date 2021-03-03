@@ -1,4 +1,17 @@
-import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards, ValidationPipe } from "@nestjs/common";
+import {
+	BadRequestException,
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Param,
+	Patch,
+	Post,
+	Query,
+	Req,
+	UseGuards,
+	ValidationPipe
+} from "@nestjs/common";
 import { QueryBus } from "@nestjs/cqrs";
 import { AuthGuard } from "@nestjs/passport";
 import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger";
@@ -30,23 +43,26 @@ import { Participant } from "../models/participant.model";
 @Controller("courses/:courseId/users")
 @UseGuards(AuthGuard())
 export class CourseParticipantsController {
-
-	constructor(private courseParticipantsService: CourseParticipantsService,
-				private queryBus: QueryBus) { }
+	constructor(
+		private courseParticipantsService: CourseParticipantsService,
+		private queryBus: QueryBus
+	) {}
 
 	/**
-	 * Adds a user to the course. 
+	 * Adds a user to the course.
 	 * If the course requires a password, the correct password needs to be included in the request body.
 	 */
 	@Post(":userId")
 	@ApiOperation({
 		operationId: "addUser",
 		summary: "Add user to course.",
-		description: "Adds a user to the course. If the course requires a password, the correct password needs to be included in the request body."
+		description:
+			"Adds a user to the course. If the course requires a password, the correct password needs to be included in the request body."
 	})
-	addUser(@Param("courseId") courseId: CourseId,
-			@Param("userId") userId: UserId,
-			@Body() password?: PasswordDto,
+	addUser(
+		@Param("courseId") courseId: CourseId,
+		@Param("userId") userId: UserId,
+		@Body() password?: PasswordDto
 	): Promise<void> {
 		return this.courseParticipantsService.addParticipant(courseId, userId, password.password);
 	}
@@ -66,14 +82,20 @@ export class CourseParticipantsController {
 		@Param("courseId") courseId: CourseId,
 		@Query() filter?: CourseParticipantsFilter
 	): Promise<ParticipantDto[]> {
-		
-		return PaginatedResult(this.courseParticipantsService.getParticipants(courseId, new CourseParticipantsFilter(filter)), request);
+		return PaginatedResult(
+			this.courseParticipantsService.getParticipants(
+				courseId,
+				new CourseParticipantsFilter(filter)
+			),
+			request
+		);
 	}
 
 	@ApiOperation({
 		operationId: "getParticipant",
 		summary: "Get participant.",
-		description: "Retrieves a specific participant and course related information about the participant."
+		description:
+			"Retrieves a specific participant and course related information about the participant."
 	})
 	@UseGuards(CourseMemberGuard)
 	@Get(":userId")
@@ -82,7 +104,6 @@ export class CourseParticipantsController {
 		@Param("userId") userId: UserId,
 		@GetParticipant() requestingParticipant: Participant
 	): Promise<ParticipantDto> {
-
 		const participant = await this.courseParticipantsService.getParticipant(courseId, userId);
 		if (requestingParticipant.isStudent() && requestingParticipant.userId !== userId) {
 			participant.email = undefined;
@@ -93,7 +114,8 @@ export class CourseParticipantsController {
 	@ApiOperation({
 		operationId: "compareParticipantsList",
 		summary: "Compare participants list..",
-		description: "Returns an Object, which divides the course participants in two groups (in/out)."
+		description:
+			"Returns an Object, which divides the course participants in two groups (in/out)."
 	})
 	@Get("query/compare-participants-list")
 	@UseGuards(CourseMemberGuard, TeachingStaffGuard)
@@ -102,10 +124,11 @@ export class CourseParticipantsController {
 		@Param("courseId") courseId: CourseId,
 		@Query("compareToCourseIds") compareToCourseIds: CourseId[]
 	): Promise<ParticipantsComparisonDto> {
-		
 		compareToCourseIds = transformArray(compareToCourseIds);
 		if (compareToCourseIds?.length > 0) {
-			return this.queryBus.execute(new CompareParticipantsListQuery(courseId, compareToCourseIds));
+			return this.queryBus.execute(
+				new CompareParticipantsListQuery(courseId, compareToCourseIds)
+			);
 		} else {
 			throw new BadRequestException("No courseIds were specified for comparison.");
 		}
@@ -114,21 +137,22 @@ export class CourseParticipantsController {
 	@ApiOperation({
 		operationId: "canUserJoinCourse",
 		summary: "Check if joining is possible.",
-		description: "Checks, if the user is able to join the course. A user can join a course, if he's not already a member and the course is not closed."
+		description:
+			"Checks, if the user is able to join the course. A user can join a course, if he's not already a member and the course is not closed."
 	})
 	@Get(":userId/canJoin")
 	canUserJoinCourse(
 		@Param("courseId") courseId: CourseId,
-		@Param("userId") userId: UserId,
+		@Param("userId") userId: UserId
 	): Promise<CanJoinCourseDto> {
-
 		return this.queryBus.execute(new CanJoinCourseQuery(courseId, userId));
 	}
 
 	@ApiOperation({
 		operationId: "getParticipantsWithAssignedEvaluator",
 		summary: "Get participants with assigned evaluator.",
-		description: "Returns participants with their assigned evaluator for a particular assignment."
+		description:
+			"Returns participants with their assigned evaluator for a particular assignment."
 	})
 	@UseGuards(CourseMemberGuard, TeachingStaffGuard)
 	@Get("assignments/:assignmentId/with-assigned-evaluator")
@@ -139,7 +163,11 @@ export class CourseParticipantsController {
 		@Query() filter?: AssignedEvaluatorFilter
 	): Promise<ParticipantsWithAssignedEvaluatorDto[]> {
 		const [users, count] = await this.queryBus.execute(
-			new ParticipantsWithAssignedEvaluatorQuery(courseId, assignmentId, new AssignedEvaluatorFilter(filter))
+			new ParticipantsWithAssignedEvaluatorQuery(
+				courseId,
+				assignmentId,
+				new AssignedEvaluatorFilter(filter)
+			)
 		);
 		setTotalCountHeader(request, count);
 		return users;
@@ -160,7 +188,6 @@ export class CourseParticipantsController {
 		@Param("userId") userId: UserId,
 		@Body(ValidationPipe) dto: ChangeCourseRoleDto
 	): Promise<void> {
-		
 		const updated = await this.courseParticipantsService.updateRole(courseId, userId, dto.role);
 		if (!updated) {
 			throw new BadRequestException("Update failed");
@@ -179,13 +206,11 @@ export class CourseParticipantsController {
 	@Delete(":userId")
 	async removeUser(
 		@Param("courseId") courseId: CourseId,
-		@Param("userId") userId: UserId,
+		@Param("userId") userId: UserId
 	): Promise<void> {
-
 		return throwIfRequestFailed(
 			this.courseParticipantsService.removeUser(courseId, userId),
 			`Failed to remove user (${userId}) from course (${courseId}).`
 		);
 	}
-
 }

@@ -8,7 +8,11 @@ import { UserDto } from "../../src/shared/dto/user.dto";
 import { CollaborationType, UserRole } from "../../src/shared/enums";
 import { AssignmentGroupTuple } from "../../src/user/dto/assignment-group-tuple.dto";
 import { createApplication } from "../mocks/application.mock";
-import { ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA_INVISIBLE, ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP } from "../mocks/assignments.mock";
+import {
+	ASSIGNMENT_JAVA_CLOSED,
+	ASSIGNMENT_JAVA_INVISIBLE,
+	ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP
+} from "../mocks/assignments.mock";
 import { COURSE_JAVA_1920 } from "../mocks/courses.mock";
 import { DbMockService } from "../mocks/db-mock.service";
 import { GROUP_EVENT_REJOIN_SCENARIO } from "../mocks/groups/group-events.mock";
@@ -23,7 +27,6 @@ const users = UsersMock;
 const user = copy(USER_STUDENT_JAVA);
 
 describe("GET-REQUESTS of UserController (e2e)", () => {
-	
 	beforeAll(async () => {
 		app = await createApplication();
 
@@ -38,7 +41,6 @@ describe("GET-REQUESTS of UserController (e2e)", () => {
 	});
 
 	describe("(GET) /users", () => {
-	
 		it("Retrieves all users", () => {
 			return request(app.getHttpServer())
 				.get("/users")
@@ -120,7 +122,6 @@ describe("GET-REQUESTS of UserController (e2e)", () => {
 					expect(body.length).toEqual(take);
 				});
 		});
-	
 	});
 
 	it("(GET) /users/{userId} Retrieves the user by id", () => {
@@ -175,7 +176,6 @@ describe("GET-REQUESTS of UserController (e2e)", () => {
 		const course = COURSE_JAVA_1920;
 
 		it("Retrieves the user's group history in a course (sorted by timestamp descending)", () => {
-			
 			const expected = GROUP_EVENT_REJOIN_SCENARIO().reverse(); // Ordered from new to old
 			const expectedJson = JSON.parse(JSON.stringify(expected)) as GroupEventDto[];
 
@@ -186,7 +186,6 @@ describe("GET-REQUESTS of UserController (e2e)", () => {
 					expect(result).toEqual(expectedJson);
 				});
 		});
-	
 	});
 
 	describe("(GET) /users/{userId}/courses/{courseId}/assignments/{assignmentId}/group", () => {
@@ -196,8 +195,11 @@ describe("GET-REQUESTS of UserController (e2e)", () => {
 			const assignment = ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP;
 			const expected = GROUP_1_JAVA;
 
-			console.assert(assignment.collaboration === CollaborationType.GROUP, "Expecting a group assignment.");
-	
+			console.assert(
+				assignment.collaboration === CollaborationType.GROUP,
+				"Expecting a group assignment."
+			);
+
 			return request(app.getHttpServer())
 				.get(`/users/${user.id}/courses/${course.id}/assignments/${assignment.id}/group`)
 				.expect(200)
@@ -211,12 +213,13 @@ describe("GET-REQUESTS of UserController (e2e)", () => {
 		it("User had no group -> 404", () => {
 			const assignment = ASSIGNMENT_JAVA_CLOSED;
 			const userNoGroup = USER_MGMT_ADMIN_JAVA_LECTURER;
-	
+
 			return request(app.getHttpServer())
-				.get(`/users/${userNoGroup.id}/courses/${course.id}/assignments/${assignment.id}/group`)
+				.get(
+					`/users/${userNoGroup.id}/courses/${course.id}/assignments/${assignment.id}/group`
+				)
 				.expect(404);
 		});
-	
 	});
 
 	describe("(GET) /users/{userId}/courses/{courseId}/assignments/groups", () => {
@@ -238,13 +241,10 @@ describe("GET-REQUESTS of UserController (e2e)", () => {
 					});
 				});
 		});
-	
 	});
-
 });
 
 describe("POST-REQUESTS of UserController (e2e)", () => {
-	
 	beforeEach(async () => {
 		app = await createApplication();
 
@@ -266,11 +266,9 @@ describe("POST-REQUESTS of UserController (e2e)", () => {
 				expect(body.email).toEqual(USER_STUDENT_JAVA.email);
 			});
 	});
-	
 });
 
 describe("PATCH-REQUESTS (Db contains data) of GroupController (e2e)", () => {
-
 	beforeEach(async () => {
 		app = await createApplication();
 
@@ -302,11 +300,9 @@ describe("PATCH-REQUESTS (Db contains data) of GroupController (e2e)", () => {
 				expect(body.role).toEqual(changedUser.role);
 			});
 	});
-
 });
 
 describe("DELETE-REQUESTS (Db contains data) of GroupController (e2e)", () => {
-
 	beforeEach(async () => {
 		app = await createApplication();
 
@@ -321,11 +317,6 @@ describe("DELETE-REQUESTS (Db contains data) of GroupController (e2e)", () => {
 	});
 
 	it("(DELETE) /users/{userId} Deletes the user", () => {
-		return request(app.getHttpServer())
-			.delete(`/users/${USER_STUDENT_JAVA.id}`)
-			.expect(200); // TODO: 
+		return request(app.getHttpServer()).delete(`/users/${USER_STUDENT_JAVA.id}`).expect(200); // TODO:
 	});
-
 });
-
-

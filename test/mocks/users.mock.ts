@@ -8,7 +8,7 @@ export const USER_STUDENT_JAVA: UserDto = {
 	email: "max.mustermann@test.com",
 	displayName: "Max Mustermann",
 	username: "mmustermann",
-	role: UserRole.USER,
+	role: UserRole.USER
 };
 
 export const USER_STUDENT_2_JAVA: UserDto = {
@@ -16,7 +16,7 @@ export const USER_STUDENT_2_JAVA: UserDto = {
 	email: "hans.peter@test.com",
 	displayName: "Hans Peter",
 	username: "hpeter",
-	role: UserRole.USER,
+	role: UserRole.USER
 };
 
 export const USER_STUDENT_3_JAVA_TUTOR: UserDto = {
@@ -24,7 +24,7 @@ export const USER_STUDENT_3_JAVA_TUTOR: UserDto = {
 	email: "john.doe@test.com",
 	displayName: "John Doe",
 	username: "jdoe",
-	role: UserRole.USER,
+	role: UserRole.USER
 };
 
 export const USER_MGMT_ADMIN_JAVA_LECTURER: UserDto = {
@@ -32,7 +32,7 @@ export const USER_MGMT_ADMIN_JAVA_LECTURER: UserDto = {
 	email: "mgtm.admin@test.com",
 	displayName: "Mgtm Admin",
 	username: "mAdmin",
-	role: UserRole.MGMT_ADMIN,
+	role: UserRole.MGMT_ADMIN
 };
 
 export const USER_SYSTEM_ADMIN: UserDto = {
@@ -40,7 +40,7 @@ export const USER_SYSTEM_ADMIN: UserDto = {
 	email: "system.admin@test.com",
 	displayName: "System Admin",
 	username: "sAdmin",
-	role: UserRole.SYSTEM_ADMIN,
+	role: UserRole.SYSTEM_ADMIN
 };
 
 export const USER_FROM_AUTH_SYSTEM: UserDto = {
@@ -84,7 +84,7 @@ export const USER_NOT_IN_COURSE: UserDto = {
 };
 
 export const UsersMock: UserDto[] = [
-	USER_STUDENT_JAVA, 
+	USER_STUDENT_JAVA,
 	USER_STUDENT_2_JAVA,
 	USER_STUDENT_3_JAVA_TUTOR,
 	USER_MGMT_ADMIN_JAVA_LECTURER,
@@ -98,7 +98,7 @@ export const UsersMock: UserDto[] = [
 
 export function getUsersOfCourseMock(): User[] {
 	const participants: UserDto[] = [
-		USER_STUDENT_JAVA, 
+		USER_STUDENT_JAVA,
 		USER_STUDENT_2_JAVA,
 		USER_STUDENT_3_JAVA_TUTOR,
 		USER_MGMT_ADMIN_JAVA_LECTURER

@@ -1,6 +1,21 @@
-import { Controller, Post, Param, Body, Get, Patch, Delete, UseGuards, Query, Req } from "@nestjs/common";
+import {
+	Controller,
+	Post,
+	Param,
+	Body,
+	Get,
+	Patch,
+	Delete,
+	UseGuards,
+	Query,
+	Req
+} from "@nestjs/common";
 import { AssessmentService } from "../services/assessment.service";
-import { AssessmentDto, AssessmentCreateDto, AssessmentUpdateDto } from "../dto/assessment/assessment.dto";
+import {
+	AssessmentDto,
+	AssessmentCreateDto,
+	AssessmentUpdateDto
+} from "../dto/assessment/assessment.dto";
 import { ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
 import { PartialAssessmentDto } from "../dto/assessment/partial-assessment.dto";
 import { GetUser } from "../../auth/decorators/get-user.decorator";
@@ -23,8 +38,7 @@ import { Assignment } from "../models/assignment.model";
 @Controller("courses/:courseId/assignments/:assignmentId/assessments")
 @UseGuards(AuthGuard(), CourseMemberGuard)
 export class AssessmentController {
-
-	constructor(private assessmentService: AssessmentService) { }
+	constructor(private assessmentService: AssessmentService) {}
 
 	@ApiOperation({
 		operationId: "createAssessment",
@@ -40,14 +54,14 @@ export class AssessmentController {
 		@GetParticipant() participant: Participant,
 		@GetAssignment() assignment: Assignment
 	): Promise<AssessmentDto> {
-
 		return this.assessmentService.createAssessment(participant, assignment, assessment);
 	}
 
 	@ApiOperation({
 		operationId: "addPartialAssessment",
 		summary: "Add partial assessment.",
-		description: "Adds a partial assessment for an existing assessment. Alternatively, partial assessments can be created together with the assessment."
+		description:
+			"Adds a partial assessment for an existing assessment. Alternatively, partial assessments can be created together with the assessment."
 	})
 	@Post(":assessmentId")
 	@UseGuards(TeachingStaffGuard)
@@ -57,7 +71,6 @@ export class AssessmentController {
 		@Param("assessmentId") assessmentId: string,
 		@Body() partial: PartialAssessmentDto
 	): Promise<PartialAssessmentDto> {
-
 		return this.assessmentService.addPartialAssessment(assignmentId, assessmentId, partial);
 	}
 
@@ -74,8 +87,13 @@ export class AssessmentController {
 		@Param("assignmentId") assignmentId: string,
 		@Query() filter?: AssessmentFilter
 	): Promise<AssessmentDto[]> {
-
-		return PaginatedResult(this.assessmentService.getAssessmentsForAssignment(assignmentId, new AssessmentFilter(filter)), request);
+		return PaginatedResult(
+			this.assessmentService.getAssessmentsForAssignment(
+				assignmentId,
+				new AssessmentFilter(filter)
+			),
+			request
+		);
 	}
 
 	@ApiOperation({
@@ -89,7 +107,6 @@ export class AssessmentController {
 		@Param("assignmentId") assignmentId: string,
 		@Param("assessmentId") assessmentId: string
 	): Promise<AssessmentDto> {
-
 		return this.assessmentService.getAssessmentById(assessmentId);
 	}
 
@@ -105,7 +122,6 @@ export class AssessmentController {
 		@Param("assignmentId") assignmentId: string,
 		@Param("assessmentId") assessmentId: string
 	): Promise<AssessmentEventDto[]> {
-
 		return this.assessmentService.getEventsOfAssessment(assessmentId);
 	}
 
@@ -121,9 +137,8 @@ export class AssessmentController {
 		@Param("assignmentId") assignmentId: string,
 		@Param("assessmentId") assessmentId: string,
 		@Body() assessmentDto: AssessmentUpdateDto,
-		@GetUser() updatedBy: UserDto,
+		@GetUser() updatedBy: UserDto
 	): Promise<AssessmentDto> {
-
 		return this.assessmentService.updateAssessment(assessmentId, assessmentDto, updatedBy.id);
 	}
 
@@ -139,11 +154,9 @@ export class AssessmentController {
 		@Param("assignmentId") assignmentId: string,
 		@Param("assessmentId") assessmentId: string
 	): Promise<void> {
-
 		return throwIfRequestFailed(
 			this.assessmentService.deleteAssessment(assessmentId),
 			`Failed to delete assessment (${assessmentId}) of assignment (${assignmentId}).`
 		);
 	}
-
 }

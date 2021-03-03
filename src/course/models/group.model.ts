@@ -1,11 +1,14 @@
 import { BadRequestException } from "@nestjs/common";
 import { GroupUpdateDto } from "../dto/group/group.dto";
 import { Group as GroupEntity } from "../entities/group.entity";
-import { GroupClosedException, GroupFullException, InvalidPasswordException } from "../exceptions/custom-exceptions";
+import {
+	GroupClosedException,
+	GroupFullException,
+	InvalidPasswordException
+} from "../exceptions/custom-exceptions";
 import { Participant } from "./participant.model";
 
 export class Group {
-
 	readonly id: string;
 	readonly name: string;
 	members: Participant[];
@@ -22,7 +25,7 @@ export class Group {
 
 	/** Returns the amount of group members. */
 	get size(): number {
-		return this.members.length; 
+		return this.members.length;
 	}
 
 	/**
@@ -52,13 +55,12 @@ export class Group {
 	}
 
 	/**
-	 * Returns `true`, if `GroupUpdateDto` contains a new name.  
+	 * Returns `true`, if `GroupUpdateDto` contains a new name.
 	 * Returns `false`, if name was unchanged or undefined.
 	 */
 	wantsToChangeName(update: GroupUpdateDto): boolean {
-		return update.name && (update.name !== this.name);
+		return update.name && update.name !== this.name;
 	}
-
 
 	/**
 	 * Returns `true`, if the group size is below the specified min size.
@@ -77,7 +79,7 @@ export class Group {
 
 	/**
 	 * Asserts that the group has room for more members.
-	 * @throws 
+	 * @throws
 	 */
 	hasCapacity(sizeMax: number): Group {
 		if (this.members.length >= sizeMax) {
@@ -88,11 +90,13 @@ export class Group {
 
 	/**
 	 * Asserts that the group has at least minSize members.
-	 * @throws GroupFullException if 
+	 * @throws GroupFullException if
 	 */
 	hasAtLeastMinSize(sizeMin: number): Group {
 		if (this.members.length >= sizeMin) {
-			throw new BadRequestException(`Group (${this.group.id}) does not have ${sizeMin} members.`);
+			throw new BadRequestException(
+				`Group (${this.group.id}) does not have ${sizeMin} members.`
+			);
 		}
 		return this;
 	}
@@ -107,5 +111,4 @@ export class Group {
 		}
 		return this;
 	}
-
 }

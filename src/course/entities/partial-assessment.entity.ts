@@ -7,7 +7,9 @@ export class PartialAssessment {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@ManyToOne(type => Assessment, assessment => assessment.partialAssessments, { onDelete: "CASCADE" })
+	@ManyToOne(type => Assessment, assessment => assessment.partialAssessments, {
+		onDelete: "CASCADE"
+	})
 	@JoinColumn()
 	assessment: Assessment;
 
@@ -34,7 +36,7 @@ export class PartialAssessment {
 
 	@Column({ nullable: true })
 	line?: number;
-	
+
 	toDto(): PartialAssessmentDto {
 		return {
 			id: this.id,
@@ -48,5 +50,4 @@ export class PartialAssessment {
 			points: this.points ?? undefined
 		};
 	}
-	
 }

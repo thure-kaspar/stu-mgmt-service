@@ -1,23 +1,23 @@
 server:
-  port: 9999
+    port: 9999
 
-db: 
-  type: "postgres"
-  port: 5432
-  database: "StudentMgmtTestDb"
-  host: "localhost"
-  username: "postgres"
-  password: "admin"
-  synchronize: true
-  dropSchema: true
+db:
+    type: "postgres"
+    port: 5432
+    database: "StudentMgmtTestDb"
+    host: "localhost"
+    username: "postgres"
+    password: "admin"
+    synchronize: true
+    dropSchema: true
 
 jwt:
-  secret: "jwt-dev-secret"
+    secret: "jwt-dev-secret"
 
 logger:
-  levels:
-    - error
-    - warn
-    - debug
-  requests: false
-  dbErrors: true
+    levels:
+        - error
+        - warn
+        - debug
+    requests: false
+    dbErrors: true

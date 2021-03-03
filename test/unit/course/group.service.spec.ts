@@ -34,7 +34,7 @@
 // 	userRelation1.userId = "user_id_1";
 // 	userRelation1.participant = new ParticipantEntity(PARTICIPANT_JAVA_1920_STUDENT);
 // 	group.userGroupRelations = [userRelation1];
-	
+
 // 	const course = convertToEntity(CourseEntity, COURSE_JAVA_1920);
 // 	group.course = course;
 
@@ -94,11 +94,11 @@
 // });
 
 // const mock_GroupEventRepository = () => ({
-	
+
 // });
 
 // const mock_AssignmentRepository = () => ({
-	
+
 // });
 
 // const mock_EventBus = () => ({
@@ -126,7 +126,7 @@
 // 				{ provide: EventBus, useFactory: mock_EventBus }
 // 			],
 // 		}).compile();
-		
+
 // 		DtoFactory.createGroupDto = jest.fn();
 
 // 		service = module.get(GroupService);
@@ -216,7 +216,7 @@
 // 			const studentWithGroup = copy(PARTICIPANT_JAVA_1920_STUDENT);
 // 			studentWithGroup.groupId = GROUP_1_JAVA.id;
 // 			studentWithGroup.group = GROUP_1_JAVA;
-			
+
 // 			try {
 // 				await service.createGroup(groupDto.course.id, groupDto, studentWithGroup);
 // 				expect(true).toEqual(false);
@@ -226,7 +226,7 @@
 // 				expect(error).toBeInstanceOf(AlreadyInGroupException);
 // 			}
 // 		});
-	
+
 // 	});
 
 // 	describe("addUserToGroup", () => {
@@ -259,12 +259,12 @@
 // 			await service.addUserToGroup(course.id, groupDto.id, userId, groupDto.password);
 // 			expect(eventBus.publish).toHaveBeenCalledWith(new UserJoinedGroupEvent(groupDto.id, userId));
 // 		});
-	
+
 // 		it("Group is closed -> Throws Exception", async () => {
 // 			groupRepository.getGroupForAddUserToGroup = jest.fn().mockResolvedValueOnce(
 // 				mock_getGroupForAddUserToGroup(true, false, groupDto.password) // Group closed
 // 			);
-			
+
 // 			try {
 // 				await service.addUserToGroup(course.id, groupDto.id, userId, groupDto.password);
 // 				expect(true).toEqual(false);
@@ -290,7 +290,7 @@
 
 // 		it("Password incorrect -> Throws Exception", async () => {
 // 			const password = "incorrect";
-			
+
 // 			try {
 // 				await service.addUserToGroup(course.id, groupDto.id, userId, password);
 // 				expect(true).toEqual(false);
@@ -299,11 +299,11 @@
 // 				expect(error.status).toEqual(403);
 // 			}
 // 		});
-	
+
 // 	});
 
 // 	describe("addUserToGroup_Force", () => {
-	
+
 // 		const userId = "user_id";
 // 		const course.id = "course_id";
 
@@ -311,11 +311,11 @@
 // 			await service.addUserToGroup_Force(course.id, groupDto.id, userId);
 // 			expect(groupRepository.addUserToGroup).toHaveBeenCalledWith(course.id, groupDto.id, userId);
 // 		});
-	
+
 // 	});
 
 // 	describe("getGroupsOfCourse", () => {
-	
+
 // 		it("Calls repository for retrieval", async () => {
 // 			const filter: GroupFilter = {
 // 				name: "group name"
@@ -328,21 +328,21 @@
 // 			await service.getGroupsOfCourse(groupDto.course.id);
 // 			expect(DtoFactory.createGroupDto).toHaveBeenCalled();
 // 		});
-	
+
 // 	});
 
 // 	describe("getUsersOfGroup", () => {
-	
+
 // 		it("Calls repository for retrieval", async () => {
 // 			DtoFactory.createUserDto = jest.fn();
 // 			await service.getUsersOfGroup(groupDto.id);
 // 			expect(groupRepository.getGroupWithUsers).toHaveBeenCalledWith(groupDto.id);
 // 		});
-	
+
 // 	});
 
 // 	describe("updateGroup", () => {
-	
+
 // 		const course.id = "course_id";
 // 		const update: GroupUpdateDto = {
 // 			isClosed: true,
@@ -367,21 +367,21 @@
 // 					return course;
 // 				});
 // 			});
-			
+
 // 			it("Calls repository for update", async () => {
 // 				await service.updateGroup(course.id, groupDto.id, update);
 // 				expect(groupRepository.updateGroup).toHaveBeenCalledWith(groupDto.id, update);
 // 			});
-	
+
 // 			it("Returns Dto", async () => {
 // 				await service.updateGroup(course.id, groupDto.id, update);
 // 				expect(DtoFactory.createGroupDto).toHaveBeenCalled();
 // 			});
-		
+
 // 		});
 
 // 		describe("Invalid", () => {
-		
+
 // 			it("Course is closed", async () => {
 // 				courseRepository.getCourseWithConfigAndGroupSettings = jest.fn().mockImplementationOnce(() => {
 // 					const course = copy(COURSE_JAVA_1920);
@@ -454,13 +454,13 @@
 // 					expect(error.status).toEqual(400);
 // 				}
 // 			});
-		
+
 // 		});
-	
+
 // 	});
 
 // 	describe("removeUser", () => {
-	
+
 // 		const userId = "user_id_1";
 // 		const reason = "Reason for leaving the group";
 
@@ -484,16 +484,16 @@
 // 				expect(error).toBeTruthy();
 // 			}
 // 		});
-	
+
 // 	});
 
 // 	describe("deleteGroup", () => {
-	
+
 // 		it("Calls repository for deletion", async () => {
 // 			await service.deleteGroup(groupDto.id);
 // 			expect(groupRepository.deleteGroup).toHaveBeenCalledWith(groupDto.id);
 // 		});
-	
+
 // 	});
 
 // });

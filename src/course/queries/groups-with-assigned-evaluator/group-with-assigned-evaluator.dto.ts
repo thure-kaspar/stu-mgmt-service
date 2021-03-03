@@ -27,6 +27,6 @@ export class AssignedEvaluatorFilter extends PaginationFilter {
 		super(filter);
 		this.assignedEvaluatorId = filter?.assignedEvaluatorId;
 		this.nameOfGroupOrUser = filter?.nameOfGroupOrUser;
-		this.excludeAlreadyReviewed = transformBoolean(filter?.excludeAlreadyReviewed); 
+		this.excludeAlreadyReviewed = transformBoolean(filter?.excludeAlreadyReviewed);
 	}
 }

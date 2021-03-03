@@ -3,8 +3,10 @@ import { AssessmentUserRelation } from "../entities/assessment-user-relation.ent
 
 @EntityRepository(AssessmentUserRelation)
 export class AssessmentUserRelationRepository extends Repository<AssessmentUserRelation> {
-
-	async createAssessmentUserRelations(assessmentId: string, userIds: string[]): Promise<AssessmentUserRelation[]> {
+	async createAssessmentUserRelations(
+		assessmentId: string,
+		userIds: string[]
+	): Promise<AssessmentUserRelation[]> {
 		const assessmentUserRelations: AssessmentUserRelation[] = [];
 		userIds.forEach(userId => {
 			const relation = new AssessmentUserRelation();
@@ -15,5 +17,4 @@ export class AssessmentUserRelationRepository extends Repository<AssessmentUserR
 		});
 		return this.save(assessmentUserRelations);
 	}
-
 }

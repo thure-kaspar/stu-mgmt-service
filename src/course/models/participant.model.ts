@@ -7,7 +7,6 @@ import { Group } from "./group.model";
 import { ForbiddenException } from "@nestjs/common";
 
 export class Participant {
-
 	readonly id: number;
 	readonly username: string;
 	readonly displayName: string;
@@ -78,5 +77,4 @@ export class Participant {
 	equals(other: Participant): boolean {
 		return this.id === other.id;
 	}
-
 }

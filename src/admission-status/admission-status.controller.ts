@@ -15,13 +15,13 @@ import { PointsOverviewDto } from "./dto/points-overview.dto";
 @UseGuards(AuthGuard(), CourseMemberGuard)
 @Controller("courses/:courseId/admission-status")
 export class AdmissionStatusController {
-
-	constructor(private admissionStatus: AdmissionStatusService) { }
+	constructor(private admissionStatus: AdmissionStatusService) {}
 
 	@ApiOperation({
 		operationId: "getPointsOverview",
 		summary: "Get points overview.",
-		description: "Returns an overview of the achieved points of all students mapped the assignments."
+		description:
+			"Returns an overview of the achieved points of all students mapped the assignments."
 	})
 	@Get("overview")
 	@UseGuards(TeachingStaffGuard)
@@ -32,7 +32,8 @@ export class AdmissionStatusController {
 	@ApiOperation({
 		operationId: "getPointsOverviewOfStudent",
 		summary: "Get points overview of student.",
-		description: "Returns an overview of the achieved points of a student mapped the assignments."
+		description:
+			"Returns an overview of the achieved points of a student mapped the assignments."
 	})
 	@Get("overview/:userId")
 	@UseGuards(ParticipantIdentityGuard)
@@ -40,7 +41,6 @@ export class AdmissionStatusController {
 		@Param("courseId") courseId: CourseId,
 		@Param("userId") userId: UserId
 	): Promise<PointsOverviewDto> {
-
 		return this.admissionStatus.getPointsOverviewOfStudent(courseId, userId);
 	}
 
@@ -54,7 +54,6 @@ export class AdmissionStatusController {
 	getAdmissionStatusOfParticipants(
 		@Param("courseId") courseId: CourseId
 	): Promise<AdmissionStatusDto[]> {
-
 		return this.admissionStatus.getAdmissionStatusOfParticipants(courseId);
 	}
 
@@ -69,8 +68,6 @@ export class AdmissionStatusController {
 		@Param("courseId") courseId: CourseId,
 		@Param("userId") userId: UserId
 	): Promise<AdmissionStatusDto> {
-
 		return this.admissionStatus.getAdmissionStatusOfParticipant(courseId, userId);
 	}
-
 }

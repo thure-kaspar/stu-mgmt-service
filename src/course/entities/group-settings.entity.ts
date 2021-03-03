@@ -7,7 +7,9 @@ export class GroupSettings {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@OneToOne(type => CourseConfig, courseConfig => courseConfig.groupSettings, { onDelete: "CASCADE" })
+	@OneToOne(type => CourseConfig, courseConfig => courseConfig.groupSettings, {
+		onDelete: "CASCADE"
+	})
 	@JoinColumn()
 	courseConfig: CourseConfig;
 
@@ -50,5 +52,4 @@ export class GroupSettings {
 			mergeGroupsOnAssignmentStarted: this.mergeGroupsOnAssignmentStarted
 		};
 	}
-
 }

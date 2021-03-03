@@ -15,13 +15,17 @@ import { AssignmentId } from "../entities/assignment.entity";
 
 @Injectable()
 export class AssignmentService {
-
-	constructor(@InjectRepository(Assignment) private assignmentRepository: AssignmentRepository,
-				private registrations: AssignmentRegistrationService,
-				private events: EventBus) { }
+	constructor(
+		@InjectRepository(Assignment) private assignmentRepository: AssignmentRepository,
+		private registrations: AssignmentRegistrationService,
+		private events: EventBus
+	) {}
 
 	async createAssignment(course: Course, assignmentDto: AssignmentDto): Promise<AssignmentDto> {
-		const createdAssignment = await this.assignmentRepository.createAssignment(course.id, assignmentDto);
+		const createdAssignment = await this.assignmentRepository.createAssignment(
+			course.id,
+			assignmentDto
+		);
 
 		const assignment = new Assignment(createdAssignment);
 		this.events.publish(new AssignmentCreated(course.id, assignment.id));
@@ -49,13 +53,17 @@ export class AssignmentService {
 	 * If the assignment is set to `IN_PROGRESS` for the first time, groups and their members
 	 * will be registered for this assignment, assuming the assignment allows groups.
 	 */
-	async updateAssignment(course: Course, assignment: Assignment, update: AssignmentUpdateDto): Promise<AssignmentDto> {
+	async updateAssignment(
+		course: Course,
+		assignment: Assignment,
+		update: AssignmentUpdateDto
+	): Promise<AssignmentDto> {
 		const updated = await this.assignmentRepository.updateAssignment(assignment.id, update);
 		const oldState = assignment.state;
 		assignment = new Assignment(updated);
 
 		if (assignment.wasStarted(oldState) && assignment.allowsGroups()) {
-			const isFirstStart = !await this.registrations.hasRegistrations(assignment.id);
+			const isFirstStart = !(await this.registrations.hasRegistrations(assignment.id));
 			if (isFirstStart) {
 				await this.registrations.registerGroupsForAssignment(course, assignment.id);
 			}
@@ -64,7 +72,7 @@ export class AssignmentService {
 		if (assignment.hasChangedState(oldState)) {
 			this.events.publish(new AssignmentStateChanged(assignment));
 		}
-		
+
 		return DtoFactory.createAssignmentDto(updated);
 	}
 
@@ -75,5 +83,4 @@ export class AssignmentService {
 		}
 		return deleted;
 	}
-
 }

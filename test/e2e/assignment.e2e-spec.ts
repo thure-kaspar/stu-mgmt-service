@@ -3,10 +3,15 @@ import * as request from "supertest";
 import { getConnection } from "typeorm";
 import { AssignmentDto } from "../../src/course/dto/assignment/assignment.dto";
 import { createApplication } from "../mocks/application.mock";
-import { ASSIGNMENT_JAVA_CLOSED, ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP, ASSIGNMENT_JAVA_IN_REVIEW_SINGLE, ASSIGNMENTS_ALL, ASSIGNMENTS_JAVA_1920 } from "../mocks/assignments.mock";
+import {
+	ASSIGNMENT_JAVA_CLOSED,
+	ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP,
+	ASSIGNMENT_JAVA_IN_REVIEW_SINGLE,
+	ASSIGNMENTS_ALL,
+	ASSIGNMENTS_JAVA_1920
+} from "../mocks/assignments.mock";
 import { COURSE_JAVA_1920 } from "../mocks/courses.mock";
 import { DbMockService } from "../mocks/db-mock.service";
-
 
 let app: INestApplication;
 let dbMockService: DbMockService;
@@ -14,7 +19,6 @@ let dbMockService: DbMockService;
 const course = COURSE_JAVA_1920; // the course that will be used for testing
 
 describe("GET-REQUESTS of AssignmentController (e2e)", () => {
-
 	beforeAll(async () => {
 		app = await createApplication();
 
@@ -35,7 +39,7 @@ describe("GET-REQUESTS of AssignmentController (e2e)", () => {
 		return request(app.getHttpServer())
 			.get(`/courses/${course.id}/assignments`)
 			.expect(({ body }) => {
-				expect(body.length).toEqual(expected); 
+				expect(body.length).toEqual(expected);
 			});
 	});
 
@@ -50,11 +54,9 @@ describe("GET-REQUESTS of AssignmentController (e2e)", () => {
 				expect(result.state).toEqual(assignment.state);
 			});
 	});
-
 });
 
 describe("POST-REQUESTS of AssignmentController (e2e)", () => {
-
 	beforeEach(async () => {
 		app = await createApplication();
 
@@ -86,11 +88,9 @@ describe("POST-REQUESTS of AssignmentController (e2e)", () => {
 				expect(result.points).toEqual(assignment.points);
 			});
 	});
-
 });
 
 describe("PATCH-REQUESTS of AssignmentController (e2e)", () => {
-
 	beforeEach(async () => {
 		app = await createApplication();
 
@@ -125,11 +125,9 @@ describe("PATCH-REQUESTS of AssignmentController (e2e)", () => {
 				expect(body.comment).toEqual(changedAssignment.comment);
 			});
 	});
-
 });
 
 describe("DELETE-REQUESTS of AssignmentController (e2e)", () => {
-
 	beforeEach(async () => {
 		app = await createApplication();
 
@@ -150,5 +148,4 @@ describe("DELETE-REQUESTS of AssignmentController (e2e)", () => {
 			.delete(`/courses/${course.id}/assignments/${assignment.id}`)
 			.expect(200);
 	});
-
 });

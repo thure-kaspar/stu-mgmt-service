@@ -7,8 +7,7 @@ import { Participant } from "../models/participant.model";
  */
 @Injectable()
 export class ParticipantIdentityGuard implements CanActivate {
-
-	async canActivate(context: ExecutionContext): Promise<boolean> {	
+	async canActivate(context: ExecutionContext): Promise<boolean> {
 		const request = context.switchToHttp().getRequest();
 		const userId = request.params.userId;
 		const participant = request.participant as Participant;
@@ -22,7 +21,8 @@ export class ParticipantIdentityGuard implements CanActivate {
 			return true;
 		}
 
-		throw new ForbiddenException("Resource can only be accessed by its owner or privileged users.");
+		throw new ForbiddenException(
+			"Resource can only be accessed by its owner or privileged users."
+		);
 	}
-
 }

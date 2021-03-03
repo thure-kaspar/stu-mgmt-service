@@ -24,7 +24,6 @@ const mock_MailTemplateRepository = () => ({
 });
 
 describe("MailingService", () => {
-
 	let service: MailingService;
 	let nodemailer: NodemailerService;
 	let templateRepo: MailTemplateRepository;
@@ -36,9 +35,9 @@ describe("MailingService", () => {
 				MailingService,
 				{ provide: NodemailerService, useFactory: mock_NodemailerService },
 				{ provide: MailTemplateRepository, useFactory: mock_MailTemplateRepository }
-			],
+			]
 		}).compile();
-		
+
 		service = module.get(MailingService);
 		nodemailer = module.get(NodemailerService);
 		templateRepo = module.get(MailTemplateRepository);
@@ -57,16 +56,13 @@ describe("MailingService", () => {
 	});
 
 	describe("send", () => {
-	
 		it("Calls Nodemailer to send the email", async () => {
 			await service.send(mail);
 			expect(nodemailer.send).toHaveBeenCalledWith(expect.anything(), mail); // (settings, mail)
 		});
-	
 	});
 
 	describe("sendFromTemplate", () => {
-	
 		let placeholders: Map<string, string>;
 
 		beforeEach(() => {
@@ -95,7 +91,5 @@ describe("MailingService", () => {
 			await service.sendFromTemplate("other@user.com", template.key, placeholders);
 			expect(service.send).toHaveBeenCalledWith(expectedMail);
 		});
-
 	});
-
 });

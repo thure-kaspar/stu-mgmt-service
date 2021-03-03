@@ -1,14 +1,15 @@
-
 import { AssessmentDto } from "../../../src/course/dto/assessment/assessment.dto";
 import { AssignmentDto } from "../../../src/course/dto/assignment/assignment.dto";
 import { AssignmentState, AssignmentType } from "../../../src/shared/enums";
 import { RoundingType } from "../../../src/utils/math";
-import { IndividualPercentWithAllowedFailures, RuleType } from "../../../src/admission-status/rules/abstract-rules";
+import {
+	IndividualPercentWithAllowedFailures,
+	RuleType
+} from "../../../src/admission-status/rules/abstract-rules";
 import { IndividualPercentWithAllowedFailuresImpl } from "../../../src/admission-status/rules/impl/individual-percent-with-allowed-failures";
 import { copy } from "../../utils/object-helper";
 
 describe("PassedXPercentWithAtLeastYPercentImpl", () => {
-
 	let assessments: AssessmentDto[];
 	let assignments: AssignmentDto[];
 	let rule: Partial<IndividualPercentWithAllowedFailures>;
@@ -74,7 +75,7 @@ describe("PassedXPercentWithAtLeastYPercentImpl", () => {
 			assignment_2,
 			assignment_ignored_not_evaluated,
 			assignment_3,
-			assignment_4_no_assessment,
+			assignment_4_no_assessment
 		] as any; // Cast to any, because we only defined necessary properties
 
 		const _assessments: Partial<AssessmentDto>[] = assignments.map(assignment => ({
@@ -89,7 +90,7 @@ describe("PassedXPercentWithAtLeastYPercentImpl", () => {
 
 	it("3/4 Assignments passed (One missing assessment) -> Passed", () => {
 		const _assessments = copy(assessments);
-		_assessments.forEach(a => a.achievedPoints = a.assignment.points);
+		_assessments.forEach(a => (a.achievedPoints = a.assignment.points));
 
 		const ruleImpl = new IndividualPercentWithAllowedFailuresImpl(rule, assignments);
 		const result = ruleImpl.check(_assessments);
@@ -118,7 +119,7 @@ describe("PassedXPercentWithAtLeastYPercentImpl", () => {
 
 	it("1/4 Assignments passed -> Not passed", () => {
 		const _assessments = copy(assessments);
-		_assessments.forEach(a => a.achievedPoints = 0); // Failed all
+		_assessments.forEach(a => (a.achievedPoints = 0)); // Failed all
 		_assessments[0].achievedPoints = _assessments[0].assignment.points; // Except for first one
 
 		const ruleImpl = new IndividualPercentWithAllowedFailuresImpl(rule, assignments);
@@ -127,7 +128,7 @@ describe("PassedXPercentWithAtLeastYPercentImpl", () => {
 		expect(result._rule).toEqual(RuleType.INDIVIDUAL_PERCENT_WITH_ALLOWED_FAILURES);
 		expect(result.passed).toEqual(false);
 		expect(result.achievedPoints).toEqual(3); // Number of failed assignments
-		expect(result.achievedPercent).toEqual(3 / rule.allowedFailures * 100); // (3/2) * 100
+		expect(result.achievedPercent).toEqual((3 / rule.allowedFailures) * 100); // (3/2) * 100
 	});
 
 	it("0 Assessment given -> Not passed", () => {
@@ -135,5 +136,4 @@ describe("PassedXPercentWithAtLeastYPercentImpl", () => {
 		const result = ruleImpl.check([]);
 		expect(result.passed).toEqual(false);
 	});
-
 });
