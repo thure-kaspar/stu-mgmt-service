@@ -29,7 +29,7 @@ import { GroupRegisteredNotificationHandler } from "./events/assignment/group-re
 import { GroupUnregisteredNotificationHandler } from "./events/assignment/group-unregistered.event";
 import { UserRegisteredNotificationHandler } from "./events/assignment/user-registered.event";
 import { UserUnregisteredNotificationHandler } from "./events/assignment/user-unregistered.event";
-import { CourseJoinedHandler_AutomaticGroupJoin } from "./events/participant/automatic-group-join.handler";
+import { JoinRandomGroupHandler } from "./commands/join-random-group.handler";
 import { RegistrationsCreatedNotificationHandler } from "./events/assignment/registrations-created.event";
 import { RegistrationsRemovedNotificationHandler } from "./events/assignment/registrations-removed.event";
 import { AssignmentRemovedNotificationHandler } from "./events/assignment/assignment-removed.event";
@@ -53,7 +53,7 @@ import { CourseJoinedNotificationHandler } from "./events/participant/course-joi
 		...Guards,
 		...QueryHandlers,
 		// EventHandlers that are used internally:
-		CourseJoinedHandler_AutomaticGroupJoin,
+		JoinRandomGroupHandler,
 		UserJoinedGroupHandler,
 		UserLeftGroupHandler,
 		AssessmentScoreChangedHandler,

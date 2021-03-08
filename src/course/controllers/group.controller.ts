@@ -10,7 +10,7 @@ import {
 	Req,
 	UseGuards
 } from "@nestjs/common";
-import { QueryBus } from "@nestjs/cqrs";
+import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { AuthGuard } from "@nestjs/passport";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
@@ -46,13 +46,18 @@ import { GroupService } from "../services/group.service";
 import { GroupMemberGuard } from "../guards/group-member.guard";
 import { AssessmentDto } from "../dto/assessment/assessment.dto";
 import { TeachingStaffGuard } from "../guards/teaching-staff.guard";
+import { JoinRandomGroupCommand } from "../commands/join-random-group.handler";
 
 @ApiBearerAuth()
 @ApiTags("groups")
 @UseGuards(AuthGuard(), CourseMemberGuard)
 @Controller("courses/:courseId/groups")
 export class GroupController {
-	constructor(private groupService: GroupService, private queryBus: QueryBus) {}
+	constructor(
+		private groupService: GroupService,
+		private queryBus: QueryBus,
+		private commandBus: CommandBus
+	) {}
 
 	@ApiOperation({
 		operationId: "createGroup",
@@ -82,6 +87,22 @@ export class GroupController {
 		@Body() groupCreateBulk: GroupCreateBulkDto
 	): Promise<GroupDto[]> {
 		return this.groupService.createMultipleGroups(courseId, groupCreateBulk);
+	}
+
+	@ApiOperation({
+		operationId: "joinOrCreateGroup",
+		summary: "Join or create group.",
+		description:
+			"Tries to add the user to an open group with sufficient capacity. If no such group exists, creates a new group and adds the requesting user. Returns the joined group and its members."
+	})
+	@Post("joinOrCreateGroup")
+	@UseGuards()
+	joinOrCreateGroup(
+		@Param("courseId") courseId: CourseId,
+		@GetCourse() course: Course,
+		@GetParticipant() participant: Participant
+	): Promise<GroupDto> {
+		return this.commandBus.execute(new JoinRandomGroupCommand(course, participant));
 	}
 
 	@ApiOperation({

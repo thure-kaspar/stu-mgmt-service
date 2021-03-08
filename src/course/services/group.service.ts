@@ -3,12 +3,12 @@ import { EventBus } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DtoFactory } from "../../shared/dto-factory";
 import { UserId } from "../../shared/entities/user.entity";
+import { AssessmentDto } from "../dto/assessment/assessment.dto";
 import { ParticipantDto } from "../dto/course-participant/participant.dto";
 import { GroupCreateBulkDto } from "../dto/group/group-create-bulk.dto";
 import { GroupEventDto } from "../dto/group/group-event.dto";
 import { GroupFilter } from "../dto/group/group-filter.dto";
 import { GroupDto, GroupUpdateDto } from "../dto/group/group.dto";
-import { Assignment } from "../entities/assignment.entity";
 import { CourseId } from "../entities/course.entity";
 import { GroupEvent } from "../entities/group-event.entity";
 import { GroupSettings } from "../entities/group-settings.entity";
@@ -19,13 +19,11 @@ import { CourseWithGroupSettings } from "../models/course-with-group-settings.mo
 import { Course } from "../models/course.model";
 import { Group } from "../models/group.model";
 import { Participant } from "../models/participant.model";
-import { AssignmentRepository } from "../repositories/assignment.repository";
+import { AssessmentRepository } from "../repositories/assessment.repository";
 import { GroupEventRepository } from "../repositories/group-event.repository";
 import { GroupSettingsRepository } from "../repositories/group-settings.repository";
 import { GroupRepository } from "../repositories/group.repository";
 import { AssignmentRegistrationService } from "./assignment-registration.service";
-import { AssessmentDto } from "../dto/assessment/assessment.dto";
-import { AssessmentRepository } from "../repositories/assessment.repository";
 
 @Injectable()
 export class GroupService {
@@ -33,7 +31,6 @@ export class GroupService {
 		@InjectRepository(GroupEntity) private groupRepository: GroupRepository,
 		@InjectRepository(GroupSettings) private groupSettingsRepository: GroupSettingsRepository,
 		@InjectRepository(GroupEvent) private groupEventRepository: GroupEventRepository,
-		@InjectRepository(Assignment) private assignmentRepository: AssignmentRepository,
 		@InjectRepository(AssessmentRepository) private assessmentRepository: AssessmentRepository,
 		private registrations: AssignmentRegistrationService,
 		private events: EventBus
@@ -242,7 +239,7 @@ export class GroupService {
 	}
 
 	/**
-	 * Returns the group with its users, assessments and history.
+	 * Returns the group with its members.
 	 */
 	async getGroup(groupId: GroupId): Promise<GroupDto> {
 		const group = await this.groupRepository.getGroupById_All(groupId);
