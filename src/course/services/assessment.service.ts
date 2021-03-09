@@ -102,11 +102,6 @@ export class AssessmentService {
 			throw new BadRequestException("Partial assessment refers to a different assessment.");
 		}
 
-		const assignment = await this.assignmentRepository.getAssignmentById(assignmentId);
-		if (assignment.state !== AssignmentState.IN_REVIEW) {
-			throw new BadRequestException("Assignment is not in the required state (IN_REVIEW).");
-		}
-
 		const partialAssessment = await this.assessmentRepository.addPartialAssessment(partial);
 		return partialAssessment.toDto();
 	}
@@ -159,11 +154,6 @@ export class AssessmentService {
 		updatedBy: UserId
 	): Promise<AssessmentDto> {
 		const original = await this.assessmentRepository.getAssessmentById(assessmentId);
-		if (original.assignment.state === AssignmentState.EVALUATED) {
-			throw new BadRequestException(
-				"Assignment is in EVALUATED state. Updating Assessments is not allowed."
-			);
-		}
 
 		// Ensure that update only includes valid values
 		this.validatePartialsForUpdate(update, assessmentId);

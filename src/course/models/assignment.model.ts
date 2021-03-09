@@ -54,15 +54,4 @@ export class Assignment {
 			oldState !== AssignmentState.IN_PROGRESS
 		);
 	}
-
-	/**
-	 * Asserts that the assignment is in `IN_REVIEW`.
-	 * @throws `AssignmentNotInReviewStateException`
-	 */
-	mustBeInReview(): Assignment {
-		if (this.state !== AssignmentState.IN_REVIEW) {
-			throw new AssignmentNotInReviewStateException(this.id);
-		}
-		return this;
-	}
 }

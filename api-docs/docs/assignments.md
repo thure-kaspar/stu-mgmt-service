@@ -11,7 +11,7 @@ First of all, we should introduce the stages (or states) of an assignment and ex
 -   **CLOSED**: Assignment is visible, but has not started yet (i.e. submissions are not possible).
 -   **IN_PROGRESS**: Students can submit their solutions until the deadline.
 -   **IN_REVIEW**: Submission is no longer possible. Assessments can now be created, but they will only be visible for the teaching staff.
--   **EVALUATED**: Assessment will be published to the students. Editing the assessments is no longer possible.
+-   **EVALUATED**: Assessment will be published to the students.
 
 If start dates and/or end dates are defined, the assignment will automatically switch into the `IN_PROGRESS` and `IN_REVIEW` state. To switch between these states manually, see [Updating an assessment](#updating-an-assignment).
 
