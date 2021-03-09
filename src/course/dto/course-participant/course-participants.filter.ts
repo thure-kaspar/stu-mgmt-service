@@ -10,10 +10,15 @@ export class CourseParticipantsFilter extends PaginationFilter {
 		description: "Compared to the participant's username and displayName with ILIKE %name%."
 	})
 	name?: string;
+	@ApiPropertyOptional({
+		description: "Filters by a student's current group. Compared with ILIKE %groupName%."
+	})
+	groupName?: string;
 
 	constructor(filter?: Partial<CourseParticipantsFilter>) {
 		super(filter);
 		this.name = filter?.name;
+		this.groupName = filter?.groupName;
 		this.courseRole = sanitizeEnum(CourseRole, filter?.courseRole) as any;
 	}
 }

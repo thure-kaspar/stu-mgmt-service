@@ -39,7 +39,7 @@ export class ParticipantRepository extends Repository<Participant> {
 		courseId: CourseId,
 		filter?: CourseParticipantsFilter
 	): Promise<[Participant[], number]> {
-		const { courseRole, name, skip, take } = filter || {};
+		const { courseRole, name, groupName, skip, take } = filter || {};
 
 		const query = this.createQueryBuilder("participant")
 			.where("participant.courseId = :courseId", { courseId })
@@ -58,6 +58,10 @@ export class ParticipantRepository extends Repository<Participant> {
 					qb.orWhere("user.displayName ILIKE :name", { name: `%${name}%` });
 				})
 			);
+		}
+
+		if (groupName) {
+			query.andWhere("group.name ILIKE :groupName", { groupName: `%${groupName}%` });
 		}
 
 		if (courseRole?.length > 0) {
