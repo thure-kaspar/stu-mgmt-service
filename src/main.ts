@@ -29,8 +29,7 @@ async function bootstrap(): Promise<void> {
 	const app = await NestFactory.create<NestExpressApplication>(AppModule, { logger: logLevels });
 	logger.verbose("Application created!");
 
-	app.useGlobalFilters(new EntityNotFoundFilter());
-	app.useGlobalFilters(new EntityAlreadyExistsFilter());
+	app.useGlobalFilters(new EntityNotFoundFilter(), new EntityAlreadyExistsFilter());
 	app.useGlobalPipes(new ValidationPipe({ transform: true })); // Automatically transform primitive params to their type
 	app.enableCors({ exposedHeaders: "x-total-count" });
 	app.disable("x-powered-by");
