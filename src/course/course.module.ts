@@ -19,6 +19,7 @@ import {
 	UserJoinedGroupNotificationHandler
 } from "./events/group/user-joined-group.event";
 import {
+	CloseEmptyGroupsHandler,
 	UserLeftGroupHandler,
 	UserLeftGroupNotificationHandler
 } from "./events/group/user-left-group.event";
@@ -56,6 +57,7 @@ import { CourseJoinedNotificationHandler } from "./events/participant/course-joi
 		JoinRandomGroupHandler,
 		UserJoinedGroupHandler,
 		UserLeftGroupHandler,
+		CloseEmptyGroupsHandler,
 		AssessmentScoreChangedHandler,
 
 		// EventHandlers that publish events to other systems:

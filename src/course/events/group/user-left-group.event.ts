@@ -1,3 +1,4 @@
+import { Logger } from "@nestjs/common";
 import { EventsHandler, IEventHandler } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
@@ -6,6 +7,7 @@ import { UserId } from "../../../shared/entities/user.entity";
 import { CourseId } from "../../entities/course.entity";
 import { GroupEvent } from "../../entities/group-event.entity";
 import { GroupId } from "../../entities/group.entity";
+import { GroupRepository } from "../../repositories/group.repository";
 import { NotificationService } from "../../services/notification.service";
 
 export class UserLeftGroupEvent {
@@ -28,6 +30,26 @@ export class UserLeftGroupHandler implements IEventHandler<UserLeftGroupEvent> {
 			userId: event.userId,
 			payload: event.reason ? { reason: event.reason } : null
 		});
+	}
+}
+
+@EventsHandler(UserLeftGroupEvent)
+export class CloseEmptyGroupsHandler implements IEventHandler<UserLeftGroupEvent> {
+	private logger = new Logger(CloseEmptyGroupsHandler.name);
+	constructor(@InjectRepository(GroupRepository) private groupRepository: GroupRepository) {}
+
+	async handle(event: UserLeftGroupEvent): Promise<void> {
+		const group = await this.groupRepository.getGroupWithUsers(event.groupId);
+
+		if (group.userGroupRelations.length == 0) {
+			await this.groupRepository.updateGroup(event.groupId, {
+				isClosed: true
+			});
+
+			this.logger.debug(
+				`Closed group ${group.name} (${group.id}) of course ${group.courseId}.`
+			);
+		}
 	}
 }
 
