@@ -144,7 +144,7 @@ export class GroupController {
 		@Query() filter?: GroupFilter
 	): Promise<GroupDto[]> {
 		const groups = await PaginatedResult(
-			this.groupService.getGroupsOfCourse(courseId, filter),
+			this.groupService.getGroupsOfCourse(courseId, new GroupFilter(filter)),
 			request
 		);
 
