@@ -23,6 +23,14 @@ const optionalProviders = (): Provider<any>[] => {
 	return providers;
 };
 
+const taskSchedulingModules = (): any[] => {
+	const modules = [];
+	if (process.env.NODE_ENV !== "testing") {
+		modules.push(ScheduleModule.forRoot(), TaskSchedulingModule);
+	}
+	return modules;
+};
+
 @Module({
 	imports: [
 		TypeOrmModule.forRoot(typeOrmConfig),
@@ -33,8 +41,7 @@ const optionalProviders = (): Provider<any>[] => {
 		MailingModule,
 		CsvModule,
 		AdmissionStatusModule,
-		ScheduleModule.forRoot(),
-		TaskSchedulingModule
+		...taskSchedulingModules()
 	],
 	controllers: [AppController],
 	providers: [...optionalProviders()]
