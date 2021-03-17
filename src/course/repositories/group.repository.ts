@@ -1,15 +1,13 @@
 import { ConflictException } from "@nestjs/common";
 import { EntityRepository, Repository } from "typeorm";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
-import { User, UserId } from "../../shared/entities/user.entity";
+import { UserId } from "../../shared/entities/user.entity";
 import { GroupFilter } from "../dto/group/group-filter.dto";
 import { GroupDto, GroupUpdateDto } from "../dto/group/group.dto";
 import { CourseId } from "../entities/course.entity";
 import { Group, GroupId } from "../entities/group.entity";
 import { UserGroupRelation } from "../entities/user-group-relation.entity";
 import { ParticipantRepository } from "./participant.repository";
-import { Participant } from "../entities/participant.entity";
-import { CourseRole } from "../../shared/enums";
 
 @EntityRepository(Group)
 export class GroupRepository extends Repository<Group> {
@@ -115,16 +113,14 @@ export class GroupRepository extends Repository<Group> {
 	 * - Group members
 	 */
 	async getGroupsOfCourse(courseId: CourseId, filter?: GroupFilter): Promise<[Group[], number]> {
-		const { name, isClosed, minSize, maxSize, skip, take } = filter || {};
+		const { name, memberName, isClosed, excludeEmpty } = filter || {};
 
 		const query = this.createQueryBuilder("group")
 			.where("group.courseId = :courseId", { courseId })
 			.leftJoinAndSelect("group.userGroupRelations", "userRelation")
 			.leftJoinAndSelect("userRelation.participant", "participant")
 			.leftJoinAndSelect("participant.user", "user")
-			.orderBy("group.name", "ASC")
-			.skip(skip)
-			.take(take);
+			.orderBy("group.name", "ASC");
 
 		if (name) {
 			query.andWhere("group.name ILIKE :name", { name: `%${name}%` });
@@ -135,17 +131,23 @@ export class GroupRepository extends Repository<Group> {
 			query.andWhere("group.isClosed = :isClosed", { isClosed });
 		}
 
-		if (minSize || maxSize) {
-			query.loadRelationCountAndMap("group.size", "group.userGroupRelations");
-			if (minSize) {
-				query.andWhere("size >= :minSize", { minSize });
-			}
-			if (maxSize) {
-				query.andWhere("size <= :maxSize", { maxSize });
-			}
+		let groups = await query.getMany();
+
+		if (excludeEmpty) {
+			groups = groups.filter(group => group.userGroupRelations.length > 0);
 		}
 
-		return query.getManyAndCount();
+		if (memberName) {
+			groups = groups.filter(group =>
+				group.userGroupRelations.find(ugr =>
+					ugr.participant.user.displayName
+						.toLowerCase()
+						.includes(memberName.toLowerCase())
+				)
+			);
+		}
+
+		return [groups, groups.length];
 	}
 
 	/**

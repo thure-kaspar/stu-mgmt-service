@@ -1,22 +1,22 @@
-import { PaginationFilter } from "../../../shared/pagination.filter";
 import { ApiPropertyOptional } from "@nestjs/swagger";
-import { transformBoolean, transformNumber } from "../../../../test/utils/http-utils";
+import { transformBoolean } from "../../../../test/utils/http-utils";
+import { PaginationFilter } from "../../../shared/pagination.filter";
 
 export class GroupFilter extends PaginationFilter {
 	@ApiPropertyOptional({ description: "Name of the group. Compared with ILIKE %name%." })
 	name?: string;
-	@ApiPropertyOptional({ description: "If true, only includes" })
+	@ApiPropertyOptional({ description: "Name of a member. Compared with ILIKE %memberName%." })
+	memberName?: string;
+	@ApiPropertyOptional({ description: "If true, only includes closed groups." })
 	isClosed?: boolean;
-	@ApiPropertyOptional({ description: "Only include groups with at least minSize members." })
-	minSize?: number;
-	@ApiPropertyOptional({ description: "Only include groups with at most maxSize members." })
-	maxSize?: number;
+	@ApiPropertyOptional({ description: "If true, excludes empty groups." })
+	excludeEmpty?: boolean;
 
 	constructor(filter?: Partial<GroupFilter>) {
 		super(filter);
 		this.name = filter?.name;
+		this.memberName = filter?.memberName;
 		this.isClosed = transformBoolean(filter?.isClosed);
-		this.minSize = transformNumber(filter?.minSize);
-		this.maxSize = transformNumber(filter?.maxSize);
+		this.excludeEmpty = transformBoolean(filter?.excludeEmpty);
 	}
 }

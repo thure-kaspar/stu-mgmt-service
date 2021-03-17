@@ -65,7 +65,7 @@ describe("GET-REQUESTS of GroupController (e2e)", () => {
 				});
 		});
 
-		it("Retrieves groups matching a name", () => {
+		it("Filters by group name", () => {
 			const name = "group 1";
 			const expectedLength = GROUPS_JAVA_1920.filter(g => g.name.includes(name)).length;
 			console.assert(expectedLength >= 1, "At least one group name should match.");
@@ -79,6 +79,27 @@ describe("GET-REQUESTS of GroupController (e2e)", () => {
 					expect(body.length).toEqual(expectedLength);
 					expect(result[0].members).toBeTruthy();
 					expect(result[0].members.length).toBeGreaterThan(0);
+				});
+		});
+
+		it("Filters by member name", () => {
+			const memberName = "mustermann";
+			const queryString = `memberName=${memberName}`;
+
+			return request(app.getHttpServer())
+				.get(`/courses/${course.id}/groups?${queryString}`)
+				.expect(({ body }) => {
+					expect(body).toMatchSnapshot();
+				});
+		});
+
+		it("Filters empty groups (exludeEmpty=true)", () => {
+			const queryString = "excludeEmpty=true";
+
+			return request(app.getHttpServer())
+				.get(`/courses/${course.id}/groups?${queryString}`)
+				.expect(({ body }) => {
+					expect(body).toMatchSnapshot();
 				});
 		});
 
