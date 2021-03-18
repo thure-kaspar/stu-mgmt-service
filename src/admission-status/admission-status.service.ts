@@ -140,16 +140,30 @@ export class AdmissionStatusService {
 
 	private getStudentResults(student: Participant, assignments: AssignmentDto[]): StudentResults {
 		const achievedPointsMap = this.mapAchievedPointsToAssignment(student);
+
 		return {
 			student: student.toDto(),
-			achievedPoints: assignments.map(assignment => achievedPointsMap.get(assignment.id) ?? 0)
+			achievedPoints: assignments.map(
+				assignment => achievedPointsMap.get(assignment.id)?.achievedPoints
+			),
+			assessmentIds: assignments.map(
+				assignment => achievedPointsMap.get(assignment.id)?.assessmentId
+			)
 		};
 	}
 
-	private mapAchievedPointsToAssignment(student: Participant): Map<AssignmentId, number> {
-		const achievedPointsMap = new Map<AssignmentId, number>();
+	private mapAchievedPointsToAssignment(
+		student: Participant
+	): Map<AssignmentId, { achievedPoints: number; assessmentId: string }> {
+		const achievedPointsMap = new Map<
+			AssignmentId,
+			{ achievedPoints: number; assessmentId: string }
+		>();
 		student.user.assessmentUserRelations.forEach(aur => {
-			achievedPointsMap.set(aur.assessment.assignmentId, aur.assessment.achievedPoints);
+			achievedPointsMap.set(aur.assessment.assignmentId, {
+				achievedPoints: aur.assessment.achievedPoints,
+				assessmentId: aur.assessmentId
+			});
 		});
 		return achievedPointsMap;
 	}

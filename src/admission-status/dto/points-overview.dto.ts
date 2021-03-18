@@ -4,6 +4,7 @@ import { AssignmentDto } from "../../course/dto/assignment/assignment.dto";
 export class StudentResults {
 	student: ParticipantDto;
 	achievedPoints: number[];
+	assessmentIds: string[];
 }
 
 export class PointsOverviewDto {
