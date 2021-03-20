@@ -1,5 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { LinkDto } from "../../../shared/dto/link.dto";
+import { AdmissionCriteriaDto } from "../course-config/admission-criteria.dto";
+import { GroupSettingsDto } from "../course-config/group-settings.dto";
 
 export class CourseDto {
 	/** Unique identifier of this course. */
@@ -29,4 +31,7 @@ export class CourseDto {
 	isClosed: boolean;
 
 	links?: LinkDto[];
+
+	groupSettings?: GroupSettingsDto;
+	admissionCriteria?: AdmissionCriteriaDto;
 }

@@ -110,10 +110,15 @@ export class CourseRepository extends Repository<Course> {
 	}
 
 	/**
-	 * Returns the course with its course config. The course config does not include relations.
+	 * Returns the course with its course config. Includes the following relations:
+	 * - Config
+	 * - GroupSettings
+	 * - AdmissionCriteria
 	 */
 	async getCourseWithConfig(id: string): Promise<Course> {
-		return this.findOneOrFail(id, { relations: ["config"] });
+		return this.findOneOrFail(id, {
+			relations: ["config", "config.groupSettings", "config.admissionCriteria"]
+		});
 	}
 
 	/**

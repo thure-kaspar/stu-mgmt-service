@@ -31,7 +31,7 @@ export class CourseService {
 	}
 
 	async getCourseById(id: string): Promise<CourseDto> {
-		const course = await this.courseRepository.getCourseById(id);
+		const course = await this.courseRepository.getCourseWithConfig(id);
 		return DtoFactory.createCourseDto(course);
 	}
 

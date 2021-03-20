@@ -28,7 +28,9 @@ export abstract class DtoFactory {
 			semester: course.semester,
 			title: course.title,
 			isClosed: course.isClosed,
-			links: course.links ?? undefined
+			links: course.links ?? undefined,
+			groupSettings: course.config?.groupSettings?.toDto(),
+			admissionCriteria: course.config?.admissionCriteria.toDto()
 		};
 
 		return courseDto;
@@ -67,8 +69,7 @@ export abstract class DtoFactory {
 	}
 
 	static createAdmissionCriteriaDto(criteria: AdmissionCriteria): AdmissionCriteriaDto {
-		const criteriaDto: AdmissionCriteriaDto = criteria.admissionCriteria;
-		return criteriaDto;
+		return criteria.admissionCriteria;
 	}
 
 	static createAssignmentTemplateDto(template: AssignmentTemplate): AssignmentTemplateDto {

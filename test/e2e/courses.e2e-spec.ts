@@ -77,6 +77,7 @@ describe("GET-REQUESTS of CourseController (e2e)", () => {
 			.get(`/courses/${course.id}`)
 			.expect(({ body }) => {
 				expect(body.id).toEqual(course.id);
+				expect(body).toMatchSnapshot();
 			});
 	});
 
