@@ -43,6 +43,9 @@ export class GroupsWithAssignedEvaluatorHandler
 			.where("registration.assignmentId = :assignmentId", { assignmentId })
 			.andWhere("group.courseId = :courseId", { courseId })
 			.innerJoinAndSelect("registration.group", "group")
+			.leftJoinAndSelect("group.userGroupRelations", "userGroupRelation")
+			.innerJoinAndSelect("userGroupRelation.participant", "participant")
+			.innerJoinAndSelect("participant.user", "user")
 			.leftJoinAndSelect(
 				"group.assessmentAllocations",
 				"allocation",
