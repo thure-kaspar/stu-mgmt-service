@@ -38,7 +38,7 @@ export class OverallPercentRuleImpl extends OverallPercentRule {
 		}
 
 		const relevantAssessments = this.filterAssessmentsByType(assessments);
-		const achievedPoints = sumOf(relevantAssessments, a => a.achievedPoints);
+		const achievedPoints = sumOf(relevantAssessments, a => a.achievedPoints ?? 0);
 		const achievedPercent = this.round(Percent(achievedPoints, this.overallPoints));
 
 		return {

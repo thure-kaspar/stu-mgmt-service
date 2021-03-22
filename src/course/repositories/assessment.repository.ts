@@ -180,16 +180,21 @@ export class AssessmentRepository extends Repository<Assessment> {
 		updateDto: AssessmentUpdateDto,
 		updatedBy: UserId
 	): Promise<Assessment> {
-		const { achievedPoints, comment } = updateDto;
+		const { achievedPoints, isDraft, comment } = updateDto;
 		const assessment = await this.findOneOrFail(assessmentId, {
 			relations: ["partialAssessments"]
 		});
 
 		assessment.lastUpdatedById = updatedBy;
 
-		// Update achievedPoints, if included (check for undefined or null, because 0 is allowed)
-		if (achievedPoints !== undefined && achievedPoints !== null) {
+		// Update achievedPoints, if included (check for undefined, because 0 and null is allowed)
+		if (achievedPoints !== undefined) {
 			assessment.achievedPoints = updateDto.achievedPoints;
+		}
+
+		// Update isDraft, if included
+		if (isDraft !== undefined && isDraft !== null) {
+			assessment.isDraft = updateDto.isDraft;
 		}
 
 		// Update comment, if included (allow setting to null)

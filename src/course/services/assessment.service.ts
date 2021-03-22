@@ -3,7 +3,7 @@ import { EventBus } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { DtoFactory } from "../../shared/dto-factory";
-import { AssignmentState } from "../../shared/enums";
+import { UserId } from "../../shared/entities/user.entity";
 import { AssessmentEventDto } from "../dto/assessment/assessment-event.dto";
 import { AssessmentFilter } from "../dto/assessment/assessment-filter.dto";
 import {
@@ -16,12 +16,11 @@ import { AssessmentEvent } from "../entities/assessment-event.entity";
 import { Assessment } from "../entities/assessment.entity";
 import { Assignment as AssignmentEntity, AssignmentId } from "../entities/assignment.entity";
 import { AssessmentScoreChanged } from "../events/assessment/assessment-score-changed.event";
+import { Assignment } from "../models/assignment.model";
 import { Participant } from "../models/participant.model";
 import { AssessmentRepository } from "../repositories/assessment.repository";
 import { AssignmentRepository } from "../repositories/assignment.repository";
 import { GroupService } from "./group.service";
-import { Assignment } from "../models/assignment.model";
-import { UserId } from "../../shared/entities/user.entity";
 
 @Injectable()
 export class AssessmentService {

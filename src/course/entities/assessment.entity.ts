@@ -18,8 +18,11 @@ export class Assessment {
 	@PrimaryGeneratedColumn("uuid")
 	id: string;
 
-	@Column({ type: "float" })
-	achievedPoints: number;
+	@Column({ type: "float", nullable: true })
+	achievedPoints?: number;
+
+	@Column({ default: false })
+	isDraft: boolean;
 
 	@Column({ nullable: true })
 	comment: string;

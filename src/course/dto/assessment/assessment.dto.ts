@@ -1,5 +1,4 @@
 import { ApiProperty, ApiPropertyOptional, OmitType } from "@nestjs/swagger";
-import { Min } from "class-validator";
 import { UserDto } from "../../../shared/dto/user.dto";
 import { UserId } from "../../../shared/entities/user.entity";
 import { AssignmentDto } from "../assignment/assignment.dto";
@@ -20,13 +19,15 @@ export class AssessmentDto {
 
 	assignment?: AssignmentDto;
 
+	@ApiProperty({ description: "Marks the assessment as a draft." })
+	isDraft: boolean;
+
 	/** The amount of points that the student or group achieved with their submission. */
 	@ApiProperty({
 		description:
 			"The amount of points that the student or group achieved with their submission."
 	})
-	@Min(0)
-	achievedPoints: number;
+	achievedPoints?: number;
 
 	/** A comment providing additional feedback. */
 	@ApiPropertyOptional({ description: "A comment providing additional feedback." })
@@ -88,6 +89,7 @@ export class AssessmentCreateDto extends OmitType(AssessmentDto, [
 /** Version of AssessmentDto containing only properties that can be updated. */
 export class AssessmentUpdateDto {
 	achievedPoints?: number;
+	isDraft?: boolean;
 	comment?: string;
 	addPartialAssessments?: PartialAssessmentDto[];
 	updatePartialAssignments?: PartialAssessmentDto[];

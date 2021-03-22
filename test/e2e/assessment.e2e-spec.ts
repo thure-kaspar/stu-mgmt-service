@@ -26,7 +26,8 @@ import {
 import {
 	USER_STUDENT_JAVA,
 	USER_STUDENT_3_JAVA_TUTOR,
-	USER_SYSTEM_ADMIN
+	USER_SYSTEM_ADMIN,
+	USER_MGMT_ADMIN_JAVA_LECTURER
 } from "../mocks/users.mock";
 import { Severity } from "../../src/course/dto/assessment/partial-assessment.dto";
 import { GROUP_1_JAVA } from "../mocks/groups/groups.mock";
@@ -247,6 +248,9 @@ describe("POST-REQUESTS of AssessmentController (e2e)", () => {
 		const assessment = copy(ASSESSMENT_JAVA_EVALUATED_GROUP_1);
 
 		const expected = copy(assessment);
+		expected.updateDate = undefined;
+		expected.creationDate = undefined;
+		expected.creatorId = USER_MGMT_ADMIN_JAVA_LECTURER.id;
 
 		return request(app.getHttpServer())
 			.post(`/courses/${course.id}/assignments/${assessment.assignmentId}/assessments`)
@@ -262,6 +266,9 @@ describe("POST-REQUESTS of AssessmentController (e2e)", () => {
 		const assessment = copy(ASSESSMENT_JAVA_TESTAT_USER_1);
 
 		const expected = copy(assessment);
+		expected.updateDate = undefined;
+		expected.creationDate = undefined;
+		expected.creatorId = USER_MGMT_ADMIN_JAVA_LECTURER.id;
 
 		return request(app.getHttpServer())
 			.post(`/courses/${course.id}/assignments/${assessment.assignmentId}/assessments`)
@@ -280,6 +287,9 @@ describe("POST-REQUESTS of AssessmentController (e2e)", () => {
 			PARTIAL_ASSESSMENT_2_JAVA_IN_REVIEW
 		];
 		const expected = copy(assessment);
+		expected.updateDate = undefined;
+		expected.creationDate = undefined;
+		expected.creatorId = USER_MGMT_ADMIN_JAVA_LECTURER.id;
 
 		return request(app.getHttpServer())
 			.post(`/courses/${course.id}/assignments/${assessment.assignmentId}/assessments`)
@@ -342,6 +352,27 @@ describe("PATCH-REQUESTS of AssessmentController (e2e)", () => {
 				.expect(({ body }) => {
 					expect(body.id).toEqual(assessment.id); // Check if we retrieved the correct assessments
 					expect(body.achievedPoints).toEqual(changedAssessment.achievedPoints);
+				});
+		});
+
+		it("Changes assessment from draft to non-draft", () => {
+			const assessment = copy(ASSESSMENT_JAVA_IN_REVIEW_NO_PARTIALS);
+			console.assert(assessment.isDraft, "Assessment should be marked as draft.");
+
+			// Create clone of original data and perform some changes
+			const changedAssessment: AssessmentUpdateDto = copy(assessment);
+			changedAssessment.isDraft = false;
+
+			return request(app.getHttpServer())
+				.patch(
+					`/courses/${course.id}/assignments/${assessment.assignmentId}/assessments/${assessment.id}`
+				)
+				.send(changedAssessment)
+				.expect(200)
+				.expect(({ body }) => {
+					const result = body as AssessmentDto;
+					expect(result.id).toEqual(assessment.id);
+					expect(result.isDraft).toEqual(changedAssessment.isDraft);
 				});
 		});
 

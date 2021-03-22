@@ -151,6 +151,7 @@ export abstract class DtoFactory {
 			id: assessment.id,
 			assignmentId: assessment.assignmentId,
 			groupId: assessment.groupId ?? undefined,
+			isDraft: assessment.isDraft,
 			achievedPoints: assessment.achievedPoints,
 			comment: assessment.comment ?? undefined,
 			creatorId: assessment.creatorId,
