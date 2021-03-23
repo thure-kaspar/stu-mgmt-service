@@ -22,7 +22,7 @@ import { toDtos } from "./interfaces/to-dto.interface";
 
 export abstract class DtoFactory {
 	static createCourseDto(course: Course): CourseDto {
-		const courseDto: CourseDto = {
+		return {
 			id: course.id,
 			shortname: course.shortname,
 			semester: course.semester,
@@ -30,13 +30,11 @@ export abstract class DtoFactory {
 			isClosed: course.isClosed,
 			links: course.links ?? undefined,
 			groupSettings: course.config?.groupSettings?.toDto(),
-			admissionCriteria: course.config?.admissionCriteria.toDto()
+			admissionCriteria: course.config?.admissionCriteria?.toDto()
 		};
-
-		return courseDto;
 	}
 
-	static createCourseConfigDto(config: CourseConfig, includePriviliged = false): CourseConfigDto {
+	static createCourseConfigDto(config: CourseConfig, includePrivileged = false): CourseConfigDto {
 		const configDto: CourseConfigDto = {};
 		if (config.admissionCriteria)
 			configDto.admissionCriteria = this.createAdmissionCriteriaDto(config.admissionCriteria);
@@ -49,7 +47,7 @@ export abstract class DtoFactory {
 				this.createAssignmentTemplateDto(t)
 			);
 
-		if (includePriviliged) {
+		if (includePrivileged) {
 			configDto.password = config.password;
 			configDto.subscriptionUrl = config.subscriptionUrl;
 		}
