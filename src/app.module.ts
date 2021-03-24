@@ -14,6 +14,7 @@ import { TaskSchedulingModule } from "./task-scheduling/task-scheduling.module";
 import { TestModule } from "./test/test.module";
 import { UserModule } from "./user/user.module";
 import { RequestLogger } from "./utils/request.logger";
+import { SubmissionModule } from "./submission/submission.module";
 
 const optionalProviders = (): Provider<any>[] => {
 	const providers: Provider<any>[] = [];
@@ -41,6 +42,7 @@ const taskSchedulingModules = (): any[] => {
 		MailingModule,
 		CsvModule,
 		AdmissionStatusModule,
+		SubmissionModule,
 		...taskSchedulingModules()
 	],
 	controllers: [AppController],

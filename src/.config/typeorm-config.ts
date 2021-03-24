@@ -19,6 +19,7 @@ import { AssessmentEvent } from "../course/entities/assessment-event.entity";
 import { AdmissionCriteria } from "../course/entities/admission-criteria.entity";
 import { AssignmentRegistration } from "../course/entities/assignment-group-registration.entity";
 import { GroupRegistrationRelation } from "../course/entities/group-registration-relation.entity";
+import { Submission } from "../submission/submission.entity";
 
 const dbConfig = config.get("db");
 const loggingConfig = config.get("logger");
@@ -52,7 +53,8 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
 		PartialAssessment,
 		GroupEvent,
 		AssessmentAllocation,
-		AssessmentEvent
+		AssessmentEvent,
+		Submission
 	],
 	logging: loggingConfig.dbErrors ? ["error"] : undefined
 };

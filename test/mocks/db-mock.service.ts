@@ -40,6 +40,8 @@ import {
 import { AssessmentUserRelationsMock } from "./relations.mock";
 import { UsersMock } from "./users.mock";
 import { ADMISSION_CRITERIA_MOCK } from "./course-config/admission-criteria.mock";
+import { Submission } from "../../src/submission/submission.entity";
+import { SUBMISSION_MOCK } from "./submissions.mock";
 
 export class DbMockService {
 	private con: EntityManager;
@@ -57,6 +59,7 @@ export class DbMockService {
 	admissionCriteria = ADMISSION_CRITERIA_MOCK;
 	configs = COURSE_CONFIGS_MOCK;
 	allocations = ASSESSMENT_ALLOCATIONS_MOCK;
+	submissions = SUBMISSION_MOCK;
 
 	constructor(connection: Connection) {
 		this.con = connection.manager;
@@ -82,6 +85,7 @@ export class DbMockService {
 		await this.createPartialAssessments();
 		await this.createAssessmentUserRelations();
 		await this.createAssessmentAllocations();
+		await this.createSubmissions();
 	}
 
 	async createCourses(): Promise<void> {
@@ -277,5 +281,18 @@ export class DbMockService {
 		});
 
 		await repo.save(registrations).catch(error => console.error(error));
+	}
+
+	async createSubmissions(): Promise<void> {
+		const repo = this.con.getRepository(Submission);
+
+		const submissionEntities = this.submissions.map(s => {
+			const entity = new Submission();
+			Object.assign(entity, s);
+			entity.courseId = "java-wise1920";
+			return entity;
+		});
+
+		await repo.insert(submissionEntities).catch(error => console.error(error));
 	}
 }
