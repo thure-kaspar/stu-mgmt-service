@@ -11,7 +11,7 @@
 		"start": "nest start",
 		"start:dev": "env NODE_ENV=development nest start --watch",
 		"start:demo": "env NODE_ENV=demo nest start --watch",
-		"start:debug": "nest start --debug --watch",
+		"start:debug": "env NODE_ENV=demo nest start --debug --watch",
 		"start:main": "env NODE_ENV=demo node dist/src/main",
 		"start:prod": "env NODE_ENV=production node dist/src/main",
 		"lint": "eslint src test --ext .ts,.tsx",
