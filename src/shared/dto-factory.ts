@@ -84,6 +84,7 @@ export abstract class DtoFactory {
 	static createUserDto(user: User, options?: { removeEmail: boolean }): UserDto {
 		const userDto: UserDto = {
 			id: user.id,
+			matrNr: user.matrNr,
 			email: options?.removeEmail ? undefined : user.email,
 			username: user.username,
 			displayName: user.displayName,

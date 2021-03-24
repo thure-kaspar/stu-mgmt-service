@@ -63,6 +63,7 @@ export class Participant implements ToDto<ParticipantDto> {
 			role: this.role,
 			username: this.user?.username,
 			displayName: this.user?.displayName,
+			matrNr: this.user?.matrNr,
 			email: this.user?.email,
 			groupId: this.groupRelation?.groupId,
 			group: this.groupRelation?.group

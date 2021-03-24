@@ -44,6 +44,7 @@ describe("GET-REQUESTS of CourseController (e2e)", () => {
 					const result = body as ParticipantDto[];
 					expect(result.length).toEqual(expected.length);
 					expect(result[0].userId).toBeTruthy();
+					expect(result[0].matrNr).toBeTruthy();
 					expect(result[0].username).toBeTruthy();
 					expect(result[0].displayName).toBeTruthy();
 					expect(result[0].role).toBeTruthy();
@@ -181,6 +182,8 @@ describe("GET-REQUESTS of CourseController (e2e)", () => {
 				.expect(({ body }) => {
 					const result = body as ParticipantDto;
 					expect(result.userId).toEqual(user.id);
+					expect(result.matrNr).toEqual(user.matrNr);
+					expect(result.username).toEqual(user.username);
 					expect(result.role).toEqual(CourseRole.STUDENT);
 				});
 		});
