@@ -1,4 +1,4 @@
-import { Repository, EntityRepository } from "typeorm";
+import { Repository, EntityRepository, In } from "typeorm";
 import { User, UserId } from "../../shared/entities/user.entity";
 import { UserDto, UserUpdateDto } from "../../shared/dto/user.dto";
 import { Course, CourseId } from "src/course/entities/course.entity";
@@ -36,8 +36,21 @@ export class UserRepository extends Repository<User> {
 		return query.getManyAndCount();
 	}
 
+	async tryFindUsersByMatrNr(matrNrs: number[]): Promise<User[]> {
+		return this.find({
+			where: { matrNr: In(matrNrs) }
+		});
+	}
+
 	async getUserById(id: string): Promise<User> {
 		return this.findOneOrFail(id, { relations: ["participations", "participations.course"] });
+	}
+
+	async getUserByMatrNr(matrNr: number): Promise<User> {
+		return this.findOneOrFail({
+			where: { matrNr },
+			relations: ["participations", "participations.course"]
+		});
 	}
 
 	async getUserByEmail(email: string): Promise<User> {

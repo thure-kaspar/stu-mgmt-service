@@ -68,6 +68,14 @@ export class CourseParticipantsService {
 		return participant.toDto();
 	}
 
+	async getParticipantsByMatrNr(
+		courseId: CourseId,
+		matrNrs: number[]
+	): Promise<ParticipantDto[]> {
+		const participants = await this.participantRepo.getParticipantsByMatrNr(courseId, matrNrs);
+		return participants.map(p => p.toDto());
+	}
+
 	async updateRole(courseId: CourseId, userId: UserId, role: CourseRole): Promise<boolean> {
 		return this.participantRepo.updateRole(courseId, userId, role);
 	}

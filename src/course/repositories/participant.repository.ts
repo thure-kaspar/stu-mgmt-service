@@ -71,6 +71,23 @@ export class ParticipantRepository extends Repository<Participant> {
 		return query.getManyAndCount();
 	}
 
+	/**
+	 * Returns the participants of a course. Ordered by role (asc), username (asc).
+	 * Includes relations:
+	 * - User
+	 * - Group
+	 */
+	async getParticipantsByMatrNr(courseId: CourseId, matrNrs: number[]): Promise<Participant[]> {
+		const query = this.createQueryBuilder("participant")
+			.where("participant.courseId = :courseId", { courseId })
+			.andWhere("user.matrNr IN (:...matrNrs)", { matrNrs })
+			.innerJoinAndSelect("participant.user", "user")
+			.leftJoinAndSelect("participant.groupRelation", "groupRelation")
+			.leftJoinAndSelect("groupRelation.group", "group");
+
+		return query.getMany();
+	}
+
 	async getStudentsWithAssessments(courseId: CourseId): Promise<Participant[]> {
 		return this.createQueryBuilder("participant")
 			.where("participant.courseId = :courseId", { courseId })

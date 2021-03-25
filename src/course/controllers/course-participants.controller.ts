@@ -92,6 +92,29 @@ export class CourseParticipantsController {
 	}
 
 	@ApiOperation({
+		operationId: "getParticipantsByMatrNr",
+		summary: "Get participants of course by matrNr.",
+		description:
+			"Returns participants by their matrNr. The response only includes participants that were found, meaning unknown matrNrs will be ignored."
+	})
+	@ApiQuery({ name: "matrNr", type: Number, isArray: true })
+	@Get("matrNrs")
+	@UseGuards(CourseMemberGuard, TeachingStaffGuard)
+	async getParticipantsByMatrNr(
+		@Param("courseId") courseId: CourseId,
+		@Query("matrNr") matrNr: number[]
+	): Promise<ParticipantDto[]> {
+		if (!(matrNr?.length > 0)) {
+			return [];
+		}
+
+		return this.courseParticipantsService.getParticipantsByMatrNr(
+			courseId,
+			transformArray(matrNr).map(str => Number(str))
+		);
+	}
+
+	@ApiOperation({
 		operationId: "getParticipant",
 		summary: "Get participant.",
 		description:
