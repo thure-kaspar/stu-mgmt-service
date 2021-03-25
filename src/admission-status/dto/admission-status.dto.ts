@@ -3,6 +3,7 @@ import { RuleCheckResult } from "./rule-check-result.dto";
 
 export class AdmissionStatusDto {
 	hasAdmission: boolean;
+	hasAdmissionFromPreviousSemester: boolean;
 	results: RuleCheckResult[];
 	participant: ParticipantDto;
 }

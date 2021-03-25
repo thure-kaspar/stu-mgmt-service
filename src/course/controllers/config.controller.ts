@@ -1,16 +1,26 @@
-import { Controller, Param, Body, Post, Get, Patch, Delete, UseGuards } from "@nestjs/common";
-import { ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
-import { CourseConfigDto } from "../dto/course-config/course-config.dto";
-import { GroupSettingsDto } from "../dto/course-config/group-settings.dto";
+import {
+	BadRequestException,
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Param,
+	Patch,
+	Post,
+	Put,
+	UseGuards
+} from "@nestjs/common";
+import { AuthGuard } from "@nestjs/passport";
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { AdmissionCriteriaDto } from "../dto/course-config/admission-criteria.dto";
 import { AssignmentTemplateDto } from "../dto/course-config/assignment-template.dto";
-import { CourseConfigService } from "../services/course-config.service";
-import { CourseConfigUpdateDto } from "../dto/course-config/course-config.dto";
-import { GroupSettingsUpdateDto } from "../dto/course-config/group-settings.dto";
+import { CourseConfigDto, CourseConfigUpdateDto } from "../dto/course-config/course-config.dto";
+import { GroupSettingsDto, GroupSettingsUpdateDto } from "../dto/course-config/group-settings.dto";
+import { ParticipantDto } from "../dto/course-participant/participant.dto";
 import { CourseId } from "../entities/course.entity";
-import { AuthGuard } from "@nestjs/passport";
 import { CourseMemberGuard } from "../guards/course-member.guard";
 import { TeachingStaffGuard } from "../guards/teaching-staff.guard";
+import { CourseConfigService } from "../services/course-config.service";
 
 @ApiBearerAuth()
 @ApiTags("course-config")
@@ -65,6 +75,32 @@ export class CourseConfigController {
 	}
 	//#endregion
 
+	//#region PUT
+	@ApiOperation({
+		operationId: "setAdmissionFromPreviousSemester",
+		summary: "Set admission from previous semester.",
+		description: ""
+	})
+	@ApiBody({ type: Number, isArray: true, required: true })
+	@Put("admission-from-previous-semester")
+	@UseGuards(TeachingStaffGuard)
+	setAdmissionFromPreviousSemester(
+		@Param("courseId") courseId: CourseId,
+		@Body() matrNrs: number[]
+	): Promise<any> {
+		if (!(matrNrs?.length >= 0)) {
+			throw new BadRequestException("Body was empty. Requires array of integers.");
+		}
+
+		if (matrNrs.length > 0 && !matrNrs.every(nr => Number.isInteger(nr))) {
+			throw new BadRequestException("Body must be an array of integers.");
+		}
+
+		return this.configService.setAdmissionFromPreviousSemester(courseId, matrNrs);
+	}
+
+	//#endregion
+
 	//#region GET
 	@Get()
 	@ApiOperation({
@@ -94,6 +130,19 @@ export class CourseConfigController {
 	@Get("admission-criteria")
 	getAdmissionCriteria(@Param("courseId") courseId: CourseId): Promise<AdmissionCriteriaDto> {
 		return this.configService.getAdmissionCriteria(courseId);
+	}
+
+	@ApiOperation({
+		operationId: "getAdmissionFromPreviousSemester",
+		summary: "Get admission from previous semester.",
+		description:
+			"Retrieves a dictionary that maps matrNrs to a UserDto or null (if user does not exist in the system)."
+	})
+	@Get("admission-from-previous-semester")
+	getAdmissionFromPreviousSemester(
+		@Param("courseId") courseId: CourseId
+	): Promise<{ matrNrs: number[]; participants: ParticipantDto[] }> {
+		return this.configService.getAdmissionFromPreviousSemester(courseId);
 	}
 
 	@ApiOperation({
@@ -185,7 +234,7 @@ export class CourseConfigController {
 
 	@ApiOperation({
 		operationId: "removeAdmissionCriteria",
-		summary: "Remove admssion criteria.",
+		summary: "Remove admission criteria.",
 		description: "Removes the admission criteria of a course."
 	})
 	@Delete("admission-criteria")

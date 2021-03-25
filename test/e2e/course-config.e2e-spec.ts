@@ -1,20 +1,25 @@
 import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
-import { CourseDto } from "../../src/course/dto/course/course.dto";
-import { COURSE_JAVA_1920 } from "../mocks/courses.mock";
-import { DbMockService } from "../mocks/db-mock.service";
 import { getConnection } from "typeorm";
-import { CourseConfigDto } from "../../src/course/dto/course-config/course-config.dto";
-import { COURSE_CONFIG_JAVA_1920 } from "../mocks/course-config/course-config.mock";
-import { createApplication } from "../mocks/application.mock";
-import { GroupSettingsDto } from "../../src/course/dto/course-config/group-settings.dto";
 import { AdmissionCriteriaDto } from "../../src/course/dto/course-config/admission-criteria.dto";
 import { AssignmentTemplateDto } from "../../src/course/dto/course-config/assignment-template.dto";
-import { copy } from "../utils/object-helper";
-import { CourseConfigUpdateDto } from "../../src/course/dto/course-config/course-config.dto";
-import { GROUP_SETTINGS_GROUPS_ALLOWED_MIN2_MAX3_SELF } from "../mocks/course-config/group-settings.mock";
-import { GroupSettingsUpdateDto } from "../../src/course/dto/course-config/group-settings.dto";
+import {
+	CourseConfigDto,
+	CourseConfigUpdateDto
+} from "../../src/course/dto/course-config/course-config.dto";
+import {
+	GroupSettingsDto,
+	GroupSettingsUpdateDto
+} from "../../src/course/dto/course-config/group-settings.dto";
+import { CourseDto } from "../../src/course/dto/course/course.dto";
+import { createApplication } from "../mocks/application.mock";
 import { ADMISSION_CRITERIA_MOCK } from "../mocks/course-config/admission-criteria.mock";
+import { COURSE_CONFIG_JAVA_1920 } from "../mocks/course-config/course-config.mock";
+import { GROUP_SETTINGS_GROUPS_ALLOWED_MIN2_MAX3_SELF } from "../mocks/course-config/group-settings.mock";
+import { COURSE_JAVA_1920 } from "../mocks/courses.mock";
+import { DbMockService } from "../mocks/db-mock.service";
+import { USER_STUDENT_2_JAVA, USER_STUDENT_JAVA } from "../mocks/users.mock";
+import { copy } from "../utils/object-helper";
 
 let app: INestApplication;
 let dbMockService: DbMockService;
@@ -60,6 +65,51 @@ describe("POST-REQUEST of CourseConfigController (e2e)", () => {
 				const result = body as AdmissionCriteriaDto;
 				expect(result).toEqual(expected);
 			});
+	});
+});
+
+describe("PUT-REQUEST of CourseConfigController (e2e)", () => {
+	beforeEach(async () => {
+		app = await createApplication();
+		dbMockService = new DbMockService(getConnection());
+		await dbMockService.createAll();
+	});
+
+	afterEach(async () => {
+		await getConnection().dropDatabase(); // Drop database with all tables and data
+		await getConnection().close(); // Close Db-Connection after all tests have been executed
+	});
+
+	describe("(PUT) courses/{courseId}/config/admission-from-previous-semester", () => {
+		it("With matrNrs -> Returns DTO", () => {
+			const matrNrs = [USER_STUDENT_JAVA.matrNr, USER_STUDENT_2_JAVA.matrNr];
+
+			return request(app.getHttpServer())
+				.put(`/courses/${course.id}/config/admission-from-previous-semester`)
+				.send(matrNrs)
+				.expect(200)
+				.expect(({ body }) => {
+					expect(body).toMatchSnapshot();
+				});
+		});
+
+		it("Empty array -> Clears existing data", () => {
+			const matrNrs = [];
+
+			return request(app.getHttpServer())
+				.put(`/courses/${course.id}/config/admission-from-previous-semester`)
+				.send(matrNrs)
+				.expect(200)
+				.expect(({ body }) => {
+					expect(body).toMatchSnapshot();
+				});
+		});
+
+		it("No payload -> Returns status code 400", () => {
+			return request(app.getHttpServer())
+				.put(`/courses/${course.id}/config/admission-from-previous-semester`)
+				.expect(400);
+		});
 	});
 });
 

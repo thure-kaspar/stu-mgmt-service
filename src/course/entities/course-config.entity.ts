@@ -1,6 +1,7 @@
 import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { CourseConfigDto } from "../dto/course-config/course-config.dto";
 import { AdmissionCriteria } from "./admission-criteria.entity";
+import { AdmissionFromPreviousSemester } from "./admission-from-previous-semester.entity";
 import { AssignmentTemplate } from "./assignment-template.entity";
 import { Course, CourseId } from "./course.entity";
 import { GroupSettings } from "./group-settings.entity";
@@ -18,10 +19,10 @@ export class CourseConfig {
 	courseId: CourseId;
 
 	@Column({ nullable: true })
-	password: string;
+	password?: string;
 
 	@Column({ nullable: true })
-	subscriptionUrl: string;
+	subscriptionUrl?: string;
 
 	@OneToOne(type => GroupSettings, groupSettings => groupSettings.courseConfig, {
 		cascade: ["insert"]
@@ -32,7 +33,10 @@ export class CourseConfig {
 		cascade: ["insert"],
 		nullable: true
 	})
-	admissionCriteria: AdmissionCriteria;
+	admissionCriteria?: AdmissionCriteria;
+
+	@OneToOne(type => AdmissionFromPreviousSemester, { cascade: ["insert"], nullable: true })
+	admissionFromPreviousSemester?: AdmissionFromPreviousSemester;
 
 	@OneToMany(type => AssignmentTemplate, assignmentTemplate => assignmentTemplate.courseConfig, {
 		cascade: ["insert"]
@@ -41,13 +45,13 @@ export class CourseConfig {
 
 	/**
 	 * Returns the Dto-representation of this entity.
-	 * @param [excludePriviliged=false] If true, excludes password and subscription url.
+	 * @param [excludePrivileged=false] If true, excludes password and subscription url.
 	 */
-	toDto(excludePriviliged = false): CourseConfigDto {
+	toDto(excludePrivileged = false): CourseConfigDto {
 		const configDto: CourseConfigDto = {
 			id: this.id,
-			password: excludePriviliged ? undefined : this.password,
-			subscriptionUrl: excludePriviliged ? undefined : this.subscriptionUrl
+			password: excludePrivileged ? undefined : this.password,
+			subscriptionUrl: excludePrivileged ? undefined : this.subscriptionUrl
 		};
 
 		if (this.admissionCriteria) configDto.admissionCriteria = this.admissionCriteria.toDto();

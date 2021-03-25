@@ -1,18 +1,21 @@
-import { Injectable, BadRequestException } from "@nestjs/common";
-import { CourseConfigDto, CourseConfigUpdateDto } from "../dto/course-config/course-config.dto";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { CourseConfig } from "../entities/course-config.entity";
-import { GroupSettings } from "../entities/group-settings.entity";
-import { AdmissionCriteria } from "../entities/admission-criteria.entity";
 import { AdmissionCriteriaDto } from "../dto/course-config/admission-criteria.dto";
-import { GroupSettingsDto, GroupSettingsUpdateDto } from "../dto/course-config/group-settings.dto";
-import { AssignmentTemplate } from "../entities/assignment-template.entity";
 import { AssignmentTemplateDto } from "../dto/course-config/assignment-template.dto";
+import { CourseConfigDto, CourseConfigUpdateDto } from "../dto/course-config/course-config.dto";
+import { GroupSettingsDto, GroupSettingsUpdateDto } from "../dto/course-config/group-settings.dto";
+import { ParticipantDto } from "../dto/course-participant/participant.dto";
+import { AdmissionCriteria } from "../entities/admission-criteria.entity";
+import { AssignmentTemplate } from "../entities/assignment-template.entity";
+import { CourseConfig } from "../entities/course-config.entity";
+import { CourseId } from "../entities/course.entity";
+import { GroupSettings } from "../entities/group-settings.entity";
+import { AdmissionCriteriaRepository } from "../repositories/admission-criteria.repository";
+import { AdmissionFromPreviousSemesterRepository } from "../repositories/admission-from-previous-semester.repository";
+import { AssignmentTemplateRepository } from "../repositories/assignment-template.repository";
 import { CourseConfigRepository } from "../repositories/course-config.repository";
 import { GroupSettingsRepository } from "../repositories/group-settings.repository";
-import { AssignmentTemplateRepository } from "../repositories/assignment-template.repository";
-import { AdmissionCriteriaRepository } from "../repositories/admission-criteria.repository";
-import { CourseId } from "../entities/course.entity";
+import { ParticipantRepository } from "../repositories/participant.repository";
 
 @Injectable()
 export class CourseConfigService {
@@ -21,7 +24,10 @@ export class CourseConfigService {
 		@InjectRepository(GroupSettings) private groupSettingsRepo: GroupSettingsRepository,
 		@InjectRepository(AdmissionCriteria)
 		private admissionCriteriaRepo: AdmissionCriteriaRepository,
-		@InjectRepository(AssignmentTemplate) private templateRepo: AssignmentTemplateRepository
+		@InjectRepository(AdmissionFromPreviousSemesterRepository)
+		private admissionFromPreviousRepo: AdmissionFromPreviousSemesterRepository,
+		@InjectRepository(AssignmentTemplate) private templateRepo: AssignmentTemplateRepository,
+		@InjectRepository(ParticipantRepository) private participantRepo: ParticipantRepository
 	) {}
 
 	/** Creates the configuration for a course. */
@@ -54,13 +60,32 @@ export class CourseConfigService {
 		return template.toDto();
 	}
 
+	async setAdmissionFromPreviousSemester(
+		courseId: string,
+		matrNrs: number[]
+	): Promise<{ matrNrs: number[]; participants: ParticipantDto[] }> {
+		const [config, existing] = await Promise.all([
+			this.configRepo.getByCourseId(courseId),
+			this.admissionFromPreviousRepo.tryGetByCourseId(courseId)
+		]);
+
+		const entity = this.admissionFromPreviousRepo.create({
+			id: existing?.id ?? undefined,
+			courseConfigId: config.id,
+			admissionFromPreviousSemester: matrNrs
+		});
+
+		await this.admissionFromPreviousRepo.save(entity);
+		return this.getAdmissionFromPreviousSemester(courseId);
+	}
+
 	/**
 	 * Returns the complete configuration of a course.
-	 * @param [excludePriviliged=false] If true, priviliged fields (i.e password) will be exluded.
+	 * @param [excludePrivileged=false] If true, privileged fields (i.e password) will be excluded.
 	 */
-	async getCourseConfig(courseId: CourseId, excludePriviliged = false): Promise<CourseConfigDto> {
+	async getCourseConfig(courseId: CourseId, excludePrivileged = false): Promise<CourseConfigDto> {
 		const config = await this.configRepo.getByCourseId(courseId);
-		return config.toDto();
+		return config.toDto(excludePrivileged);
 	}
 
 	/** Returns the group settings of a course. */
@@ -73,6 +98,25 @@ export class CourseConfigService {
 	async getAdmissionCriteria(courseId: CourseId): Promise<AdmissionCriteriaDto> {
 		const criteria = await this.admissionCriteriaRepo.getByCourseId(courseId);
 		return criteria.toDto();
+	}
+
+	async getAdmissionFromPreviousSemester(
+		courseId: CourseId
+	): Promise<{ matrNrs: number[]; participants: ParticipantDto[] }> {
+		const admission = await this.admissionFromPreviousRepo.tryGetByCourseId(courseId);
+
+		const result = {
+			matrNrs: admission?.toDto() || [],
+			participants: []
+		};
+
+		if (result.matrNrs.length > 0) {
+			result.participants = (
+				await this.participantRepo.getParticipantsByMatrNr(courseId, result.matrNrs)
+			).map(p => p.toDto());
+		}
+
+		return result;
 	}
 
 	/** Returns all assignment templates that are available for this course. */

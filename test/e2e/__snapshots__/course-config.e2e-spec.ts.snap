@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PUT-REQUEST of CourseConfigController (e2e) (PUT) courses/{courseId}/config/admission-from-previous-semester Empty array -> Clears existing data 1`] = `
+Object {
+  "matrNrs": Array [],
+  "participants": Array [],
+}
+`;
+
+exports[`PUT-REQUEST of CourseConfigController (e2e) (PUT) courses/{courseId}/config/admission-from-previous-semester With matrNrs -> Returns DTO 1`] = `
+Object {
+  "matrNrs": Array [
+    123456,
+    111111,
+  ],
+  "participants": Array [
+    Object {
+      "displayName": "Max Mustermann",
+      "email": "max.mustermann@test.com",
+      "group": Object {
+        "hasPassword": true,
+        "id": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
+        "isClosed": false,
+        "name": "Testgroup 1",
+      },
+      "groupId": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
+      "matrNr": 123456,
+      "role": "STUDENT",
+      "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
+      "username": "mmustermann",
+    },
+    Object {
+      "displayName": "Hans Peter",
+      "email": "hans.peter@test.com",
+      "group": Object {
+        "hasPassword": true,
+        "id": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
+        "isClosed": false,
+        "name": "Testgroup 1",
+      },
+      "groupId": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
+      "matrNr": 111111,
+      "role": "STUDENT",
+      "userId": "40f59aad-7473-4455-a3ea-1214f19b2565",
+      "username": "hpeter",
+    },
+  ],
+}
+`;

@@ -20,6 +20,7 @@ import { AdmissionCriteria } from "../course/entities/admission-criteria.entity"
 import { AssignmentRegistration } from "../course/entities/assignment-group-registration.entity";
 import { GroupRegistrationRelation } from "../course/entities/group-registration-relation.entity";
 import { Submission } from "../submission/submission.entity";
+import { AdmissionFromPreviousSemester } from "../course/entities/admission-from-previous-semester.entity";
 
 const dbConfig = config.get("db");
 const loggingConfig = config.get("logger");
@@ -50,6 +51,7 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
 		AssignmentTemplate,
 		GroupSettings,
 		AdmissionCriteria,
+		AdmissionFromPreviousSemester,
 		PartialAssessment,
 		GroupEvent,
 		AssessmentAllocation,

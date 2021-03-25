@@ -15,26 +15,38 @@ import { PointsOverviewDto, StudentResults } from "./dto/points-overview.dto";
 import { AdmissionRule } from "./rules/abstract-rules";
 import { AdmissionRuleFactory } from "./rules/factory";
 import { AdmissionRuleDto } from "./dto/admission-rule.dto";
+import { AdmissionFromPreviousSemesterRepository } from "../course/repositories/admission-from-previous-semester.repository";
 
 @Injectable()
 export class AdmissionStatusService {
 	constructor(
-		@InjectRepository(Participant) private participants: ParticipantRepository,
-		@InjectRepository(AdmissionCriteria) private admissionCriteria: AdmissionCriteriaRepository,
+		@InjectRepository(Participant)
+		private participants: ParticipantRepository,
+		@InjectRepository(AdmissionCriteria)
+		private admissionCriteria: AdmissionCriteriaRepository,
+		@InjectRepository(AdmissionFromPreviousSemesterRepository)
+		private admissionFromPreviousRepo: AdmissionFromPreviousSemesterRepository,
 		private assignmentService: AssignmentService
 	) {}
 
 	async getAdmissionStatusOfParticipants(courseId: CourseId): Promise<AdmissionStatusDto[]> {
-		const [students, assignments, admissionCriteria] = await Promise.all([
+		const [
+			students,
+			assignments,
+			admissionCriteria,
+			admissionFromPrevious
+		] = await Promise.all([
 			this.participants.getStudentsWithAssessments(courseId),
 			this.assignmentService.getAssignments(courseId),
-			this.admissionCriteria.getByCourseId(courseId)
+			this.admissionCriteria.getByCourseId(courseId),
+			this.admissionFromPreviousRepo.tryGetByCourseId(courseId)
 		]);
 
 		return this._getAdmissionStatusOfParticipants(
 			courseId,
 			assignments,
 			admissionCriteria,
+			admissionFromPrevious.toDto(),
 			students
 		);
 	}
@@ -43,16 +55,18 @@ export class AdmissionStatusService {
 		courseId: CourseId,
 		userId: UserId
 	): Promise<AdmissionStatusDto> {
-		const [student, assignments, admissionCriteria] = await Promise.all([
+		const [student, assignments, admissionCriteria, admissionFromPrevious] = await Promise.all([
 			this.participants.getStudentWithAssessments(courseId, userId),
 			this.assignmentService.getAssignments(courseId),
-			this.admissionCriteria.getByCourseId(courseId)
+			this.admissionCriteria.getByCourseId(courseId),
+			this.admissionFromPreviousRepo.tryGetByCourseId(courseId)
 		]);
 
 		const results = this._getAdmissionStatusOfParticipants(
 			courseId,
 			assignments,
 			admissionCriteria,
+			admissionFromPrevious.toDto(),
 			[student]
 		);
 		return results[0];
@@ -62,6 +76,7 @@ export class AdmissionStatusService {
 		courseId: string,
 		assignments: AssignmentDto[],
 		admissionCriteria: AdmissionCriteria,
+		admissionFromPreviousSemester: number[],
 		students: Participant[]
 	) {
 		const evaluated = assignments.filter(a => a.state === AssignmentState.EVALUATED);
@@ -72,7 +87,11 @@ export class AdmissionStatusService {
 		}
 
 		const criteria = rules.map(rule => AdmissionRuleFactory.create(rule, evaluated));
-		return this.computeAdmissionStatusOfEachStudent(students, criteria);
+		return this.computeAdmissionStatusOfEachStudent(
+			students,
+			criteria,
+			admissionFromPreviousSemester
+		);
 	}
 
 	private courseHasNoAdmissionCriteria(rules?: AdmissionRuleDto[]) {
@@ -81,14 +100,19 @@ export class AdmissionStatusService {
 
 	private computeAdmissionStatusOfEachStudent(
 		students: Participant[],
-		criteria: AdmissionRule[]
+		criteria: AdmissionRule[],
+		admissionFromPreviousSemester: number[]
 	): AdmissionStatusDto[] {
-		return students.map(student => this.computeAdmissionStatus(student, criteria));
+		const fromPreviousSemester = new Set(admissionFromPreviousSemester);
+		return students.map(student =>
+			this.computeAdmissionStatus(student, criteria, fromPreviousSemester)
+		);
 	}
 
 	private computeAdmissionStatus(
 		student: Participant,
-		criteria: AdmissionRule[]
+		criteria: AdmissionRule[],
+		fromPreviousSemester: Set<number>
 	): AdmissionStatusDto {
 		const assessments = student.user.assessmentUserRelations.map(aur => aur.assessment);
 		const studentDto = student.toDto();
@@ -99,6 +123,7 @@ export class AdmissionStatusService {
 		return {
 			participant: studentDto,
 			hasAdmission,
+			hasAdmissionFromPreviousSemester: fromPreviousSemester.has(studentDto.matrNr),
 			results
 		};
 	}
