@@ -46,7 +46,7 @@ export class AdmissionStatusService {
 			courseId,
 			assignments,
 			admissionCriteria,
-			admissionFromPrevious.toDto(),
+			admissionFromPrevious?.toDto() ?? [],
 			students
 		);
 	}
@@ -66,7 +66,7 @@ export class AdmissionStatusService {
 			courseId,
 			assignments,
 			admissionCriteria,
-			admissionFromPrevious.toDto(),
+			admissionFromPrevious?.toDto() ?? [],
 			[student]
 		);
 		return results[0];
