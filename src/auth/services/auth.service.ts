@@ -72,14 +72,20 @@ export class AuthService {
 		);
 	}
 
-	private async createUser(authInfo: AuthInfo) {
+	private async createUser(authInfo: AuthInfo): Promise<User> {
 		const username = authInfo.user.username;
 		const displayName =
 			authInfo.user.fullName?.length > 0 ? authInfo.user.fullName : authInfo.user.username;
 		const role = this.determineRole(authInfo.user.role);
 		const email = authInfo.user.settings?.emailAddress;
 
-		return this.userRepository.createUser({ username, displayName, email, role });
+		return this.userRepository.createUser({
+			id: undefined,
+			username,
+			displayName,
+			email,
+			role
+		});
 	}
 
 	/**

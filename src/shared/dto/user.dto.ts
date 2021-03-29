@@ -5,7 +5,7 @@ import { UserRole } from "../enums";
 export class UserDto {
 	/** Unique identifier of this user. */
 	@ApiPropertyOptional({ description: "Unique identifier of this user." })
-	id?: string;
+	id: string;
 	matrNr?: number;
 	email?: string;
 	username: string;
