@@ -96,6 +96,7 @@ export class UserRepository extends Repository<User> {
 		const user = await this.getUserById(userId);
 
 		user.email = userDto.email;
+		user.matrNr = userDto.matrNr;
 		user.displayName = userDto.displayName;
 		user.role = userDto.role;
 
