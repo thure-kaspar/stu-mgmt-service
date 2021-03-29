@@ -118,12 +118,14 @@ export class AdmissionStatusService {
 		const studentDto = student.toDto();
 
 		const results = criteria.map(rule => rule.check(assessments));
-		const hasAdmission = results.every(rule => rule.passed);
+		const fulfillsAdmissionCriteria = results.every(rule => rule.passed);
+		const hasAdmissionFromPreviousSemester = fromPreviousSemester.has(studentDto.matrNr);
 
 		return {
 			participant: studentDto,
-			hasAdmission,
-			hasAdmissionFromPreviousSemester: fromPreviousSemester.has(studentDto.matrNr),
+			hasAdmission: fulfillsAdmissionCriteria || hasAdmissionFromPreviousSemester,
+			hasAdmissionFromPreviousSemester,
+			fulfillsAdmissionCriteria,
 			results
 		};
 	}
