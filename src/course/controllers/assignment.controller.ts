@@ -6,12 +6,14 @@ import { AssignmentDto, AssignmentUpdateDto } from "../dto/assignment/assignment
 import { CourseId } from "../entities/course.entity";
 import { CourseMemberGuard } from "../guards/course-member.guard";
 import { AssignmentService } from "../services/assignment.service";
-import { GetCourse, GetAssignment } from "../decorators/decorators";
+import { GetCourse, GetAssignment, GetParticipant } from "../decorators/decorators";
 import { Course } from "../models/course.model";
 import { Assignment } from "../models/assignment.model";
 import { AssignmentGuard } from "../guards/assignment.guard";
 import { AssignmentId } from "../entities/assignment.entity";
 import { TeachingStaffGuard } from "../guards/teaching-staff.guard";
+import { Participant } from "../models/participant.model";
+import { AssignmentState } from "../../shared/enums";
 
 @ApiBearerAuth()
 @ApiTags("assignments")
@@ -41,8 +43,17 @@ export class AssignmentController {
 		summary: "Get assignments of course.",
 		description: "Retrieves all assignments of the course."
 	})
-	getAssignmentsOfCourse(@Param("courseId") courseId: CourseId): Promise<AssignmentDto[]> {
-		return this.assignmentService.getAssignments(courseId);
+	async getAssignmentsOfCourse(
+		@Param("courseId") courseId: CourseId,
+		@GetParticipant() participant: Participant
+	): Promise<AssignmentDto[]> {
+		let assignments = await this.assignmentService.getAssignments(courseId);
+
+		if (participant.isStudent()) {
+			assignments = assignments.filter(a => a.state !== AssignmentState.INVISIBLE);
+		}
+
+		return assignments;
 	}
 
 	@Get(":assignmentId")
