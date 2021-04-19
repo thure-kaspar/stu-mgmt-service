@@ -111,8 +111,8 @@ export class ParticipantRepository extends Repository<Participant> {
 			.andWhere("participant.role = :role", { role: CourseRole.STUDENT })
 			.innerJoinAndSelect("participant.user", "user")
 			.leftJoinAndSelect("user.assessmentUserRelations", "aur")
-			.innerJoinAndSelect("aur.assessment", "assessment")
-			.innerJoinAndSelect(
+			.leftJoinAndSelect("aur.assessment", "assessment")
+			.leftJoinAndSelect(
 				"assessment.assignment",
 				"assignment",
 				"assignment.courseId = :courseId",
