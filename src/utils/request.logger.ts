@@ -14,18 +14,11 @@ export class RequestLogger implements NestInterceptor {
 
 	intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
 		// Collect relevant data from request / response
-		const {
-			originalUrl,
-			method,
-			params,
-			query,
-			body,
-			headers
-		} = context.switchToHttp().getRequest();
+		const { originalUrl, method, params, query, body } = context.switchToHttp().getRequest();
 		const { statusCode } = context.switchToHttp().getResponse();
 
 		// Log information of incoming request
-		this.logger.verbose({ originalUrl, method, headers, params, query, body });
+		this.logger.verbose({ originalUrl, method, params, query, body });
 
 		// Handle (execute) the request and log its response
 		const startTime = Date.now();
