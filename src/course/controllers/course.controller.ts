@@ -10,27 +10,32 @@ import {
 	Req,
 	UseGuards
 } from "@nestjs/common";
-import { QueryBus } from "@nestjs/cqrs";
 import { AuthGuard } from "@nestjs/passport";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 import { Roles } from "../../auth/decorators/roles.decorator";
-import { UserRole } from "../../shared/enums";
+import { RoleGuard } from "../../auth/guards/role.guard";
+import { CourseRole, UserRole } from "../../shared/enums";
 import { PaginatedResult, throwIfRequestFailed } from "../../utils/http-utils";
+import { ParticipantDto } from "../dto/course-participant/participant.dto";
+import { CourseAboutDto } from "../dto/course/course-about.dto";
 import { CourseCreateDto } from "../dto/course/course-create.dto";
 import { CourseFilter } from "../dto/course/course-filter.dto";
 import { CourseDto } from "../dto/course/course.dto";
 import { CourseId } from "../entities/course.entity";
 import { CourseMemberGuard } from "../guards/course-member.guard";
 import { TeachingStaffGuard } from "../guards/teaching-staff.guard";
+import { CourseParticipantsService } from "../services/course-participants.service";
 import { CourseService } from "../services/course.service";
-import { RoleGuard } from "../../auth/guards/role.guard";
 
 @ApiBearerAuth()
 @ApiTags("courses")
 @Controller("courses")
 export class CourseController {
-	constructor(private courseService: CourseService, private queryBus: QueryBus) {}
+	constructor(
+		private courseService: CourseService,
+		private participantsService: CourseParticipantsService
+	) {}
 
 	/**
 	 * Creates a new course.
@@ -72,6 +77,33 @@ export class CourseController {
 	@UseGuards(AuthGuard(), CourseMemberGuard)
 	getCourseById(@Param("courseId") courseId: CourseId): Promise<CourseDto> {
 		return this.courseService.getCourseById(courseId);
+	}
+
+	@ApiOperation({
+		operationId: "getCourseAbout",
+		summary: "Get information about the course.",
+		description: "Retrieves the course and information that is required by its /about page."
+	})
+	@Get(":courseId/about")
+	@UseGuards(AuthGuard(), CourseMemberGuard)
+	async getCourseAbout(@Param("courseId") courseId: CourseId): Promise<CourseAboutDto> {
+		const [[participants, count], course] = await Promise.all([
+			this.participantsService.getParticipants(courseId),
+			this.courseService.getCourseById(courseId)
+		]);
+
+		const teachingStaff: Partial<ParticipantDto>[] = participants
+			.filter(p => p.role !== CourseRole.STUDENT)
+			.map(p => ({
+				displayName: p.displayName,
+				role: p.role
+			}));
+
+		return {
+			course,
+			teachingStaff: teachingStaff as ParticipantDto[],
+			participantsCount: count
+		};
 	}
 
 	/**
