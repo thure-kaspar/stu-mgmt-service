@@ -35,8 +35,7 @@ You can use the `CourseConfigUpdateDto`, which only contains editable properties
 
 ```json
 {
-	"password": "new_password",
-	"subscriptionUrl": "http://update.me/api"
+	"password": "new_password"
 }
 ```
 

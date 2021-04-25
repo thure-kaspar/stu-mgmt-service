@@ -91,17 +91,9 @@ Subscribing to a course allows you to receive notifications when an event is tri
 This might be the joining of a participant, activities inside of a group, closing of assignment submission and more.
 The topic of course events is covered in depth in this article [here](TODO).
 
-To subscribe to a course, you are required to provide a URL to a system that can listen to HTTP-POST events.
+To subscribe to a course ...
 
-```json
-{
-	// ...
-	"config": {
-		// ...
-		"subscriptionUrl": "http://example.com/api"
-	}
-}
-```
+TODO
 
 ## Group settings
 

@@ -1,7 +1,7 @@
-import { GroupSettingsDto } from "./group-settings.dto";
-import { AssignmentTemplateDto } from "./assignment-template.dto";
+import { ApiPropertyOptional, PartialType, PickType } from "@nestjs/swagger";
 import { AdmissionCriteriaDto } from "./admission-criteria.dto";
-import { PartialType, OmitType, ApiPropertyOptional } from "@nestjs/swagger";
+import { AssignmentTemplateDto } from "./assignment-template.dto";
+import { GroupSettingsDto } from "./group-settings.dto";
 
 /**
  * A dto that contains the configuration of a course.
@@ -25,17 +25,7 @@ export class CourseConfigDto {
 	/** Password required to sign up for the course. */
 	@ApiPropertyOptional({ description: "Password required to sign up for the course." })
 	password?: string;
-
-	/** The route that update messages (i.e user left group or assignment submission closed) should be send to. Messages be send via HTTP-POST. */
-	@ApiPropertyOptional({
-		description:
-			"The route that update messages (i.e user left group or assignment submission closed) should be send to. Will be send via HTTP-POST.",
-		example: "http://update.me/api"
-	})
-	subscriptionUrl?: string;
 }
 
 /** Version of CourseConfigDto that only contains editable properties. */
-export class CourseConfigUpdateDto extends PartialType(
-	OmitType(CourseConfigDto, ["id", "groupSettings", "admissionCriteria", "assignmentTemplates"])
-) {}
+export class CourseConfigUpdateDto extends PartialType(PickType(CourseConfigDto, ["password"])) {}

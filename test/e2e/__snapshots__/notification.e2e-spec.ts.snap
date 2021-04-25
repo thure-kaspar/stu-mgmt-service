@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GET-Requests of NotificationController (e2e) (GET) /notifications/courses/{courseId}/subscribers Retrieves all subscribers 1`] = `
+Array [
+  Object {
+    "events": Object {
+      "ALL": true,
+    },
+    "name": "subscriber_1",
+    "updateDate": null,
+    "url": "http://example-one.url",
+  },
+  Object {
+    "events": Object {
+      "GROUP_REGISTERED": true,
+      "GROUP_UNREGISTERED": true,
+      "USER_JOINED_GROUP": true,
+      "USER_LEFT_GROUP": true,
+    },
+    "name": "subscriber_2",
+    "updateDate": null,
+    "url": "http://example-two.url",
+  },
+]
+`;

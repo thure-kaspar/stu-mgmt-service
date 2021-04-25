@@ -21,6 +21,7 @@ import { AssignmentRegistration } from "../course/entities/assignment-group-regi
 import { GroupRegistrationRelation } from "../course/entities/group-registration-relation.entity";
 import { Submission } from "../submission/submission.entity";
 import { AdmissionFromPreviousSemester } from "../course/entities/admission-from-previous-semester.entity";
+import { Subscriber } from "../notification/subscriber/subscriber.entity";
 
 const dbConfig = config.get("db");
 const loggingConfig = config.get("logger");
@@ -56,7 +57,8 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
 		GroupEvent,
 		AssessmentAllocation,
 		AssessmentEvent,
-		Submission
+		Submission,
+		Subscriber
 	],
 	logging: loggingConfig.dbErrors ? ["error"] : undefined
 };

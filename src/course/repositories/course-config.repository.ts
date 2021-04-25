@@ -31,9 +31,9 @@ export class CourseConfigRepository extends Repository<CourseConfig> {
 	/** Partially updates the course config. Does not update related entites. */
 	async updateCourseConfig(
 		courseId: CourseId,
-		partial: Partial<CourseConfigUpdateDto>
+		partial: CourseConfigUpdateDto
 	): Promise<CourseConfig> {
-		await this.update({ courseId }, partial);
+		await this.update({ courseId }, partial as unknown); // fixes type mismatch related to admissionCriteria
 		return this.getByCourseId(courseId);
 	}
 
@@ -48,7 +48,6 @@ export class CourseConfigRepository extends Repository<CourseConfig> {
 		const config = new CourseConfig();
 		config.courseId = courseId;
 		config.password = configDto.password;
-		config.subscriptionUrl = configDto.subscriptionUrl;
 
 		// Group settings
 		if (configDto.groupSettings) {

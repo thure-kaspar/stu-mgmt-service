@@ -1,5 +1,6 @@
 import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { CourseConfigDto } from "../dto/course-config/course-config.dto";
+import { SubscriberDto } from "../../notification/subscriber/subscriber.dto";
 import { AdmissionCriteria } from "./admission-criteria.entity";
 import { AdmissionFromPreviousSemester } from "./admission-from-previous-semester.entity";
 import { AssignmentTemplate } from "./assignment-template.entity";
@@ -20,9 +21,6 @@ export class CourseConfig {
 
 	@Column({ nullable: true })
 	password?: string;
-
-	@Column({ nullable: true })
-	subscriptionUrl?: string;
 
 	@OneToOne(type => GroupSettings, groupSettings => groupSettings.courseConfig, {
 		cascade: ["insert"]
@@ -50,8 +48,7 @@ export class CourseConfig {
 	toDto(excludePrivileged = false): CourseConfigDto {
 		const configDto: CourseConfigDto = {
 			id: this.id,
-			password: excludePrivileged ? undefined : this.password,
-			subscriptionUrl: excludePrivileged ? undefined : this.subscriptionUrl
+			password: excludePrivileged ? undefined : this.password
 		};
 
 		if (this.admissionCriteria) configDto.admissionCriteria = this.admissionCriteria.toDto();

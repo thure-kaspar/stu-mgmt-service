@@ -42,6 +42,8 @@ import { UsersMock } from "./users.mock";
 import { ADMISSION_CRITERIA_MOCK } from "./course-config/admission-criteria.mock";
 import { Submission } from "../../src/submission/submission.entity";
 import { SUBMISSION_MOCK } from "./submissions.mock";
+import { SUBSCRIBER_MOCK } from "./subscribers.mock";
+import { Subscriber } from "../../src/notification/subscriber/subscriber.entity";
 
 export class DbMockService {
 	private con: EntityManager;
@@ -60,6 +62,7 @@ export class DbMockService {
 	configs = COURSE_CONFIGS_MOCK;
 	allocations = ASSESSMENT_ALLOCATIONS_MOCK;
 	submissions = SUBMISSION_MOCK;
+	subscribers = SUBSCRIBER_MOCK;
 
 	constructor(connection: Connection) {
 		this.con = connection.manager;
@@ -86,6 +89,7 @@ export class DbMockService {
 		await this.createAssessmentUserRelations();
 		await this.createAssessmentAllocations();
 		await this.createSubmissions();
+		await this.createSubscribers();
 	}
 
 	async createCourses(): Promise<void> {
@@ -294,5 +298,18 @@ export class DbMockService {
 		});
 
 		await repo.insert(submissionEntities).catch(error => console.error(error));
+	}
+
+	async createSubscribers(): Promise<void> {
+		const repo = this.con.getRepository(Subscriber);
+
+		const subscriberEntities = this.subscribers.map(data => {
+			const entity = new Subscriber();
+			Object.assign(entity, data.dto);
+			entity.courseId = data.courseId;
+			return entity;
+		});
+
+		await repo.insert(subscriberEntities).catch(error => console.error(error));
 	}
 }

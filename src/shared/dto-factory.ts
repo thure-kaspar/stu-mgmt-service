@@ -49,7 +49,6 @@ export abstract class DtoFactory {
 
 		if (includePrivileged) {
 			configDto.password = config.password;
-			configDto.subscriptionUrl = config.subscriptionUrl;
 		}
 		return configDto;
 	}

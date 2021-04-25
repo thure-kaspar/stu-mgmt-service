@@ -193,11 +193,9 @@ describe("PATCH-REQUEST of CourseConfigController (e2e)", () => {
 	it("(PATCH) .../config Updates course config (no relations)", () => {
 		const expected = copy(COURSE_CONFIG_JAVA_1920);
 		expected.password = "newPassword";
-		expected.subscriptionUrl = "http://new-url.com/api";
 
 		const update: CourseConfigUpdateDto = {
-			password: expected.password,
-			subscriptionUrl: expected.subscriptionUrl
+			password: expected.password
 		};
 
 		return request(app.getHttpServer())

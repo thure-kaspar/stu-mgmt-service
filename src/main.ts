@@ -68,6 +68,7 @@ function setupSwaggerDocument(app: NestExpressApplication) {
 		.addTag("submission")
 		.addTag("assessment-allocation")
 		.addTag("csv")
+		.addTag("notification")
 		.addTag("task-scheduler")
 		.addTag("test")
 		.build();

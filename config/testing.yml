@@ -4,7 +4,7 @@ server:
 db:
     type: "postgres"
     port: 5432
-    database: "StudentMgmtTestDb"
+    database: "StudentMgmtDb"
     host: "localhost"
     username: "postgres"
     password: "admin"

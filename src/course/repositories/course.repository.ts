@@ -168,7 +168,6 @@ export class CourseRepository extends Repository<Course> {
 
 		course.config = new CourseConfig();
 		course.config.password = configDto.password?.length > 0 ? configDto.password : null; // Replace empty string with null
-		course.config.subscriptionUrl = configDto.subscriptionUrl;
 
 		course.config.groupSettings = new GroupSettings();
 		Object.assign(course.config.groupSettings, configDto.groupSettings);

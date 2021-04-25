@@ -15,6 +15,8 @@ import { TestModule } from "./test/test.module";
 import { UserModule } from "./user/user.module";
 import { RequestLogger } from "./utils/request.logger";
 import { SubmissionModule } from "./submission/submission.module";
+import { ExportModule } from "./export/export.module";
+import { NotificationModule } from "./notification/notification.module";
 
 const optionalProviders = (): Provider<any>[] => {
 	const providers: Provider<any>[] = [];
@@ -43,6 +45,7 @@ const taskSchedulingModules = (): any[] => {
 		CsvModule,
 		AdmissionStatusModule,
 		SubmissionModule,
+		NotificationModule,
 		...taskSchedulingModules()
 	],
 	controllers: [AppController],
