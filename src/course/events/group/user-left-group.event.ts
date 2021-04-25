@@ -3,20 +3,30 @@ import { EventsHandler, IEventHandler } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Event } from "..";
+import { NotificationDto } from "../../../shared/dto/notification.dto";
 import { UserId } from "../../../shared/entities/user.entity";
 import { CourseId } from "../../entities/course.entity";
 import { GroupEvent } from "../../entities/group-event.entity";
 import { GroupId } from "../../entities/group.entity";
 import { GroupRepository } from "../../repositories/group.repository";
-import { NotificationService } from "../../services/notification.service";
+import { INotify } from "../interfaces";
 
-export class UserLeftGroupEvent {
+export class UserLeftGroupEvent implements INotify {
 	constructor(
 		public readonly courseId: CourseId,
 		public readonly groupId: GroupId,
 		public readonly userId: UserId,
 		public readonly reason?: string
 	) {}
+
+	toNotificationDto(): NotificationDto {
+		return {
+			event: Event.USER_LEFT_GROUP,
+			courseId: this.courseId,
+			userId: this.userId,
+			groupId: this.groupId
+		};
+	}
 }
 
 @EventsHandler(UserLeftGroupEvent)
@@ -50,20 +60,5 @@ export class CloseEmptyGroupsHandler implements IEventHandler<UserLeftGroupEvent
 				`Closed group ${group.name} (${group.id}) of course ${group.courseId}.`
 			);
 		}
-	}
-}
-
-/** Triggers the transmission of UpdateMessages for subscribed courses. */
-@EventsHandler(UserLeftGroupEvent)
-export class UserLeftGroupNotificationHandler implements IEventHandler<UserLeftGroupEvent> {
-	constructor(private notifications: NotificationService) {}
-
-	async handle(event: UserLeftGroupEvent): Promise<void> {
-		this.notifications.send({
-			event: Event.USER_LEFT_GROUP,
-			courseId: event.courseId,
-			userId: event.userId,
-			groupId: event.groupId
-		});
 	}
 }

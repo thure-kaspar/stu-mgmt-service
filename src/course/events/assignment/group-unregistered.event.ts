@@ -1,28 +1,23 @@
-import { EventsHandler, IEventHandler } from "@nestjs/cqrs";
-import { NotificationService } from "../../services/notification.service";
 import { Event } from "..";
+import { NotificationDto } from "../../../shared/dto/notification.dto";
+import { AssignmentId } from "../../entities/assignment.entity";
 import { CourseId } from "../../entities/course.entity";
 import { GroupId } from "../../entities/group.entity";
-import { AssignmentId } from "../../entities/assignment.entity";
+import { INotify } from "../interfaces";
 
-export class GroupUnregistered {
+export class GroupUnregistered implements INotify {
 	constructor(
 		readonly courseId: CourseId,
 		readonly assignmentId: AssignmentId,
 		readonly groupId: GroupId
 	) {}
-}
 
-@EventsHandler(GroupUnregistered)
-export class GroupUnregisteredNotificationHandler implements IEventHandler<GroupUnregistered> {
-	constructor(private notifications: NotificationService) {}
-
-	async handle(event: GroupUnregistered): Promise<void> {
-		this.notifications.send({
+	toNotificationDto(): NotificationDto {
+		return {
 			event: Event.GROUP_UNREGISTERED,
-			courseId: event.courseId,
-			assignmentId: event.assignmentId,
-			groupId: event.groupId
-		});
+			courseId: this.courseId,
+			assignmentId: this.assignmentId,
+			groupId: this.groupId
+		};
 	}
 }

@@ -1,20 +1,29 @@
 import { EventsHandler, IEventHandler } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
-import { GroupEvent } from "../../entities/group-event.entity";
 import { Repository } from "typeorm";
-import { GroupId } from "../../entities/group.entity";
-import { UserId } from "../../../shared/entities/user.entity";
-import { NotificationService } from "../../services/notification.service";
-import { UserLeftGroupEvent } from "./user-left-group.event";
 import { Event } from "..";
+import { NotificationDto } from "../../../shared/dto/notification.dto";
+import { UserId } from "../../../shared/entities/user.entity";
 import { CourseId } from "../../entities/course.entity";
+import { GroupEvent } from "../../entities/group-event.entity";
+import { GroupId } from "../../entities/group.entity";
+import { INotify } from "../interfaces";
 
-export class UserJoinedGroupEvent {
+export class UserJoinedGroupEvent implements INotify {
 	constructor(
 		public readonly courseId: CourseId,
 		public readonly groupId: GroupId,
 		public readonly userId: UserId
 	) {}
+
+	toNotificationDto(): NotificationDto {
+		return {
+			event: Event.USER_JOINED_GROUP,
+			courseId: this.courseId,
+			userId: this.userId,
+			groupId: this.groupId
+		};
+	}
 }
 
 @EventsHandler(UserJoinedGroupEvent)
@@ -23,19 +32,5 @@ export class UserJoinedGroupHandler implements IEventHandler<UserJoinedGroupEven
 
 	handle(event: UserJoinedGroupEvent): void {
 		this.groupEvents.insert({ ...event, event: UserJoinedGroupEvent.name });
-	}
-}
-
-@EventsHandler(UserJoinedGroupEvent)
-export class UserJoinedGroupNotificationHandler implements IEventHandler<UserJoinedGroupEvent> {
-	constructor(private notifications: NotificationService) {}
-
-	async handle(event: UserJoinedGroupEvent): Promise<void> {
-		this.notifications.send({
-			event: Event.USER_JOINED_GROUP,
-			courseId: event.courseId,
-			userId: event.userId,
-			groupId: event.groupId
-		});
 	}
 }

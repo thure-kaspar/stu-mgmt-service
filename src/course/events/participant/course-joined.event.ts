@@ -1,22 +1,17 @@
+import { Event } from "..";
+import { NotificationDto } from "../../../shared/dto/notification.dto";
 import { CourseWithGroupSettings } from "../../models/course-with-group-settings.model";
 import { Participant } from "../../models/participant.model";
-import { EventsHandler, IEventHandler } from "@nestjs/cqrs";
-import { NotificationService } from "../../services/notification.service";
-import { Event } from "..";
+import { INotify } from "../interfaces";
 
-export class CourseJoined {
+export class CourseJoined implements INotify {
 	constructor(readonly course: CourseWithGroupSettings, readonly participant: Participant) {}
-}
 
-@EventsHandler(CourseJoined)
-export class CourseJoinedNotificationHandler implements IEventHandler<CourseJoined> {
-	constructor(private notifications: NotificationService) {}
-
-	async handle(event: CourseJoined): Promise<void> {
-		this.notifications.send({
+	toNotificationDto(): NotificationDto {
+		return {
 			event: Event.COURSE_JOINED,
-			courseId: event.course.id,
-			userId: event.participant.userId
-		});
+			courseId: this.course.id,
+			userId: this.participant.userId
+		};
 	}
 }

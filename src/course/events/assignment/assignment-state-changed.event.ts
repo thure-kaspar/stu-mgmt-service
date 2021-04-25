@@ -1,32 +1,19 @@
-import { Logger } from "@nestjs/common";
-import { EventsHandler, IEventHandler } from "@nestjs/cqrs";
 import { Event } from "..";
-import { NotificationService } from "../../services/notification.service";
+import { NotificationDto } from "../../../shared/dto/notification.dto";
 import { Assignment } from "../../models/assignment.model";
+import { INotify } from "../interfaces";
 
-export class AssignmentStateChanged {
+export class AssignmentStateChanged implements INotify {
 	constructor(readonly assignment: Assignment) {}
-}
 
-@EventsHandler(AssignmentStateChanged)
-export class AssignmentStateChangedNotificationHandler
-	implements IEventHandler<AssignmentStateChanged> {
-	private logger = new Logger(AssignmentStateChangedNotificationHandler.name);
-
-	constructor(private notifications: NotificationService) {}
-
-	async handle(event: AssignmentStateChanged): Promise<void> {
-		this.logger.verbose(
-			`Assignment (${event.assignment.id}) changed to ${event.assignment.state}.`
-		);
-
-		this.notifications.send({
+	toNotificationDto(): NotificationDto {
+		return {
 			event: Event.ASSIGNMENT_STATE_CHANGED,
-			courseId: event.assignment.courseId,
-			assignmentId: event.assignment.id,
+			courseId: this.assignment.courseId,
+			assignmentId: this.assignment.id,
 			payload: {
-				state: event.assignment.state
+				state: this.assignment.state
 			}
-		});
+		};
 	}
 }
