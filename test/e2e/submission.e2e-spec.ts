@@ -31,10 +31,11 @@ describe("POST-Requests of SubmissionController (e2e)", () => {
 		it("Adds a submission", () => {
 			return request(app.getHttpServer())
 				.post(route(course.id, submission.assignmentId))
+				.send(submission)
 				.expect(201)
 				.expect(({ body }) => {
 					const result = body as unknown;
-					expect(result).toEqual(42);
+					expect(result).toMatchSnapshot();
 				});
 		});
 	});

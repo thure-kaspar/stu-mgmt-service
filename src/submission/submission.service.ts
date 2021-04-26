@@ -28,7 +28,13 @@ export class SubmissionService {
 			payload: submission.payload
 		});
 
-		return (await this.submissionRepository.save(submissionEntity)).toDto();
+		await this.submissionRepository.save(submissionEntity);
+		return this.getSubmissionById(submissionEntity.id);
+	}
+
+	private async getSubmissionById(id: number): Promise<SubmissionDto> {
+		const submission = await this.submissionRepository.findOne(id, { relations: ["user"] });
+		return submission.toDto();
 	}
 
 	async getAllSubmissions(
@@ -97,7 +103,8 @@ export class SubmissionService {
 			where: { userId, assignmentId },
 			order: {
 				date: "DESC"
-			}
+			},
+			relations: ["user"]
 		});
 
 		return submission.toDto();
