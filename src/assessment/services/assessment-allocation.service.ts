@@ -1,8 +1,8 @@
 import { Injectable, BadRequestException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { AssessmentAllocationDto } from "../dto/assessment-allocation.dto";
 import { AssessmentAllocation } from "../entities/assessment-allocation.entity";
 import { AssessmentAllocationRepository } from "../repositories/assessment-allocation.repository";
-import { AssessmentAllocationDto } from "../dto/assessment-allocation/assessment-allocation.dto";
 
 @Injectable()
 export class AssessmentAllocationService {

@@ -1,7 +1,6 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { AuthModule } from "../auth/auth.module";
-import { AssessmentRepository } from "../course/repositories/assessment.repository";
 import { AssignmentRegistrationRepository } from "../course/repositories/assignment-registration.repository";
 import { AssignmentRepository } from "../course/repositories/assignment.repository";
 import { GroupEventRepository } from "../course/repositories/group-event.repository";
@@ -11,6 +10,7 @@ import { UserRepository } from "./repositories/user.repository";
 import { UserService } from "./services/user.service";
 import { IdentityGuard } from "./guards/identity.guard";
 import { CourseModule } from "../course/course.module";
+import { AssessmentRepository } from "../assessment/repositories/assessment.repository";
 
 @Module({
 	imports: [

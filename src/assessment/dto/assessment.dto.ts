@@ -1,9 +1,9 @@
 import { ApiProperty, ApiPropertyOptional, OmitType } from "@nestjs/swagger";
-import { UserDto } from "../../../shared/dto/user.dto";
-import { UserId } from "../../../shared/entities/user.entity";
-import { AssignmentDto } from "../assignment/assignment.dto";
-import { ParticipantDto } from "../course-participant/participant.dto";
-import { GroupDto } from "../group/group.dto";
+import { AssignmentDto } from "../../course/dto/assignment/assignment.dto";
+import { ParticipantDto } from "../../course/dto/course-participant/participant.dto";
+import { GroupDto } from "../../course/dto/group/group.dto";
+import { UserDto } from "../../shared/dto/user.dto";
+import { UserId } from "../../shared/entities/user.entity";
 import { PartialAssessmentDto } from "./partial-assessment.dto";
 
 export class AssessmentDto {

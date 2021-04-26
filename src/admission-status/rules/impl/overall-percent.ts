@@ -1,8 +1,8 @@
-import { AssessmentDto } from "../../../course/dto/assessment/assessment.dto";
 import { AssignmentDto } from "../../../course/dto/assignment/assignment.dto";
 import { Percent, RoundingMethod, sumOf } from "../../../utils/math";
 import { OverallPercentRule } from "../abstract-rules";
 import { RuleCheckResult } from "../../dto/rule-check-result.dto";
+import { AssessmentDto } from "../../../assessment/dto/assessment.dto";
 
 export class OverallPercentRuleImpl extends OverallPercentRule {
 	private overallPoints: number;

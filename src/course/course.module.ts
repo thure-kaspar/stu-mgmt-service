@@ -1,13 +1,12 @@
 import { HttpModule, Module } from "@nestjs/common";
 import { CqrsModule } from "@nestjs/cqrs";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { AssessmentRepository } from "../assessment/repositories/assessment.repository";
 import { AuthModule } from "../auth/auth.module";
 import { UserRepository } from "../user/repositories/user.repository";
 import { JoinRandomGroupHandler } from "./commands/join-random-group.handler";
 import { Controllers } from "./controllers";
-import { AssessmentEvent } from "./entities/assessment-event.entity";
 import { GroupRegistrationRelation } from "./entities/group-registration-relation.entity";
-import { AssessmentScoreChangedHandler } from "./events/assessment/assessment-score-changed.event";
 import { UserJoinedGroupHandler } from "./events/group/user-joined-group.event";
 import {
 	CloseEmptyGroupsHandler,
@@ -26,8 +25,8 @@ import { Services } from "./services";
 		TypeOrmModule.forFeature([
 			...Repositories,
 			UserRepository,
-			AssessmentEvent,
-			GroupRegistrationRelation
+			GroupRegistrationRelation,
+			AssessmentRepository
 		]),
 		CqrsModule,
 		HttpModule,
@@ -41,8 +40,7 @@ import { Services } from "./services";
 		JoinRandomGroupHandler,
 		UserJoinedGroupHandler,
 		UserLeftGroupHandler,
-		CloseEmptyGroupsHandler,
-		AssessmentScoreChangedHandler
+		CloseEmptyGroupsHandler
 	],
 	exports: [
 		TypeOrmModule,

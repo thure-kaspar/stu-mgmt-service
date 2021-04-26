@@ -1,9 +1,10 @@
 import { Connection, EntityManager } from "typeorm";
+import { AssessmentAllocation } from "../../src/assessment/entities/assessment-allocation.entity";
+import { AssessmentUserRelation } from "../../src/assessment/entities/assessment-user-relation.entity";
+import { Assessment } from "../../src/assessment/entities/assessment.entity";
+import { PartialAssessment } from "../../src/assessment/entities/partial-assessment.entity";
 import { AssignmentDto } from "../../src/course/dto/assignment/assignment.dto";
 import { AdmissionCriteria } from "../../src/course/entities/admission-criteria.entity";
-import { AssessmentAllocation } from "../../src/course/entities/assessment-allocation.entity";
-import { AssessmentUserRelation } from "../../src/course/entities/assessment-user-relation.entity";
-import { Assessment } from "../../src/course/entities/assessment.entity";
 import { AssignmentRegistration } from "../../src/course/entities/assignment-group-registration.entity";
 import { AssignmentTemplate } from "../../src/course/entities/assignment-template.entity";
 import { Assignment, AssignmentId } from "../../src/course/entities/assignment.entity";
@@ -13,15 +14,17 @@ import { GroupEvent } from "../../src/course/entities/group-event.entity";
 import { GroupRegistrationRelation } from "../../src/course/entities/group-registration-relation.entity";
 import { GroupSettings } from "../../src/course/entities/group-settings.entity";
 import { Group, GroupId } from "../../src/course/entities/group.entity";
-import { PartialAssessment } from "../../src/course/entities/partial-assessment.entity";
 import { Participant } from "../../src/course/entities/participant.entity";
 import { UserGroupRelation } from "../../src/course/entities/user-group-relation.entity";
+import { Subscriber } from "../../src/notification/subscriber/subscriber.entity";
 import { User } from "../../src/shared/entities/user.entity";
 import { AssignmentState } from "../../src/shared/enums";
+import { Submission } from "../../src/submission/submission.entity";
 import { convertToEntity, convertToEntityNoRelations } from "../utils/object-helper";
 import { ASSESSMENT_ALLOCATIONS_MOCK } from "./assessment-allocation.mock";
 import { AssessmentsMock } from "./assessments.mock";
 import { ASSIGNMENTS_ALL, ASSIGNMENTS_JAVA_1920 } from "./assignments.mock";
+import { ADMISSION_CRITERIA_MOCK } from "./course-config/admission-criteria.mock";
 import { ASSIGNMENT_TEMPLATES_MOCK } from "./course-config/assignment-templates.mock";
 import { COURSE_CONFIGS_MOCK } from "./course-config/course-config.mock";
 import { GROUP_SETTINGS_MOCK } from "./course-config/group-settings.mock";
@@ -38,12 +41,9 @@ import {
 	PARTICIPANT_JAVA_1920_STUDENT_KUNOLD
 } from "./participants/participants.mock";
 import { AssessmentUserRelationsMock } from "./relations.mock";
-import { UsersMock } from "./users.mock";
-import { ADMISSION_CRITERIA_MOCK } from "./course-config/admission-criteria.mock";
-import { Submission } from "../../src/submission/submission.entity";
 import { SUBMISSION_MOCK } from "./submissions.mock";
 import { SUBSCRIBER_MOCK } from "./subscribers.mock";
-import { Subscriber } from "../../src/notification/subscriber/subscriber.entity";
+import { UsersMock } from "./users.mock";
 
 export class DbMockService {
 	private con: EntityManager;

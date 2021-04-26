@@ -1,40 +1,40 @@
 import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
 import { getConnection } from "typeorm";
-import { AssessmentDto, AssessmentUpdateDto } from "../../src/course/dto/assessment/assessment.dto";
+import { AssessmentDto, AssessmentUpdateDto } from "../../src/assessment/dto/assessment.dto";
+import { Severity } from "../../src/assessment/dto/partial-assessment.dto";
 import { createApplication } from "../mocks/application.mock";
 import {
+	AssessmentsMock,
 	ASSESSMENT_JAVA_EVALUATED_GROUP_1,
-	ASSESSMENT_JAVA_TESTAT_USER_1,
 	ASSESSMENT_JAVA_IN_REVIEW,
 	ASSESSMENT_JAVA_IN_REVIEW_NO_PARTIALS,
-	AssessmentsMock
+	ASSESSMENT_JAVA_TESTAT_USER_1
 } from "../mocks/assessments.mock";
 import {
 	ASSIGNMENT_JAVA_EVALUATED,
-	ASSIGNMENT_JAVA_TESTAT_EVALUATED_SINGLE,
-	ASSIGNMENT_JAVA_IN_REVIEW_SINGLE
+	ASSIGNMENT_JAVA_IN_REVIEW_SINGLE,
+	ASSIGNMENT_JAVA_TESTAT_EVALUATED_SINGLE
 } from "../mocks/assignments.mock";
 import { COURSE_JAVA_1920 } from "../mocks/courses.mock";
 import { DbMockService } from "../mocks/db-mock.service";
-import { copy } from "../utils/object-helper";
+import { GROUP_1_JAVA } from "../mocks/groups/groups.mock";
 import {
 	PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW,
 	PARTIAL_ASSESSMENT_2_JAVA_IN_REVIEW,
 	PARTIAL_ASSESSMENT_MOCK
 } from "../mocks/partial-assessments.mock";
 import {
-	USER_STUDENT_JAVA,
-	USER_STUDENT_3_JAVA_TUTOR,
-	USER_SYSTEM_ADMIN,
-	USER_MGMT_ADMIN_JAVA_LECTURER
-} from "../mocks/users.mock";
-import { Severity } from "../../src/course/dto/assessment/partial-assessment.dto";
-import { GROUP_1_JAVA } from "../mocks/groups/groups.mock";
-import {
 	PARTICIPANT_JAVA_1920_STUDENT,
 	PARTICIPANT_JAVA_1920_TUTOR
 } from "../mocks/participants/participants.mock";
+import {
+	USER_MGMT_ADMIN_JAVA_LECTURER,
+	USER_STUDENT_3_JAVA_TUTOR,
+	USER_STUDENT_JAVA,
+	USER_SYSTEM_ADMIN
+} from "../mocks/users.mock";
+import { copy } from "../utils/object-helper";
 
 let app: INestApplication;
 let dbMockService: DbMockService;

@@ -1,10 +1,11 @@
 import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
 import { getConnection } from "typeorm";
+import { AssessmentDto } from "../../src/assessment/dto/assessment.dto";
+import { GroupWithAssignedEvaluatorDto } from "../../src/assessment/queries/groups-with-assigned-evaluator/group-with-assigned-evaluator.dto";
 import { GroupCreateBulkDto } from "../../src/course/dto/group/group-create-bulk.dto";
 import { GroupEventDto } from "../../src/course/dto/group/group-event.dto";
 import { GroupDto } from "../../src/course/dto/group/group.dto";
-import { GroupWithAssignedEvaluatorDto } from "../../src/course/queries/groups-with-assigned-evaluator/group-with-assigned-evaluator.dto";
 import { createApplication, createApplication_STUDENT } from "../mocks/application.mock";
 import { ASSESSMENT_ALLOCATIONS_MOCK } from "../mocks/assessment-allocation.mock";
 import {
@@ -24,7 +25,6 @@ import {
 import { UserGroupRelationsMock } from "../mocks/groups/user-group-relations.mock";
 import { UsersMock, USER_MGMT_ADMIN_JAVA_LECTURER, USER_STUDENT_JAVA } from "../mocks/users.mock";
 import { copy } from "../utils/object-helper";
-import { AssessmentDto } from "../../src/course/dto/assessment/assessment.dto";
 
 let app: INestApplication;
 let dbMockService: DbMockService; // Should be initialized in every describe-block

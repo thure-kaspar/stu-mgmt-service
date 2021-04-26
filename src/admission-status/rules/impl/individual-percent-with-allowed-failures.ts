@@ -1,4 +1,4 @@
-import { AssessmentDto } from "../../../course/dto/assessment/assessment.dto";
+import { AssessmentDto } from "../../../assessment/dto/assessment.dto";
 import { AssignmentDto } from "../../../course/dto/assignment/assignment.dto";
 import { AssignmentId } from "../../../course/entities/assignment.entity";
 import { Percent, RoundingMethod } from "../../../utils/math";

@@ -31,12 +31,12 @@ import { CanJoinCourseDto } from "../queries/can-join-course/can-join-course.dto
 import { CanJoinCourseQuery } from "../queries/can-join-course/can-join-course.query";
 import { CompareParticipantsListQuery } from "../queries/compare-participants-list/compare-participants-list.query";
 import { ParticipantsComparisonDto } from "../queries/compare-participants-list/participants-comparison.dto";
-import { AssignedEvaluatorFilter } from "../queries/groups-with-assigned-evaluator/group-with-assigned-evaluator.dto";
-import { ParticipantsWithAssignedEvaluatorDto } from "../queries/participants-with-assigned-evaluator/participants-with-assigned-evaluator.dto";
-import { ParticipantsWithAssignedEvaluatorQuery } from "../queries/participants-with-assigned-evaluator/participants-with-assigned-evaluator.query";
+import { AssignedEvaluatorFilter } from "../../assessment/queries/groups-with-assigned-evaluator/group-with-assigned-evaluator.dto";
 import { CourseParticipantsService } from "../services/course-participants.service";
 import { GetParticipant } from "../decorators/decorators";
 import { Participant } from "../models/participant.model";
+import { ParticipantsWithAssignedEvaluatorDto } from "../../assessment/queries/participants-with-assigned-evaluator/participants-with-assigned-evaluator.dto";
+import { ParticipantsWithAssignedEvaluatorQuery } from "../../assessment/queries/participants-with-assigned-evaluator/participants-with-assigned-evaluator.query";
 
 @ApiBearerAuth()
 @ApiTags("course-participants")

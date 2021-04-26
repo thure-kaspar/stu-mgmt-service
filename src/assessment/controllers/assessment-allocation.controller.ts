@@ -1,23 +1,23 @@
-import { ApiTags, ApiOperation, ApiQuery, ApiBearerAuth } from "@nestjs/swagger";
 import {
+	BadRequestException,
+	Body,
 	Controller,
+	Delete,
+	Get,
 	Param,
 	Post,
-	Body,
-	Delete,
-	BadRequestException,
 	Query,
-	Get,
 	UseGuards
 } from "@nestjs/common";
-import { AssessmentAllocationDto } from "../dto/assessment-allocation/assessment-allocation.dto";
-import { AssessmentAllocationService } from "../services/assessment-allocation.service";
-import { CourseId } from "../entities/course.entity";
-import { GroupId } from "../entities/group.entity";
-import { UserId } from "../../shared/entities/user.entity";
 import { AuthGuard } from "@nestjs/passport";
-import { CourseMemberGuard } from "../guards/course-member.guard";
-import { TeachingStaffGuard } from "../guards/teaching-staff.guard";
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger";
+import { AssessmentAllocationDto } from "../dto/assessment-allocation.dto";
+import { AssessmentAllocationService } from "../services/assessment-allocation.service";
+import { UserId } from "../../shared/entities/user.entity";
+import { CourseId } from "../../course/entities/course.entity";
+import { GroupId } from "../../course/entities/group.entity";
+import { CourseMemberGuard } from "../../course/guards/course-member.guard";
+import { TeachingStaffGuard } from "../../course/guards/teaching-staff.guard";
 
 @ApiBearerAuth()
 @ApiTags("assessment-allocation")

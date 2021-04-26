@@ -1,8 +1,8 @@
 import { EventsHandler, IEventHandler } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
-import { AssessmentEvent } from "../../entities/assessment-event.entity";
+import { AssessmentEvent } from "../entities/assessment-event.entity";
 import { Repository } from "typeorm";
-import { UserId } from "../../../shared/entities/user.entity";
+import { UserId } from "../../shared/entities/user.entity";
 
 export class AssessmentScoreChanged {
 	constructor(

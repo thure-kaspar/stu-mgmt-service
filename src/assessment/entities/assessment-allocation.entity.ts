@@ -1,8 +1,8 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { Assignment } from "../../course/entities/assignment.entity";
+import { Group, GroupId } from "../../course/entities/group.entity";
 import { User, UserId } from "../../shared/entities/user.entity";
-import { AssessmentAllocationDto } from "../dto/assessment-allocation/assessment-allocation.dto";
-import { Assignment } from "./assignment.entity";
-import { Group, GroupId } from "./group.entity";
+import { AssessmentAllocationDto } from "../dto/assessment-allocation.dto";
 
 @Entity()
 @Unique("Unique_AssignmentId_GroupId", ["assignmentId", "groupId"]) // A Group can only be assigned once for every assessment

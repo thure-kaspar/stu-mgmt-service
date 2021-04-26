@@ -2,7 +2,7 @@ import { Repository, EntityRepository } from "typeorm";
 import { Assignment } from "../entities/assignment.entity";
 import { AssignmentDto } from "../dto/assignment/assignment.dto";
 import { CourseId } from "../entities/course.entity";
-import { AssessmentUpdateDto } from "../dto/assessment/assessment.dto";
+import { AssessmentUpdateDto } from "../../assessment/dto/assessment.dto";
 
 @EntityRepository(Assignment)
 export class AssignmentRepository extends Repository<Assignment> {

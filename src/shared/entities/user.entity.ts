@@ -1,6 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { AssessmentAllocation } from "../../course/entities/assessment-allocation.entity";
-import { AssessmentUserRelation } from "../../course/entities/assessment-user-relation.entity";
+import { AssessmentAllocation } from "../../assessment/entities/assessment-allocation.entity";
+import { AssessmentUserRelation } from "../../assessment/entities/assessment-user-relation.entity";
 import { Participant } from "../../course/entities/participant.entity";
 import { UserGroupRelation } from "../../course/entities/user-group-relation.entity";
 import { UserRole } from "../enums";

@@ -1,6 +1,6 @@
 import { ApiPropertyOptional } from "@nestjs/swagger";
 import { PaginationFilter } from "../../../shared/pagination.filter";
-import { GroupDto } from "../../dto/group/group.dto";
+import { GroupDto } from "../../../course/dto/group/group.dto";
 import { transformBoolean } from "../../../../test/utils/http-utils";
 
 export class GroupWithAssignedEvaluatorDto {

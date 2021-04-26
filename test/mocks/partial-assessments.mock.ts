@@ -1,7 +1,4 @@
-import {
-	PartialAssessmentDto,
-	Severity
-} from "../../src/course/dto/assessment/partial-assessment.dto";
+import { PartialAssessmentDto, Severity } from "../../src/assessment/dto/partial-assessment.dto";
 import {
 	ASSESSMENT_JAVA_IN_REVIEW,
 	ASSESSMENT_JAVA_IN_REVIEW_GROUP_PARTIALS

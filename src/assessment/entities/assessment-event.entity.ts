@@ -2,7 +2,7 @@ import { Entity, ManyToOne, Column } from "typeorm";
 import { User, UserId } from "../../shared/entities/user.entity";
 import { DtoFactory } from "../../shared/dto-factory";
 import { Assessment } from "./assessment.entity";
-import { AssessmentEventDto } from "../dto/assessment/assessment-event.dto";
+import { AssessmentEventDto } from "../dto/assessment-event.dto";
 import { EventEntity } from "../../shared/entities/event.entity";
 
 @Entity()

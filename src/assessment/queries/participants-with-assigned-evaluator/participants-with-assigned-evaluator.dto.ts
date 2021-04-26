@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from "@nestjs/swagger";
-import { ParticipantDto } from "../../dto/course-participant/participant.dto";
+import { ParticipantDto } from "../../../course/dto/course-participant/participant.dto";
 
 export class ParticipantsWithAssignedEvaluatorDto {
 	participant: ParticipantDto;

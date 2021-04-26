@@ -2,25 +2,24 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import { EventBus } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
+import {
+	Assignment as AssignmentEntity,
+	AssignmentId
+} from "../../course/entities/assignment.entity";
+import { AssessmentScoreChanged } from "../events/assessment-score-changed.event";
+import { Assignment } from "../../course/models/assignment.model";
+import { Participant } from "../../course/models/participant.model";
+import { AssignmentRepository } from "../../course/repositories/assignment.repository";
+import { GroupService } from "../../course/services/group.service";
 import { DtoFactory } from "../../shared/dto-factory";
 import { UserId } from "../../shared/entities/user.entity";
-import { AssessmentEventDto } from "../dto/assessment/assessment-event.dto";
-import { AssessmentFilter } from "../dto/assessment/assessment-filter.dto";
-import {
-	AssessmentCreateDto,
-	AssessmentDto,
-	AssessmentUpdateDto
-} from "../dto/assessment/assessment.dto";
-import { PartialAssessmentDto } from "../dto/assessment/partial-assessment.dto";
+import { AssessmentEventDto } from "../dto/assessment-event.dto";
+import { AssessmentFilter } from "../dto/assessment-filter.dto";
+import { AssessmentCreateDto, AssessmentDto, AssessmentUpdateDto } from "../dto/assessment.dto";
+import { PartialAssessmentDto } from "../dto/partial-assessment.dto";
 import { AssessmentEvent } from "../entities/assessment-event.entity";
 import { Assessment } from "../entities/assessment.entity";
-import { Assignment as AssignmentEntity, AssignmentId } from "../entities/assignment.entity";
-import { AssessmentScoreChanged } from "../events/assessment/assessment-score-changed.event";
-import { Assignment } from "../models/assignment.model";
-import { Participant } from "../models/participant.model";
 import { AssessmentRepository } from "../repositories/assessment.repository";
-import { AssignmentRepository } from "../repositories/assignment.repository";
-import { GroupService } from "./group.service";
 
 @Injectable()
 export class AssessmentService {

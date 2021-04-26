@@ -3,7 +3,7 @@ import * as request from "supertest";
 import { createApplication } from "../mocks/application.mock";
 import { DbMockService } from "../mocks/db-mock.service";
 import { getConnection } from "typeorm";
-import { AssessmentAllocationDto } from "../../src/course/dto/assessment-allocation/assessment-allocation.dto";
+import { AssessmentAllocationDto } from "../../src/assessment/dto/assessment-allocation.dto";
 import {
 	ASSESSMENT_ALLOCATION_1_ASSIGNMENT_JAVA_IN_REVIEW,
 	ASSESSMENT_ALLOCATIONS_MOCK

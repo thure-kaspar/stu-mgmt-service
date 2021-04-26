@@ -8,7 +8,7 @@ import { AssignmentId } from "../../course/entities/assignment.entity";
 import { CourseId } from "../../course/entities/course.entity";
 import { CourseMemberGuard } from "../../course/guards/course-member.guard";
 import { TeachingStaffGuard } from "../../course/guards/teaching-staff.guard";
-import { AssessmentService } from "../../course/services/assessment.service";
+import { AssessmentService } from "../../assessment/services/assessment.service";
 import { AssignmentRegistrationService } from "../../course/services/assignment-registration.service";
 import { CourseConfigService } from "../../course/services/course-config.service";
 import { CourseParticipantsService } from "../../course/services/course-participants.service";

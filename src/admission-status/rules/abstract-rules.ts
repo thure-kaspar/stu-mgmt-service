@@ -1,10 +1,8 @@
-import { IsDefined, Max, Min } from "class-validator";
-import { AssessmentDto } from "../../course/dto/assessment/assessment.dto";
+import { AssessmentDto } from "../../assessment/dto/assessment.dto";
 import { AssignmentDto } from "../../course/dto/assignment/assignment.dto";
-import { RoundingBehavior } from "../../utils/math";
+import { AssignmentState } from "../../shared/enums";
 import { AdmissionRuleDto } from "../dto/admission-rule.dto";
 import { RuleCheckResult } from "../dto/rule-check-result.dto";
-import { AssignmentState } from "../../shared/enums";
 
 export enum RuleType {
 	INDIVIDUAL_PERCENT_WITH_ALLOWED_FAILURES = "INDIVIDUAL_PERCENT_WITH_ALLOWED_FAILURES",

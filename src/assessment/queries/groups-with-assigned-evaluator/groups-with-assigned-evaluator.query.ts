@@ -1,10 +1,10 @@
 import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { DtoFactory } from "../../../shared/dto-factory";
 import { Assessment } from "../../entities/assessment.entity";
-import { AssignmentRegistration } from "../../entities/assignment-group-registration.entity";
-import { CourseId } from "../../entities/course.entity";
+import { DtoFactory } from "../../../shared/dto-factory";
+import { AssignmentRegistration } from "../../../course/entities/assignment-group-registration.entity";
+import { CourseId } from "../../../course/entities/course.entity";
 import {
 	AssignedEvaluatorFilter,
 	GroupWithAssignedEvaluatorDto

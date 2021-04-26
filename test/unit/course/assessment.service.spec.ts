@@ -1,22 +1,19 @@
 import { EventBus } from "@nestjs/cqrs";
 import { Test, TestingModule } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import {
-	AssessmentDto,
-	AssessmentUpdateDto
-} from "../../../src/course/dto/assessment/assessment.dto";
-import { PartialAssessmentDto } from "../../../src/course/dto/assessment/partial-assessment.dto";
+import { AssessmentDto, AssessmentUpdateDto } from "../../../src/assessment/dto/assessment.dto";
+import { PartialAssessmentDto } from "../../../src/assessment/dto/partial-assessment.dto";
+import { AssessmentEvent } from "../../../src/assessment/entities/assessment-event.entity";
+import { Assessment } from "../../../src/assessment/entities/assessment.entity";
+import { PartialAssessment } from "../../../src/assessment/entities/partial-assessment.entity";
+import { AssessmentScoreChanged } from "../../../src/assessment/events/assessment-score-changed.event";
+import { AssessmentRepository } from "../../../src/assessment/repositories/assessment.repository";
+import { AssessmentService } from "../../../src/assessment/services/assessment.service";
 import { GroupDto } from "../../../src/course/dto/group/group.dto";
-import { AssessmentEvent } from "../../../src/course/entities/assessment-event.entity";
-import { Assessment } from "../../../src/course/entities/assessment.entity";
 import { Assignment } from "../../../src/course/entities/assignment.entity";
 import { Group } from "../../../src/course/entities/group.entity";
-import { PartialAssessment } from "../../../src/course/entities/partial-assessment.entity";
 import { UserGroupRelation } from "../../../src/course/entities/user-group-relation.entity";
-import { AssessmentScoreChanged } from "../../../src/course/events/assessment/assessment-score-changed.event";
-import { AssessmentRepository } from "../../../src/course/repositories/assessment.repository";
 import { AssignmentRepository } from "../../../src/course/repositories/assignment.repository";
-import { AssessmentService } from "../../../src/course/services/assessment.service";
 import { GroupService } from "../../../src/course/services/group.service";
 import { DtoFactory } from "../../../src/shared/dto-factory";
 import {

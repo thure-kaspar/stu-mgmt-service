@@ -1,4 +1,4 @@
-import { AssessmentAllocationDto } from "../../src/course/dto/assessment-allocation/assessment-allocation.dto";
+import { AssessmentAllocationDto } from "../../src/assessment/dto/assessment-allocation.dto";
 import { ASSIGNMENT_JAVA_IN_REVIEW_SINGLE, ASSIGNMENT_JAVA_INVISIBLE } from "./assignments.mock";
 import { USER_STUDENT_JAVA, USER_MGMT_ADMIN_JAVA_LECTURER } from "./users.mock";
 import { GROUP_1_JAVA, GROUP_2_JAVA } from "./groups/groups.mock";

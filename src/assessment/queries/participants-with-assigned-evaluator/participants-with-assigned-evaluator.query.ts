@@ -1,10 +1,9 @@
 import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Brackets } from "typeorm";
+import { Assessment } from "../../../assessment/entities/assessment.entity";
 import { User } from "../../../shared/entities/user.entity";
 import { UserRepository } from "../../../user/repositories/user.repository";
-import { Assessment } from "../../entities/assessment.entity";
-import { CourseId } from "../../entities/course.entity";
 import { AssignedEvaluatorFilter } from "../groups-with-assigned-evaluator/group-with-assigned-evaluator.dto";
 import { ParticipantsWithAssignedEvaluatorDto } from "./participants-with-assigned-evaluator.dto";
 
@@ -14,7 +13,7 @@ import { ParticipantsWithAssignedEvaluatorDto } from "./participants-with-assign
  */
 export class ParticipantsWithAssignedEvaluatorQuery {
 	constructor(
-		public readonly courseId: CourseId,
+		public readonly courseId: string,
 		public readonly assignmentId: string,
 		public readonly filter?: AssignedEvaluatorFilter
 	) {}

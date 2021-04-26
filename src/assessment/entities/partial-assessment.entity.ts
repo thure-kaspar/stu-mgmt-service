@@ -1,5 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { PartialAssessmentDto, Severity } from "../dto/assessment/partial-assessment.dto";
+import { PartialAssessmentDto, Severity } from "../dto/partial-assessment.dto";
 import { Assessment } from "./assessment.entity";
 
 @Entity()

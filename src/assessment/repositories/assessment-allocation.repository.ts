@@ -1,6 +1,6 @@
-import { Repository, EntityRepository } from "typeorm";
+import { EntityRepository, Repository } from "typeorm";
+import { AssessmentAllocationDto } from "../dto/assessment-allocation.dto";
 import { AssessmentAllocation } from "../entities/assessment-allocation.entity";
-import { AssessmentAllocationDto } from "../dto/assessment-allocation/assessment-allocation.dto";
 
 @EntityRepository(AssessmentAllocation)
 export class AssessmentAllocationRepository extends Repository<AssessmentAllocation> {

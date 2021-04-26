@@ -40,13 +40,13 @@ import { Participant } from "../models/participant.model";
 import {
 	AssignedEvaluatorFilter,
 	GroupWithAssignedEvaluatorDto
-} from "../queries/groups-with-assigned-evaluator/group-with-assigned-evaluator.dto";
-import { GroupsWithAssignedEvaluatorQuery } from "../queries/groups-with-assigned-evaluator/groups-with-assigned-evaluator.query";
+} from "../../assessment/queries/groups-with-assigned-evaluator/group-with-assigned-evaluator.dto";
+import { GroupsWithAssignedEvaluatorQuery } from "../../assessment/queries/groups-with-assigned-evaluator/groups-with-assigned-evaluator.query";
 import { GroupService } from "../services/group.service";
 import { GroupMemberGuard } from "../guards/group-member.guard";
-import { AssessmentDto } from "../dto/assessment/assessment.dto";
 import { TeachingStaffGuard } from "../guards/teaching-staff.guard";
 import { JoinRandomGroupCommand } from "../commands/join-random-group.handler";
+import { AssessmentDto } from "../../assessment/dto/assessment.dto";
 
 @ApiBearerAuth()
 @ApiTags("groups")

@@ -8,8 +8,8 @@ import {
 	PrimaryGeneratedColumn,
 	Unique
 } from "typeorm";
-import { AssessmentAllocation } from "./assessment-allocation.entity";
-import { Assessment } from "./assessment.entity";
+import { AssessmentAllocation } from "../../assessment/entities/assessment-allocation.entity";
+import { Assessment } from "../../assessment/entities/assessment.entity";
 import { Course, CourseId } from "./course.entity";
 import { GroupEvent } from "./group-event.entity";
 import { UserGroupRelation } from "./user-group-relation.entity";

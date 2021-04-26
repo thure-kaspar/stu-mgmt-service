@@ -1,9 +1,10 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { EventBus } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
+import { AssessmentDto } from "../../assessment/dto/assessment.dto";
+import { AssessmentRepository } from "../../assessment/repositories/assessment.repository";
 import { DtoFactory } from "../../shared/dto-factory";
 import { UserId } from "../../shared/entities/user.entity";
-import { AssessmentDto } from "../dto/assessment/assessment.dto";
 import { ParticipantDto } from "../dto/course-participant/participant.dto";
 import { GroupCreateBulkDto } from "../dto/group/group-create-bulk.dto";
 import { GroupEventDto } from "../dto/group/group-event.dto";
@@ -19,7 +20,6 @@ import { CourseWithGroupSettings } from "../models/course-with-group-settings.mo
 import { Course } from "../models/course.model";
 import { Group } from "../models/group.model";
 import { Participant } from "../models/participant.model";
-import { AssessmentRepository } from "../repositories/assessment.repository";
 import { GroupEventRepository } from "../repositories/group-event.repository";
 import { GroupSettingsRepository } from "../repositories/group-settings.repository";
 import { GroupRepository } from "../repositories/group.repository";

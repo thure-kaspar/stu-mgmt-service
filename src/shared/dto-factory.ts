@@ -1,4 +1,5 @@
-import { AssessmentDto } from "../course/dto/assessment/assessment.dto";
+import { AssessmentDto } from "../assessment/dto/assessment.dto";
+import { Assessment } from "../assessment/entities/assessment.entity";
 import { AssignmentDto } from "../course/dto/assignment/assignment.dto";
 import { AdmissionCriteriaDto } from "../course/dto/course-config/admission-criteria.dto";
 import { AssignmentTemplateDto } from "../course/dto/course-config/assignment-template.dto";
@@ -8,7 +9,6 @@ import { ParticipantDto } from "../course/dto/course-participant/participant.dto
 import { CourseDto } from "../course/dto/course/course.dto";
 import { GroupDto } from "../course/dto/group/group.dto";
 import { AdmissionCriteria } from "../course/entities/admission-criteria.entity";
-import { Assessment } from "../course/entities/assessment.entity";
 import { AssignmentTemplate } from "../course/entities/assignment-template.entity";
 import { Assignment } from "../course/entities/assignment.entity";
 import { CourseConfig } from "../course/entities/course-config.entity";

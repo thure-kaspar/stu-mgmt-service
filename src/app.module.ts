@@ -17,6 +17,7 @@ import { RequestLogger } from "./utils/request.logger";
 import { SubmissionModule } from "./submission/submission.module";
 import { ExportModule } from "./export/export.module";
 import { NotificationModule } from "./notification/notification.module";
+import { AssessmentModule } from './assessment/assessment.module';
 
 const optionalProviders = (): Provider<any>[] => {
 	const providers: Provider<any>[] = [];
@@ -46,7 +47,8 @@ const taskSchedulingModules = (): any[] => {
 		AdmissionStatusModule,
 		SubmissionModule,
 		NotificationModule,
-		...taskSchedulingModules()
+		...taskSchedulingModules(),
+		AssessmentModule
 	],
 	controllers: [AppController],
 	providers: [...optionalProviders()]

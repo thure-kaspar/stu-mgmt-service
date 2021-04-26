@@ -1,4 +1,4 @@
-import { AssessmentDto } from "../../src/course/dto/assessment/assessment.dto";
+import { AssessmentDto } from "../../src/assessment/dto/assessment.dto";
 import {
 	ASSIGNMENT_JAVA_EVALUATED,
 	ASSIGNMENT_JAVA_IN_REVIEW_GROUP,

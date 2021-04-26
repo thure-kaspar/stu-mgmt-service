@@ -1,16 +1,16 @@
 import {
 	Column,
+	CreateDateColumn,
 	Entity,
 	ManyToOne,
 	OneToMany,
 	PrimaryGeneratedColumn,
-	CreateDateColumn,
 	UpdateDateColumn
 } from "typeorm";
+import { Assignment } from "../../course/entities/assignment.entity";
+import { Group, GroupId } from "../../course/entities/group.entity";
 import { User, UserId } from "../../shared/entities/user.entity";
 import { AssessmentUserRelation } from "./assessment-user-relation.entity";
-import { Assignment } from "./assignment.entity";
-import { Group, GroupId } from "./group.entity";
 import { PartialAssessment } from "./partial-assessment.entity";
 
 @Entity("assessments")

@@ -1,18 +1,14 @@
-import { Repository, EntityRepository, EntityManager, Brackets } from "typeorm";
-import { Assessment } from "../entities/assessment.entity";
-import {
-	AssessmentDto,
-	AssessmentCreateDto,
-	AssessmentUpdateDto
-} from "../dto/assessment/assessment.dto";
-import { AssessmentUserRelation } from "../entities/assessment-user-relation.entity";
-import { PartialAssessmentDto } from "../dto/assessment/partial-assessment.dto";
-import { PartialAssessment } from "../entities/partial-assessment.entity";
+import { Brackets, EntityManager, EntityRepository, Repository } from "typeorm";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
-import { CourseId } from "../entities/course.entity";
-import { AssessmentFilter } from "../dto/assessment/assessment-filter.dto";
+import { CourseId } from "../../course/entities/course.entity";
+import { GroupId } from "../../course/entities/group.entity";
 import { UserId } from "../../shared/entities/user.entity";
-import { GroupId } from "../entities/group.entity";
+import { AssessmentFilter } from "../dto/assessment-filter.dto";
+import { AssessmentCreateDto, AssessmentDto, AssessmentUpdateDto } from "../dto/assessment.dto";
+import { PartialAssessmentDto } from "../dto/partial-assessment.dto";
+import { AssessmentUserRelation } from "../entities/assessment-user-relation.entity";
+import { Assessment } from "../entities/assessment.entity";
+import { PartialAssessment } from "../entities/partial-assessment.entity";
 
 @EntityRepository(Assessment)
 export class AssessmentRepository extends Repository<Assessment> {

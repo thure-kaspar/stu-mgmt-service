@@ -1,37 +1,33 @@
 import {
-	Controller,
-	Post,
-	Param,
 	Body,
-	Get,
-	Patch,
+	Controller,
 	Delete,
-	UseGuards,
+	Get,
+	Param,
+	Patch,
+	Post,
 	Query,
-	Req
+	Req,
+	UseGuards
 } from "@nestjs/common";
-import { AssessmentService } from "../services/assessment.service";
-import {
-	AssessmentDto,
-	AssessmentCreateDto,
-	AssessmentUpdateDto
-} from "../dto/assessment/assessment.dto";
-import { ApiTags, ApiOperation, ApiBearerAuth } from "@nestjs/swagger";
-import { PartialAssessmentDto } from "../dto/assessment/partial-assessment.dto";
-import { GetUser } from "../../auth/decorators/get-user.decorator";
-import { UserDto } from "../../shared/dto/user.dto";
 import { AuthGuard } from "@nestjs/passport";
-import { AssessmentEventDto } from "../dto/assessment/assessment-event.dto";
-import { CourseId } from "../entities/course.entity";
-import { AssessmentFilter } from "../dto/assessment/assessment-filter.dto";
-import { PaginatedResult, throwIfRequestFailed } from "../../utils/http-utils";
+import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
-import { CourseMemberGuard } from "../guards/course-member.guard";
-import { TeachingStaffGuard } from "../guards/teaching-staff.guard";
-import { GetParticipant, GetAssignment } from "../decorators/decorators";
-import { Participant } from "../models/participant.model";
-import { AssignmentGuard } from "../guards/assignment.guard";
-import { Assignment } from "../models/assignment.model";
+import { GetUser } from "../../auth/decorators/get-user.decorator";
+import { GetAssignment, GetParticipant } from "../../course/decorators/decorators";
+import { CourseId } from "../../course/entities/course.entity";
+import { AssignmentGuard } from "../../course/guards/assignment.guard";
+import { CourseMemberGuard } from "../../course/guards/course-member.guard";
+import { TeachingStaffGuard } from "../../course/guards/teaching-staff.guard";
+import { Assignment } from "../../course/models/assignment.model";
+import { Participant } from "../../course/models/participant.model";
+import { UserDto } from "../../shared/dto/user.dto";
+import { PaginatedResult, throwIfRequestFailed } from "../../utils/http-utils";
+import { AssessmentEventDto } from "../dto/assessment-event.dto";
+import { AssessmentFilter } from "../dto/assessment-filter.dto";
+import { AssessmentCreateDto, AssessmentDto, AssessmentUpdateDto } from "../dto/assessment.dto";
+import { PartialAssessmentDto } from "../dto/partial-assessment.dto";
+import { AssessmentService } from "../services/assessment.service";
 
 @ApiBearerAuth()
 @ApiTags("assessments")

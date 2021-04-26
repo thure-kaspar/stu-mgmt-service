@@ -1,6 +1,6 @@
-import { PaginationFilter } from "../../../shared/pagination.filter";
-import { transformNumber } from "../../../utils/http-utils";
 import { ApiPropertyOptional } from "@nestjs/swagger";
+import { transformNumber } from "../../../test/utils/http-utils";
+import { PaginationFilter } from "../../shared/pagination.filter";
 
 export class AssessmentFilter extends PaginationFilter {
 	@ApiPropertyOptional({ description: "Name of group or user. Matched with ILIKE %name%." })

@@ -1,8 +1,8 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { AssignmentState, AssignmentType, CollaborationType } from "../../shared/enums";
-import { Assessment } from "./assessment.entity";
-import { Course, CourseId } from "./course.entity";
+import { Assessment } from "../../assessment/entities/assessment.entity";
 import { LinkDto } from "../../shared/dto/link.dto";
+import { AssignmentState, AssignmentType, CollaborationType } from "../../shared/enums";
+import { Course, CourseId } from "./course.entity";
 
 export type AssignmentId = string;
 
