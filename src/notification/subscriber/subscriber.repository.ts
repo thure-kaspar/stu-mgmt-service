@@ -24,7 +24,12 @@ export class SubscriberRepository extends Repository<Subscriber> {
 	}
 
 	async getSubscribersOfCourse(courseId: CourseId): Promise<SubscriberDto[]> {
-		const subscribers = await this.find({ where: { courseId } });
+		const subscribers = await this.find({
+			where: { courseId },
+			order: {
+				name: "ASC"
+			}
+		});
 		return subscribers.map(s => s.toDto());
 	}
 
