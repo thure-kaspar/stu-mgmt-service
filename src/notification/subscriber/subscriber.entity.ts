@@ -21,8 +21,8 @@ export class Subscriber implements ToDto<SubscriberDto> {
 	@Column()
 	url: string;
 
-	@Column({ type: "json", nullable: true })
-	events?: SubscribedEvents;
+	@Column({ type: "json" })
+	events: SubscribedEvents;
 
 	@Column()
 	updateDate: Date;
