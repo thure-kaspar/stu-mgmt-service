@@ -17,11 +17,12 @@ If we were to search for all participants that have the permission to create ass
 we could perform a request like this:
 
 === "Angular"
-```typescript
-const courseId = "java-wise1920";
-const roles = [UserDto.CourseRoleEnum.LECTURER, UserDto.CourseRoleEnum.TUTOR];
-const skip = undefined; // No pagination
-const take = undefined; // No pagination
+
+    ```typescript
+    const courseId = "java-wise1920";
+    const roles = [UserDto.CourseRoleEnum.LECTURER, UserDto.CourseRoleEnum.TUTOR];
+    const skip = undefined; // No pagination
+    const take = undefined; // No pagination
 
     // Find all lecturers and tutors
     this.courseParticipantsService.getUsersOfCourse(courseId, undefined, undefined, roles]
@@ -33,7 +34,10 @@ const take = undefined; // No pagination
     ```
 
 === "Java"
-`java // TODO `
+
+    ```java
+    // TODO
+    ```
 
 The response could look like this:
 

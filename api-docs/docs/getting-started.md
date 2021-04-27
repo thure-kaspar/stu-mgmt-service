@@ -27,10 +27,11 @@ The client must know the url of our server in order to issue requests.
 There are multiple ways to configure the base path.
 
 === "Angular"
-```typescript
-ApiModule.forRoot(() => new Configuration({
-basePath: "http://example.com/api"
-}))
+
+    ```typescript
+    ApiModule.forRoot(() => new Configuration({
+    	basePath: "http://example.com/api"
+    }))
 
     // or (BASE_PATH is imported from the API-client library)
 
@@ -40,7 +41,10 @@ basePath: "http://example.com/api"
     ```
 
 === "Java"
-`java // TODO `
+
+    ```java
+    // TODO
+    ```
 
 ## Ready to go
 

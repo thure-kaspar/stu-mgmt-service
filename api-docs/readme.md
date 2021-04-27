@@ -8,6 +8,9 @@ https://www.mkdocs.org/
 // Install
 python -m pip install mkdocs
 
+// Install theme
+pip install mkdocs-material
+
 // Local editing
 mkdocs serve
 

@@ -25,6 +25,8 @@ theme:
     palette:
         primary: teal
         accent: grey
+    features:
+        - navigation.sections
 
 markdown_extensions:
     - codehilite

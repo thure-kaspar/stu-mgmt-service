@@ -29,7 +29,21 @@ skip - Amount of elements that should be skipped => (currentPage - 1) * pageSize
 The total element count can be accessed through a custom `X-TOTAL-COUNT` header in the HTTP response.
 
 === "Angular"
-`typescript // Find courses in summer semester 2020 (first 20 results) const skip = 0; const take = 20; this.courseService.getCourses(undefined, "sose2020", undefined, skip, take, "response") .subscribe( response => { const totalCount = response.headers.get("x-total-count"); const courses = response.body; } ); `
+
+    ```typescript
+    // Find courses in summer semester 2020 (first 20 results)
+    const skip = 0;
+    const take = 20;
+    this.courseService
+    	.getCourses(undefined, "sose2020", undefined, skip, take, "response")
+    	.subscribe(response => {
+    		const totalCount = response.headers.get("x-total-count");
+    		const courses = response.body;
+    	});
+    ```
 
 === "Java"
-`java // TODO `
+
+    ```java
+    // TODO
+    ```

@@ -15,10 +15,24 @@ title - Matches courses that include the title
 ```
 
 === "Angular"
-`typescript const shortname = undefined; const semester = "sose2020"; const title = undefined; // Find all courses in summer semester 2020 this.courseService.getCourses(shortname, semester, title).subscribe( result => { const courses: CourseDto[] = result; } ); `
+
+    ```typescript
+    const shortname = undefined;
+    const semester = "sose2020";
+    const title = undefined;
+    // Find all courses in summer semester 2020
+    this.courseService.getCourses(shortname, semester, title)
+    	.subscribe(result => {
+    		// ...
+    	});
+    ```
 
 === "Java"
-`java // TODO `
+
+    ```java
+    // TODO
+    ```
+
 The response could look like this:
 
 ```json
