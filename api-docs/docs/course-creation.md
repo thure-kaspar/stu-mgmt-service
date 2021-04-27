@@ -85,16 +85,6 @@ Users that want to join the course, must then include the correct password in th
 }
 ```
 
-#### Subscribing to events
-
-Subscribing to a course allows you to receive notifications when an event is triggered inside of the course.
-This might be the joining of a participant, activities inside of a group, closing of assignment submission and more.
-The topic of course events is covered in depth in this article [here](TODO).
-
-To subscribe to a course ...
-
-TODO
-
 ## Group settings
 
 Most group setting properties are mandatory when creating a course.
