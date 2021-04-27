@@ -6,12 +6,14 @@ import * as config from "config";
 import { getConnection } from "typeorm";
 import { DbMockService } from "../test/mocks/db-mock.service";
 import {
-	OverallPercentRuleDto,
-	IndividualPercentWithAllowedFailuresRuleDto
+	IndividualPercentWithAllowedFailuresRuleDto,
+	OverallPercentRuleDto
 } from "./admission-status/dto/admission-rule.dto";
 import { AppModule } from "./app.module";
 import { StudentMgmtEvent } from "./course/events";
 import { StudentMgmtException } from "./course/exceptions/custom-exceptions";
+import { SubscribedEvents } from "./notification/subscriber/subscriber.dto";
+import { SubscriberRepository } from "./notification/subscriber/subscriber.repository";
 import { EntityAlreadyExistsFilter } from "./shared/entity-already-exists.filter";
 import { EntityNotFoundFilter } from "./shared/entity-not-found.filter";
 import { RoundingBehavior } from "./utils/math";
@@ -39,6 +41,12 @@ async function bootstrap(): Promise<void> {
 	if (process.env.NODE_ENV == "demo") {
 		const dbMockService = new DbMockService(getConnection());
 		await dbMockService.createAll();
+	}
+
+	// If notification subscribers were specified
+	const notificationConfig = config.get("notifications");
+	if (notificationConfig?.subscribers?.length > 0) {
+		await registerSubscribers(notificationConfig.subscribers);
 	}
 
 	logger.verbose("Starting application...");
@@ -84,4 +92,22 @@ function setupSwaggerDocument(app: NestExpressApplication) {
 	});
 
 	SwaggerModule.setup("api", app, document);
+}
+
+/**
+ * Inserts or updates the given subscribers.
+ */
+async function registerSubscribers(
+	subscribers: {
+		courseId: string;
+		name: string;
+		url: string;
+		events: SubscribedEvents;
+	}[]
+) {
+	const repo = getConnection().getCustomRepository(SubscriberRepository);
+
+	for (const sub of subscribers) {
+		await repo.addOrUpdate(sub.courseId, sub);
+	}
 }

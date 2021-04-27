@@ -5,6 +5,10 @@ import { map, tap } from "rxjs/operators";
 import { INotify } from "../course/events/interfaces";
 import { NotificationService } from "./notification.service";
 
+/**
+ * Listens to the `EventBus` event-stream and triggers the `NotificationService` for events that
+ * implement the `INotify` interface.
+ */
 @Injectable()
 export class NotificationSaga {
 	@Saga()

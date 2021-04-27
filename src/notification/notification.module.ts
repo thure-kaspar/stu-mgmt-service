@@ -5,10 +5,22 @@ import { NotificationController } from "./notification.controller";
 import { NotificationSaga } from "./notification.saga";
 import { NotificationService } from "./notification.service";
 import { SubscriberRepository } from "./subscriber/subscriber.repository";
+import * as config from "config";
+
+function optionalProviders(): any[] {
+	const providers = [];
+
+	const notificationConfig = config.get("notifications");
+	if (notificationConfig?.enabled) {
+		providers.push(NotificationSaga, NotificationService);
+	}
+
+	return providers;
+}
 
 @Module({
 	imports: [CqrsModule, HttpModule, TypeOrmModule.forFeature([SubscriberRepository])],
-	providers: [NotificationSaga, NotificationService],
+	providers: [...optionalProviders()],
 	controllers: [NotificationController]
 })
 export class NotificationModule {}
