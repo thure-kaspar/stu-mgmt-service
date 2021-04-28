@@ -12,7 +12,7 @@ function optionalProviders(): any[] {
 
 	const notificationConfig = config.get("notifications");
 	if (notificationConfig?.enabled) {
-		providers.push(NotificationSaga, NotificationService);
+		providers.push(NotificationSaga);
 	}
 
 	return providers;
@@ -20,7 +20,7 @@ function optionalProviders(): any[] {
 
 @Module({
 	imports: [CqrsModule, HttpModule, TypeOrmModule.forFeature([SubscriberRepository])],
-	providers: [...optionalProviders()],
+	providers: [NotificationService, ...optionalProviders()],
 	controllers: [NotificationController]
 })
 export class NotificationModule {}
