@@ -10,6 +10,7 @@ Array [
       Object {
         "displayName": "Max Mustermann",
         "email": "max.mustermann@test.com",
+        "matrNr": 123456,
         "role": "STUDENT",
         "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
         "username": "mmustermann",
@@ -17,6 +18,7 @@ Array [
       Object {
         "displayName": "Hans Peter",
         "email": "hans.peter@test.com",
+        "matrNr": 111111,
         "role": "STUDENT",
         "userId": "40f59aad-7473-4455-a3ea-1214f19b2565",
         "username": "hpeter",
@@ -38,6 +40,7 @@ Array [
       Object {
         "displayName": "Max Mustermann",
         "email": "max.mustermann@test.com",
+        "matrNr": 123456,
         "role": "STUDENT",
         "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
         "username": "mmustermann",
@@ -45,6 +48,7 @@ Array [
       Object {
         "displayName": "Hans Peter",
         "email": "hans.peter@test.com",
+        "matrNr": 111111,
         "role": "STUDENT",
         "userId": "40f59aad-7473-4455-a3ea-1214f19b2565",
         "username": "hpeter",
@@ -61,6 +65,7 @@ Array [
       Object {
         "displayName": "elshar",
         "email": "elshar@test.com",
+        "matrNr": 777777,
         "role": "STUDENT",
         "userId": "3e52e822-4ebc-49c3-94e2-06ba447b5d1f",
         "username": "elshar",
@@ -68,6 +73,7 @@ Array [
       Object {
         "displayName": "kunold",
         "email": "kunold@test.com",
+        "matrNr": 888888,
         "role": "STUDENT",
         "userId": "24b4ec8c-dd8a-4bd6-843c-2c412fb1d5b7",
         "username": "kunold",

@@ -199,65 +199,6 @@ describe("AssessmentService", () => {
 		});
 	});
 
-	describe("addPartialAssessment", () => {
-		let partialAssessment: PartialAssessmentDto;
-
-		beforeEach(() => {
-			partialAssessment = PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW;
-		});
-
-		it("Assignment is IN_REVIEW -> Creates partial assessment", async () => {
-			const assignmentId = "assignment_id_1";
-			const expected = copy(partialAssessment);
-
-			const result = await service.addPartialAssessment(
-				assignmentId,
-				partialAssessment.assessmentId,
-				partialAssessment
-			);
-
-			expect(assignmentRepository.getAssignmentById).toHaveBeenCalledWith(assignmentId);
-			expect(result).toEqual(expected);
-		});
-
-		it("Assignment not IN_REVIEW -> Throws Exception", async () => {
-			const assignmentNotInReview = copy(ASSIGNMENT_JAVA_CLOSED);
-			assignmentRepository.getAssignmentById = jest
-				.fn()
-				.mockResolvedValueOnce(convertToEntity(Assignment, assignmentNotInReview));
-
-			try {
-				await service.addPartialAssessment(
-					assignmentNotInReview.id,
-					partialAssessment.assessmentId,
-					partialAssessment
-				);
-				expect(true).toEqual(false);
-			} catch (error) {
-				expect(error).toBeTruthy();
-				expect(error.status).toEqual(400);
-			}
-		});
-
-		it("Partial assessment refers to different assessment -> Throws exception", async () => {
-			const assignmentId = "assignment_id_1";
-			const different_assessment_Id = "different_assessment_id";
-			console.assert(partialAssessment.assessmentId !== different_assessment_Id);
-
-			try {
-				await service.addPartialAssessment(
-					assignmentId,
-					different_assessment_Id,
-					partialAssessment
-				);
-				expect(true).toEqual(false);
-			} catch (error) {
-				expect(error).toBeTruthy();
-				expect(error.status).toEqual(400);
-			}
-		});
-	});
-
 	describe("getAssessmentsForAssignment", () => {
 		it("Returns Dtos and count", async () => {
 			const [dtos, count] = await service.getAssessmentsForAssignment(
@@ -299,17 +240,13 @@ describe("AssessmentService", () => {
 		const assessmentBeforeUpdate = () => {
 			const assessment = convertToEntity(Assessment, ASSESSMENT_JAVA_IN_REVIEW);
 			assessment.assignment = convertToEntity(Assignment, ASSIGNMENT_JAVA_IN_REVIEW_SINGLE);
-			assessment.partialAssessments = PARTIAL_ASSESSMENT_MOCK.filter(
-				p => p.assessmentId === assessment.id
-			).map(dto => convertToEntity(PartialAssessment, dto));
+			assessment.partialAssessments = [];
 			return assessment;
 		};
 
 		beforeEach(() => {
 			validAssessmentForUpdate = copy(ASSESSMENT_JAVA_IN_REVIEW);
-			validAssessmentForUpdate.partialAssessments = PARTIAL_ASSESSMENT_MOCK.filter(
-				p => p.assessmentId === validAssessmentForUpdate.id
-			);
+			validAssessmentForUpdate.partialAssessments = [];
 			assessmentRepository.getAssessmentById = jest
 				.fn()
 				.mockImplementationOnce(assessmentBeforeUpdate);
@@ -335,23 +272,7 @@ describe("AssessmentService", () => {
 			);
 		});
 
-		it("Assessment state not IN_REVIEW -> Throws exception", async () => {
-			assessmentRepository.getAssessmentById = jest.fn().mockImplementationOnce(() => {
-				const assessment = convertToEntity(Assessment, ASSESSMENT_JAVA_EVALUATED_GROUP_1);
-				assessment.assignment = convertToEntity(Assignment, ASSIGNMENT_JAVA_EVALUATED);
-				assessment.partialAssessments = [];
-				return assessment;
-			});
-			try {
-				await service.updateAssessment(assessmentDto.id, assessmentDto, updatedBy);
-				expect(true).toEqual(false);
-			} catch (error) {
-				expect(error).toBeTruthy();
-				expect(error.status).toEqual(400);
-			}
-		});
-
-		it("Assessment state IN_REVIEW -> Calls repository for update", async () => {
+		it("Calls repository for update", async () => {
 			await service.updateAssessment(
 				validAssessmentForUpdate.id,
 				validAssessmentForUpdate,
@@ -378,43 +299,6 @@ describe("AssessmentService", () => {
 					oldScore: assessmentBeforeUpdate().achievedPoints
 				})
 			);
-		});
-
-		it("Partial assessment contains incorrect id -> Throws exception", async () => {
-			const invalidAssessment = copy(assessmentDto);
-			const partial = copy(PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW);
-			partial.assessmentId = "some_other_id";
-
-			const invalidUpdate: AssessmentUpdateDto = {
-				updatePartialAssignments: [partial]
-			};
-
-			try {
-				await service.updateAssessment(invalidAssessment.id, invalidUpdate, updatedBy);
-				expect(true).toEqual(false);
-			} catch (error) {
-				expect(error).toBeTruthy();
-				expect(error.status).toEqual(400);
-			}
-		});
-
-		it("Partial included multiple times -> Throws exception", async () => {
-			const invalidAssessment = copy(assessmentDto);
-			const partial = copy(PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW);
-			partial.assessmentId = "some_other_id";
-
-			const invalidUpdate: AssessmentUpdateDto = {
-				updatePartialAssignments: [partial],
-				removePartialAssignments: [partial]
-			};
-
-			try {
-				await service.updateAssessment(invalidAssessment.id, invalidUpdate, updatedBy);
-				expect(true).toEqual(false);
-			} catch (error) {
-				expect(error).toBeTruthy();
-				expect(error.status).toEqual(400);
-			}
 		});
 	});
 

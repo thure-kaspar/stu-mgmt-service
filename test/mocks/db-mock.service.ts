@@ -197,7 +197,13 @@ export class DbMockService {
 
 	async createPartialAssessments(): Promise<void> {
 		const repo = this.con.getRepository(PartialAssessment);
-		const partials = this.partialAssessments.map(p => repo.create(p));
+		const partials = this.partialAssessments.map(p => {
+			const partial: Partial<PartialAssessment> = {
+				assessmentId: p.assessmentId,
+				...p.dto
+			};
+			return repo.create(partial);
+		});
 		await repo.insert(partials).catch(error => console.error(error));
 	}
 

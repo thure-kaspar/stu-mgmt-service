@@ -34,7 +34,8 @@ describe("POST-Requests of SubmissionController (e2e)", () => {
 				.send(submission)
 				.expect(201)
 				.expect(({ body }) => {
-					const result = body as unknown;
+					const result = body as SubmissionDto;
+					result.date = null;
 					expect(result).toMatchSnapshot();
 				});
 		});

@@ -91,7 +91,5 @@ export class AssessmentUpdateDto {
 	achievedPoints?: number;
 	isDraft?: boolean;
 	comment?: string;
-	addPartialAssessments?: PartialAssessmentDto[];
-	updatePartialAssignments?: PartialAssessmentDto[];
-	removePartialAssignments?: PartialAssessmentDto[];
+	partialAssessments?: PartialAssessmentDto[];
 }

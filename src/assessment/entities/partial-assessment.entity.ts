@@ -1,8 +1,10 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { PartialAssessmentDto, Severity } from "../dto/partial-assessment.dto";
+import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { MarkerDto } from "../dto/marker.dto";
+import { PartialAssessmentDto } from "../dto/partial-assessment.dto";
 import { Assessment } from "./assessment.entity";
 
 @Entity()
+@Index("IDX_AssessmentId_Key", ["assessmentId", "key"], { unique: true })
 export class PartialAssessment {
 	@PrimaryGeneratedColumn()
 	id: number;
@@ -17,13 +19,13 @@ export class PartialAssessment {
 	assessmentId: string;
 
 	@Column()
+	key: string;
+
+	@Column()
 	title: string;
 
-	@Column({ nullable: true })
-	type?: string;
-
-	@Column({ nullable: true, enum: Severity })
-	severity?: Severity;
+	@Column()
+	draftOnly: boolean;
 
 	@Column({ type: "float", nullable: true })
 	points?: number;
@@ -31,23 +33,17 @@ export class PartialAssessment {
 	@Column({ nullable: true })
 	comment?: string;
 
-	@Column({ nullable: true })
-	path?: string;
-
-	@Column({ nullable: true })
-	line?: number;
+	@Column({ type: "json", nullable: true })
+	markers?: MarkerDto[];
 
 	toDto(): PartialAssessmentDto {
 		return {
-			id: this.id,
-			assessmentId: this.assessmentId,
+			key: this.key,
 			title: this.title,
-			type: this.type ?? undefined,
-			severity: this.severity ?? undefined,
+			draftOnly: this.draftOnly,
 			comment: this.comment ?? undefined,
-			path: this.path ?? undefined,
-			line: this.line ?? undefined,
-			points: this.points ?? undefined
+			points: this.points ?? undefined,
+			markers: this.markers ?? undefined
 		};
 	}
 }

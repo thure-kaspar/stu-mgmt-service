@@ -6,6 +6,7 @@ import {
 	Param,
 	Patch,
 	Post,
+	Put,
 	Query,
 	Req,
 	UseGuards
@@ -54,20 +55,19 @@ export class AssessmentController {
 	}
 
 	@ApiOperation({
-		operationId: "addPartialAssessment",
-		summary: "Add partial assessment.",
-		description:
-			"Adds a partial assessment for an existing assessment. Alternatively, partial assessments can be created together with the assessment."
+		operationId: "setPartialAssessment",
+		summary: "Set partial assessment.",
+		description: "Adds or updates the partial assessment with the specified key."
 	})
-	@Post(":assessmentId")
+	@Put(":assessmentId")
 	@UseGuards(TeachingStaffGuard)
-	addPartialAssessment(
+	setPartialAssessment(
 		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string,
 		@Param("assessmentId") assessmentId: string,
 		@Body() partial: PartialAssessmentDto
 	): Promise<PartialAssessmentDto> {
-		return this.assessmentService.addPartialAssessment(assignmentId, assessmentId, partial);
+		return this.assessmentService.setPartialAssessment(assessmentId, partial);
 	}
 
 	@ApiOperation({

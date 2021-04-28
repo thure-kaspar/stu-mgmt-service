@@ -159,6 +159,10 @@ export abstract class DtoFactory {
 			partialAssessments: assessment.partialAssessments?.map(p => p.toDto())
 		};
 
+		if (!assessmentDto.isDraft && assessmentDto.partialAssessments?.length > 0) {
+			assessmentDto.partialAssessments.filter(p => !p.draftOnly);
+		}
+
 		if (assessment.assignment) {
 			assessmentDto.assignment = this.createAssignmentDto(assessment.assignment);
 		}

@@ -1,0 +1,321 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GET-REQUESTS of AssessmentController (e2e) (GET) /courses/{courseId}/assignments/{assignmentId}/assessments/{assessmentId} Assessment with partial assessments -> Retrieves partials 1`] = `
+Object {
+  "achievedPoints": 50,
+  "assignment": Object {
+    "collaboration": "SINGLE",
+    "endDate": "2020-06-17T22:00:00.000Z",
+    "id": "993b3cd0-6207-11ea-bc55-0242ac130003",
+    "name": "Test_Assignment 03 (Java) - SINGLE - IN_REVIEW",
+    "points": 100,
+    "startDate": "2020-06-10T22:00:00.000Z",
+    "state": "IN_REVIEW",
+    "type": "HOMEWORK",
+  },
+  "assignmentId": "993b3cd0-6207-11ea-bc55-0242ac130003",
+  "comment": "ASSESSMENT_JAVA_IN_REVIEW",
+  "creationDate": null,
+  "creator": Object {
+    "displayName": "John Doe",
+    "id": "8330300e-9be7-4a70-ba7d-8a0139311343",
+    "matrNr": 222222,
+    "role": "USER",
+    "username": "jdoe",
+  },
+  "creatorId": "8330300e-9be7-4a70-ba7d-8a0139311343",
+  "id": "680dd44a-93b0-4d1c-a947-9b50a4bbb68e",
+  "isDraft": false,
+  "partialAssessments": Array [
+    Object {
+      "comment": "Very good",
+      "draftOnly": false,
+      "key": "task-1",
+      "points": 10,
+      "title": "Task 1",
+    },
+    Object {
+      "comment": "Very bad",
+      "draftOnly": false,
+      "key": "task-2",
+      "points": 0,
+      "title": "Task 2",
+    },
+  ],
+  "participant": Object {
+    "displayName": "Max Mustermann",
+    "email": "max.mustermann@test.com",
+    "role": "STUDENT",
+    "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
+    "username": "mmustermann",
+  },
+  "updateDate": null,
+  "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
+}
+`;
+
+exports[`PATCH-REQUESTS of AssessmentController (e2e) (PATCH) /courses/{courseId}/assignments/{assignmentId}/assessments/{assessmentId} No partial assessments before -> Adds partial assessments 1`] = `
+Object {
+  "achievedPoints": 99,
+  "assignment": Object {
+    "collaboration": "SINGLE",
+    "endDate": "2020-06-17T22:00:00.000Z",
+    "id": "993b3cd0-6207-11ea-bc55-0242ac130003",
+    "name": "Test_Assignment 03 (Java) - SINGLE - IN_REVIEW",
+    "points": 100,
+    "startDate": "2020-06-10T22:00:00.000Z",
+    "state": "IN_REVIEW",
+    "type": "HOMEWORK",
+  },
+  "assignmentId": "993b3cd0-6207-11ea-bc55-0242ac130003",
+  "comment": "new comment",
+  "creationDate": null,
+  "creator": Object {
+    "displayName": "John Doe",
+    "id": "8330300e-9be7-4a70-ba7d-8a0139311343",
+    "matrNr": 222222,
+    "role": "USER",
+    "username": "jdoe",
+  },
+  "creatorId": "8330300e-9be7-4a70-ba7d-8a0139311343",
+  "id": "08ea9724-fe3f-461c-9b3c-5d44ab9907e9",
+  "isDraft": true,
+  "lastUpdatedBy": Object {
+    "displayName": "System Admin",
+    "id": "d4b50fe8-f949-4317-bdde-d9ae61f53b96",
+    "matrNr": 444444,
+    "role": "SYSTEM_ADMIN",
+    "username": "sAdmin",
+  },
+  "lastUpdatedById": "d4b50fe8-f949-4317-bdde-d9ae61f53b96",
+  "partialAssessments": Array [
+    Object {
+      "comment": "Very good",
+      "draftOnly": false,
+      "key": "task-1",
+      "points": 10,
+      "title": "Task 1",
+    },
+    Object {
+      "comment": "Very bad",
+      "draftOnly": false,
+      "key": "task-2",
+      "points": 0,
+      "title": "Task 2",
+    },
+  ],
+  "participant": Object {
+    "displayName": "John Doe",
+    "email": "john.doe@test.com",
+    "role": "STUDENT",
+    "userId": "8330300e-9be7-4a70-ba7d-8a0139311343",
+    "username": "jdoe",
+  },
+  "updateDate": null,
+  "userId": "8330300e-9be7-4a70-ba7d-8a0139311343",
+}
+`;
+
+exports[`PATCH-REQUESTS of AssessmentController (e2e) (PATCH) /courses/{courseId}/assignments/{assignmentId}/assessments/{assessmentId} Partial assessments before -> Remove partial assessments 1`] = `
+Object {
+  "achievedPoints": 75,
+  "assignment": Object {
+    "collaboration": "GROUP",
+    "endDate": "2020-08-21T22:00:00.000Z",
+    "id": "f50b8474-1fb9-4d69-85a2-76648d0fd3f9",
+    "name": "Test_Assignment 08 (Java) - GROUP - IN_REVIEW",
+    "points": 100,
+    "startDate": "2020-08-20T22:00:00.000Z",
+    "state": "IN_REVIEW",
+    "type": "HOMEWORK",
+  },
+  "assignmentId": "f50b8474-1fb9-4d69-85a2-76648d0fd3f9",
+  "comment": "ASSIGNMENT_JAVA_IN_REVIEW_GROUP",
+  "creationDate": null,
+  "creator": Object {
+    "displayName": "John Doe",
+    "id": "8330300e-9be7-4a70-ba7d-8a0139311343",
+    "matrNr": 222222,
+    "role": "USER",
+    "username": "jdoe",
+  },
+  "creatorId": "8330300e-9be7-4a70-ba7d-8a0139311343",
+  "group": Object {
+    "hasPassword": true,
+    "id": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
+    "isClosed": false,
+    "members": Array [
+      Object {
+        "displayName": "Max Mustermann",
+        "email": "max.mustermann@test.com",
+        "role": "STUDENT",
+        "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
+        "username": "mmustermann",
+      },
+      Object {
+        "displayName": "Hans Peter",
+        "email": "hans.peter@test.com",
+        "role": "STUDENT",
+        "userId": "40f59aad-7473-4455-a3ea-1214f19b2565",
+        "username": "hpeter",
+      },
+    ],
+    "name": "Testgroup 1",
+    "size": 2,
+  },
+  "groupId": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
+  "id": "0d365334-6cb3-4ac5-b0fe-0b1a5aa1fbf4",
+  "isDraft": false,
+  "lastUpdatedBy": Object {
+    "displayName": "System Admin",
+    "id": "d4b50fe8-f949-4317-bdde-d9ae61f53b96",
+    "matrNr": 444444,
+    "role": "SYSTEM_ADMIN",
+    "username": "sAdmin",
+  },
+  "lastUpdatedById": "d4b50fe8-f949-4317-bdde-d9ae61f53b96",
+  "partialAssessments": Array [],
+  "updateDate": null,
+}
+`;
+
+exports[`PATCH-REQUESTS of AssessmentController (e2e) (PATCH) /courses/{courseId}/assignments/{assignmentId}/assessments/{assessmentId} Partial assessments before -> Updates partial assessments 1`] = `
+Object {
+  "achievedPoints": 75,
+  "assignment": Object {
+    "collaboration": "GROUP",
+    "endDate": "2020-08-21T22:00:00.000Z",
+    "id": "f50b8474-1fb9-4d69-85a2-76648d0fd3f9",
+    "name": "Test_Assignment 08 (Java) - GROUP - IN_REVIEW",
+    "points": 100,
+    "startDate": "2020-08-20T22:00:00.000Z",
+    "state": "IN_REVIEW",
+    "type": "HOMEWORK",
+  },
+  "assignmentId": "f50b8474-1fb9-4d69-85a2-76648d0fd3f9",
+  "comment": "ASSIGNMENT_JAVA_IN_REVIEW_GROUP",
+  "creationDate": null,
+  "creator": Object {
+    "displayName": "John Doe",
+    "id": "8330300e-9be7-4a70-ba7d-8a0139311343",
+    "matrNr": 222222,
+    "role": "USER",
+    "username": "jdoe",
+  },
+  "creatorId": "8330300e-9be7-4a70-ba7d-8a0139311343",
+  "group": Object {
+    "hasPassword": true,
+    "id": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
+    "isClosed": false,
+    "members": Array [
+      Object {
+        "displayName": "Max Mustermann",
+        "email": "max.mustermann@test.com",
+        "role": "STUDENT",
+        "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
+        "username": "mmustermann",
+      },
+      Object {
+        "displayName": "Hans Peter",
+        "email": "hans.peter@test.com",
+        "role": "STUDENT",
+        "userId": "40f59aad-7473-4455-a3ea-1214f19b2565",
+        "username": "hpeter",
+      },
+    ],
+    "name": "Testgroup 1",
+    "size": 2,
+  },
+  "groupId": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
+  "id": "0d365334-6cb3-4ac5-b0fe-0b1a5aa1fbf4",
+  "isDraft": false,
+  "lastUpdatedBy": Object {
+    "displayName": "System Admin",
+    "id": "d4b50fe8-f949-4317-bdde-d9ae61f53b96",
+    "matrNr": 444444,
+    "role": "SYSTEM_ADMIN",
+    "username": "sAdmin",
+  },
+  "lastUpdatedById": "d4b50fe8-f949-4317-bdde-d9ae61f53b96",
+  "partialAssessments": Array [
+    Object {
+      "comment": "Updated comment",
+      "draftOnly": false,
+      "key": "with-markers",
+      "markers": Array [
+        Object {
+          "comment": "Missing ; at the end of line 5",
+          "endColumn": 30,
+          "endLineNumber": 5,
+          "path": "src/de/uni-hildesheim/hello.java",
+          "points": 0,
+          "severity": "ERROR",
+          "startColumn": 30,
+          "startLineNumber": 5,
+        },
+      ],
+      "title": "Updated title",
+    },
+  ],
+  "updateDate": null,
+}
+`;
+
+exports[`POST-REQUESTS of AssessmentController (e2e) (POST) /courses/{courseId}/assignments/{assignmentId}/assessments Assessment with partial assessments -> Creates partial assessments 1`] = `
+Object {
+  "achievedPoints": 50,
+  "assignmentId": "993b3cd0-6207-11ea-bc55-0242ac130003",
+  "comment": "ASSESSMENT_JAVA_IN_REVIEW",
+  "creationDate": undefined,
+  "creatorId": "c17b67ea-d0b7-46bc-a2e0-ea2ec18f441d",
+  "id": "680dd44a-93b0-4d1c-a947-9b50a4bbb68e",
+  "isDraft": false,
+  "partialAssessments": Array [
+    Object {
+      "comment": "Very good",
+      "draftOnly": false,
+      "key": "task-1",
+      "points": 10,
+      "title": "Task 1",
+    },
+    Object {
+      "comment": "Very bad",
+      "draftOnly": false,
+      "key": "task-2",
+      "points": 0,
+      "title": "Task 2",
+    },
+  ],
+  "updateDate": undefined,
+  "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
+}
+`;
+
+exports[`POST-REQUESTS of AssessmentController (e2e) (POST) /courses/{courseId}/assignments/{assignmentId}/assessments Creates the given (group-)assessment and returns it 1`] = `
+Object {
+  "achievedPoints": 75,
+  "assignmentId": "c2bc4aa4-6207-11ea-bc55-0242ac130003",
+  "comment": "ASSESSMENT_JAVA_EVALUATED_GROUP_1 for GROUP_1_JAVA (ASSIGNMENT_JAVA_EVALUATED)",
+  "creationDate": undefined,
+  "creatorId": "c17b67ea-d0b7-46bc-a2e0-ea2ec18f441d",
+  "groupId": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
+  "id": "8f60f844-4129-48a4-a625-7a74c7defd0d",
+  "isDraft": false,
+  "lastUpdatedById": "8330300e-9be7-4a70-ba7d-8a0139311343",
+  "updateDate": undefined,
+}
+`;
+
+exports[`POST-REQUESTS of AssessmentController (e2e) (POST) /courses/{courseId}/assignments/{assignmentId}/assessments Creates the given (user-)assessment and returns it 1`] = `
+Object {
+  "achievedPoints": 25,
+  "assignmentId": "75b799a1-a406-419b-a448-909aa3d34afa",
+  "comment": "ASSESSMENT_JAVA_TESTAT_USER_1",
+  "creationDate": undefined,
+  "creatorId": "c17b67ea-d0b7-46bc-a2e0-ea2ec18f441d",
+  "id": "932c7bd8-2338-4e60-955a-39da5f858212",
+  "isDraft": false,
+  "updateDate": undefined,
+  "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
+}
+`;

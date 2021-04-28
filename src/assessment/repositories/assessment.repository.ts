@@ -27,12 +27,30 @@ export class AssessmentRepository extends Repository<Assessment> {
 		return this.save(assessment);
 	}
 
-	async addPartialAssessment(
+	async addOrUpdatePartialAssessment(
+		assessmentId: string,
 		partialAssessmentDto: PartialAssessmentDto
 	): Promise<PartialAssessment> {
 		const partialRepo = this.manager.getRepository(PartialAssessment);
-		const partial = partialRepo.create(partialAssessmentDto);
-		return partialRepo.save(partial);
+
+		const partialAssessment = partialRepo.create(partialAssessmentDto);
+		partialAssessment.assessmentId = assessmentId;
+
+		if (partialAssessmentDto.key) {
+			const exists = await partialRepo.findOne({
+				where: {
+					assessmentId,
+					key: partialAssessmentDto.key
+				}
+			});
+			// Set to id of existing to cause an update
+			partialAssessment.id = exists?.id;
+		} else {
+			// Set key to random value if not specified
+			partialAssessment.key = Math.floor(Math.random() * 9999999).toString();
+		}
+
+		return partialRepo.save(partialAssessment);
 	}
 
 	/**
@@ -176,7 +194,7 @@ export class AssessmentRepository extends Repository<Assessment> {
 		updateDto: AssessmentUpdateDto,
 		updatedBy: UserId
 	): Promise<Assessment> {
-		const { achievedPoints, isDraft, comment } = updateDto;
+		const { achievedPoints, isDraft, comment, partialAssessments } = updateDto;
 		const assessment = await this.findOneOrFail(assessmentId, {
 			relations: ["partialAssessments"]
 		});
@@ -203,43 +221,33 @@ export class AssessmentRepository extends Repository<Assessment> {
 			// Update assessment itself
 			await transaction.save(assessment);
 
-			// Insert/Update/Remove partials
-			await this.updatePartials(transaction, updateDto, assessment.partialAssessments);
+			// Update partial assessments, if included
+			if (partialAssessments) {
+				await this.updatePartialAssessments(transaction, assessmentId, partialAssessments);
+			}
 		});
 
 		return this.getAssessmentById(assessment.id);
 	}
 
-	private async updatePartials(
+	private async updatePartialAssessments(
 		transaction: EntityManager,
-		updateDto: AssessmentUpdateDto,
-		originalPartials: PartialAssessment[]
-	): Promise<void> {
-		const {
-			addPartialAssessments,
-			updatePartialAssignments,
-			removePartialAssignments
-		} = updateDto;
+		assessmentId: string,
+		partialAssessments: PartialAssessmentDto[]
+	) {
+		const partialRepository = transaction.getRepository(PartialAssessment);
 
-		if (removePartialAssignments?.length > 0) {
-			const ids = removePartialAssignments.map(p => p.id);
-			await transaction.delete(PartialAssessment, ids);
-		}
+		// Remove existing partials
+		await transaction.delete(PartialAssessment, { assessmentId });
 
-		// Insert new partials
-		if (addPartialAssessments?.length > 0) {
-			await transaction.insert(PartialAssessment, addPartialAssessments);
-		}
+		// Insert the updated partials
+		const partials: PartialAssessment[] = partialAssessments.map(p => {
+			const partial = partialRepository.create(p);
+			partial.assessmentId = assessmentId;
+			return partial;
+		});
 
-		// Update partials
-		if (updatePartialAssignments?.length > 0) {
-			updatePartialAssignments.forEach(async update => {
-				// Ensure that partial actually existed in assessment
-				if (originalPartials.find(p => p.id == update.id)) {
-					await transaction.update(PartialAssessment, { id: update.id }, update);
-				}
-			});
-		}
+		await transaction.insert(PartialAssessment, partials);
 	}
 
 	async deleteAssessment(assessmentId: string): Promise<boolean> {
