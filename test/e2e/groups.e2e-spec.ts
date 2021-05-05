@@ -140,7 +140,7 @@ describe("GET-REQUESTS of GroupController (e2e)", () => {
 		});
 	});
 
-	it("(GET) /groups/{groupId} Retrieves the group with all relations", () => {
+	it("(GET) /groups/{groupId} Retrieves the group", () => {
 		const group = copy(GROUP_1_JAVA);
 		group.history = GROUP_EVENTS_MOCK;
 
@@ -148,15 +148,7 @@ describe("GET-REQUESTS of GroupController (e2e)", () => {
 			.get(`/courses/${course.id}/groups/${group.id}`)
 			.expect(({ body }) => {
 				const result = body as GroupDto;
-				expect(result.id).toEqual(group.id);
-				expect(result.members.length).toEqual(2);
-				expect(result.history).toBeTruthy();
-				expect(result.history.length).toBeGreaterThan(1);
-				expect(result.password).toBeUndefined();
-
-				result.history.forEach(event => {
-					expect(event.groupId).toEqual(group.id);
-				});
+				expect(result).toMatchSnapshot();
 			});
 	});
 
