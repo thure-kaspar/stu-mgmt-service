@@ -1,5 +1,5 @@
 export enum Severity {
-	INFORMATIONAL = "INFO",
+	INFO = "INFO",
 	HINT = "HINT",
 	WARNING = "WARNING",
 	ERROR = "ERROR"
