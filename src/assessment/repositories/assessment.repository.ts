@@ -235,18 +235,14 @@ export class AssessmentRepository extends Repository<Assessment> {
 		assessmentId: string,
 		partialAssessments: PartialAssessmentDto[]
 	) {
-		const partialRepository = transaction.getRepository(PartialAssessment);
-
 		// Remove existing partials
 		await transaction.delete(PartialAssessment, { assessmentId });
 
-		// Insert the updated partials
-		const partials: PartialAssessment[] = partialAssessments.map(p => {
-			const partial = partialRepository.create(p);
-			partial.assessmentId = assessmentId;
-			return partial;
-		});
+		const partials: PartialAssessment[] = partialAssessments.map(p =>
+			PartialAssessment.create(assessmentId, p)
+		);
 
+		// Insert the updated partials
 		await transaction.insert(PartialAssessment, partials);
 	}
 
