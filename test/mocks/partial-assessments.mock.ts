@@ -31,6 +31,9 @@ export const PARTIAL_ASSESSMENT_3_JAVA_IN_REVIEW_DRAFT_ONLY: PartialAssessmentDt
 export const PARTIAL_ASSESSMENT_JAVA_IN_REVIEW_GROUP_MARKERS: PartialAssessmentDto = {
 	key: "with-markers",
 	title: "Task 1",
+	comment:
+		"Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione dolor, quidem fugiat reprehenderit possimus eveniet sunt est consectetur unde aut ipsam recusandae autem, et, labore aliquam pariatur maiores assumenda?",
+	points: 7,
 	draftOnly: false,
 	markers: [
 		{
@@ -41,6 +44,36 @@ export const PARTIAL_ASSESSMENT_JAVA_IN_REVIEW_GROUP_MARKERS: PartialAssessmentD
 			startColumn: 30,
 			endColumn: 30,
 			severity: Severity.ERROR,
+			points: 0
+		},
+		{
+			path: "src/de/uni-hildesheim/hello.java",
+			comment: "Missing ; at the end of line 5",
+			startLineNumber: 5,
+			endLineNumber: 5,
+			startColumn: 30,
+			endColumn: 30,
+			severity: Severity.HINT,
+			points: 0
+		},
+		{
+			path: "src/de/uni-hildesheim/hello.java",
+			comment: "Missing ; at the end of line 5",
+			startLineNumber: 5,
+			endLineNumber: 5,
+			startColumn: 30,
+			endColumn: 30,
+			severity: Severity.WARNING,
+			points: 0
+		},
+		{
+			path: "src/de/uni-hildesheim/hello.java",
+			comment: "Missing ; at the end of line 5",
+			startLineNumber: 5,
+			endLineNumber: 5,
+			startColumn: 30,
+			endColumn: 30,
+			severity: Severity.INFO,
 			points: 0
 		}
 	]
