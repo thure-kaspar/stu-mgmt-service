@@ -160,7 +160,9 @@ export abstract class DtoFactory {
 		};
 
 		if (!assessmentDto.isDraft && assessmentDto.partialAssessments?.length > 0) {
-			assessmentDto.partialAssessments.filter(p => !p.draftOnly);
+			assessmentDto.partialAssessments = assessmentDto.partialAssessments.filter(
+				p => !p.draftOnly
+			);
 		}
 
 		if (assessment.assignment) {
