@@ -1,7 +1,9 @@
+import { ConflictException } from "@nestjs/common";
 import { Brackets, EntityManager, EntityRepository, Repository } from "typeorm";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
 import { CourseId } from "../../course/entities/course.entity";
 import { GroupId } from "../../course/entities/group.entity";
+import { DbException } from "../../shared/database-exceptions";
 import { UserId } from "../../shared/entities/user.entity";
 import { AssessmentFilter } from "../dto/assessment-filter.dto";
 import { AssessmentCreateDto, AssessmentDto, AssessmentUpdateDto } from "../dto/assessment.dto";
@@ -18,13 +20,21 @@ export class AssessmentRepository extends Repository<Assessment> {
 		creatorId: UserId
 	): Promise<Assessment> {
 		const assessment = this.createEntityFromDto({ ...assessmentDto, creatorId });
+
 		assessment.assessmentUserRelations = userIds.map(userId => {
 			const relation = new AssessmentUserRelation();
 			relation.assignmentId = assessmentDto.assignmentId;
 			relation.userId = userId;
 			return relation;
 		});
-		return this.save(assessment);
+
+		try {
+			return await this.save(assessment);
+		} catch (error) {
+			if (error.code === DbException.PG_UNIQUE_VIOLATION) {
+				throw new ConflictException("A user has already received an assessment.");
+			}
+		}
 	}
 
 	async addOrUpdatePartialAssessment(
