@@ -1,48 +1,27 @@
-import { Controller, Post, Body, ValidationPipe, HttpCode } from "@nestjs/common";
-import { AuthCredentialsDto, AuthSystemCredentials } from "../dto/auth-credentials.dto";
-import { AuthService } from "../services/auth.service";
-import { AuthTokenDto } from "../dto/auth-token.dto";
-import { ApiTags, ApiOperation } from "@nestjs/swagger";
+import { Controller, Get, UseGuards } from "@nestjs/common";
+import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { InjectRepository } from "@nestjs/typeorm";
+import { DtoFactory } from "../../shared/dto-factory";
+import { UserDto } from "../../shared/dto/user.dto";
+import { UserRepository } from "../../user/repositories/user.repository";
+import { GetUser } from "../decorators/get-user.decorator";
+import { AuthGuard } from "../guards/auth.guard";
 
+@ApiBearerAuth()
 @ApiTags("authentication")
 @Controller("auth")
 export class AuthController {
-	constructor(private authService: AuthService) {}
+	constructor(@InjectRepository(UserRepository) private userRepository: UserRepository) {}
 
-	@Post("register")
+	@Get("whoAmI")
 	@ApiOperation({
-		operationId: "register",
-		summary: "Register user.",
-		description: "Creates a new account."
+		operationId: "whoAmI",
+		summary: "Get user.",
+		description: "Returns the authenticated user."
 	})
-	register(@Body(ValidationPipe) authCredentials: AuthCredentialsDto): Promise<void> {
-		return this.authService.register(authCredentials);
-	}
-
-	/** Logs the user in to the StudentMgmt-Backend directly. */
-	@Post("login")
-	@ApiOperation({
-		operationId: "login",
-		summary: "Login.",
-		description: "Logs the user in to the StudentMgmt-Backend directly."
-	})
-	@HttpCode(200)
-	login(@Body(ValidationPipe) authCredentials: AuthCredentialsDto): Promise<AuthTokenDto> {
-		return this.authService.login(authCredentials);
-	}
-
-	/** Logs the user in to the StudentMgmt-Backend via the credentials provided by the external authentication system. */
-	@Post("loginWithToken")
-	@ApiOperation({
-		operationId: "loginWithToken",
-		summary: "Login with token.",
-		description:
-			"Logs the user in to the StudentMgmt-Backend via the credentials provided by the external authentication system."
-	})
-	@HttpCode(200)
-	loginWithToken(
-		@Body(ValidationPipe) credentials: AuthSystemCredentials
-	): Promise<AuthTokenDto> {
-		return this.authService.loginWithToken(credentials);
+	@UseGuards(AuthGuard)
+	async whoAmI(@GetUser() user: UserDto): Promise<UserDto> {
+		const _user = await this.userRepository.getUserById(user.id);
+		return DtoFactory.createUserDto(_user);
 	}
 }

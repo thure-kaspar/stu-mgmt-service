@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, Query, Req, UseGuards } from "@nestjs/common";
-import { AuthGuard } from "@nestjs/passport";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
+import { AuthGuard } from "../auth/guards/auth.guard";
 import { CourseMemberGuard } from "../course/guards/course-member.guard";
 import { TeachingStaffGuard } from "../course/guards/teaching-staff.guard";
 import { IdentityGuard } from "../user/guards/identity.guard";
@@ -13,7 +13,7 @@ import { SubmissionService } from "./submission.service";
 @ApiBearerAuth()
 @ApiTags("submission")
 @Controller("courses/:courseId/submissions")
-@UseGuards(AuthGuard(), CourseMemberGuard)
+@UseGuards(AuthGuard, CourseMemberGuard)
 export class SubmissionController {
 	constructor(private readonly service: SubmissionService) {}
 

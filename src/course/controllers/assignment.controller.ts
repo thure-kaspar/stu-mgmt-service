@@ -1,5 +1,4 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from "@nestjs/common";
-import { AuthGuard } from "@nestjs/passport";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { throwIfRequestFailed } from "../../utils/http-utils";
 import { AssignmentDto, AssignmentUpdateDto } from "../dto/assignment/assignment.dto";
@@ -14,10 +13,11 @@ import { AssignmentId } from "../entities/assignment.entity";
 import { TeachingStaffGuard } from "../guards/teaching-staff.guard";
 import { Participant } from "../models/participant.model";
 import { AssignmentState } from "../../shared/enums";
+import { AuthGuard } from "../../auth/guards/auth.guard";
 
 @ApiBearerAuth()
 @ApiTags("assignments")
-@UseGuards(AuthGuard(), CourseMemberGuard)
+@UseGuards(AuthGuard, CourseMemberGuard)
 @Controller("courses/:courseId/assignments")
 export class AssignmentController {
 	constructor(private assignmentService: AssignmentService) {}

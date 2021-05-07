@@ -1,6 +1,6 @@
 import { Controller, Get, Param, UseGuards } from "@nestjs/common";
-import { AuthGuard } from "@nestjs/passport";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { AuthGuard } from "../auth/guards/auth.guard";
 import { CourseId } from "../course/entities/course.entity";
 import { CourseMemberGuard } from "../course/guards/course-member.guard";
 import { ParticipantIdentityGuard } from "../course/guards/identity.guard";
@@ -12,7 +12,7 @@ import { PointsOverviewDto } from "./dto/points-overview.dto";
 
 @ApiBearerAuth()
 @ApiTags("admission-status")
-@UseGuards(AuthGuard(), CourseMemberGuard)
+@UseGuards(AuthGuard, CourseMemberGuard)
 @Controller("courses/:courseId/admission-status")
 export class AdmissionStatusController {
 	constructor(private admissionStatus: AdmissionStatusService) {}

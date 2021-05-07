@@ -4,7 +4,6 @@ import { AppModule } from "../../src/app.module";
 import { NodemailerService } from "../../src/mailing/services/nodemailer.service";
 import { DisabledMailing } from "./mailing.mock";
 import { EntityNotFoundFilter } from "../../src/shared/entity-not-found.filter";
-import { AuthGuard } from "@nestjs/passport";
 import {
 	AuthGuardMock,
 	CourseMemberGuardMock_LECTURER,
@@ -12,6 +11,7 @@ import {
 } from "./guards.mock";
 import { CourseMemberGuard } from "../../src/course/guards/course-member.guard";
 import { EntityAlreadyExistsFilter } from "../../src/shared/entity-already-exists.filter";
+import { AuthGuard } from "../../src/auth/guards/auth.guard";
 
 async function initDefaultApplication(moduleFixture: TestingModule): Promise<INestApplication> {
 	const app = moduleFixture.createNestApplication();
@@ -31,7 +31,7 @@ export async function createApplication(): Promise<INestApplication> {
 	const moduleFixture: TestingModule = await Test.createTestingModule({
 		imports: [AppModule]
 	})
-		.overrideGuard(AuthGuard())
+		.overrideGuard(AuthGuard)
 		.useValue(new AuthGuardMock())
 		.overrideGuard(CourseMemberGuard)
 		.useClass(CourseMemberGuardMock_LECTURER)
@@ -50,7 +50,7 @@ export async function createApplication_STUDENT(): Promise<INestApplication> {
 	const moduleFixture: TestingModule = await Test.createTestingModule({
 		imports: [AppModule]
 	})
-		.overrideGuard(AuthGuard())
+		.overrideGuard(AuthGuard)
 		.useValue(new AuthGuardMock())
 		.overrideGuard(CourseMemberGuard)
 		.useClass(CourseMemberGuardMock_STUDENT)

@@ -1,5 +1,4 @@
 import { Controller, Get, Header, Param, Res, UseGuards } from "@nestjs/common";
-import { AuthGuard } from "@nestjs/passport";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { Response } from "express";
 import { AdmissionStatusService } from "../../admission-status/admission-status.service";
@@ -14,11 +13,12 @@ import { CourseConfigService } from "../../course/services/course-config.service
 import { CourseParticipantsService } from "../../course/services/course-participants.service";
 import { GroupService } from "../../course/services/group.service";
 import { CsvConverterService } from "../services/csv-converter.service";
+import { AuthGuard } from "../../auth/guards/auth.guard";
 
 @ApiBearerAuth()
 @ApiTags("csv")
 @Controller("csv")
-@UseGuards(AuthGuard())
+@UseGuards(AuthGuard)
 export class CsvController {
 	private readonly separator = "\t";
 

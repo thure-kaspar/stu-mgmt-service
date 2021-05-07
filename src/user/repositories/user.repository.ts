@@ -69,7 +69,8 @@ export class UserRepository extends Repository<User> {
 
 	async tryGetUserByUsername(username: string): Promise<User> {
 		return this.findOne({
-			where: { username }
+			where: { username },
+			relations: ["participations", "participations.course"]
 		});
 	}
 

@@ -10,10 +10,10 @@ import {
 	Req,
 	UseGuards
 } from "@nestjs/common";
-import { AuthGuard } from "@nestjs/passport";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 import { Roles } from "../../auth/decorators/roles.decorator";
+import { AuthGuard } from "../../auth/guards/auth.guard";
 import { RoleGuard } from "../../auth/guards/role.guard";
 import { CourseRole, UserRole } from "../../shared/enums";
 import { PaginatedResult, throwIfRequestFailed } from "../../utils/http-utils";
@@ -46,7 +46,7 @@ export class CourseController {
 		description: "Creates a new course."
 	})
 	@Post()
-	@UseGuards(AuthGuard(), RoleGuard)
+	@UseGuards(AuthGuard, RoleGuard)
 	@Roles(UserRole.MGMT_ADMIN, UserRole.SYSTEM_ADMIN)
 	createCourse(@Body() courseDto: CourseCreateDto): Promise<CourseDto> {
 		return this.courseService.createCourse(courseDto);
@@ -74,7 +74,7 @@ export class CourseController {
 		description: "Retrieves the course, if the requesting user is a member of this course."
 	})
 	@Get(":courseId")
-	@UseGuards(AuthGuard(), CourseMemberGuard)
+	@UseGuards(AuthGuard, CourseMemberGuard)
 	getCourseById(@Param("courseId") courseId: CourseId): Promise<CourseDto> {
 		return this.courseService.getCourseById(courseId);
 	}
@@ -85,7 +85,7 @@ export class CourseController {
 		description: "Retrieves the course and information that is required by its /about page."
 	})
 	@Get(":courseId/about")
-	@UseGuards(AuthGuard(), CourseMemberGuard)
+	@UseGuards(AuthGuard, CourseMemberGuard)
 	async getCourseAbout(@Param("courseId") courseId: CourseId): Promise<CourseAboutDto> {
 		const [[participants, count], course] = await Promise.all([
 			this.participantsService.getParticipants(courseId),
@@ -115,7 +115,7 @@ export class CourseController {
 		description: ""
 	})
 	@Get(":name/semester/:semester")
-	@UseGuards(AuthGuard(), CourseMemberGuard)
+	@UseGuards(AuthGuard, CourseMemberGuard)
 	getCourseByNameAndSemester(
 		@Param("name") name: string,
 		@Param("semester") semester: string
@@ -132,7 +132,7 @@ export class CourseController {
 		description: "Updates the course."
 	})
 	@Patch(":courseId")
-	@UseGuards(AuthGuard(), CourseMemberGuard, TeachingStaffGuard)
+	@UseGuards(AuthGuard, CourseMemberGuard, TeachingStaffGuard)
 	updateCourse(
 		@Param("courseId") courseId: CourseId,
 		@Body() courseDto: CourseDto
@@ -149,7 +149,7 @@ export class CourseController {
 		description: "Deletes the course."
 	})
 	@Delete(":courseId")
-	@UseGuards(AuthGuard(), CourseMemberGuard, TeachingStaffGuard)
+	@UseGuards(AuthGuard, CourseMemberGuard, TeachingStaffGuard)
 	deleteCourse(@Param("courseId") courseId: CourseId): Promise<void> {
 		return throwIfRequestFailed(
 			this.courseService.deleteCourse(courseId),

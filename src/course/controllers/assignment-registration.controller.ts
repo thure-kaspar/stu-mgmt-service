@@ -1,5 +1,4 @@
 import { Controller, Delete, Get, Param, Post, Req, UseGuards, Query } from "@nestjs/common";
-import { AuthGuard } from "@nestjs/passport";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 import { UserId } from "../../shared/entities/user.entity";
@@ -16,10 +15,11 @@ import { Participant } from "../models/participant.model";
 import { AssignmentRegistrationService } from "../services/assignment-registration.service";
 import { AssignmentRegistrationFilter } from "../dto/assignment/assignment-registration.filter";
 import { SelectedParticipantGuard } from "../guards/selected-participant.guard";
+import { AuthGuard } from "../../auth/guards/auth.guard";
 
 @ApiBearerAuth()
 @ApiTags("assignment-registration")
-@UseGuards(AuthGuard(), CourseMemberGuard)
+@UseGuards(AuthGuard, CourseMemberGuard)
 @Controller("courses/:courseId/assignments/:assignmentId/registrations")
 export class AssignmentRegistrationController {
 	constructor(private registrations: AssignmentRegistrationService) {}

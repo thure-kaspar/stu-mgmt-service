@@ -10,12 +10,12 @@ import {
 	Req,
 	UseGuards
 } from "@nestjs/common";
-import { AuthGuard } from "@nestjs/passport";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 import { CourseDto } from "src/course/dto/course/course.dto";
 import { AssessmentDto } from "../../assessment/dto/assessment.dto";
 import { Roles } from "../../auth/decorators/roles.decorator";
+import { AuthGuard } from "../../auth/guards/auth.guard";
 import { RoleGuard } from "../../auth/guards/role.guard";
 import { GetParticipant } from "../../course/decorators/decorators";
 import { GroupEventDto } from "../../course/dto/group/group-event.dto";
@@ -37,7 +37,7 @@ import { UserService } from "../services/user.service";
 @ApiBearerAuth()
 @ApiTags("users")
 @Controller("users")
-@UseGuards(AuthGuard(), RoleGuard)
+@UseGuards(AuthGuard, RoleGuard)
 export class UserController {
 	constructor(private userService: UserService) {}
 

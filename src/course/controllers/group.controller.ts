@@ -11,7 +11,6 @@ import {
 	UseGuards
 } from "@nestjs/common";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
-import { AuthGuard } from "@nestjs/passport";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 import { setTotalCountHeader } from "../../../test/utils/http-utils";
@@ -47,10 +46,11 @@ import { GroupMemberGuard } from "../guards/group-member.guard";
 import { TeachingStaffGuard } from "../guards/teaching-staff.guard";
 import { JoinRandomGroupCommand } from "../commands/join-random-group.handler";
 import { AssessmentDto } from "../../assessment/dto/assessment.dto";
+import { AuthGuard } from "../../auth/guards/auth.guard";
 
 @ApiBearerAuth()
 @ApiTags("groups")
-@UseGuards(AuthGuard(), CourseMemberGuard)
+@UseGuards(AuthGuard, CourseMemberGuard)
 @Controller("courses/:courseId/groups")
 export class GroupController {
 	constructor(

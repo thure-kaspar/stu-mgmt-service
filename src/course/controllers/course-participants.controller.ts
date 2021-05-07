@@ -13,7 +13,6 @@ import {
 	ValidationPipe
 } from "@nestjs/common";
 import { QueryBus } from "@nestjs/cqrs";
-import { AuthGuard } from "@nestjs/passport";
 import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 import { setTotalCountHeader } from "../../../test/utils/http-utils";
@@ -37,11 +36,12 @@ import { GetParticipant } from "../decorators/decorators";
 import { Participant } from "../models/participant.model";
 import { ParticipantsWithAssignedEvaluatorDto } from "../../assessment/queries/participants-with-assigned-evaluator/participants-with-assigned-evaluator.dto";
 import { ParticipantsWithAssignedEvaluatorQuery } from "../../assessment/queries/participants-with-assigned-evaluator/participants-with-assigned-evaluator.query";
+import { AuthGuard } from "../../auth/guards/auth.guard";
 
 @ApiBearerAuth()
 @ApiTags("course-participants")
 @Controller("courses/:courseId/users")
-@UseGuards(AuthGuard())
+@UseGuards(AuthGuard)
 export class CourseParticipantsController {
 	constructor(
 		private courseParticipantsService: CourseParticipantsService,

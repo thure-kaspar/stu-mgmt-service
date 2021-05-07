@@ -20,8 +20,6 @@ export class AuthSystemService {
 			// Return AuthInfo, if user is authenticated
 			return response.data;
 		} catch (error) {
-			console.log("Login failed:", error);
-
 			// Return null, if authentication failed
 			return null;
 		}

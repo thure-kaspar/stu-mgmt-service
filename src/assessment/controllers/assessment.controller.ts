@@ -11,10 +11,10 @@ import {
 	Req,
 	UseGuards
 } from "@nestjs/common";
-import { AuthGuard } from "@nestjs/passport";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 import { GetUser } from "../../auth/decorators/get-user.decorator";
+import { AuthGuard } from "../../auth/guards/auth.guard";
 import { GetAssignment, GetParticipant } from "../../course/decorators/decorators";
 import { CourseId } from "../../course/entities/course.entity";
 import { AssignmentGuard } from "../../course/guards/assignment.guard";
@@ -33,7 +33,7 @@ import { AssessmentService } from "../services/assessment.service";
 @ApiBearerAuth()
 @ApiTags("assessments")
 @Controller("courses/:courseId/assignments/:assignmentId/assessments")
-@UseGuards(AuthGuard(), CourseMemberGuard)
+@UseGuards(AuthGuard, CourseMemberGuard)
 export class AssessmentController {
 	constructor(private assessmentService: AssessmentService) {}
 

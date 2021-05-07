@@ -10,8 +10,8 @@ import {
 	Put,
 	UseGuards
 } from "@nestjs/common";
-import { AuthGuard } from "@nestjs/passport";
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { AuthGuard } from "../../auth/guards/auth.guard";
 import { AdmissionCriteriaDto } from "../dto/course-config/admission-criteria.dto";
 import { AssignmentTemplateDto } from "../dto/course-config/assignment-template.dto";
 import { CourseConfigDto, CourseConfigUpdateDto } from "../dto/course-config/course-config.dto";
@@ -25,7 +25,7 @@ import { CourseConfigService } from "../services/course-config.service";
 @ApiBearerAuth()
 @ApiTags("course-config")
 @Controller("courses/:courseId/config")
-@UseGuards(AuthGuard(), CourseMemberGuard)
+@UseGuards(AuthGuard, CourseMemberGuard)
 export class CourseConfigController {
 	constructor(private configService: CourseConfigService) {}
 
