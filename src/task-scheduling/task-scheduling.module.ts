@@ -6,7 +6,7 @@ import { AssignmentSchedulerService } from "./assignment-scheduler.service";
 
 @Module({
 	imports: [AuthModule, CourseModule],
-	controllers: [TaskSchedulingController],
+	// controllers: [TaskSchedulingController],
 	providers: [AssignmentSchedulerService]
 })
 export class TaskSchedulingModule {}

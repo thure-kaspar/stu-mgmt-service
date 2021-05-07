@@ -1,10 +1,10 @@
 import { Controller, UseGuards, Get, Post } from "@nestjs/common";
 import { ApiBearerAuth, ApiTags, ApiOperation } from "@nestjs/swagger";
-import { AuthGuard } from "@nestjs/passport";
 import { SchedulerRegistry } from "@nestjs/schedule";
 import { AssignmentSchedulerService } from "./assignment-scheduler.service";
 import { Roles } from "../auth/decorators/roles.decorator";
 import { UserRole } from "../shared/enums";
+import { AuthGuard } from "../auth/guards/auth.guard";
 
 class JobInfoDto {
 	jobName: string;
@@ -15,7 +15,7 @@ class JobInfoDto {
 @ApiBearerAuth()
 @ApiTags("task-scheduler")
 @Controller("task-scheduler")
-@UseGuards(AuthGuard())
+@UseGuards(AuthGuard)
 @Roles(UserRole.SYSTEM_ADMIN)
 export class TaskSchedulingController {
 	constructor(
