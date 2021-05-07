@@ -20,5 +20,5 @@ logger:
         - warn
         - debug
         - verbose
-    requests: true
+    requests: false
     dbErrors: true
