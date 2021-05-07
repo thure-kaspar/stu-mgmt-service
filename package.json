@@ -7,7 +7,6 @@
 	"scripts": {
 		"prebuild": "rimraf dist",
 		"build": "nest build",
-		"format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
 		"start": "nest start",
 		"start:dev": "env NODE_ENV=development nest start --watch",
 		"start:demo": "env NODE_ENV=demo nest start --watch",
@@ -23,15 +22,12 @@
 		"test:cov": "env NODE_ENV=testing jest --coverage --config ./test/jest-unit.json",
 		"test:debug": "env NODE_ENV=testing node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand --config ./test/jest-unit.json",
 		"test:e2e": "env NODE_ENV=testing jest --runInBand --config ./test/jest-e2e.json",
-		"test:e2ecov": "env NODE_ENV=testing jest --runInBand --config ./test/jest-e2e.json --coverage",
-		"script:demodb": "env NODE_ENV=testing jest --runInBand --config ./scripts/jest-e2e.json"
+		"test:e2ecov": "env NODE_ENV=testing jest --runInBand --config ./test/jest-e2e.json --coverage"
 	},
 	"dependencies": {
 		"@nestjs/common": "^7.6.13",
 		"@nestjs/core": "^7.6.13",
 		"@nestjs/cqrs": "^7.0.1",
-		"@nestjs/jwt": "^7.2.0",
-		"@nestjs/passport": "^7.1.5",
 		"@nestjs/platform-express": "^7.6.13",
 		"@nestjs/schedule": "^0.4.2",
 		"@nestjs/swagger": "^4.7.15",
@@ -43,9 +39,8 @@
 		"exceljs": "^4.2.1",
 		"flat": "^5.0.2",
 		"json2csv": "^5.0.6",
+		"node-cache": "^5.1.2",
 		"nodemailer": "^6.5.0",
-		"passport": "^0.4.1",
-		"passport-jwt": "^4.0.0",
 		"pg": "^8.5.1",
 		"reflect-metadata": "^0.1.13",
 		"rimraf": "^3.0.2",
@@ -55,7 +50,6 @@
 		"unique-names-generator": "^4.4.0"
 	},
 	"devDependencies": {
-		"@compodoc/compodoc": "^1.1.11",
 		"@nestjs/cli": "^7.5.6",
 		"@nestjs/schematics": "^7.2.8",
 		"@nestjs/testing": "^7.6.13",
