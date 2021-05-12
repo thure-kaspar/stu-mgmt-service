@@ -1,94 +1,171 @@
-import { Test, TestingModule } from "@nestjs/testing";
+import { AuthInfo } from "../../../src/auth/dto/auth-info.dto";
 import { AuthService } from "../../../src/auth/services/auth.service";
-import { AuthSystemService } from "../../../src/auth/services/auth-system.service";
-import { JwtService } from "@nestjs/jwt";
-import { AuthCredentialsDto } from "../../../src/auth/dto/auth-credentials.dto";
-import { AuthTokenDto } from "../../../src/auth/dto/auth-token.dto";
+import { UserDto, UserUpdateDto } from "../../../src/shared/dto/user.dto";
+import { User } from "../../../src/shared/entities/user.entity";
 import { UserRole } from "../../../src/shared/enums";
-import { UserDto } from "../../../src/shared/dto/user.dto";
-import { USER_STUDENT_JAVA } from "../../mocks/users.mock";
 import { UserRepository } from "../../../src/user/repositories/user.repository";
+import { USER_STUDENT_JAVA } from "../../mocks/users.mock";
+import { convertToEntity, copy } from "../../utils/object-helper";
 
-const user = USER_STUDENT_JAVA;
-
-const mock_authSystemService = () => ({
-	login: jest.fn().mockResolvedValue(true),
-	getUser: jest.fn().mockResolvedValue(user)
+const mock_UserRepository = (): Partial<UserRepository> => ({
+	updateUser: jest.fn(),
+	createUser: jest.fn()
 });
 
-const mock_JwtService = () => ({
-	signAsync: jest.fn().mockResolvedValue("xxx.yyy.zzz")
-});
-
-const mock_UserRepository = () => ({
-	getUserByUsername: jest.fn(),
-	getUserbyEmail: jest.fn()
-});
+function createAuthInfo(data: {
+	email: string;
+	displayName: string;
+	username: string;
+	role: "DEFAULT" | "ADMIN" | "SERVICE";
+}): AuthInfo {
+	return {
+		token: null,
+		user: {
+			passwordDto: null,
+			realm: null,
+			settings: {
+				emailAddress: data.email,
+				emailReceive: true,
+				wantsAi: true
+			},
+			role: data.role,
+			fullName: data.displayName,
+			username: data.username
+		}
+	};
+}
 
 describe("AuthService", () => {
 	let service: AuthService;
-	let authSystemService: AuthSystemService;
-	let jwtService: JwtService;
-	let authCredentials: AuthCredentialsDto;
+	let userRepository: UserRepository;
+	let userDto: UserDto;
 
 	beforeEach(async () => {
-		const module: TestingModule = await Test.createTestingModule({
-			providers: [
-				AuthService,
-				{ provide: AuthSystemService, useFactory: mock_authSystemService },
-				{ provide: JwtService, useFactory: mock_JwtService },
-				{ provide: UserRepository, useFactory: mock_UserRepository }
-			]
-		}).compile();
-
-		service = module.get<AuthService>(AuthService);
-		authSystemService = module.get<AuthSystemService>(AuthSystemService);
-		jwtService = module.get<JwtService>(JwtService);
-		authCredentials = { email: "user.one@test.com", password: "testpassword" };
+		userRepository = mock_UserRepository() as UserRepository;
+		service = new AuthService(userRepository);
+		userDto = copy(USER_STUDENT_JAVA);
 	});
 
 	it("should be defined", () => {
 		expect(service).toBeDefined();
 	});
 
-	// describe("login", () => {
+	describe("createUser", () => {
+		let authInfo: AuthInfo;
+		let user: User;
+		let expectedUserDto: UserDto;
 
-	// 	it("Valid credentials -> Returns AuthToken", async () => {
-	// 		const expected: AuthTokenDto = {
-	// 			accessToken: "xxx.yyy.zzz",
-	// 			email: user.email,
-	// 			userId: user.id,
-	// 			role: user.role,
-	// 		};
-	// 		const result = await service.login(authCredentials);
-	// 		expect(result).toEqual(expected);
-	// 	});
+		beforeEach(() => {
+			user = convertToEntity(User, userDto);
+			authInfo = createAuthInfo({
+				displayName: user.displayName,
+				email: user.email,
+				username: user.username,
+				role: "DEFAULT"
+			});
+			expectedUserDto = {
+				id: undefined,
+				username: authInfo.user.username,
+				displayName: authInfo.user.fullName,
+				email: authInfo.user.settings.emailAddress,
+				role: UserRole.USER
+			};
+		});
 
-	// 	it("Invalid credentials -> Throw Exception", async () => {
-	// 		authSystemService.login = jest.fn().mockResolvedValue(false);
-	// 		try {
-	// 			await service.login(authCredentials);
-	// 			expect(true).toEqual(false);
-	// 		} catch(error) {
-	// 			expect(error).toBeTruthy();
-	// 			expect(error.status).toEqual(401);
-	// 		}
-	// 	});
+		it("FullName included -> Creates with FullName as DisplayName", async () => {
+			await service.createUser(authInfo);
+			expect(userRepository.createUser).toHaveBeenCalledWith<[UserDto]>(expectedUserDto);
+		});
 
-	// 	it("Calls AuthSystemService for login", async () => {
-	// 		await service.login(authCredentials);
-	// 		expect(authSystemService.login).toHaveBeenCalledWith(authCredentials);
-	// 	});
+		it("FullName not included -> Uses Username as DisplayName", async () => {
+			authInfo.user.fullName = null;
+			expectedUserDto.displayName = authInfo.user.username;
 
-	// 	it("Calls AuthSystemService to load the user", async () => {
-	// 		await service.login(authCredentials);
-	// 		expect(authSystemService.getUser).toHaveBeenCalledWith(authCredentials.email);
-	// 	});
+			await service.createUser(authInfo);
+			expect(userRepository.createUser).toHaveBeenCalledWith<[UserDto]>(expectedUserDto);
+		});
+	});
 
-	// 	it("Calls JwtService to generate JWT", async () => {
-	// 		await service.login(authCredentials);
-	// 		expect(jwtService.signAsync).toHaveBeenCalled();
-	// 	});
+	describe("updateUser", () => {
+		let authInfo: AuthInfo;
+		let user: User;
+		let expectedUserUpdateDto: UserUpdateDto;
 
-	// });
+		beforeEach(() => {
+			user = convertToEntity(User, userDto);
+			authInfo = createAuthInfo({
+				email: "changed." + user.email,
+				displayName: "Changed " + user.displayName,
+				username: user.username,
+				role: "DEFAULT"
+			});
+			expectedUserUpdateDto = {
+				...user,
+				role: user.role,
+				matrNr: user.matrNr,
+				displayName: authInfo.user.fullName,
+				email: authInfo.user.settings.emailAddress
+			};
+		});
+
+		it("Updates email", async () => {
+			await service.updateUser(user, authInfo);
+			expect(userRepository.updateUser).toHaveBeenCalledWith<[string, UserUpdateDto]>(
+				user.id,
+				expectedUserUpdateDto
+			);
+		});
+
+		it("FullName included -> Updates DisplayName", async () => {
+			await service.updateUser(user, authInfo);
+			expect(userRepository.updateUser).toHaveBeenCalledWith<[string, UserUpdateDto]>(
+				user.id,
+				expectedUserUpdateDto
+			);
+		});
+
+		it("FullName not included -> Sets Username as DisplayName", async () => {
+			authInfo.user.fullName = null;
+			expectedUserUpdateDto.displayName = authInfo.user.username;
+
+			await service.updateUser(user, authInfo);
+
+			expect(userRepository.updateUser).toHaveBeenCalledWith<[string, UserUpdateDto]>(
+				user.id,
+				expectedUserUpdateDto
+			);
+		});
+	});
+
+	describe("userInfoHasChanged", () => {
+		let authInfo: AuthInfo;
+		let user: User;
+
+		beforeEach(() => {
+			user = convertToEntity(User, userDto);
+			authInfo = createAuthInfo({
+				email: user.email,
+				displayName: user.displayName,
+				username: user.username,
+				role: "DEFAULT"
+			});
+		});
+
+		it("No changes -> Returns false", () => {
+			const result = service.userInfoHasChanged(user, authInfo);
+			expect(result).toEqual(false);
+		});
+
+		it("Email changed -> Returns true", () => {
+			authInfo.user.settings.emailAddress = "a.changed@email";
+			const result = service.userInfoHasChanged(user, authInfo);
+			expect(result).toEqual(true);
+		});
+
+		it("FullName changed -> Returns true", () => {
+			authInfo.user.fullName = "Changed FullName";
+			const result = service.userInfoHasChanged(user, authInfo);
+			expect(result).toEqual(true);
+		});
+	});
 });
