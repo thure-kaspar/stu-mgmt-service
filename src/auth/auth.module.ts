@@ -19,12 +19,13 @@ import { AuthStrategy } from "./guards/auth.strategy";
 		AuthSystemService,
 		CacheService,
 		RoleGuard,
+		SparkyAuthStrategy,
 		{
 			provide: AuthStrategy,
 			useClass: (() =>
-				process.env.NODE_ENV !== "development"
-					? SparkyAuthStrategy
-					: TestUserAuthStrategy)()
+				process.env.NODE_ENV === "development" || process.env.NODE_ENV === "demo"
+					? TestUserAuthStrategy
+					: SparkyAuthStrategy)()
 		},
 		AuthGuard
 	],
