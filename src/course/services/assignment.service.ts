@@ -3,15 +3,16 @@ import { EventBus } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DtoFactory } from "../../shared/dto-factory";
 import { AssignmentDto, AssignmentUpdateDto } from "../dto/assignment/assignment.dto";
+import { AssignmentId } from "../entities/assignment.entity";
 import { CourseId } from "../entities/course.entity";
+import { AssignmentCreated } from "../events/assignment/assignment-created.event";
+import { AssignmentRemoved } from "../events/assignment/assignment-removed.event";
 import { AssignmentStateChanged } from "../events/assignment/assignment-state-changed.event";
+import { AssignmentUpdated } from "../events/assignment/assignment-updated.event";
 import { Assignment } from "../models/assignment.model";
 import { Course } from "../models/course.model";
 import { AssignmentRepository } from "../repositories/assignment.repository";
 import { AssignmentRegistrationService } from "./assignment-registration.service";
-import { AssignmentCreated } from "../events/assignment/assignment-created.event";
-import { AssignmentRemoved } from "../events/assignment/assignment-removed.event";
-import { AssignmentId } from "../entities/assignment.entity";
 
 @Injectable()
 export class AssignmentService {
@@ -68,6 +69,8 @@ export class AssignmentService {
 				await this.registrations.registerGroupsForAssignment(course, assignment.id);
 			}
 		}
+
+		this.events.publish(new AssignmentUpdated(course.id, assignment.id));
 
 		if (assignment.hasChangedState(oldState)) {
 			this.events.publish(new AssignmentStateChanged(assignment));

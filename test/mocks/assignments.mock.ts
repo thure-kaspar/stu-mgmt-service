@@ -145,6 +145,28 @@ export const ASSIGNMENT_INVISIBLE_WILL_BE_STARTED: AssignmentDto = {
 	collaboration: CollaborationType.GROUP_OR_SINGLE
 };
 
+export const ASSIGNMENT_INVISIBLE_NEXT_TO_START: AssignmentDto = {
+	id: "cb46a4d6-4741-4778-a4c1-87007582c016",
+	name: "ASSIGNMENT_INVISIBLE_NEXT_TO_START",
+	points: 0,
+	type: AssignmentType.HOMEWORK,
+	state: AssignmentState.INVISIBLE,
+	startDate: createDateWithOffset(new Date(), 1),
+	endDate: createDateWithOffset(new Date(), 2),
+	collaboration: CollaborationType.GROUP_OR_SINGLE
+};
+
+export const ASSIGNMENT_INVISIBLE_SECOND_TO_START: AssignmentDto = {
+	id: "bbb63fed-5dc6-400d-ac1f-a99708cd1700",
+	name: "ASSIGNMENT_INVISIBLE_SECOND_TO_START",
+	points: 0,
+	type: AssignmentType.HOMEWORK,
+	state: AssignmentState.INVISIBLE,
+	startDate: createDateWithOffset(new Date(), 2),
+	endDate: createDateWithOffset(new Date(), 3),
+	collaboration: CollaborationType.SINGLE
+};
+
 export const ASSIGNMENT_IN_PROGRESS_WILL_BE_STOPPED: AssignmentDto = {
 	id: "d0b208a1-7374-4c8b-a01e-f685324a73c7",
 	name: "ASSIGNMENT_JAVA_IN_PROGRESS_WILL_BE_STOPPED",
@@ -176,7 +198,9 @@ export const ASSIGNMENTS_JAVA_2020: AssignmentDto[] = [
 
 export const ASSIGNMENTS_INFO_2020: AssignmentDto[] = [
 	ASSIGNMENT_INVISIBLE_WILL_BE_STARTED,
-	ASSIGNMENT_IN_PROGRESS_WILL_BE_STOPPED
+	ASSIGNMENT_IN_PROGRESS_WILL_BE_STOPPED,
+	ASSIGNMENT_INVISIBLE_NEXT_TO_START,
+	ASSIGNMENT_INVISIBLE_SECOND_TO_START
 ];
 
 export const ASSIGNMENTS_ALL: { assignments: AssignmentDto[]; courseId: CourseId }[] = [
@@ -184,3 +208,7 @@ export const ASSIGNMENTS_ALL: { assignments: AssignmentDto[]; courseId: CourseId
 	{ assignments: ASSIGNMENTS_JAVA_2020, courseId: COURSE_JAVA_2020.id },
 	{ assignments: ASSIGNMENTS_INFO_2020, courseId: COURSE_INFO_2_2020.id }
 ];
+
+function createDateWithOffset(today: Date, dayOffset: number): Date {
+	return new Date(today.getTime() + 1000 * 60 * 60 * 24 * (dayOffset || 1));
+}
