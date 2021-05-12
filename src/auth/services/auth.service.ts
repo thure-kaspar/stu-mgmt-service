@@ -27,7 +27,7 @@ export class AuthService {
 	userInfoHasChanged(user: User, authInfo: AuthInfo): boolean {
 		return (
 			user.email !== authInfo.user.settings.emailAddress ||
-			(user.displayName !== authInfo.user.fullName && authInfo.user.fullName?.length > 0)
+			user.displayName !== authInfo.user.fullName
 		);
 	}
 
