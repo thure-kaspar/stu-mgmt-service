@@ -18,7 +18,6 @@ export class TestUserAuthStrategy extends AuthStrategy {
 		@InjectRepository(UserRepository) private userRepository: UserRepository
 	) {
 		super();
-		console.log("AuthGuard: Using TestUserAuthGuard");
 	}
 
 	async canActivate(context: ExecutionContext): Promise<boolean> {

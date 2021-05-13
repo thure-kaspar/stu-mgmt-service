@@ -19,7 +19,6 @@ export class SparkyAuthStrategy extends AuthStrategy {
 		@InjectRepository(UserRepository) private userRepository: UserRepository
 	) {
 		super();
-		console.log("AuthGuard: Using Sparkyservice");
 	}
 
 	async canActivate(context: ExecutionContext): Promise<boolean> {
