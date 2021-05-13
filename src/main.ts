@@ -2,9 +2,9 @@ import { Logger, ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { NestExpressApplication } from "@nestjs/platform-express";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
-import * as config from "config";
 import { getConnection } from "typeorm";
 import { DbMockService } from "../test/mocks/db-mock.service";
+import { Config } from "./.config/config";
 import {
 	IndividualPercentWithAllowedFailuresRuleDto,
 	OverallPercentRuleDto
@@ -20,8 +20,8 @@ import { RoundingBehavior } from "./utils/math";
 
 async function bootstrap(): Promise<void> {
 	const logger = new Logger("Bootstrap");
-	const logLevels = config.get("logger.levels");
-	const port = process.env.SERVER_PORT || config.get("server").port;
+	const logLevels = Config.getLogger().levels;
+	const port = process.env.SERVER_PORT || Config.getServer().port;
 	console.log(`Environment: ${process.env.NODE_ENV}`);
 	console.log("Log levels:", logLevels);
 
@@ -44,8 +44,8 @@ async function bootstrap(): Promise<void> {
 	}
 
 	// If notification subscribers were specified
-	const notificationConfig = config.get("notifications");
-	if (notificationConfig?.subscribers?.length > 0) {
+	const notificationConfig = Config.getNotifications();
+	if (notificationConfig.subscribers?.length > 0) {
 		await registerSubscribers(notificationConfig.subscribers);
 	}
 
@@ -63,6 +63,7 @@ function setupSwaggerDocument(app: NestExpressApplication) {
 			"The Student-Management-Sytem-API. <a href='http://localhost:3000/api-json'>JSON</a>"
 		) // TODO: Replace hard-coded link
 		.setVersion("1.0")
+		.addTag("mail")
 		.addTag("authentication")
 		.addTag("courses")
 		.addTag("course-participants")

@@ -1,13 +1,11 @@
 import { HttpService, Injectable } from "@nestjs/common";
-import * as config from "config";
+import { Config } from "../../.config/config";
 import { AuthSystemCredentials } from "../dto/auth-credentials.dto";
 import { AuthInfo } from "../dto/auth-info.dto";
 
-const authSystemConfig = config.get("authSystem");
-
 @Injectable()
 export class AuthSystemService {
-	private readonly authSystemUrl = authSystemConfig.url;
+	private readonly authSystemUrl = Config.getServer();
 
 	constructor(private http: HttpService) {}
 
