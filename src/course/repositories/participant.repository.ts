@@ -1,5 +1,5 @@
 import { ConflictException } from "@nestjs/common";
-import { EntityRepository, Repository, Brackets } from "typeorm";
+import { EntityRepository, Repository, Brackets, In } from "typeorm";
 import { Participant } from "../entities/participant.entity";
 import { CourseRole } from "../../shared/enums";
 import { CourseId } from "../entities/course.entity";
@@ -125,6 +125,22 @@ export class ParticipantRepository extends Repository<Participant> {
 		}
 
 		return query;
+	}
+
+	async getParticipantsWithUserSettings(
+		courseId: CourseId,
+		filter?: { userIds?: string[] }
+	): Promise<Participant[]> {
+		const where: any = { courseId };
+
+		if (filter?.userIds) {
+			where.userIds = In(filter.userIds);
+		}
+
+		return this.find({
+			where,
+			relations: ["user", "user.settings"]
+		});
 	}
 
 	/**

@@ -11,11 +11,15 @@ import { UserService } from "./services/user.service";
 import { IdentityGuard } from "./guards/identity.guard";
 import { CourseModule } from "../course/course.module";
 import { AssessmentRepository } from "../assessment/repositories/assessment.repository";
+import { UserSettingsController } from "./controllers/user-settings.controller";
+import { UserSettings } from "./entities/user-settings.entity";
+import { UserSettingsService } from "./services/user-settings.service";
 
 @Module({
 	imports: [
 		TypeOrmModule.forFeature([
 			UserRepository,
+			UserSettings,
 			GroupRepository,
 			GroupEventRepository,
 			AssignmentRepository,
@@ -25,7 +29,7 @@ import { AssessmentRepository } from "../assessment/repositories/assessment.repo
 		AuthModule,
 		CourseModule
 	],
-	controllers: [UserController],
-	providers: [UserService, IdentityGuard]
+	controllers: [UserController, UserSettingsController],
+	providers: [UserService, UserSettingsService, IdentityGuard]
 })
 export class UserModule {}

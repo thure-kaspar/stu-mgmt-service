@@ -20,6 +20,7 @@ import { Subscriber } from "../../src/notification/subscriber/subscriber.entity"
 import { User } from "../../src/shared/entities/user.entity";
 import { AssignmentState } from "../../src/shared/enums";
 import { Submission } from "../../src/submission/submission.entity";
+import { UserSettings } from "../../src/user/entities/user-settings.entity";
 import { convertToEntity, convertToEntityNoRelations } from "../utils/object-helper";
 import { ASSESSMENT_ALLOCATIONS_MOCK } from "./assessment-allocation.mock";
 import { AssessmentsMock } from "./assessments.mock";
@@ -43,6 +44,7 @@ import {
 import { AssessmentUserRelationsMock } from "./relations.mock";
 import { SUBMISSION_MOCK } from "./submissions.mock";
 import { SUBSCRIBER_MOCK } from "./subscribers.mock";
+import { USER_SETTINGS_MOCK } from "./user-settings.mock";
 import { UsersMock } from "./users.mock";
 
 export class DbMockService {
@@ -51,6 +53,7 @@ export class DbMockService {
 	groups = GROUPS_ALL;
 	groupEvents = getGroupEventEntities();
 	users = UsersMock;
+	userSettings = USER_SETTINGS_MOCK;
 	assignments = ASSIGNMENTS_ALL;
 	assessments = AssessmentsMock;
 	partialAssessments = PARTIAL_ASSESSMENT_MOCK;
@@ -78,6 +81,7 @@ export class DbMockService {
 		await this.createAdmissionCriteria();
 		await this.createGroupSettings();
 		await this.createUsers();
+		await this.createUserSettings();
 		await this.createGroups();
 		await this.createParticipants();
 		await this.createUserGroupRelations();
@@ -147,6 +151,21 @@ export class DbMockService {
 			.getRepository(User)
 			.insert(this.users)
 			.catch(error => console.error(error));
+	}
+
+	async createUserSettings(): Promise<void> {
+		const repo = this.con.getRepository(UserSettings);
+
+		const userSettings = this.userSettings.map(x => {
+			const entity = repo.create(x.userSettings);
+			entity.userId = x.userId;
+			return entity;
+		});
+
+		await this.con
+			.getRepository(UserSettings)
+			.insert(userSettings)
+			.catch(error => console.log(error));
 	}
 
 	async createGroups(): Promise<void> {

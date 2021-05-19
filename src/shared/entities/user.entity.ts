@@ -1,8 +1,9 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { AssessmentAllocation } from "../../assessment/entities/assessment-allocation.entity";
 import { AssessmentUserRelation } from "../../assessment/entities/assessment-user-relation.entity";
 import { Participant } from "../../course/entities/participant.entity";
 import { UserGroupRelation } from "../../course/entities/user-group-relation.entity";
+import { UserSettings } from "../../user/entities/user-settings.entity";
 import { UserRole } from "../enums";
 
 export type UserId = string;
@@ -41,6 +42,9 @@ export class User {
 
 	@OneToMany(type => AssessmentAllocation, allocation => allocation.user)
 	assessmentAllocations: AssessmentAllocation[];
+
+	@OneToOne(() => UserSettings, userSettings => userSettings.user, { nullable: true })
+	settings: UserSettings;
 
 	constructor(partial?: Partial<User>) {
 		if (partial) Object.assign(this, partial);
