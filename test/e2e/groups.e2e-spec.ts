@@ -12,29 +12,24 @@ import {
 	AssessmentsMock,
 	ASSESSMENT_JAVA_IN_REVIEW_GROUP_PARTIALS
 } from "../mocks/assessments.mock";
-import { ASSIGNMENTS_ALL, ASSIGNMENT_JAVA_IN_REVIEW_SINGLE } from "../mocks/assignments.mock";
-import { CoursesMock, COURSE_JAVA_1920 } from "../mocks/courses.mock";
+import { ASSIGNMENT_JAVA_IN_REVIEW_SINGLE } from "../mocks/assignments.mock";
+import { COURSE_JAVA_1920 } from "../mocks/courses.mock";
 import { DbMockService } from "../mocks/db-mock.service";
 import { GROUP_EVENTS_MOCK } from "../mocks/groups/group-events.mock";
 import {
-	GROUPS_ALL,
 	GROUPS_JAVA_1920,
 	GROUP_1_JAVA,
-	GROUP_2_JAVA
+	GROUP_2_JAVA,
+	GROUP_4_JAVA
 } from "../mocks/groups/groups.mock";
 import { UserGroupRelationsMock } from "../mocks/groups/user-group-relations.mock";
-import { UsersMock, USER_MGMT_ADMIN_JAVA_LECTURER, USER_STUDENT_JAVA } from "../mocks/users.mock";
+import { UsersMock, USER_STUDENT_JAVA } from "../mocks/users.mock";
 import { copy } from "../utils/object-helper";
 
 let app: INestApplication;
 let dbMockService: DbMockService; // Should be initialized in every describe-block
 
-const courses = CoursesMock;
-const groups = GROUPS_ALL;
 const users = UsersMock;
-const assignments = ASSIGNMENTS_ALL;
-const assessments = AssessmentsMock;
-
 const course = COURSE_JAVA_1920; // The course that will be used for testing
 
 describe("GET-REQUESTS of GroupController (e2e)", () => {
@@ -210,11 +205,7 @@ describe("GET-REQUESTS of GroupController (e2e)", () => {
 					`/courses/${course.id}/groups/assignments/${assignment.id}/with-assigned-evaluator`
 				)
 				.expect(({ body }) => {
-					const result = body as GroupWithAssignedEvaluatorDto[];
-					expect(result.length).toEqual(3);
-					expect(result[0].assignedEvaluatorId).toEqual(USER_STUDENT_JAVA.id);
-					expect(result[1].assignedEvaluatorId).toEqual(USER_MGMT_ADMIN_JAVA_LECTURER.id);
-					expect(result[2].assignedEvaluatorId).toBeUndefined();
+					expect(body).toMatchSnapshot();
 				});
 		});
 
@@ -252,7 +243,7 @@ describe("GET-REQUESTS of GroupController (e2e)", () => {
 				.expect(({ body }) => {
 					const result = body as GroupWithAssignedEvaluatorDto[];
 					expect(result.length).toEqual(1);
-					expect(result[0].group.id).toEqual(GROUP_2_JAVA.id);
+					expect(result[0].group.id).toEqual(GROUP_4_JAVA.id);
 				});
 		});
 	});
@@ -374,7 +365,7 @@ describe("POST-REQUESTS for relations of GroupController (e2e)", () => {
 						count: undefined // Count is missing!
 					};
 
-					return request(app.getHttpServer()).post(route).send().expect(400);
+					return request(app.getHttpServer()).post(route).send(groups).expect(400);
 				});
 
 				it("No names or name schema defined -> 400 Bad Request", () => {
@@ -487,8 +478,6 @@ describe("PATCH-REQUESTS (Db contains data) of GroupController (e2e)", () => {
 					});
 			});
 		});
-
-		describe("Invalid", () => {});
 	});
 });
 

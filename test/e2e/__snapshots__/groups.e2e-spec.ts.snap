@@ -113,3 +113,63 @@ Object {
   "size": 2,
 }
 `;
+
+exports[`GET-REQUESTS of GroupController (e2e) (GET) /groups/assignments/{assignmentId}/with-assigned-evaluator Returns groups with their assigned evaluator 1`] = `
+Array [
+  Object {
+    "assignedEvaluatorId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
+    "group": Object {
+      "hasPassword": true,
+      "id": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
+      "isClosed": false,
+      "members": Array [
+        Object {
+          "displayName": "Max Mustermann",
+          "email": "max.mustermann@test.com",
+          "matrNr": 123456,
+          "role": "STUDENT",
+          "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
+          "username": "mmustermann",
+        },
+        Object {
+          "displayName": "Hans Peter",
+          "email": "hans.peter@test.com",
+          "matrNr": 111111,
+          "role": "STUDENT",
+          "userId": "40f59aad-7473-4455-a3ea-1214f19b2565",
+          "username": "hpeter",
+        },
+      ],
+      "name": "Testgroup 1",
+      "size": 2,
+    },
+  },
+  Object {
+    "group": Object {
+      "hasPassword": true,
+      "id": "01144a38-bf03-4ef7-9c87-db6aa81ea7e0",
+      "isClosed": false,
+      "members": Array [
+        Object {
+          "displayName": "elshar",
+          "email": "elshar@test.com",
+          "matrNr": 777777,
+          "role": "STUDENT",
+          "userId": "3e52e822-4ebc-49c3-94e2-06ba447b5d1f",
+          "username": "elshar",
+        },
+        Object {
+          "displayName": "kunold",
+          "email": "kunold@test.com",
+          "matrNr": 888888,
+          "role": "STUDENT",
+          "userId": "24b4ec8c-dd8a-4bd6-843c-2c412fb1d5b7",
+          "username": "kunold",
+        },
+      ],
+      "name": "Testgroup 3",
+      "size": 2,
+    },
+  },
+]
+`;
