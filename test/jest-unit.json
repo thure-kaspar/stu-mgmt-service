@@ -1,11 +1,16 @@
 {
-	"moduleFileExtensions": ["js", "json", "ts"],
+	"moduleFileExtensions": ["ts", "tsx", "js"],
 	"rootDir": "../",
 	"testEnvironment": "node",
 	"testMatch": ["<rootDir>/test/unit/**/*.spec.ts"],
 	"transform": {
-		"^.+\\.ts$": "ts-jest"
+		"^.+\\.(ts|tsx)$": "ts-jest"
 	},
 	"collectCoverageFrom": ["src/**/*.ts", "!src/**/*.module.ts", "!src/main.ts", "!src/test"],
-	"coveragePathIgnorePatterns": []
+	"coveragePathIgnorePatterns": [],
+	"globals": {
+		"ts-jest": {
+			"isolatedModules": true
+		}
+	}
 }
