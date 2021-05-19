@@ -20,6 +20,7 @@ import { PartialAssessmentDto } from "../dto/partial-assessment.dto";
 import { AssessmentEvent } from "../entities/assessment-event.entity";
 import { Assessment } from "../entities/assessment.entity";
 import { AssessmentRepository } from "../repositories/assessment.repository";
+import { AssignmentState } from "../../shared/enums";
 
 @Injectable()
 export class AssessmentService {
@@ -157,8 +158,7 @@ export class AssessmentService {
 			updatedBy
 		);
 
-		// Store event, if achieved points changed
-		if (original.achievedPoints !== updated.achievedPoints) {
+		if (this.scoreChangedAfterRelease(original, updated)) {
 			this.events.publish(
 				new AssessmentScoreChanged(assessmentId, updatedBy, {
 					oldScore: original.achievedPoints,
@@ -168,6 +168,13 @@ export class AssessmentService {
 		}
 
 		return DtoFactory.createAssessmentDto(updated);
+	}
+
+	private scoreChangedAfterRelease(original: Assessment, updated: Assessment) {
+		return (
+			original.achievedPoints !== updated.achievedPoints &&
+			updated.assignment.state === AssignmentState.EVALUATED
+		);
 	}
 
 	async deleteAssessment(assessmentId: string): Promise<boolean> {
