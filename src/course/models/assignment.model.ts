@@ -1,11 +1,11 @@
 import { AssignmentState, AssignmentType, CollaborationType } from "../../shared/enums";
 import { Assignment as AssignmentEntity, AssignmentId } from "../entities/assignment.entity";
 import { CourseId } from "../entities/course.entity";
-import { AssignmentNotInReviewStateException } from "../exceptions/custom-exceptions";
 
 export class Assignment {
 	readonly id: AssignmentId;
 	readonly courseId: CourseId;
+	readonly name: string;
 	readonly collaboration: CollaborationType;
 	readonly state: AssignmentState;
 	readonly type: AssignmentType;
@@ -14,9 +14,10 @@ export class Assignment {
 	readonly startDate?: Date;
 	readonly endDate?: Date;
 
-	constructor(private assignment: AssignmentEntity) {
+	constructor(assignment: AssignmentEntity) {
 		this.id = assignment.id;
 		this.courseId = assignment.courseId;
+		this.name = assignment.name;
 		this.collaboration = assignment.collaboration;
 		this.state = assignment.state;
 		this.type = assignment.type;
@@ -41,7 +42,7 @@ export class Assignment {
 	 * Returns `true`, if assignment's `state` differs from `oldState`.
 	 */
 	hasChangedState(oldState: AssignmentState): boolean {
-		return oldState !== this.assignment.state;
+		return oldState !== this.state;
 	}
 
 	/**
@@ -50,8 +51,7 @@ export class Assignment {
 	 */
 	wasStarted(oldState?: AssignmentState): boolean {
 		return (
-			this.assignment.state === AssignmentState.IN_PROGRESS &&
-			oldState !== AssignmentState.IN_PROGRESS
+			this.state === AssignmentState.IN_PROGRESS && oldState !== AssignmentState.IN_PROGRESS
 		);
 	}
 }
