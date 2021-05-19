@@ -49,7 +49,7 @@ import { AssessmentDto } from "../../assessment/dto/assessment.dto";
 import { AuthGuard } from "../../auth/guards/auth.guard";
 
 @ApiBearerAuth()
-@ApiTags("groups")
+@ApiTags("group")
 @UseGuards(AuthGuard, CourseMemberGuard)
 @Controller("courses/:courseId/groups")
 export class GroupController {

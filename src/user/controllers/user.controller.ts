@@ -35,7 +35,7 @@ import { IdentityGuard } from "../guards/identity.guard";
 import { UserService } from "../services/user.service";
 
 @ApiBearerAuth()
-@ApiTags("users")
+@ApiTags("user")
 @Controller("users")
 @UseGuards(AuthGuard, RoleGuard)
 export class UserController {

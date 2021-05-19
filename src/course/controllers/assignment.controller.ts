@@ -16,7 +16,7 @@ import { AssignmentState } from "../../shared/enums";
 import { AuthGuard } from "../../auth/guards/auth.guard";
 
 @ApiBearerAuth()
-@ApiTags("assignments")
+@ApiTags("assignment")
 @UseGuards(AuthGuard, CourseMemberGuard)
 @Controller("courses/:courseId/assignments")
 export class AssignmentController {

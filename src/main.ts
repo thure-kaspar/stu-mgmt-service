@@ -60,18 +60,17 @@ function setupSwaggerDocument(app: NestExpressApplication) {
 		.addBearerAuth()
 		.setTitle("Student-Management-System-API")
 		.setDescription(
-			"The Student-Management-Sytem-API. <a href='http://localhost:3000/api-json'>JSON</a>"
+			"The Student-Management-System-API. <a href='http://localhost:3000/api-json'>JSON</a>"
 		) // TODO: Replace hard-coded link
 		.setVersion("1.0")
-		.addTag("mail")
 		.addTag("authentication")
-		.addTag("courses")
+		.addTag("course")
 		.addTag("course-participants")
 		.addTag("course-config")
-		.addTag("assignments")
-		.addTag("assessments")
-		.addTag("groups")
-		.addTag("users")
+		.addTag("assignment")
+		.addTag("assessment")
+		.addTag("group")
+		.addTag("user")
 		.addTag("assignment-registration")
 		.addTag("admission-status")
 		.addTag("submission")

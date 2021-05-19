@@ -29,7 +29,7 @@ import { CourseParticipantsService } from "../services/course-participants.servi
 import { CourseService } from "../services/course.service";
 
 @ApiBearerAuth()
-@ApiTags("courses")
+@ApiTags("course")
 @Controller("courses")
 export class CourseController {
 	constructor(

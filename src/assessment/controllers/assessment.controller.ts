@@ -31,7 +31,7 @@ import { PartialAssessmentDto } from "../dto/partial-assessment.dto";
 import { AssessmentService } from "../services/assessment.service";
 
 @ApiBearerAuth()
-@ApiTags("assessments")
+@ApiTags("assessment")
 @Controller("courses/:courseId/assignments/:assignmentId/assessments")
 @UseGuards(AuthGuard, CourseMemberGuard)
 export class AssessmentController {
