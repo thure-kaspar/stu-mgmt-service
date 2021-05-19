@@ -1,12 +1,5 @@
-import {
-	Column,
-	CreateDateColumn,
-	Entity,
-	JoinColumn,
-	ManyToOne,
-	PrimaryGeneratedColumn
-} from "typeorm";
-import { AssignmentId } from "../course/entities/assignment.entity";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Assignment, AssignmentId } from "../course/entities/assignment.entity";
 import { Course, CourseId } from "../course/entities/course.entity";
 import { Group, GroupId } from "../course/entities/group.entity";
 import { LinkDto } from "../shared/dto/link.dto";
@@ -19,17 +12,20 @@ export class Submission implements ToDto<SubmissionDto> {
 	@PrimaryGeneratedColumn()
 	id: number;
 
+	@ManyToOne(type => Assignment, { onDelete: "CASCADE" })
+	assignment?: Assignment;
+
 	@Column()
-	assignmentId: AssignmentId;
+	assignmentId: string;
 
 	@ManyToOne(type => User, { onDelete: "CASCADE" })
-	user: User;
+	user?: User;
 
 	@Column()
 	userId: UserId;
 
 	@ManyToOne(type => Course, { onDelete: "CASCADE" })
-	course: Course;
+	course?: Course;
 
 	@Column()
 	courseId: CourseId;
@@ -38,7 +34,7 @@ export class Submission implements ToDto<SubmissionDto> {
 	date: Date;
 
 	@ManyToOne(type => Group, { onDelete: "SET NULL" })
-	group: Group;
+	group?: Group;
 
 	@Column({ nullable: true })
 	groupId?: GroupId;
