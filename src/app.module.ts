@@ -1,4 +1,4 @@
-import { Module, Provider } from "@nestjs/common";
+import { DynamicModule, ForwardReference, Module, Provider, Type } from "@nestjs/common";
 import { APP_INTERCEPTOR } from "@nestjs/core";
 import { ScheduleModule } from "@nestjs/schedule";
 import { TypeOrmModule } from "@nestjs/typeorm";
@@ -17,49 +17,46 @@ import { TaskSchedulingModule } from "./task-scheduling/task-scheduling.module";
 import { UserModule } from "./user/user.module";
 import { RequestLogger } from "./utils/request.logger";
 
-const optionalProviders = (): Provider<any>[] => {
-	const providers: Provider<any>[] = [];
+function Imports(): (
+	| Type<unknown>
+	| DynamicModule
+	| Promise<DynamicModule>
+	| ForwardReference<unknown>
+)[] {
+	const imports = [
+		TypeOrmModule.forRoot(typeOrmConfig),
+		AuthModule,
+		CourseModule,
+		UserModule,
+		AssessmentModule,
+		AdmissionStatusModule,
+		SubmissionModule,
+		NotificationModule,
+		CsvModule
+	];
+
+	if (Config.getMailing().enabled) {
+		imports.push(MailingModule);
+	}
+
+	if (process.env.NODE_ENV !== "testing") {
+		// imports.push(ScheduleModule.forRoot(), TaskSchedulingModule);
+	}
+
+	return imports;
+}
+
+function Providers(): Provider<unknown>[] {
+	const providers: Provider<unknown>[] = [];
 	if (Config.getLogger().requests) {
 		providers.push({ provide: APP_INTERCEPTOR, useClass: RequestLogger });
 	}
 	return providers;
-};
-
-const mailingModule = (): any[] => {
-	const modules = [];
-	if (Config.getMailing().enabled) {
-		modules.push(MailingModule);
-	}
-	return modules;
-};
-
-const taskSchedulingModules = (): any[] => {
-	const modules = [];
-	if (Config.getMailing().enabled) {
-		modules.push(MailingModule);
-	}
-
-	if (process.env.NODE_ENV !== "testing") {
-		modules.push(ScheduleModule.forRoot(), TaskSchedulingModule);
-	}
-	return modules;
-};
+}
 
 @Module({
-	imports: [
-		TypeOrmModule.forRoot(typeOrmConfig),
-		CourseModule,
-		UserModule,
-		AuthModule,
-		CsvModule,
-		AdmissionStatusModule,
-		SubmissionModule,
-		NotificationModule,
-		...mailingModule(),
-		//...taskSchedulingModules(),
-		AssessmentModule
-	],
+	imports: Imports(),
 	controllers: [AppController],
-	providers: [...optionalProviders()]
+	providers: Providers()
 })
 export class AppModule {}
