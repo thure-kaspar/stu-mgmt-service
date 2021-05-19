@@ -5,26 +5,29 @@ db:
     type: "postgres"
     port: 5432
     database: "StudentMgmtDb"
+    host: "localhost"
+    username: "postgres"
+    password: "admin"
+    synchronize: false
+    dropSchema: false
 
 notifications:
     enabled: false
 
-smtp:
-    server: "smtp_server"
-    useSecureConnection: true
-    username: "user@example.com"
-    password: "example_password"
-    port: 465
+mailing:
+    enabled: false
+    smtp:
+        host: "smtp.server"
+        useSecureConnection: false
+        username: "username"
+        password: "password"
+        port: 587
 
-authSystem:
+authentication:
     url: "http://147.172.178.30:8080"
-
-jwt:
-    expiresIn: 36000
 
 logger:
     levels:
-        - log
         - error
         - warn
         - debug

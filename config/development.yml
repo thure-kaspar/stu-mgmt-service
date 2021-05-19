@@ -1,18 +1,8 @@
 db:
-    host: "localhost"
-    username: "postgres"
-    password: "admin"
     synchronize: true
 
-smtp:
-    server: "smtp_server"
-    useSecureConnection: true
-    username: "user@example.com"
-    password: "example_password"
-    port: 465
-
-jwt:
-    secret: "jwt-dev-secret"
+mailing:
+    enabled: true
 
 logger:
     levels:

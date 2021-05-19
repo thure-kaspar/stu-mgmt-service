@@ -54,7 +54,7 @@ type Authentication = {
 type Mailing = {
 	enabled: boolean;
 	smtp: {
-		server: string;
+		host: string;
 		useSecureConnection: boolean;
 		username: string;
 		password: string;
