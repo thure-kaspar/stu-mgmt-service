@@ -5,7 +5,7 @@ import { AuthInfo } from "../dto/auth-info.dto";
 
 @Injectable()
 export class AuthSystemService {
-	private readonly authSystemUrl = Config.getServer();
+	private readonly authSystemUrl = Config.getAuthentication().url;
 
 	constructor(private http: HttpService) {}
 
@@ -19,6 +19,7 @@ export class AuthSystemService {
 			return response.data;
 		} catch (error) {
 			// Return null, if authentication failed
+			console.log(error);
 			return null;
 		}
 	}
