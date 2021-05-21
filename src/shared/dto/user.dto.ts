@@ -15,8 +15,6 @@ export class UserDto {
 	@ApiProperty({ description: "Role within the application." })
 	role: UserRole;
 
-	/** Courses that the user has signed up for. */
-	//@ApiPropertyOptional({ description: "Courses that the user has signed up for.", type: () => CourseDto })
 	courses?: CourseDto[];
 }
 
