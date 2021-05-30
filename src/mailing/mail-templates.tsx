@@ -11,6 +11,13 @@ type MailContent = {
 	html: string;
 };
 
+export type MailEvent =
+	| "ASSIGNMENT_STARTED"
+	| "ASSIGNMENT_EVALUATED"
+	| "ASSESSMENT_SCORE_CHANGED"
+	| "PARTICIPANT_JOINED_GROUP"
+	| "PARTICIPANT_LEFT_GROUP";
+
 const EventFunction = {
 	ASSIGNMENT_STARTED: AssignmentStartedMail,
 	ASSIGNMENT_EVALUATED: AssignmentEvaluatedMail,
@@ -207,6 +214,7 @@ function ParticipantJoinedGroupMail(
 	props: {
 		courseId: string;
 		participantName: string;
+		participantEmail: string;
 	},
 	language: Language
 ): MailContent {
@@ -222,7 +230,10 @@ function ParticipantJoinedGroupMail(
 		mail.html = jsxt.render(
 			<>
 				<h2>{props.courseId} – Neues Gruppenmitglied</h2>
-				<p>Ein neues Mitglied hat sich ihrer Gruppe angeschlossen.</p>
+				<p>Ein neues Mitglied hat sich ihrer Gruppe angeschlossen:</p>
+				<p>
+					{props.participantName} - {props.participantEmail}
+				</p>
 			</>
 		);
 	}
@@ -260,7 +271,8 @@ function ParticipantLeftGroupMail(
 		mail.html = jsxt.render(
 			<>
 				<h2>{props.courseId} – Ein Mitglied hat Ihre Gruppe verlassen</h2>
-				<p>Ein Mitglied hat Ihre Gruppe verlassen.</p>
+				<p>Ein Mitglied hat Ihre Gruppe verlassen:</p>
+				<p>{props.participantName}</p>
 			</>
 		);
 	}

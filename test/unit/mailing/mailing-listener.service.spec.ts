@@ -8,7 +8,7 @@ import { MailingService } from "../../../src/mailing/services/mailing.service";
 import { User } from "../../../src/shared/entities/user.entity";
 import { Language } from "../../../src/shared/language";
 import { UserSettings } from "../../../src/user/entities/user-settings.entity";
-import { convertToEntity } from "../../utils/object-helper";
+import { convertToEntity, copy } from "../../utils/object-helper";
 import { ASSIGNMENT_JAVA2020_GROUP, ASSIGNMENT_JAVA_EVALUATED } from "../../mocks/assignments.mock";
 import { AssignmentState, AssignmentType } from "../../../src/shared/enums";
 import { AssessmentRepository } from "../../../src/assessment/repositories/assessment.repository";
@@ -16,9 +16,24 @@ import { AssessmentScoreChanged } from "../../../src/assessment/events/assessmen
 import { ASSESSMENT_JAVA_EVALUATED_GROUP_1 } from "../../mocks/assessments.mock";
 import { USER_STUDENT_2_JAVA, USER_STUDENT_JAVA } from "../../mocks/users.mock";
 import { Assessment } from "../../../src/assessment/entities/assessment.entity";
+import { Assignment } from "../../../src/course/models/assignment.model";
+import { GroupService } from "../../../src/course/services/group.service";
+import { UserJoinedGroupEvent } from "../../../src/course/events/group/user-joined-group.event";
+import { GroupDto } from "../../../src/course/dto/group/group.dto";
+import { GROUP_1_JAVA } from "../../mocks/groups/groups.mock";
+import {
+	PARTICIPANT_JAVA_1920_STUDENT,
+	PARTICIPANT_JAVA_1920_STUDENT_2,
+	PARTICIPANT_JAVA_1920_TUTOR
+} from "../../mocks/participants/participants.mock";
+import { USER_SETTINGS_MOCK } from "../../mocks/user-settings.mock";
 
 const mock_MailingService = (): Partial<MailingService> => ({
 	send: jest.fn()
+});
+
+const mock_GroupService = (): Partial<GroupService> => ({
+	getGroup: jest.fn()
 });
 
 const mock_ParticipantRepository = (): Partial<ParticipantRepository> => ({
@@ -56,6 +71,7 @@ function createMockParticipant(id: number): Participant {
 describe("MailingService", () => {
 	let sut: MailingListener;
 	let mailingService: MailingService;
+	let groupService: GroupService;
 	let participantRepository: ParticipantRepository;
 	let assessmentRepository: AssessmentRepository;
 
@@ -63,7 +79,13 @@ describe("MailingService", () => {
 		mailingService = mock_MailingService() as MailingService;
 		participantRepository = mock_ParticipantRepository() as ParticipantRepository;
 		assessmentRepository = mock_AssessmentRepository() as AssessmentRepository;
-		sut = new MailingListener(mailingService, participantRepository, assessmentRepository);
+		groupService = mock_GroupService() as GroupService;
+		sut = new MailingListener(
+			mailingService,
+			groupService,
+			participantRepository,
+			assessmentRepository
+		);
 	});
 
 	it("Should be defined", () => {
@@ -112,7 +134,7 @@ describe("MailingService", () => {
 		});
 	});
 
-	describe.only("onAssessmentScoreChanged", () => {
+	describe("onAssessmentScoreChanged", () => {
 		let event: AssessmentScoreChanged;
 		const courseId = "java-wise1920";
 
@@ -161,6 +183,59 @@ describe("MailingService", () => {
 			await sut.onAssessmentScoreChanged(event);
 			expect(sut.splitRecipientsByLanguage).toHaveBeenCalled();
 		});
+
+		it("Calls MailService to send mail", async () => {
+			await sut.onAssessmentScoreChanged(event);
+			expect(mailingService.send).toHaveBeenCalled();
+		});
+	});
+
+	describe.only("onParticipantJoinedGroup", () => {
+		let event: UserJoinedGroupEvent;
+		let group: GroupDto;
+		const courseId = "java-wise1920";
+
+		beforeEach(() => {
+			group = copy(GROUP_1_JAVA);
+			group.members = [
+				PARTICIPANT_JAVA_1920_STUDENT.participant,
+				PARTICIPANT_JAVA_1920_TUTOR.participant,
+				PARTICIPANT_JAVA_1920_STUDENT_2.participant
+			];
+
+			event = new UserJoinedGroupEvent(
+				courseId,
+				group.id,
+				PARTICIPANT_JAVA_1920_STUDENT_2.participant.userId
+			);
+
+			groupService.getGroup = jest.fn().mockResolvedValue(group);
+			participantRepository.getParticipantsWithUserSettings = jest
+				.fn()
+				.mockResolvedValueOnce([
+					createMockParticipant(group.members[0].userId as any),
+					createMockParticipant(group.members[1].userId as any),
+					createMockParticipant(group.members[2].userId as any)
+				]);
+		});
+
+		it("Uses the GroupService to load the group with its members", async () => {
+			await sut.onParticipantJoinedGroup(event);
+			expect(groupService.getGroup).toHaveBeenCalledWith(group.id);
+		});
+
+		it("Uses the ParticipantRepository to load UserSettings of members", async () => {
+			await sut.onParticipantJoinedGroup(event);
+			expect(participantRepository.getParticipantsWithUserSettings).toHaveBeenCalledWith(
+				courseId,
+				{ userIds: group.members.map(m => m.userId) }
+			);
+		});
+
+		it("Sends a mail to all old members", async () => {
+			await sut.onParticipantJoinedGroup(event);
+			expect(mailingService.send).toHaveBeenCalledTimes(2);
+		});
 	});
 
 	describe("splitRecipientsByLanguage", () => {
@@ -182,9 +257,9 @@ describe("MailingService", () => {
 			participants[4].user.settings.language = "UNKNOWN" as any; // Should fallback to german
 		});
 		it("Split recipients by language", () => {
-			const { recipientsDe, recipientsEn } = sut.splitRecipientsByLanguage(participants);
-			expect(recipientsDe.length).toEqual(3);
-			expect(recipientsEn.length).toEqual(2);
+			const { DE, EN } = sut.splitRecipientsByLanguage(participants);
+			expect(DE.length).toEqual(3);
+			expect(EN.length).toEqual(2);
 		});
 	});
 
@@ -233,6 +308,28 @@ describe("MailingService", () => {
 			participants.forEach(p => (p.user.email = null));
 			const result = sut.filterReceivers(participants, Event.ASSIGNMENT_STATE_CHANGED);
 			expect(result.length).toEqual(0);
+		});
+	});
+
+	describe("getPreferredLanguage", () => {
+		let participant: Participant;
+
+		beforeEach(() => {
+			participant = convertToEntity(Participant, PARTICIPANT_JAVA_1920_STUDENT);
+			participant.user = convertToEntity(User, USER_STUDENT_JAVA);
+			participant.user.settings = USER_SETTINGS_MOCK[0].userSettings as UserSettings;
+		});
+
+		it("Returns preferred language, if it exists", () => {
+			participant.user.settings.language = Language.EN;
+			const result = sut.getPreferredLanguage(participant);
+			expect(result).toEqual(Language.EN);
+		});
+
+		it("Uses Language.DE as fallback", () => {
+			participant.user.settings = null;
+			const result = sut.getPreferredLanguage(participant);
+			expect(result).toEqual(Language.DE);
 		});
 	});
 });

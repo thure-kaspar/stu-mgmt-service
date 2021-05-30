@@ -7,13 +7,14 @@ import { Assessment } from "../../assessment/entities/assessment.entity";
 import { AssessmentScoreChanged } from "../../assessment/events/assessment-score-changed.event";
 import { AssessmentRepository } from "../../assessment/repositories/assessment.repository";
 import { Participant } from "../../course/entities/participant.entity";
-import { Event } from "../../course/events";
 import { AssignmentStateChanged } from "../../course/events/assignment/assignment-state-changed.event";
-import { Assignment } from "../../course/models/assignment.model";
+import { UserJoinedGroupEvent } from "../../course/events/group/user-joined-group.event";
+import { UserLeftGroupEvent } from "../../course/events/group/user-left-group.event";
 import { ParticipantRepository } from "../../course/repositories/participant.repository";
+import { GroupService } from "../../course/services/group.service";
 import { AssignmentState, AssignmentType } from "../../shared/enums";
 import { Language } from "../../shared/language";
-import { MailFactory } from "../mail-templates";
+import { MailEvent, MailFactory } from "../mail-templates";
 import { Mail } from "../mail.model";
 import { MailingService } from "./mailing.service";
 
@@ -30,9 +31,7 @@ export class MailingListener {
 		return events$.pipe(
 			ofType(AssignmentStateChanged),
 			tap(async event => {
-				// Methods will check themselves, whether mails should be sends (easier to test)
 				this.onAssignmentStarted(event);
-				this.onAssignmentEvaluated(event);
 			}),
 			map(() => undefined)
 		);
@@ -43,7 +42,7 @@ export class MailingListener {
 		return events$.pipe(
 			ofType(AssignmentStateChanged),
 			tap(async event => {
-				this.onAssignmentStarted(event);
+				this.onAssignmentEvaluated(event);
 			}),
 			map(() => undefined)
 		);
@@ -60,8 +59,31 @@ export class MailingListener {
 		);
 	};
 
+	@Saga()
+	participantJoinedGroup$ = (events$: Observable<unknown>): Observable<unknown> => {
+		return events$.pipe(
+			ofType(UserJoinedGroupEvent),
+			tap(async event => {
+				this.onParticipantJoinedGroup(event);
+			}),
+			map(() => undefined)
+		);
+	};
+
+	@Saga()
+	participantLeftGroup$ = (events$: Observable<unknown>): Observable<unknown> => {
+		return events$.pipe(
+			ofType(UserLeftGroupEvent),
+			tap(async event => {
+				this.onParticipantLeftGroup(event);
+			}),
+			map(() => undefined)
+		);
+	};
+
 	constructor(
 		private mailingService: MailingService,
+		private groupService: GroupService,
 		@InjectRepository(ParticipantRepository)
 		private participantRepository: ParticipantRepository,
 		@InjectRepository(AssessmentRepository)
@@ -77,10 +99,7 @@ export class MailingListener {
 				assignment.courseId
 			);
 
-			const interestedParticipants = this.filterReceivers(
-				participants,
-				Event.ASSIGNMENT_STATE_CHANGED
-			);
+			const interestedParticipants = this.filterReceivers(participants, "ASSIGNMENT_STARTED");
 
 			const recipients = this.splitRecipientsByLanguage(interestedParticipants);
 
@@ -121,11 +140,10 @@ export class MailingListener {
 
 			const mailPromises = recipients.map(participant => {
 				const assessment = userIdAssessmentMap.get(participant.userId);
-				const language = participant.user.settings?.language ?? Language.DE;
 				const mail = MailFactory.create(
 					"ASSIGNMENT_EVALUATED",
 					[participant.user.email],
-					language,
+					this.getPreferredLanguage(participant),
 					{
 						assessment,
 						assignment,
@@ -156,13 +174,72 @@ export class MailingListener {
 		const mailPromises = this.createMailPromises(recipients, language => {
 			return MailFactory.create(
 				"ASSESSMENT_SCORE_CHANGED",
-				getEmails(participants),
+				recipients[language].map(p => p.user.email),
 				language,
 				{
 					assessment,
 					assignment: assessment.assignment
 				}
 			);
+		});
+
+		await Promise.all(mailPromises);
+	}
+
+	async onParticipantJoinedGroup(event: UserJoinedGroupEvent): Promise<void> {
+		const group = await this.groupService.getGroup(event.groupId);
+		const participants = await this.participantRepository.getParticipantsWithUserSettings(
+			event.courseId,
+			{ userIds: group.members.map(m => m.userId) }
+		);
+
+		const recipients = this.filterReceivers(participants, "PARTICIPANT_JOINED_GROUP").filter(
+			p => p.userId !== event.userId // Exclude the student that joined the group
+		);
+
+		const newMember = group.members.find(m => m.userId === event.userId);
+
+		const mailPromises = recipients.map(participant => {
+			const mail = MailFactory.create(
+				"PARTICIPANT_JOINED_GROUP",
+				[participant.user.email],
+				this.getPreferredLanguage(participant),
+				{
+					courseId: event.courseId,
+					participantName: newMember.displayName,
+					participantEmail: newMember.email
+				}
+			);
+
+			return this.mailingService.send(mail);
+		});
+
+		await Promise.all(mailPromises);
+	}
+
+	async onParticipantLeftGroup(event: UserLeftGroupEvent): Promise<void> {
+		const group = await this.groupService.getGroup(event.groupId);
+		const participants = await this.participantRepository.getParticipantsWithUserSettings(
+			event.courseId,
+			{ userIds: group.members.map(m => m.userId) }
+		);
+
+		const recipients = this.filterReceivers(participants, "PARTICIPANT_LEFT_GROUP").filter(
+			p => p.userId !== event.userId // Exclude the student that left the group
+		);
+
+		const mailPromises = recipients.map(participant => {
+			const mail = MailFactory.create(
+				"PARTICIPANT_LEFT_GROUP",
+				[participant.user.email],
+				this.getPreferredLanguage(participant),
+				{
+					courseId: event.courseId,
+					participantName: group.members.find(m => m.userId === event.userId).displayName
+				}
+			);
+
+			return this.mailingService.send(mail);
 		});
 
 		await Promise.all(mailPromises);
@@ -184,7 +261,7 @@ export class MailingListener {
 	 * Returns an array of `Participant` that excludes participants that do not want to receive
 	 * emails (for this event).
 	 */
-	filterReceivers(participants: Participant[], event: string): Participant[] {
+	filterReceivers(participants: Participant[], event: MailEvent): Participant[] {
 		return participants.filter(p => {
 			if (!p.user.email) {
 				return false;
@@ -222,5 +299,9 @@ export class MailingListener {
 		}
 
 		return split;
+	}
+
+	getPreferredLanguage(participant: Participant): Language {
+		return participant.user.settings?.language ?? Language.DE;
 	}
 }
