@@ -1,6 +1,5 @@
 import { DynamicModule, ForwardReference, Module, Provider, Type } from "@nestjs/common";
 import { APP_INTERCEPTOR } from "@nestjs/core";
-import { ScheduleModule } from "@nestjs/schedule";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Config } from "./.config/config";
 import { typeOrmConfig } from "./.config/typeorm-config";
@@ -9,11 +8,10 @@ import { AppController } from "./app.controller";
 import { AssessmentModule } from "./assessment/assessment.module";
 import { AuthModule } from "./auth/auth.module";
 import { CourseModule } from "./course/course.module";
-import { CsvModule } from "./csv/csv.module";
+import { ExportModule } from "./export/export.module";
 import { MailingModule } from "./mailing/mailing.module";
 import { NotificationModule } from "./notification/notification.module";
 import { SubmissionModule } from "./submission/submission.module";
-import { TaskSchedulingModule } from "./task-scheduling/task-scheduling.module";
 import { UserModule } from "./user/user.module";
 import { RequestLogger } from "./utils/request.logger";
 
@@ -32,7 +30,7 @@ function Imports(): (
 		AdmissionStatusModule,
 		SubmissionModule,
 		NotificationModule,
-		CsvModule
+		ExportModule
 	];
 
 	if (Config.getMailing().enabled) {
