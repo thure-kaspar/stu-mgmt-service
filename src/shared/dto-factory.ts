@@ -178,6 +178,7 @@ export abstract class DtoFactory {
 				const user = assessment.assessmentUserRelations[0].user;
 				assessmentDto.participant = {
 					userId: user.id,
+					matrNr: user.matrNr,
 					username: user.username,
 					displayName: user.displayName,
 					email: user.email,
@@ -201,6 +202,7 @@ export abstract class DtoFactory {
 					// TODO: GroupId missing
 					role: CourseRole.STUDENT,
 					userId: rel.userId,
+					matrNr: rel.user.matrNr,
 					username: rel.user.username,
 					displayName: rel.user.displayName,
 					email: rel.user.email
