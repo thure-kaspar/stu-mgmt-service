@@ -1,4 +1,5 @@
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
+import { join } from "path";
 import { Config } from "./src/.config/config";
 
 const dbConfig = Config.getDb();
@@ -20,7 +21,7 @@ const typeOrmConfig: TypeOrmModuleOptions = {
 	},
 	keepConnectionAlive: true, // prevents AlreadyHasActiveConnectionError, needed for testing // TODO: Check if it should be disabled in production
 	logging: loggingConfig.dbErrors ? ["error"] : undefined,
-	entities: ["./**/*.entity.js"]
+	entities: [join(__dirname, "**/*.entity.js")]
 };
 
 export default typeOrmConfig;
