@@ -3,12 +3,28 @@ import { User, UserId } from "../../shared/entities/user.entity";
 import { UserDto, UserUpdateDto } from "../../shared/dto/user.dto";
 import { Course, CourseId } from "src/course/entities/course.entity";
 import { UserFilter } from "../dto/user.filter";
+import { UserSettings } from "../entities/user-settings.entity";
+import { Language } from "../../shared/language";
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
 	async createUser(userDto: UserDto): Promise<User> {
-		const user = this.createEntityFromDto(userDto);
-		return this.save(user);
+		const createdUser = await this.manager.transaction(async transaction => {
+			const user = this.createEntityFromDto(userDto);
+			const createdUser = await transaction.save(user);
+
+			const userSettingsRepository = await transaction.getRepository(UserSettings);
+			userSettingsRepository.insert({
+				userId: createdUser.id,
+				allowEmails: true,
+				language: Language.DE,
+				blacklistedEvents: null
+			});
+
+			return createdUser;
+		});
+
+		return createdUser;
 	}
 
 	async getUsers(filter?: UserFilter): Promise<[User[], number]> {
