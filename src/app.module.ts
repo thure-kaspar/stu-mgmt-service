@@ -2,7 +2,7 @@ import { DynamicModule, ForwardReference, Module, Provider, Type } from "@nestjs
 import { APP_INTERCEPTOR } from "@nestjs/core";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Config } from "./.config/config";
-import { typeOrmConfig } from "./.config/typeorm-config";
+import typeOrmConfig from "../ormconfig";
 import { AdmissionStatusModule } from "./admission-status/admission-status.module";
 import { AppController } from "./app.controller";
 import { AssessmentModule } from "./assessment/assessment.module";
