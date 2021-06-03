@@ -22,7 +22,8 @@
 		"test:cov": "env NODE_ENV=testing jest --coverage --config ./test/jest-unit.json",
 		"test:debug": "env NODE_ENV=testing node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand --config ./test/jest-unit.json",
 		"test:e2e": "env NODE_ENV=testing jest --runInBand --config ./test/jest-e2e.json",
-		"test:e2ecov": "env NODE_ENV=testing jest --runInBand --config ./test/jest-e2e.json --coverage"
+		"test:e2ecov": "env NODE_ENV=testing jest --runInBand --config ./test/jest-e2e.json --coverage",
+		"typeorm": "env NODE_ENV=production node --require ts-node/register ./node_modules/typeorm/cli.js"
 	},
 	"dependencies": {
 		"@nestjs/common": "^7.6.15",
