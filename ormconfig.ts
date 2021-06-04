@@ -14,11 +14,11 @@ const typeOrmConfig: TypeOrmModuleOptions = {
 	database: process.env.DB_DATABASE || dbConfig.database,
 	synchronize: (process.env.TYPEORM_SYNC as any) || dbConfig.synchronize,
 	dropSchema: dbConfig.dropSchema || false,
-	migrationsRun: false,
-	migrations: ["dist/migrations/*.js"],
-	cli: {
-		migrationsDir: "migrations"
-	},
+	// migrationsRun: false,
+	// migrations: ["dist/migrations/*.js"],
+	// cli: {
+	// 	migrationsDir: "migrations"
+	// },
 	keepConnectionAlive: true, // prevents AlreadyHasActiveConnectionError, needed for testing // TODO: Check if it should be disabled in production
 	logging: loggingConfig.dbErrors ? ["error"] : undefined,
 	entities: [join(__dirname, "**/*.entity.js")]
