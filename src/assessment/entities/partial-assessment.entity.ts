@@ -24,7 +24,7 @@ export class PartialAssessment {
 	@Column()
 	title: string;
 
-	@Column()
+	@Column({ default: false })
 	draftOnly: boolean;
 
 	@Column({ type: "float", nullable: true })
