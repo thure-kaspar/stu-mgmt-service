@@ -7,13 +7,13 @@ This directory contains migration files.
 ### Automatically generate a migration
 
 ```
-$ npm run typeorm migration:generate -n MigrationName
+$ npm run typeorm migration:generate -- -n MigrationName
 ```
 
 ### Generate an empty migration
 
 ```
-$ npm run typeorm migration:create -n MigrationName
+$ npm run typeorm migration:create -- -n MigrationName
 ```
 
 ### Run migrations
