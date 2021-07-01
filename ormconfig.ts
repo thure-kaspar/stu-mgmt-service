@@ -64,8 +64,7 @@ const typeOrmConfig: TypeOrmModuleOptions = {
 		AssessmentAllocation,
 		AssessmentEvent,
 		Submission,
-		Subscriber,
-		"./**/*.entity.js" // Required to find entities when running migrations
+		Subscriber
 	]
 };
 
