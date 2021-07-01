@@ -20,7 +20,7 @@ const typeOrmConfig: TypeOrmModuleOptions = {
 	},
 	keepConnectionAlive: true, // prevents AlreadyHasActiveConnectionError, needed for testing // TODO: Check if it should be disabled in production
 	logging: loggingConfig.dbErrors ? ["error"] : undefined,
-	entities: ["./**/*.entity.js"]
+	entities: ["dist/**/*.entity.js"]
 };
 
 export default typeOrmConfig;
