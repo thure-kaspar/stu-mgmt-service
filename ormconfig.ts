@@ -1,4 +1,5 @@
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
+import { join } from "path";
 import { Config } from "./src/.config/config";
 import { AssessmentAllocation } from "./src/assessment/entities/assessment-allocation.entity";
 import { AssessmentEvent } from "./src/assessment/entities/assessment-event.entity";
@@ -26,6 +27,8 @@ import { UserSettings } from "./src/user/entities/user-settings.entity";
 const dbConfig = Config.getDb();
 const loggingConfig = Config.getLogger();
 
+console.log("Searching for entities at: " + join(__dirname, "/**/*.entity.js"));
+
 const typeOrmConfig: TypeOrmModuleOptions = {
 	type: (process.env.DB_TYPE as any) || dbConfig.type,
 	host: process.env.DB_HOST || dbConfig.host,
@@ -42,30 +45,7 @@ const typeOrmConfig: TypeOrmModuleOptions = {
 	},
 	keepConnectionAlive: true, // prevents AlreadyHasActiveConnectionError, needed for testing // TODO: Check if it should be disabled in production
 	logging: loggingConfig.dbErrors ? ["error"] : undefined,
-	entities: [
-		Course,
-		User,
-		UserSettings,
-		Group,
-		Participant,
-		UserGroupRelation,
-		Assignment,
-		Assessment,
-		AssessmentUserRelation,
-		AssignmentRegistration,
-		GroupRegistrationRelation,
-		CourseConfig,
-		AssignmentTemplate,
-		GroupSettings,
-		AdmissionCriteria,
-		AdmissionFromPreviousSemester,
-		PartialAssessment,
-		GroupEvent,
-		AssessmentAllocation,
-		AssessmentEvent,
-		Submission,
-		Subscriber
-	]
+	entities: [join(__dirname, "/**/*.entity.js")]
 };
 
 export default typeOrmConfig;
