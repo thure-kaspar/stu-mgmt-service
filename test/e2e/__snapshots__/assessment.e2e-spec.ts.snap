@@ -45,6 +45,7 @@ Object {
   "participant": Object {
     "displayName": "Max Mustermann",
     "email": "max.mustermann@test.com",
+    "matrNr": 123456,
     "role": "STUDENT",
     "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
     "username": "mmustermann",
@@ -107,6 +108,7 @@ Object {
   "participant": Object {
     "displayName": "John Doe",
     "email": "john.doe@test.com",
+    "matrNr": 222222,
     "role": "STUDENT",
     "userId": "8330300e-9be7-4a70-ba7d-8a0139311343",
     "username": "jdoe",
@@ -148,6 +150,7 @@ Object {
       Object {
         "displayName": "Max Mustermann",
         "email": "max.mustermann@test.com",
+        "matrNr": 123456,
         "role": "STUDENT",
         "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
         "username": "mmustermann",
@@ -155,6 +158,7 @@ Object {
       Object {
         "displayName": "Hans Peter",
         "email": "hans.peter@test.com",
+        "matrNr": 111111,
         "role": "STUDENT",
         "userId": "40f59aad-7473-4455-a3ea-1214f19b2565",
         "username": "hpeter",
@@ -211,6 +215,7 @@ Object {
       Object {
         "displayName": "Max Mustermann",
         "email": "max.mustermann@test.com",
+        "matrNr": 123456,
         "role": "STUDENT",
         "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
         "username": "mmustermann",
@@ -218,6 +223,7 @@ Object {
       Object {
         "displayName": "Hans Peter",
         "email": "hans.peter@test.com",
+        "matrNr": 111111,
         "role": "STUDENT",
         "userId": "40f59aad-7473-4455-a3ea-1214f19b2565",
         "username": "hpeter",
