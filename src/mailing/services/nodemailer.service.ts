@@ -19,6 +19,6 @@ const settings: Settings = {
 export class NodemailerService {
 	async send(mail: Mail): Promise<void> {
 		const transporter = nodemailer.createTransport(settings);
-		return transporter.sendMail(mail);
+		await transporter.sendMail(mail);
 	}
 }
