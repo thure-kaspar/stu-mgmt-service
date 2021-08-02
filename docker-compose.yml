@@ -1,0 +1,45 @@
+version: "3.9"
+
+services:
+    student-mgmt-api:
+        build: .
+        container_name: student-mgmt-api
+        volumes:
+          - /usr/src/app/node_modules
+        ports:
+          - 3000:3000
+        networks:
+          - webnet
+        environment:
+          DB_TYPE: postgres
+          DB_HOST: postgres
+          DB_PORT: 5432
+          DB_USERNAME: postgres
+          DB_PASSWORD: postgres
+          DB_DATABASE: StudentMgmtDbDocker
+        volumes:
+          - .:/usr/src/app
+          - /usr/src/app/node_modules
+        depends_on:
+          - postgres
+
+    postgres:
+        container_name: postgres
+        image: postgres:13
+        networks:
+            - webnet
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+            POSTGRES_DB: StudentMgmtDbDocker
+            PG_DATA: /var/lib/postgresql/data
+        ports:
+            - 5432:5432
+        volumes:
+            - pgdata:/var/lib/postgresql/data
+
+networks:
+    webnet:
+
+volumes:
+    pgdata:
