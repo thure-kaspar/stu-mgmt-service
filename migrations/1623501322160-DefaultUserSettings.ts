@@ -5,8 +5,9 @@ import { UserSettings } from "../src/user/entities/user-settings.entity";
 
 export class UserSettings1622731806947 implements MigrationInterface {
 	public async up(queryRunner: QueryRunner): Promise<void> {
-		const userRepository = queryRunner.manager.getRepository(User);
-		const userSettingsRepository = queryRunner.manager.getRepository(UserSettings);
+		const userRepository = queryRunner.manager.getRepository<User>("User");
+		const userSettingsRepository =
+			queryRunner.manager.getRepository<UserSettings>("UserSettings");
 
 		const users = await userRepository.find();
 
