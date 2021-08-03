@@ -1,15 +1,16 @@
-import { Module, HttpModule } from "@nestjs/common";
-import { AuthController } from "./controllers/auth.controller";
-import { AuthService } from "./services/auth.service";
-import { RoleGuard } from "./guards/role.guard";
+import { HttpModule } from "@nestjs/axios";
+import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { UserRepository } from "../user/repositories/user.repository";
-import { AuthSystemService } from "./services/auth-system.service";
 import { CacheService } from "./cache.service";
-import { TestUserAuthStrategy } from "./guards/test-user-auth.strategy";
-import { SparkyAuthStrategy } from "./guards/sparky-auth.strategy";
+import { AuthController } from "./controllers/auth.controller";
 import { AuthGuard } from "./guards/auth.guard";
 import { AuthStrategy } from "./guards/auth.strategy";
+import { RoleGuard } from "./guards/role.guard";
+import { SparkyAuthStrategy } from "./guards/sparky-auth.strategy";
+import { TestUserAuthStrategy } from "./guards/test-user-auth.strategy";
+import { AuthSystemService } from "./services/auth-system.service";
+import { AuthService } from "./services/auth.service";
 
 @Module({
 	imports: [TypeOrmModule.forFeature([UserRepository]), HttpModule],
