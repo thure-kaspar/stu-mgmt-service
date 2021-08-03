@@ -178,21 +178,6 @@ describe("POST-REQUESTS for relations (db contains data) of CourseController (e2
 	});
 });
 
-describe("PATCH-REQUESTS (Db contains data) of CourseController (e2e)", () => {
-	beforeEach(async () => {
-		app = await createApplication();
-
-		// Setup mocks - these tests require a filled db
-		dbMockService = new DbMockService(getConnection());
-		await dbMockService.createAll();
-	});
-
-	afterEach(async () => {
-		await getConnection().dropDatabase(); // Drop database with all tables and data
-		await getConnection().close(); // Close Db-Connection after all tests have been executed
-	});
-});
-
 describe("DELETE-REQUESTS (Db contains data) of CourseController (e2e)", () => {
 	beforeEach(async () => {
 		app = await createApplication();
