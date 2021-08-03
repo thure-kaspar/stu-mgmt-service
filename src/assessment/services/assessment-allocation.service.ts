@@ -1,13 +1,12 @@
-import { Injectable, BadRequestException } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { AssessmentAllocationDto } from "../dto/assessment-allocation.dto";
-import { AssessmentAllocation } from "../entities/assessment-allocation.entity";
 import { AssessmentAllocationRepository } from "../repositories/assessment-allocation.repository";
 
 @Injectable()
 export class AssessmentAllocationService {
 	constructor(
-		@InjectRepository(AssessmentAllocation)
+		@InjectRepository(AssessmentAllocationRepository)
 		private allocationRepo: AssessmentAllocationRepository
 	) {}
 

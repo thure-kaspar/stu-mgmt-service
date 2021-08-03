@@ -4,12 +4,12 @@ import { CourseDto } from "src/course/dto/course/course.dto";
 import { DtoFactory } from "../../shared/dto-factory";
 import { CourseCreateDto } from "../dto/course/course-create.dto";
 import { CourseFilter } from "../dto/course/course-filter.dto";
-import { Course, CourseId } from "../entities/course.entity";
+import { CourseId } from "../entities/course.entity";
 import { CourseRepository } from "../repositories/course.repository";
 
 @Injectable()
 export class CourseService {
-	constructor(@InjectRepository(Course) private courseRepository: CourseRepository) {}
+	constructor(@InjectRepository(CourseRepository) private courseRepository: CourseRepository) {}
 
 	async createCourse(courseDto: CourseCreateDto): Promise<CourseDto> {
 		if (!courseDto.config) throw new BadRequestException("CourseConfig is missing.");

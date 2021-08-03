@@ -2,11 +2,11 @@ import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
 import { UserDto } from "../../shared/dto/user.dto";
-import { Course as CourseEntity, CourseId } from "../entities/course.entity";
+import { CourseId } from "../entities/course.entity";
 import { NotACourseMemberException } from "../exceptions/custom-exceptions";
-import { CourseRepository } from "../repositories/course.repository";
 import { Course } from "../models/course.model";
 import { Participant } from "../models/participant.model";
+import { CourseRepository } from "../repositories/course.repository";
 
 /**
  * Only allows requests for users, that are members of the course.
@@ -18,7 +18,7 @@ import { Participant } from "../models/participant.model";
  */
 @Injectable()
 export class CourseMemberGuard implements CanActivate {
-	constructor(@InjectRepository(CourseEntity) private courses: CourseRepository) {}
+	constructor(@InjectRepository(CourseRepository) private courses: CourseRepository) {}
 
 	async canActivate(context: ExecutionContext): Promise<boolean> {
 		const request = context.switchToHttp().getRequest();

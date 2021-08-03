@@ -1,8 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Group as GroupEntity } from "../entities/group.entity";
-import { GroupRepository } from "../repositories/group.repository";
 import { Group } from "../models/group.model";
+import { GroupRepository } from "../repositories/group.repository";
 
 /**
  * Attaches the `group` (including members) to the `request`.
@@ -10,7 +9,7 @@ import { Group } from "../models/group.model";
  */
 @Injectable()
 export class GroupGuard implements CanActivate {
-	constructor(@InjectRepository(GroupEntity) private groups: GroupRepository) {}
+	constructor(@InjectRepository(GroupRepository) private groups: GroupRepository) {}
 
 	async canActivate(context: ExecutionContext): Promise<boolean> {
 		const request = context.switchToHttp().getRequest();

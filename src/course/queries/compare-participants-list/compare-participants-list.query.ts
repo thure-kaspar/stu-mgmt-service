@@ -1,7 +1,6 @@
 import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DtoFactory } from "../../../shared/dto-factory";
-import { Participant } from "../../entities/participant.entity";
 import { CourseId } from "../../entities/course.entity";
 import { ParticipantRepository } from "../../repositories/participant.repository";
 import { ParticipantsComparisonDto } from "./participants-comparison.dto";
@@ -12,7 +11,7 @@ export class CompareParticipantsListQuery {
 
 @QueryHandler(CompareParticipantsListQuery)
 export class CompareParticipantsListHandler implements IQueryHandler<CompareParticipantsListQuery> {
-	constructor(@InjectRepository(Participant) private repo: ParticipantRepository) {}
+	constructor(@InjectRepository(ParticipantRepository) private repo: ParticipantRepository) {}
 
 	async execute(query: CompareParticipantsListQuery): Promise<ParticipantsComparisonDto> {
 		const { courseId, compareToCourseIds } = query;

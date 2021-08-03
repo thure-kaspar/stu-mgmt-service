@@ -1,10 +1,9 @@
 import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { Assessment } from "../../entities/assessment.entity";
-import { DtoFactory } from "../../../shared/dto-factory";
-import { AssignmentRegistration } from "../../../course/entities/assignment-group-registration.entity";
 import { CourseId } from "../../../course/entities/course.entity";
+import { AssignmentRegistrationRepository } from "../../../course/repositories/assignment-registration.repository";
+import { DtoFactory } from "../../../shared/dto-factory";
+import { Assessment } from "../../entities/assessment.entity";
 import {
 	AssignedEvaluatorFilter,
 	GroupWithAssignedEvaluatorDto
@@ -24,10 +23,11 @@ export class GroupsWithAssignedEvaluatorQuery {
 
 @QueryHandler(GroupsWithAssignedEvaluatorQuery)
 export class GroupsWithAssignedEvaluatorHandler
-	implements IQueryHandler<GroupsWithAssignedEvaluatorQuery> {
+	implements IQueryHandler<GroupsWithAssignedEvaluatorQuery>
+{
 	constructor(
-		@InjectRepository(AssignmentRegistration)
-		private registrations: Repository<AssignmentRegistration>
+		@InjectRepository(AssignmentRegistrationRepository)
+		private registrations: AssignmentRegistrationRepository
 	) {}
 
 	async execute(

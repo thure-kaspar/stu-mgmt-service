@@ -1,4 +1,5 @@
-import { HttpService, Injectable } from "@nestjs/common";
+import { HttpService } from "@nestjs/axios";
+import { Injectable } from "@nestjs/common";
 import { Config } from "../../.config/config";
 import { AuthSystemCredentials } from "../dto/auth-credentials.dto";
 import { AuthInfo } from "../dto/auth-info.dto";

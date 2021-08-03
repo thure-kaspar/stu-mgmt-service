@@ -4,34 +4,32 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { UserId } from "../../shared/entities/user.entity";
 import { AssignmentRegistrationFilter } from "../dto/assignment/assignment-registration.filter";
 import { GroupDto } from "../dto/group/group.dto";
-import { AssignmentRegistration } from "../entities/assignment-group-registration.entity";
 import { AssignmentId } from "../entities/assignment.entity";
 import { CourseId } from "../entities/course.entity";
-import { Group as GroupEntity, GroupId } from "../entities/group.entity";
-import { GroupUnregistered } from "../events/assignment/group-unregistered.event";
-import { UserRegistered } from "../events/assignment/user-registered.event";
-import { UserUnregistered } from "../events/assignment/user-unregistered.event";
-import { Course } from "../models/course.model";
-import { Participant } from "../models/participant.model";
-import { AssignmentRegistrationRepository } from "../repositories/assignment-registration.repository";
-import { GroupRepository } from "../repositories/group.repository";
-import { AlreadyInGroupException } from "../exceptions/custom-exceptions";
+import { GroupId } from "../entities/group.entity";
 import { GroupRegistered } from "../events/assignment/group-registered.event";
-import { GroupSettings } from "../entities/group-settings.entity";
-import { GroupSettingsRepository } from "../repositories/group-settings.repository";
-import { GroupMergeStrategy } from "./group-merge.strategy";
-import { CourseWithGroupSettings } from "../models/course-with-group-settings.model";
-import { Group } from "../models/group.model";
+import { GroupUnregistered } from "../events/assignment/group-unregistered.event";
 import { RegistrationsCreated } from "../events/assignment/registrations-created.event";
 import { RegistrationsRemoved } from "../events/assignment/registrations-removed.event";
+import { UserRegistered } from "../events/assignment/user-registered.event";
+import { UserUnregistered } from "../events/assignment/user-unregistered.event";
+import { AlreadyInGroupException } from "../exceptions/custom-exceptions";
+import { CourseWithGroupSettings } from "../models/course-with-group-settings.model";
+import { Course } from "../models/course.model";
+import { Group } from "../models/group.model";
+import { Participant } from "../models/participant.model";
+import { AssignmentRegistrationRepository } from "../repositories/assignment-registration.repository";
+import { GroupSettingsRepository } from "../repositories/group-settings.repository";
+import { GroupRepository } from "../repositories/group.repository";
+import { GroupMergeStrategy } from "./group-merge.strategy";
 
 @Injectable()
 export class AssignmentRegistrationService {
 	constructor(
-		@InjectRepository(AssignmentRegistration)
+		@InjectRepository(AssignmentRegistrationRepository)
 		private registrations: AssignmentRegistrationRepository,
-		@InjectRepository(GroupEntity) private groups: GroupRepository,
-		@InjectRepository(GroupSettings) private groupSettings: GroupSettingsRepository,
+		@InjectRepository(GroupRepository) private groups: GroupRepository,
+		@InjectRepository(GroupSettingsRepository) private groupSettings: GroupSettingsRepository,
 		private groupMergeStrategy: GroupMergeStrategy,
 		private events: EventBus
 	) {}

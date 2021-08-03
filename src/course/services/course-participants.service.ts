@@ -6,8 +6,7 @@ import { CourseRole } from "../../shared/enums";
 import { toDtos } from "../../shared/interfaces/to-dto.interface";
 import { CourseParticipantsFilter } from "../dto/course-participant/course-participants.filter";
 import { ParticipantDto } from "../dto/course-participant/participant.dto";
-import { Course as CourseEntity, CourseId } from "../entities/course.entity";
-import { Participant as ParticipantEntity } from "../entities/participant.entity";
+import { CourseId } from "../entities/course.entity";
 import { CourseJoined } from "../events/participant/course-joined.event";
 import { CourseClosedException } from "../exceptions/custom-exceptions";
 import { CourseWithGroupSettings } from "../models/course-with-group-settings.model";
@@ -18,8 +17,8 @@ import { ParticipantRepository } from "../repositories/participant.repository";
 @Injectable()
 export class CourseParticipantsService {
 	constructor(
-		@InjectRepository(CourseEntity) private courseRepo: CourseRepository,
-		@InjectRepository(ParticipantEntity) private participantRepo: ParticipantRepository,
+		@InjectRepository(CourseRepository) private courseRepo: CourseRepository,
+		@InjectRepository(ParticipantRepository) private participantRepo: ParticipantRepository,
 		private events: EventBus
 	) {}
 

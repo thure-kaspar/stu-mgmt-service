@@ -1,12 +1,11 @@
 import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
+import { UserId } from "../../shared/entities/user.entity";
 import { CourseId } from "../entities/course.entity";
 import { NotACourseMemberException } from "../exceptions/custom-exceptions";
 import { Participant } from "../models/participant.model";
-import { Participant as ParticipantEntity } from "../entities/participant.entity";
 import { ParticipantRepository } from "../repositories/participant.repository";
-import { UserId } from "../../shared/entities/user.entity";
 
 /**
  * Attaches the `selectedParticipant` to the `request`, meaning the participant that was specified
@@ -15,7 +14,9 @@ import { UserId } from "../../shared/entities/user.entity";
  */
 @Injectable()
 export class SelectedParticipantGuard implements CanActivate {
-	constructor(@InjectRepository(ParticipantEntity) private participants: ParticipantRepository) {}
+	constructor(
+		@InjectRepository(ParticipantRepository) private participants: ParticipantRepository
+	) {}
 
 	async canActivate(context: ExecutionContext): Promise<boolean> {
 		const request = context.switchToHttp().getRequest();

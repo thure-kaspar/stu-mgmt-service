@@ -1,8 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Assignment as AssignmentEntity } from "../entities/assignment.entity";
-import { AssignmentRepository } from "../repositories/assignment.repository";
 import { Assignment } from "../models/assignment.model";
+import { AssignmentRepository } from "../repositories/assignment.repository";
 
 /**
  * Attaches the `assignment` to the `request`.
@@ -10,7 +9,9 @@ import { Assignment } from "../models/assignment.model";
  */
 @Injectable()
 export class AssignmentGuard implements CanActivate {
-	constructor(@InjectRepository(AssignmentEntity) private assignments: AssignmentRepository) {}
+	constructor(
+		@InjectRepository(AssignmentRepository) private assignments: AssignmentRepository
+	) {}
 
 	async canActivate(context: ExecutionContext): Promise<boolean> {
 		const request = context.switchToHttp().getRequest();

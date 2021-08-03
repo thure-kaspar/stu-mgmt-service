@@ -3,15 +3,11 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { CourseDto } from "src/course/dto/course/course.dto";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
 import { AssessmentDto } from "../../assessment/dto/assessment.dto";
-import { Assessment } from "../../assessment/entities/assessment.entity";
 import { AssessmentRepository } from "../../assessment/repositories/assessment.repository";
 import { GroupEventDto } from "../../course/dto/group/group-event.dto";
 import { GroupDto } from "../../course/dto/group/group.dto";
-import { AssignmentRegistration } from "../../course/entities/assignment-group-registration.entity";
-import { Assignment, AssignmentId } from "../../course/entities/assignment.entity";
+import { AssignmentId } from "../../course/entities/assignment.entity";
 import { CourseId } from "../../course/entities/course.entity";
-import { GroupEvent } from "../../course/entities/group-event.entity";
-import { Group } from "../../course/entities/group.entity";
 import { Participant } from "../../course/models/participant.model";
 import { AssignmentRegistrationRepository } from "../../course/repositories/assignment-registration.repository";
 import { AssignmentRepository } from "../../course/repositories/assignment.repository";
@@ -19,7 +15,7 @@ import { GroupEventRepository } from "../../course/repositories/group-event.repo
 import { GroupRepository } from "../../course/repositories/group.repository";
 import { DtoFactory } from "../../shared/dto-factory";
 import { UserDto, UserUpdateDto } from "../../shared/dto/user.dto";
-import { User, UserId } from "../../shared/entities/user.entity";
+import { UserId } from "../../shared/entities/user.entity";
 import { AssignmentState } from "../../shared/enums";
 import { AssignmentGroupTuple } from "../dto/assignment-group-tuple.dto";
 import { UserFilter } from "../dto/user.filter";
@@ -28,12 +24,12 @@ import { UserRepository } from "../repositories/user.repository";
 @Injectable()
 export class UserService {
 	constructor(
-		@InjectRepository(User) private userRepository: UserRepository,
-		@InjectRepository(Group) private groupRepository: GroupRepository,
-		@InjectRepository(Assignment) private assignmentRepository: AssignmentRepository,
-		@InjectRepository(Assessment) private assessmentRepository: AssessmentRepository,
-		@InjectRepository(GroupEvent) private groupEventRepository: GroupEventRepository,
-		@InjectRepository(AssignmentRegistration)
+		@InjectRepository(UserRepository) private userRepository: UserRepository,
+		@InjectRepository(GroupRepository) private groupRepository: GroupRepository,
+		@InjectRepository(AssignmentRepository) private assignmentRepository: AssignmentRepository,
+		@InjectRepository(AssessmentRepository) private assessmentRepository: AssessmentRepository,
+		@InjectRepository(GroupEventRepository) private groupEventRepository: GroupEventRepository,
+		@InjectRepository(AssignmentRegistrationRepository)
 		private registrations: AssignmentRegistrationRepository
 	) {}
 

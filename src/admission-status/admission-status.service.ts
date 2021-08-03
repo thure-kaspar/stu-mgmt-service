@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { AssignmentDto } from "../course/dto/assignment/assignment.dto";
 import { AdmissionCriteria } from "../course/entities/admission-criteria.entity";
@@ -6,23 +6,23 @@ import { AssignmentId } from "../course/entities/assignment.entity";
 import { CourseId } from "../course/entities/course.entity";
 import { Participant } from "../course/entities/participant.entity";
 import { AdmissionCriteriaRepository } from "../course/repositories/admission-criteria.repository";
+import { AdmissionFromPreviousSemesterRepository } from "../course/repositories/admission-from-previous-semester.repository";
 import { ParticipantRepository } from "../course/repositories/participant.repository";
 import { AssignmentService } from "../course/services/assignment.service";
 import { UserId } from "../shared/entities/user.entity";
 import { AssignmentState } from "../shared/enums";
+import { AdmissionRuleDto } from "./dto/admission-rule.dto";
 import { AdmissionStatusDto } from "./dto/admission-status.dto";
 import { PointsOverviewDto, StudentResults } from "./dto/points-overview.dto";
 import { AdmissionRule } from "./rules/abstract-rules";
 import { AdmissionRuleFactory } from "./rules/factory";
-import { AdmissionRuleDto } from "./dto/admission-rule.dto";
-import { AdmissionFromPreviousSemesterRepository } from "../course/repositories/admission-from-previous-semester.repository";
 
 @Injectable()
 export class AdmissionStatusService {
 	constructor(
-		@InjectRepository(Participant)
+		@InjectRepository(ParticipantRepository)
 		private participants: ParticipantRepository,
-		@InjectRepository(AdmissionCriteria)
+		@InjectRepository(AdmissionCriteriaRepository)
 		private admissionCriteria: AdmissionCriteriaRepository,
 		@InjectRepository(AdmissionFromPreviousSemesterRepository)
 		private admissionFromPreviousRepo: AdmissionFromPreviousSemesterRepository,
@@ -30,17 +30,14 @@ export class AdmissionStatusService {
 	) {}
 
 	async getAdmissionStatusOfParticipants(courseId: CourseId): Promise<AdmissionStatusDto[]> {
-		const [
-			students,
-			assignments,
-			admissionCriteria,
-			admissionFromPrevious
-		] = await Promise.all([
-			this.participants.getStudentsWithAssessments(courseId),
-			this.assignmentService.getAssignments(courseId),
-			this.admissionCriteria.getByCourseId(courseId),
-			this.admissionFromPreviousRepo.tryGetByCourseId(courseId)
-		]);
+		const [students, assignments, admissionCriteria, admissionFromPrevious] = await Promise.all(
+			[
+				this.participants.getStudentsWithAssessments(courseId),
+				this.assignmentService.getAssignments(courseId),
+				this.admissionCriteria.getByCourseId(courseId),
+				this.admissionFromPreviousRepo.tryGetByCourseId(courseId)
+			]
+		);
 
 		return this._getAdmissionStatusOfParticipants(
 			courseId,

@@ -2,7 +2,6 @@ import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Brackets } from "typeorm";
 import { Assessment } from "../../../assessment/entities/assessment.entity";
-import { User } from "../../../shared/entities/user.entity";
 import { UserRepository } from "../../../user/repositories/user.repository";
 import { AssignedEvaluatorFilter } from "../groups-with-assigned-evaluator/group-with-assigned-evaluator.dto";
 import { ParticipantsWithAssignedEvaluatorDto } from "./participants-with-assigned-evaluator.dto";
@@ -21,8 +20,9 @@ export class ParticipantsWithAssignedEvaluatorQuery {
 
 @QueryHandler(ParticipantsWithAssignedEvaluatorQuery)
 export class ParticipantsWithAssignedEvaluatorHandler
-	implements IQueryHandler<ParticipantsWithAssignedEvaluatorQuery> {
-	constructor(@InjectRepository(User) private userRepo: UserRepository) {}
+	implements IQueryHandler<ParticipantsWithAssignedEvaluatorQuery>
+{
+	constructor(@InjectRepository(UserRepository) private userRepo: UserRepository) {}
 
 	async execute(
 		query: ParticipantsWithAssignedEvaluatorQuery

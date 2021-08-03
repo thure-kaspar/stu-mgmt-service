@@ -37,7 +37,7 @@ export class AssignmentSchedulerService {
 	constructor(
 		private schedulerRegistry: SchedulerRegistry,
 		private assignmentService: AssignmentService,
-		@InjectRepository(AssignmentEntity) private assignmentRepository: AssignmentRepository
+		@InjectRepository(AssignmentRepository) private assignmentRepository: AssignmentRepository
 	) {}
 
 	@Timeout("onInit", 0) // Executes after application start

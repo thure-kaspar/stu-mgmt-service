@@ -1,7 +1,7 @@
-import { HttpService, Injectable, Logger } from "@nestjs/common";
+import { HttpService } from "@nestjs/axios";
+import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { NotificationDto } from "../shared/dto/notification.dto";
-import { Subscriber } from "./subscriber/subscriber.entity";
 import { SubscriberRepository } from "./subscriber/subscriber.repository";
 
 @Injectable()
@@ -10,7 +10,7 @@ export class NotificationService {
 
 	constructor(
 		private http: HttpService,
-		@InjectRepository(Subscriber) private subscriberRepository: SubscriberRepository
+		@InjectRepository(SubscriberRepository) private subscriberRepository: SubscriberRepository
 	) {}
 
 	/**

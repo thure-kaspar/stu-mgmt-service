@@ -5,11 +5,7 @@ import { AssignmentTemplateDto } from "../dto/course-config/assignment-template.
 import { CourseConfigDto, CourseConfigUpdateDto } from "../dto/course-config/course-config.dto";
 import { GroupSettingsDto, GroupSettingsUpdateDto } from "../dto/course-config/group-settings.dto";
 import { ParticipantDto } from "../dto/course-participant/participant.dto";
-import { AdmissionCriteria } from "../entities/admission-criteria.entity";
-import { AssignmentTemplate } from "../entities/assignment-template.entity";
-import { CourseConfig } from "../entities/course-config.entity";
 import { CourseId } from "../entities/course.entity";
-import { GroupSettings } from "../entities/group-settings.entity";
 import { AdmissionCriteriaRepository } from "../repositories/admission-criteria.repository";
 import { AdmissionFromPreviousSemesterRepository } from "../repositories/admission-from-previous-semester.repository";
 import { AssignmentTemplateRepository } from "../repositories/assignment-template.repository";
@@ -20,13 +16,15 @@ import { ParticipantRepository } from "../repositories/participant.repository";
 @Injectable()
 export class CourseConfigService {
 	constructor(
-		@InjectRepository(CourseConfig) private configRepo: CourseConfigRepository,
-		@InjectRepository(GroupSettings) private groupSettingsRepo: GroupSettingsRepository,
-		@InjectRepository(AdmissionCriteria)
+		@InjectRepository(CourseConfigRepository) private configRepo: CourseConfigRepository,
+		@InjectRepository(GroupSettingsRepository)
+		private groupSettingsRepo: GroupSettingsRepository,
+		@InjectRepository(AdmissionCriteriaRepository)
 		private admissionCriteriaRepo: AdmissionCriteriaRepository,
 		@InjectRepository(AdmissionFromPreviousSemesterRepository)
 		private admissionFromPreviousRepo: AdmissionFromPreviousSemesterRepository,
-		@InjectRepository(AssignmentTemplate) private templateRepo: AssignmentTemplateRepository,
+		@InjectRepository(AssignmentTemplateRepository)
+		private templateRepo: AssignmentTemplateRepository,
 		@InjectRepository(ParticipantRepository) private participantRepo: ParticipantRepository
 	) {}
 

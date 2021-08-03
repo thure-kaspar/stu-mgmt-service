@@ -1,10 +1,10 @@
 import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
-import { CourseRepository } from "../../repositories/course.repository";
-import { Course, CourseId } from "../../entities/course.entity";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
-import { CanJoinCourseDto } from "./can-join-course.dto";
 import { UserId } from "../../../shared/entities/user.entity";
+import { Course, CourseId } from "../../entities/course.entity";
+import { CourseRepository } from "../../repositories/course.repository";
+import { CanJoinCourseDto } from "./can-join-course.dto";
 
 export class CanJoinCourseQuery {
 	constructor(public readonly courseId: CourseId, public readonly userId: UserId) {}
@@ -12,7 +12,7 @@ export class CanJoinCourseQuery {
 
 @QueryHandler(CanJoinCourseQuery)
 export class CanJoinCourseHandler implements IQueryHandler<CanJoinCourseQuery> {
-	constructor(@InjectRepository(Course) private courseRepo: CourseRepository) {}
+	constructor(@InjectRepository(CourseRepository) private courseRepo: CourseRepository) {}
 
 	async execute(query: CanJoinCourseQuery): Promise<CanJoinCourseDto> {
 		// Load course, courseConfig and join user if he's a member

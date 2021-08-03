@@ -11,9 +11,8 @@ import { GroupEventDto } from "../dto/group/group-event.dto";
 import { GroupFilter } from "../dto/group/group-filter.dto";
 import { GroupDto, GroupUpdateDto } from "../dto/group/group.dto";
 import { CourseId } from "../entities/course.entity";
-import { GroupEvent } from "../entities/group-event.entity";
 import { GroupSettings } from "../entities/group-settings.entity";
-import { Group as GroupEntity, GroupId } from "../entities/group.entity";
+import { GroupId } from "../entities/group.entity";
 import { UserJoinedGroupEvent } from "../events/group/user-joined-group.event";
 import { UserLeftGroupEvent } from "../events/group/user-left-group.event";
 import { CourseWithGroupSettings } from "../models/course-with-group-settings.model";
@@ -28,9 +27,10 @@ import { AssignmentRegistrationService } from "./assignment-registration.service
 @Injectable()
 export class GroupService {
 	constructor(
-		@InjectRepository(GroupEntity) private groupRepository: GroupRepository,
-		@InjectRepository(GroupSettings) private groupSettingsRepository: GroupSettingsRepository,
-		@InjectRepository(GroupEvent) private groupEventRepository: GroupEventRepository,
+		@InjectRepository(GroupRepository) private groupRepository: GroupRepository,
+		@InjectRepository(GroupSettingsRepository)
+		private groupSettingsRepository: GroupSettingsRepository,
+		@InjectRepository(GroupEventRepository) private groupEventRepository: GroupEventRepository,
 		@InjectRepository(AssessmentRepository) private assessmentRepository: AssessmentRepository,
 		private registrations: AssignmentRegistrationService,
 		private events: EventBus

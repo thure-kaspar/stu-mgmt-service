@@ -1,13 +1,12 @@
 import { Logger } from "@nestjs/common";
 import { EventsHandler, IEventHandler } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
 import { Event } from "..";
 import { NotificationDto } from "../../../shared/dto/notification.dto";
 import { UserId } from "../../../shared/entities/user.entity";
 import { CourseId } from "../../entities/course.entity";
-import { GroupEvent } from "../../entities/group-event.entity";
 import { GroupId } from "../../entities/group.entity";
+import { GroupEventRepository } from "../../repositories/group-event.repository";
 import { GroupRepository } from "../../repositories/group.repository";
 import { INotify } from "../interfaces";
 
@@ -31,7 +30,9 @@ export class UserLeftGroupEvent implements INotify {
 
 @EventsHandler(UserLeftGroupEvent)
 export class UserLeftGroupHandler implements IEventHandler<UserLeftGroupEvent> {
-	constructor(@InjectRepository(GroupEvent) private groupEvents: Repository<GroupEvent>) {}
+	constructor(
+		@InjectRepository(GroupEventRepository) private groupEvents: GroupEventRepository
+	) {}
 
 	handle(event: UserLeftGroupEvent): void {
 		this.groupEvents.insert({

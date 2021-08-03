@@ -1,15 +1,14 @@
-import { Controller, Post, NotImplementedException } from "@nestjs/common";
-import { ApiTags, ApiBearerAuth, ApiOperation } from "@nestjs/swagger";
-import { UserRole } from "../../shared/enums";
+import { Controller, NotImplementedException, Post } from "@nestjs/common";
+import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { InjectRepository } from "@nestjs/typeorm";
-import { User } from "../../shared/entities/user.entity";
+import { UserRole } from "../../shared/enums";
 import { UserRepository } from "../repositories/user.repository";
 
 @ApiBearerAuth()
 @ApiTags("user-mgmt")
 @Controller("user-mgmt")
 export class UserManagementController {
-	constructor(@InjectRepository(User) private userRepository: UserRepository) {}
+	constructor(@InjectRepository(UserRepository) private userRepository: UserRepository) {}
 
 	@ApiOperation({
 		operationId: "setUserRole",

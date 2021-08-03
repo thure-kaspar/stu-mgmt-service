@@ -2,31 +2,28 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import { EventBus } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import {
-	Assignment as AssignmentEntity,
-	AssignmentId
-} from "../../course/entities/assignment.entity";
-import { AssessmentScoreChanged } from "../events/assessment-score-changed.event";
+import { AssignmentId } from "../../course/entities/assignment.entity";
 import { Assignment } from "../../course/models/assignment.model";
 import { Participant } from "../../course/models/participant.model";
 import { AssignmentRepository } from "../../course/repositories/assignment.repository";
 import { GroupService } from "../../course/services/group.service";
 import { DtoFactory } from "../../shared/dto-factory";
 import { UserId } from "../../shared/entities/user.entity";
+import { AssignmentState } from "../../shared/enums";
 import { AssessmentEventDto } from "../dto/assessment-event.dto";
 import { AssessmentFilter } from "../dto/assessment-filter.dto";
 import { AssessmentCreateDto, AssessmentDto, AssessmentUpdateDto } from "../dto/assessment.dto";
 import { PartialAssessmentDto } from "../dto/partial-assessment.dto";
 import { AssessmentEvent } from "../entities/assessment-event.entity";
 import { Assessment } from "../entities/assessment.entity";
+import { AssessmentScoreChanged } from "../events/assessment-score-changed.event";
 import { AssessmentRepository } from "../repositories/assessment.repository";
-import { AssignmentState } from "../../shared/enums";
 
 @Injectable()
 export class AssessmentService {
 	constructor(
-		@InjectRepository(Assessment) private assessmentRepository: AssessmentRepository,
-		@InjectRepository(AssignmentEntity) private assignmentRepository: AssignmentRepository,
+		@InjectRepository(AssessmentRepository) private assessmentRepository: AssessmentRepository,
+		@InjectRepository(AssignmentRepository) private assignmentRepository: AssignmentRepository,
 		@InjectRepository(AssessmentEvent)
 		private assessmentEventsRepo: Repository<AssessmentEvent>,
 		private groupService: GroupService,

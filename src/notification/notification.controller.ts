@@ -1,7 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Subscriber } from "rxjs";
 import { Roles } from "../auth/decorators/roles.decorator";
 import { NotificationDto } from "../shared/dto/notification.dto";
 import { UserRole } from "../shared/enums";
@@ -16,7 +15,7 @@ import { SubscriberRepository } from "./subscriber/subscriber.repository";
 export class NotificationController {
 	constructor(
 		private notificationService: NotificationService,
-		@InjectRepository(Subscriber) private subscriberRepository: SubscriberRepository
+		@InjectRepository(SubscriberRepository) private subscriberRepository: SubscriberRepository
 	) {}
 
 	@ApiOperation({
