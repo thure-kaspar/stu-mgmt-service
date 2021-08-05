@@ -3,6 +3,7 @@ import { AdmissionCriteria } from "../entities/admission-criteria.entity";
 import { AdmissionCriteriaDto } from "../dto/course-config/admission-criteria.dto";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
 import { CourseId } from "../entities/course.entity";
+import { CourseConfigRepository } from "./course-config.repository";
 
 @EntityRepository(AdmissionCriteria)
 export class AdmissionCriteriaRepository extends Repository<AdmissionCriteria> {
@@ -47,8 +48,12 @@ export class AdmissionCriteriaRepository extends Repository<AdmissionCriteria> {
 		courseId: CourseId,
 		criteriaDto: AdmissionCriteriaDto
 	): Promise<AdmissionCriteria> {
-		const criteria = await this.getByCourseId(courseId);
+		const criteria = (await this.tryGetByCourseId(courseId)) || new AdmissionCriteria();
+		const courseConfigId = criteria.courseConfigId ?? (await this.getCourseConfigId(courseId));
+
 		criteria.admissionCriteria = criteriaDto;
+		criteria.courseConfigId = courseConfigId;
+
 		return this.save(criteria);
 	}
 
@@ -57,5 +62,12 @@ export class AdmissionCriteriaRepository extends Repository<AdmissionCriteria> {
 		const criteria = await this.getByCourseId(courseId);
 		const deleted = await this.remove(criteria);
 		return !!deleted;
+	}
+
+	/** Looks up the corresponding `courseConfigId` for the given course. */
+	private async getCourseConfigId(courseId: string): Promise<number> {
+		const courseConfigRepo = this.manager.getCustomRepository(CourseConfigRepository);
+		const { id } = await courseConfigRepo.getByCourseId(courseId);
+		return id;
 	}
 }
