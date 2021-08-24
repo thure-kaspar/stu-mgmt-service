@@ -2,9 +2,9 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
 export class OldSchemaToNewSchema1623499898868 implements MigrationInterface {
-	name = "OldSchemaToNewSchema1623499898868";
-
 	public async up(queryRunner: QueryRunner): Promise<void> {
+		console.log("Running migration: OldSchemaToNewSchema1623499898868");
+
 		await queryRunner.query(
 			`CREATE TABLE "admission_from_previous_semester" ("id" SERIAL NOT NULL, "courseConfigId" integer NOT NULL, "admissionFromPreviousSemester" json, CONSTRAINT "REL_c7d9fe97ae1efc48b05e2d5297" UNIQUE ("courseConfigId"), CONSTRAINT "PK_dd698a0a3a49254ffff251cbb78" PRIMARY KEY ("id"))`
 		);

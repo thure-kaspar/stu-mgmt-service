@@ -3,8 +3,10 @@ import { User } from "../src/shared/entities/user.entity";
 import { Language } from "../src/shared/language";
 import { UserSettings } from "../src/user/entities/user-settings.entity";
 
-export class UserSettings1622731806947 implements MigrationInterface {
+export class UpdateUserSettings1629826169063 implements MigrationInterface {
 	public async up(queryRunner: QueryRunner): Promise<void> {
+		console.log("Running migration: UpdateUserSettings1629826169063");
+
 		const userRepository = queryRunner.manager.getRepository<User>("User");
 		const userSettingsRepository =
 			queryRunner.manager.getRepository<UserSettings>("UserSettings");
