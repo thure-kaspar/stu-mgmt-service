@@ -15,7 +15,7 @@ npm install
 # Create pre-compiled distribution package
 npm run build
 rm -f Backend.tar.gz
-tar czf Backend.tar.gz dist src test config package.json ormconfig.ts
+tar czf Backend.tar.gz dist src test config package.json ormconfig.ts tsconfig.json
 
 # Deploy on demo server
 scripts/deploy.sh
