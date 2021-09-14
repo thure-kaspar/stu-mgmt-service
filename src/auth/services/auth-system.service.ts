@@ -1,5 +1,5 @@
 import { HttpService } from "@nestjs/axios";
-import { Injectable } from "@nestjs/common";
+import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { Config } from "../../.config/config";
 import { AuthSystemCredentials } from "../dto/auth-credentials.dto";
 import { AuthInfo } from "../dto/auth-info.dto";
@@ -19,8 +19,11 @@ export class AuthSystemService {
 			// Return AuthInfo, if user is authenticated
 			return response.data;
 		} catch (error) {
-			// Return null, if authentication failed
-			return null;
+			throw new UnauthorizedException({
+				status: error.status,
+				message: "Failed to authenticate with Sparkyservice.",
+				sparkyError: error.response.data
+			});
 		}
 	}
 }

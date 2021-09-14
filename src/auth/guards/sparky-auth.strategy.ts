@@ -1,4 +1,4 @@
-import { ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
+import { ExecutionContext, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Request } from "express";
 import { DtoFactory } from "../../shared/dto-factory";
@@ -29,11 +29,6 @@ export class SparkyAuthStrategy extends AuthStrategy {
 
 		if (!user) {
 			const extUser = await this.authSystem.checkAuthentication({ token });
-
-			if (!extUser) {
-				throw new UnauthorizedException("Failed to authenticate with Sparkyservice.");
-			}
-
 			user = await this.getOrCreateUser(extUser);
 			this.cache.set(token, user);
 		}
