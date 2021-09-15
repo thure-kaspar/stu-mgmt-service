@@ -218,14 +218,14 @@ export class MailingListener {
 	}
 
 	async onParticipantLeftGroup(event: UserLeftGroupEvent): Promise<void> {
-		const group = await this.groupService.getGroup(event.groupId);
-		const participants = await this.participantRepository.getParticipantsWithUserSettings(
+		const [group, participantThatLeft] = await Promise.all([
+			this.groupService.getGroup(event.groupId),
+			this.participantRepository.getParticipant(event.courseId, event.userId)
+		]);
+
+		const recipients = await this.participantRepository.getParticipantsWithUserSettings(
 			event.courseId,
 			{ userIds: group.members.map(m => m.userId) }
-		);
-
-		const recipients = this.filterReceivers(participants, "PARTICIPANT_LEFT_GROUP").filter(
-			p => p.userId !== event.userId // Exclude the student that left the group
 		);
 
 		const mailPromises = recipients.map(participant => {
@@ -235,7 +235,7 @@ export class MailingListener {
 				this.getPreferredLanguage(participant),
 				{
 					courseId: event.courseId,
-					participantName: group.members.find(m => m.userId === event.userId).displayName
+					participantName: participantThatLeft.user.username
 				}
 			);
 
