@@ -1,8 +1,9 @@
 import { DynamicModule, ForwardReference, Module, Provider, Type } from "@nestjs/common";
 import { APP_INTERCEPTOR } from "@nestjs/core";
+import { ScheduleModule } from "@nestjs/schedule";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { Config } from "./.config/config";
 import typeOrmConfig from "../ormconfig";
+import { Config } from "./.config/config";
 import { AdmissionStatusModule } from "./admission-status/admission-status.module";
 import { AppController } from "./app.controller";
 import { AssessmentModule } from "./assessment/assessment.module";
@@ -12,6 +13,7 @@ import { ExportModule } from "./export/export.module";
 import { MailingModule } from "./mailing/mailing.module";
 import { NotificationModule } from "./notification/notification.module";
 import { SubmissionModule } from "./submission/submission.module";
+import { TaskSchedulingModule } from "./task-scheduling/task-scheduling.module";
 import { UserModule } from "./user/user.module";
 import { RequestLogger } from "./utils/request.logger";
 
@@ -37,8 +39,8 @@ function Imports(): (
 		imports.push(MailingModule);
 	}
 
-	if (process.env.NODE_ENV !== "testing") {
-		// imports.push(ScheduleModule.forRoot(), TaskSchedulingModule);
+	if (process.env.NODE_ENV !== "testing" && process.env.NODE_ENV !== "development") {
+		imports.push(ScheduleModule.forRoot(), TaskSchedulingModule);
 	}
 
 	return imports;
