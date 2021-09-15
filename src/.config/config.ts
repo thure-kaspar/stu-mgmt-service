@@ -26,7 +26,20 @@ export class Config {
 	static getLogger(): Logger {
 		return config.get("logger");
 	}
+
+	static getConfig(): ConfigurationSettings {
+		return config.util.toObject();
+	}
 }
+
+type ConfigurationSettings = {
+	server: Server;
+	db: Db;
+	authentication: Authentication;
+	notifications: Notifications;
+	mailing: Mailing;
+	logger: Logger;
+};
 
 type Server = {
 	port: number;
