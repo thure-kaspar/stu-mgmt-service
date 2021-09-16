@@ -415,14 +415,14 @@ describe("POST-REQUESTS for relations of GroupController (e2e)", () => {
 					.expect(201);
 			});
 
-			it("Incorrect password -> 403 BadRequest", () => {
+			it("Incorrect password -> 400 BadRequest", () => {
 				const group = GROUP_1_JAVA;
 				console.assert(group.password, "Expecting group to have a password.");
 
 				return request(app.getHttpServer())
 					.post(`/courses/${course.id}/groups/${group.id}/users/${users[0].id}`)
 					.send({ password: "wrong_password" })
-					.expect(403);
+					.expect(400);
 			});
 
 			it("Group is closed -> 403 Forbidden", () => {
