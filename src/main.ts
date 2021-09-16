@@ -5,6 +5,7 @@ import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { getConnection } from "typeorm";
 import { DbMockService } from "../test/mocks/db-mock.service";
 import { Config } from "./.config/config";
+import { environment } from "./.config/environment";
 import {
 	IndividualPercentWithAllowedFailuresRuleDto,
 	OverallPercentRuleDto
@@ -38,7 +39,7 @@ async function bootstrap(): Promise<void> {
 	setupSwaggerDocument(app);
 
 	// If demo environment, populate database with test data
-	if (process.env.NODE_ENV == "demo") {
+	if (environment.is("demo")) {
 		const dbMockService = new DbMockService(getConnection());
 		await dbMockService.createAll();
 	}

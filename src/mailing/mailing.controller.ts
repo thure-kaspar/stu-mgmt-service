@@ -6,6 +6,7 @@ import { ASSIGNMENT_JAVA_EVALUATED } from "../../test/mocks/assignments.mock";
 import { GROUP_1_JAVA } from "../../test/mocks/groups/groups.mock";
 import { USER_STUDENT_2_JAVA, USER_STUDENT_3_JAVA_TUTOR } from "../../test/mocks/users.mock";
 import { convertToEntity } from "../../test/utils/object-helper";
+import { environment } from "../.config/environment";
 import { Assignment as AssignmentEntity } from "../course/entities/assignment.entity";
 import { AssignmentStateChanged } from "../course/events/assignment/assignment-state-changed.event";
 import { UserJoinedGroupEvent } from "../course/events/group/user-joined-group.event";
@@ -21,7 +22,7 @@ export class MailingController {
 
 	@Post("simulateEvent")
 	simulateEvent(): Promise<void> {
-		if (process.env.NODE_ENV !== "development") {
+		if (!environment.is("development")) {
 			throw new NotImplementedException("Only available in development environment.");
 		}
 

@@ -1,6 +1,7 @@
 import { HttpModule } from "@nestjs/axios";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { environment } from "../.config/environment";
 import { UserRepository } from "../user/repositories/user.repository";
 import { CacheService } from "./cache.service";
 import { AuthController } from "./controllers/auth.controller";
@@ -24,9 +25,7 @@ import { AuthService } from "./services/auth.service";
 		{
 			provide: AuthStrategy,
 			useClass: (() =>
-				process.env.NODE_ENV === "development" || process.env.NODE_ENV === "demo"
-					? TestUserAuthStrategy
-					: SparkyAuthStrategy)()
+				environment.is("development", "demo") ? TestUserAuthStrategy : SparkyAuthStrategy)()
 		},
 		AuthGuard
 	],

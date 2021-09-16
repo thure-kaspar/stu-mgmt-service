@@ -4,11 +4,13 @@ import { ScheduleModule } from "@nestjs/schedule";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import typeOrmConfig from "../ormconfig";
 import { Config } from "./.config/config";
+import { environment } from "./.config/environment";
 import { AdmissionStatusModule } from "./admission-status/admission-status.module";
 import { AppController } from "./app.controller";
 import { AssessmentModule } from "./assessment/assessment.module";
 import { AuthModule } from "./auth/auth.module";
 import { CourseModule } from "./course/course.module";
+import { DemoModule } from "./demo/demo.module";
 import { ExportModule } from "./export/export.module";
 import { MailingModule } from "./mailing/mailing.module";
 import { NotificationModule } from "./notification/notification.module";
@@ -39,7 +41,7 @@ function Imports(): (
 		imports.push(MailingModule);
 	}
 
-	if (process.env.NODE_ENV !== "testing" && process.env.NODE_ENV !== "development") {
+	if (environment.is("demo", "production")) {
 		imports.push(ScheduleModule.forRoot(), TaskSchedulingModule);
 	}
 
