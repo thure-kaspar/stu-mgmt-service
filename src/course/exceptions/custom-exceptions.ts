@@ -1,4 +1,4 @@
-import { ConflictException, ForbiddenException } from "@nestjs/common";
+import { BadRequestException, ConflictException, ForbiddenException } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger";
 import { CourseId } from "../entities/course.entity";
 import { GroupId } from "../entities/group.entity";
@@ -65,7 +65,7 @@ export class GroupFullException extends ConflictException {
 	}
 }
 
-export class InvalidPasswordException extends ForbiddenException {
+export class InvalidPasswordException extends BadRequestException {
 	constructor() {
 		super("The given password was invalid.", "InvalidPasswordException");
 	}
