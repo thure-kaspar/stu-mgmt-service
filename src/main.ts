@@ -77,6 +77,7 @@ function setupSwaggerDocument(app: NestExpressApplication) {
 		.addTag("submission")
 		.addTag("assessment-allocation")
 		.addTag("notification")
+		.addTag("demo")
 		.build();
 
 	const document = SwaggerModule.createDocument(app, options, {

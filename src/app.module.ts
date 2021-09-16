@@ -45,6 +45,10 @@ function Imports(): (
 		imports.push(ScheduleModule.forRoot(), TaskSchedulingModule);
 	}
 
+	if (!environment.is("production")) {
+		imports.push(DemoModule);
+	}
+
 	return imports;
 }
 
