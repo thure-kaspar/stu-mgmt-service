@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { EventBus } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UserId } from "../../shared/entities/user.entity";
@@ -8,7 +8,7 @@ import { CourseParticipantsFilter } from "../dto/course-participant/course-parti
 import { ParticipantDto } from "../dto/course-participant/participant.dto";
 import { CourseId } from "../entities/course.entity";
 import { CourseJoined } from "../events/participant/course-joined.event";
-import { CourseClosedException } from "../exceptions/custom-exceptions";
+import { CourseClosedException, InvalidPasswordException } from "../exceptions/custom-exceptions";
 import { CourseWithGroupSettings } from "../models/course-with-group-settings.model";
 import { Participant } from "../models/participant.model";
 import { CourseRepository } from "../repositories/course.repository";
@@ -35,7 +35,7 @@ export class CourseParticipantsService {
 		// Check if password is required + matches
 		const requiredPassword = course.config.password;
 		if (requiredPassword && requiredPassword !== password) {
-			throw new BadRequestException("The given password was incorrect.");
+			throw new InvalidPasswordException();
 		}
 
 		const participant = await this.participantRepo.createParticipant(
