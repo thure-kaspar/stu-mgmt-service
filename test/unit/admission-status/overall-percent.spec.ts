@@ -1,6 +1,6 @@
 import { OverallPercentRule, RuleType } from "../../../src/admission-status/rules/abstract-rules";
 import { OverallPercentRuleImpl } from "../../../src/admission-status/rules/impl/overall-percent";
-import { AssessmentDto } from "../../../src/course/dto/assessment/assessment.dto";
+import { AssessmentDto } from "../../../src/assessment/dto/assessment.dto";
 import { AssignmentDto } from "../../../src/course/dto/assignment/assignment.dto";
 import { AssignmentState, AssignmentType } from "../../../src/shared/enums";
 import { RoundingType } from "../../../src/utils/math";
