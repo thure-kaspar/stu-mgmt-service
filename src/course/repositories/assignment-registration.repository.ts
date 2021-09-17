@@ -52,7 +52,6 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 	async createRegistration(
 		assignmentId: AssignmentId,
 		groupId: GroupId,
-		userId: UserId,
 		participantId: number
 	): Promise<AssignmentRegistration> {
 		// Check if group is already registered

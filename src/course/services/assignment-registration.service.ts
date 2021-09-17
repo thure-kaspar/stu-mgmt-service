@@ -90,12 +90,8 @@ export class AssignmentRegistrationService {
 			throw new AlreadyInGroupException(selectedParticipant.userId, isAlreadyRegistered.id);
 		}
 
-		await this.registrations.createRegistration(
-			assignmentId,
-			groupId,
-			selectedParticipant.userId,
-			selectedParticipant.id
-		);
+		await this.registrations.createRegistration(assignmentId, groupId, selectedParticipant.id);
+
 		this.events.publish(
 			new UserRegistered(course.id, assignmentId, selectedParticipant.userId, groupId)
 		);
