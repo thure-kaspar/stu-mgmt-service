@@ -42,6 +42,7 @@ type ConfigurationSettings = {
 };
 
 type Server = {
+	basePath: string;
 	port: number;
 };
 
