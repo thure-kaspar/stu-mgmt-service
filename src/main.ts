@@ -62,8 +62,8 @@ bootstrap();
 
 function setupSwaggerDocument(app: NestExpressApplication, args: { basePath: string }) {
 	const options = new DocumentBuilder()
-		.addServer("/", "Relative path")
 		.addServer(args.basePath, "Base path")
+		.addServer("/", "Relative path")
 		.addBearerAuth()
 		.setTitle("Student-Management-System-API")
 		.setDescription(

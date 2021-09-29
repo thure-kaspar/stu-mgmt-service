@@ -1,3 +1,6 @@
+server:
+    basePath: http://147.172.178.30:8080/stmgmt
+
 db:
     synchronize: true
     dropSchema: true
