@@ -20,11 +20,14 @@ import { EntityNotFoundFilter } from "./shared/entity-not-found.filter";
 import { RoundingBehavior } from "./utils/math";
 
 async function bootstrap(): Promise<void> {
+	const version = "1.0.2";
+
 	const logger = new Logger("Bootstrap");
 	const logLevels = Config.getLogger().levels;
 	const basePath = process.env.SERVER_BASE_PATH || Config.getServer().basePath;
 	const port = process.env.SERVER_PORT || Config.getServer().port;
 
+	console.log(`Student-Management-System-API v${version}`);
 	console.log(`Environment: ${process.env.NODE_ENV}`);
 	console.log("Log levels:", logLevels);
 
@@ -37,7 +40,7 @@ async function bootstrap(): Promise<void> {
 	app.enableCors({ exposedHeaders: "x-total-count" });
 	app.disable("x-powered-by");
 
-	setupSwaggerDocument(app, { basePath });
+	setupSwaggerDocument(app, { basePath, version });
 
 	// If demo environment, populate database with test data
 	if (environment.is("demo")) {
@@ -60,7 +63,10 @@ async function bootstrap(): Promise<void> {
 }
 bootstrap();
 
-function setupSwaggerDocument(app: NestExpressApplication, args: { basePath: string }) {
+function setupSwaggerDocument(
+	app: NestExpressApplication,
+	args: { basePath: string; version: string }
+) {
 	const options = new DocumentBuilder()
 		.addServer(args.basePath, "Base path")
 		.addServer("/", "Relative path")
@@ -69,7 +75,7 @@ function setupSwaggerDocument(app: NestExpressApplication, args: { basePath: str
 		.setDescription(
 			`The Student-Management-System-API. <a href='${args.basePath}/api-json'>JSON</a>`
 		)
-		.setVersion("1.0")
+		.setVersion(args.version)
 		.addTag("authentication")
 		.addTag("course")
 		.addTag("course-participants")
