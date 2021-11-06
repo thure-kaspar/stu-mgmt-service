@@ -304,7 +304,7 @@ Object {
   "comment": "ASSESSMENT_JAVA_IN_REVIEW",
   "creationDate": undefined,
   "creatorId": "c17b67ea-d0b7-46bc-a2e0-ea2ec18f441d",
-  "id": "680dd44a-93b0-4d1c-a947-9b50a4bbb68e",
+  "id": undefined,
   "isDraft": false,
   "partialAssessments": Array [
     Object {
@@ -335,7 +335,7 @@ Object {
   "creationDate": undefined,
   "creatorId": "c17b67ea-d0b7-46bc-a2e0-ea2ec18f441d",
   "groupId": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
-  "id": "8f60f844-4129-48a4-a625-7a74c7defd0d",
+  "id": undefined,
   "isDraft": false,
   "lastUpdatedById": "8330300e-9be7-4a70-ba7d-8a0139311343",
   "updateDate": undefined,
@@ -349,7 +349,7 @@ Object {
   "comment": "ASSESSMENT_JAVA_TESTAT_USER_1",
   "creationDate": undefined,
   "creatorId": "c17b67ea-d0b7-46bc-a2e0-ea2ec18f441d",
-  "id": "932c7bd8-2338-4e60-955a-39da5f858212",
+  "id": undefined,
   "isDraft": false,
   "updateDate": undefined,
   "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",

@@ -6,7 +6,7 @@ import { GroupId } from "../../course/entities/group.entity";
 import { DbException } from "../../shared/database-exceptions";
 import { UserId } from "../../shared/entities/user.entity";
 import { AssessmentFilter } from "../dto/assessment-filter.dto";
-import { AssessmentCreateDto, AssessmentDto, AssessmentUpdateDto } from "../dto/assessment.dto";
+import { AssessmentCreateDto, AssessmentUpdateDto } from "../dto/assessment.dto";
 import { PartialAssessmentDto } from "../dto/partial-assessment.dto";
 import { AssessmentUserRelation } from "../entities/assessment-user-relation.entity";
 import { Assessment } from "../entities/assessment.entity";
@@ -19,7 +19,11 @@ export class AssessmentRepository extends Repository<Assessment> {
 		userIds: string[],
 		creatorId: UserId
 	): Promise<Assessment> {
-		const assessment = this.createEntityFromDto({ ...assessmentDto, creatorId });
+		const assessment = this.create(assessmentDto);
+
+		assessment.id = undefined;
+		assessment.creatorId = creatorId;
+		assessment.partialAssessments?.forEach(p => (p.assessmentId = null)); // Id can't be known prior to insert -> prevent insert with wrong id
 
 		assessment.assessmentUserRelations = userIds.map(userId => {
 			const relation = new AssessmentUserRelation();
@@ -259,11 +263,5 @@ export class AssessmentRepository extends Repository<Assessment> {
 	async deleteAssessment(assessmentId: string): Promise<boolean> {
 		const deleteResult = await this.delete(assessmentId);
 		return deleteResult.affected == 1;
-	}
-
-	private createEntityFromDto(assessmentDto: AssessmentDto): Assessment {
-		const assessment = this.create(assessmentDto);
-		assessment.partialAssessments?.forEach(p => (p.assessmentId = null)); // Id can't be known prior to insert -> prevent insert with wrong id
-		return assessment;
 	}
 }

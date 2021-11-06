@@ -7,7 +7,10 @@ import { AssessmentUpdateDto } from "../../assessment/dto/assessment.dto";
 @EntityRepository(Assignment)
 export class AssignmentRepository extends Repository<Assignment> {
 	async createAssignment(courseId: CourseId, assignmentDto: AssignmentDto): Promise<Assignment> {
-		const assignment = this.createEntityFromDto(courseId, assignmentDto);
+		const assignment = this.create(assignmentDto);
+		assignment.id = undefined;
+		assignment.courseId = courseId;
+		assignment.links = assignmentDto.links?.length > 0 ? assignmentDto.links : null;
 		return this.save(assignment);
 	}
 
@@ -43,12 +46,5 @@ export class AssignmentRepository extends Repository<Assignment> {
 	async deleteAssignment(assignmentId: string): Promise<boolean> {
 		const deleted = await this.remove(this.create({ id: assignmentId }));
 		return deleted ? true : false;
-	}
-
-	private createEntityFromDto(courseId: CourseId, assignmentDto: AssignmentDto): Assignment {
-		const assignment = this.create(assignmentDto);
-		assignment.courseId = courseId;
-		assignment.links = assignmentDto.links?.length > 0 ? assignmentDto.links : null;
-		return assignment;
 	}
 }

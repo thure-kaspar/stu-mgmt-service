@@ -4,8 +4,8 @@ import { LinkDto } from "../../../shared/dto/link.dto";
 
 export class AssignmentDto {
 	/** Unique identifier of this assignment. */
-	@ApiPropertyOptional({ description: "Unique identifier of this assignment." })
-	id?: string;
+	@ApiProperty({ description: "Unique identifier of this assignment." })
+	id: string;
 
 	/** The title of this assignment. */
 	@ApiProperty({ description: "The title of this assignment." })
@@ -45,17 +45,17 @@ export class AssignmentDto {
 	})
 	collaboration: CollaborationType;
 
-	/** The amount of points that can be reached by a participant (exluding bonus points). */
+	/** The amount of points that can be reached by a participant (excluding bonus points). */
 	@ApiProperty({
 		description:
-			"The amount of points that can be reached by a participant (exluding bonus points)."
+			"The amount of points that can be reached by a participant (excluding bonus points)."
 	})
 	points: number;
 
-	/** The amount of additional bonus points, which should be exluded from the admission criteria. */
+	/** The amount of additional bonus points, which should be excluded from the admission criteria. */
 	@ApiPropertyOptional({
 		description:
-			"The amount of additional bonus points, which should be exluded from the admission criteria."
+			"The amount of additional bonus points, which should be excluded from the admission criteria."
 	})
 	bonusPoints?: number;
 

@@ -8,8 +8,8 @@ import { PartialAssessmentDto } from "./partial-assessment.dto";
 
 export class AssessmentDto {
 	/** Unique identifier of this assessment. */
-	@ApiPropertyOptional({ description: "Unique identifier of this assessment." })
-	id?: string;
+	@ApiProperty({ description: "Unique identifier of this assessment." })
+	id: string;
 
 	/** Identifier of the assignment that is being evaluated by this assessment. */
 	@ApiProperty({

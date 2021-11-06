@@ -228,6 +228,7 @@ describe("POST-REQUESTS of AssessmentController (e2e)", () => {
 
 	it("(POST) /courses/{courseId}/assignments/{assignmentId}/assessments Creates the given (group-)assessment and returns it", () => {
 		const assessment = copy(ASSESSMENT_JAVA_EVALUATED_GROUP_1);
+		assessment.id = undefined;
 
 		const expected = copy(assessment);
 		expected.updateDate = undefined;
@@ -240,6 +241,10 @@ describe("POST-REQUESTS of AssessmentController (e2e)", () => {
 			.expect(201)
 			.expect(({ body }) => {
 				const result = body as AssessmentDto;
+				expect(result.id).toBeDefined();
+				expect(result.updateDate).toBeDefined();
+				expect(result.creationDate).toBeDefined();
+				result.id = undefined;
 				result.updateDate = undefined;
 				result.creationDate = undefined;
 				expect(result).toMatchSnapshot();
@@ -248,6 +253,7 @@ describe("POST-REQUESTS of AssessmentController (e2e)", () => {
 
 	it("(POST) /courses/{courseId}/assignments/{assignmentId}/assessments Creates the given (user-)assessment and returns it", () => {
 		const assessment = copy(ASSESSMENT_JAVA_TESTAT_USER_1);
+		assessment.id = undefined;
 
 		const expected = copy(assessment);
 		expected.updateDate = undefined;
@@ -260,6 +266,10 @@ describe("POST-REQUESTS of AssessmentController (e2e)", () => {
 			.expect(201)
 			.expect(({ body }) => {
 				const result = body as AssessmentDto;
+				expect(result.id).toBeDefined();
+				expect(result.updateDate).toBeDefined();
+				expect(result.creationDate).toBeDefined();
+				result.id = undefined;
 				result.updateDate = undefined;
 				result.creationDate = undefined;
 				expect(result).toMatchSnapshot();
@@ -268,10 +278,12 @@ describe("POST-REQUESTS of AssessmentController (e2e)", () => {
 
 	it("(POST) /courses/{courseId}/assignments/{assignmentId}/assessments Assessment with partial assessments -> Creates partial assessments", () => {
 		const assessment = copy(ASSESSMENT_JAVA_IN_REVIEW);
+		assessment.id = undefined;
 		assessment.partialAssessments = [
 			PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW,
 			PARTIAL_ASSESSMENT_2_JAVA_IN_REVIEW
 		];
+
 		const expected = copy(assessment);
 		expected.updateDate = undefined;
 		expected.creationDate = undefined;
@@ -283,6 +295,10 @@ describe("POST-REQUESTS of AssessmentController (e2e)", () => {
 			.expect(201)
 			.expect(({ body }) => {
 				const result = body as AssessmentDto;
+				expect(result.id).toBeDefined();
+				expect(result.updateDate).toBeDefined();
+				expect(result.creationDate).toBeDefined();
+				result.id = undefined;
 				result.updateDate = undefined;
 				result.creationDate = undefined;
 				expect(result).toMatchSnapshot();

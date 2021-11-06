@@ -1,12 +1,12 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { ApiProperty } from "@nestjs/swagger";
 import { LinkDto } from "../../../shared/dto/link.dto";
 import { AdmissionCriteriaDto } from "../course-config/admission-criteria.dto";
 import { GroupSettingsDto } from "../course-config/group-settings.dto";
 
 export class CourseDto {
 	/** Unique identifier of this course. */
-	@ApiPropertyOptional({ description: "Unique identifier of this course." })
-	id?: string; // Optional: If (unused) id is supplied for creation, it will be used
+	@ApiProperty({ description: "Unique identifier of this course." })
+	id: string;
 
 	/** Shortname of this course, i.e "java". Should be reused every semester. Will be used in URLs. */
 	@ApiProperty({
@@ -31,7 +31,6 @@ export class CourseDto {
 	isClosed: boolean;
 
 	links?: LinkDto[];
-
 	groupSettings?: GroupSettingsDto;
 	admissionCriteria?: AdmissionCriteriaDto;
 }
