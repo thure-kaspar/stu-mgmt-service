@@ -11,6 +11,7 @@ export class AssignmentRepository extends Repository<Assignment> {
 		assignment.id = undefined;
 		assignment.courseId = courseId;
 		assignment.links = assignmentDto.links?.length > 0 ? assignmentDto.links : null;
+		assignment.configs = assignmentDto.configs?.length > 0 ? assignmentDto.configs : null;
 		return this.save(assignment);
 	}
 

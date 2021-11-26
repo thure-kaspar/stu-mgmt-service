@@ -1,6 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Assessment } from "../../assessment/entities/assessment.entity";
 import { LinkDto } from "../../shared/dto/link.dto";
+import { SubmissionConfigDto } from "src/shared/dto/submission-config.dto";
 import { AssignmentState, AssignmentType, CollaborationType } from "../../shared/enums";
 import { Course, CourseId } from "./course.entity";
 
@@ -28,6 +29,9 @@ export class Assignment {
 
 	@Column({ type: "json", nullable: true })
 	links?: LinkDto[];
+
+	@Column({ type: "json", nullable: true })
+	configs?: SubmissionConfigDto[];
 
 	@Column({ type: "enum", enum: AssignmentType, default: AssignmentType.HOMEWORK })
 	type: AssignmentType;

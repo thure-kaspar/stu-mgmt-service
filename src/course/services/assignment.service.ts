@@ -11,6 +11,7 @@ import { AssignmentStateChanged } from "../events/assignment/assignment-state-ch
 import { AssignmentUpdated } from "../events/assignment/assignment-updated.event";
 import { Assignment } from "../models/assignment.model";
 import { Course } from "../models/course.model";
+import { Participant } from "../models/participant.model";
 import { AssignmentRepository } from "../repositories/assignment.repository";
 import { AssignmentRegistrationService } from "./assignment-registration.service";
 
@@ -38,15 +39,15 @@ export class AssignmentService {
 		return DtoFactory.createAssignmentDto(createdAssignment);
 	}
 
-	async getAssignments(courseId: CourseId): Promise<AssignmentDto[]> {
+	async getAssignments(courseId: CourseId, isLecturer: boolean): Promise<AssignmentDto[]> {
 		const assignments = await this.assignmentRepository.getAssignments(courseId);
-		const assignmentDtos = assignments.map(a => DtoFactory.createAssignmentDto(a));
+		const assignmentDtos = assignments.map(a => DtoFactory.createAssignmentDto(a, isLecturer));
 		return assignmentDtos;
 	}
 
-	async getAssignmentById(assignmentId: string): Promise<AssignmentDto> {
+	async getAssignmentById(assignmentId: string, isLecturer: boolean): Promise<AssignmentDto> {
 		const assignment = await this.assignmentRepository.getAssignmentById(assignmentId);
-		return DtoFactory.createAssignmentDto(assignment);
+		return DtoFactory.createAssignmentDto(assignment, isLecturer);
 	}
 
 	/**

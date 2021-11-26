@@ -127,7 +127,7 @@ export abstract class DtoFactory {
 		return groupDto;
 	}
 
-	static createAssignmentDto(assignment: Assignment): AssignmentDto {
+	static createAssignmentDto(assignment: Assignment, isLecturer = false): AssignmentDto {
 		const assignmentDto: AssignmentDto = {
 			id: assignment.id,
 			name: assignment.name,
@@ -139,8 +139,15 @@ export abstract class DtoFactory {
 			type: assignment.type,
 			points: assignment.points,
 			bonusPoints: assignment.bonusPoints ?? undefined,
-			collaboration: assignment.collaboration
+			collaboration: assignment.collaboration,
+			configs: assignment.configs ?? undefined
 		};
+
+		// Show tool configurations only to lecturors and hide them for students
+		if (!isLecturer) {
+			assignmentDto.configs = undefined;
+		}
+
 		return assignmentDto;
 	}
 

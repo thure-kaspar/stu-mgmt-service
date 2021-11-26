@@ -26,7 +26,8 @@ export class AdmissionStatusController {
 	@Get("overview")
 	@UseGuards(TeachingStaffGuard)
 	getPointsOverview(@Param("courseId") courseId: CourseId): Promise<PointsOverviewDto> {
-		return this.admissionStatus.getPointsOverview(courseId);
+		// TeachingStaffGuard -> isLecturor = true
+		return this.admissionStatus.getPointsOverview(courseId, true);
 	}
 
 	@ApiOperation({
@@ -41,7 +42,8 @@ export class AdmissionStatusController {
 		@Param("courseId") courseId: CourseId,
 		@Param("userId") userId: UserId
 	): Promise<PointsOverviewDto> {
-		return this.admissionStatus.getPointsOverviewOfStudent(courseId, userId);
+		// ParticipantIdentityGuard -> isLecturor = false
+		return this.admissionStatus.getPointsOverviewOfStudent(courseId, userId, false);
 	}
 
 	@ApiOperation({
@@ -54,7 +56,8 @@ export class AdmissionStatusController {
 	getAdmissionStatusOfParticipants(
 		@Param("courseId") courseId: CourseId
 	): Promise<AdmissionStatusDto[]> {
-		return this.admissionStatus.getAdmissionStatusOfParticipants(courseId);
+		// TeachingStaffGuard -> isLecturor = true
+		return this.admissionStatus.getAdmissionStatusOfParticipants(courseId, true);
 	}
 
 	@ApiOperation({
@@ -68,6 +71,7 @@ export class AdmissionStatusController {
 		@Param("courseId") courseId: CourseId,
 		@Param("userId") userId: UserId
 	): Promise<AdmissionStatusDto> {
-		return this.admissionStatus.getAdmissionStatusOfParticipant(courseId, userId);
+		// ParticipantIdentityGuard -> isLecturor = false
+		return this.admissionStatus.getAdmissionStatusOfParticipant(courseId, userId, false);
 	}
 }

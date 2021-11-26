@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional, OmitType, PartialType } from "@nestjs/swagger";
 import { AssignmentState, AssignmentType, CollaborationType } from "../../../shared/enums";
 import { LinkDto } from "../../../shared/dto/link.dto";
+import { SubmissionConfigDto } from "src/shared/dto/submission-config.dto";
 
 export class AssignmentDto {
 	/** Unique identifier of this assignment. */
@@ -66,6 +67,12 @@ export class AssignmentDto {
 	comment?: string;
 
 	links?: LinkDto[];
+
+	/** Optional information to allow the configuration of connected submission tools. */
+	@ApiPropertyOptional({
+		description: "Optional information to allow the configuration of connected submission tools."
+	})
+	configs?: SubmissionConfigDto[];
 }
 
 export class AssignmentUpdateDto extends OmitType(PartialType(AssignmentDto), ["id"]) {}

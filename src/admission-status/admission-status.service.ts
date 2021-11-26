@@ -10,7 +10,7 @@ import { AdmissionFromPreviousSemesterRepository } from "../course/repositories/
 import { ParticipantRepository } from "../course/repositories/participant.repository";
 import { AssignmentService } from "../course/services/assignment.service";
 import { UserId } from "../shared/entities/user.entity";
-import { AssignmentState } from "../shared/enums";
+import { AssignmentState, isLecturer } from "../shared/enums";
 import { AdmissionRuleDto } from "./dto/admission-rule.dto";
 import { AdmissionStatusDto } from "./dto/admission-status.dto";
 import { PointsOverviewDto, StudentResults } from "./dto/points-overview.dto";
@@ -29,11 +29,11 @@ export class AdmissionStatusService {
 		private assignmentService: AssignmentService
 	) {}
 
-	async getAdmissionStatusOfParticipants(courseId: CourseId): Promise<AdmissionStatusDto[]> {
+	async getAdmissionStatusOfParticipants(courseId: CourseId, isLecturer = false): Promise<AdmissionStatusDto[]> {
 		const [students, assignments, admissionCriteria, admissionFromPrevious] = await Promise.all(
 			[
 				this.participants.getStudentsWithAssessments(courseId),
-				this.assignmentService.getAssignments(courseId),
+				this.assignmentService.getAssignments(courseId, isLecturer),
 				this.admissionCriteria.getByCourseId(courseId),
 				this.admissionFromPreviousRepo.tryGetByCourseId(courseId)
 			]
@@ -50,11 +50,12 @@ export class AdmissionStatusService {
 
 	async getAdmissionStatusOfParticipant(
 		courseId: CourseId,
-		userId: UserId
+		userId: UserId,
+		isLecturer = false
 	): Promise<AdmissionStatusDto> {
 		const [student, assignments, admissionCriteria, admissionFromPrevious] = await Promise.all([
 			this.participants.getStudentWithAssessments(courseId, userId),
-			this.assignmentService.getAssignments(courseId),
+			this.assignmentService.getAssignments(courseId, isLecturer),
 			this.admissionCriteria.getByCourseId(courseId),
 			this.admissionFromPreviousRepo.tryGetByCourseId(courseId)
 		]);
@@ -127,10 +128,10 @@ export class AdmissionStatusService {
 		};
 	}
 
-	async getPointsOverview(courseId: CourseId): Promise<PointsOverviewDto> {
+	async getPointsOverview(courseId: CourseId, isLecturer = false): Promise<PointsOverviewDto> {
 		const [students, assignments] = await Promise.all([
 			this.participants.getStudentsWithAssessments(courseId),
-			this.assignmentService.getAssignments(courseId)
+			this.assignmentService.getAssignments(courseId, isLecturer)
 		]);
 
 		const evaluated = this.filterEvaluatedAssignments(assignments);
@@ -145,11 +146,12 @@ export class AdmissionStatusService {
 
 	async getPointsOverviewOfStudent(
 		courseId: CourseId,
-		userId: UserId
+		userId: UserId,
+		isLecturer = false
 	): Promise<PointsOverviewDto> {
 		const [student, assignments] = await Promise.all([
 			this.participants.getStudentWithAssessments(courseId, userId),
-			this.assignmentService.getAssignments(courseId)
+			this.assignmentService.getAssignments(courseId, isLecturer)
 		]);
 
 		const evaluated = this.filterEvaluatedAssignments(assignments);
