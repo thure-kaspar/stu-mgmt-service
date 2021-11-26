@@ -26,7 +26,7 @@ export class AdmissionStatusController {
 	@Get("overview")
 	@UseGuards(TeachingStaffGuard)
 	getPointsOverview(@Param("courseId") courseId: CourseId): Promise<PointsOverviewDto> {
-		// TeachingStaffGuard -> isLecturor = true
+		// TeachingStaffGuard -> isLecturer = true
 		return this.admissionStatus.getPointsOverview(courseId, true);
 	}
 
@@ -42,7 +42,7 @@ export class AdmissionStatusController {
 		@Param("courseId") courseId: CourseId,
 		@Param("userId") userId: UserId
 	): Promise<PointsOverviewDto> {
-		// ParticipantIdentityGuard -> isLecturor = false
+		// ParticipantIdentityGuard -> isLecturer = false
 		return this.admissionStatus.getPointsOverviewOfStudent(courseId, userId, false);
 	}
 
@@ -56,7 +56,7 @@ export class AdmissionStatusController {
 	getAdmissionStatusOfParticipants(
 		@Param("courseId") courseId: CourseId
 	): Promise<AdmissionStatusDto[]> {
-		// TeachingStaffGuard -> isLecturor = true
+		// TeachingStaffGuard -> isLecturer = true
 		return this.admissionStatus.getAdmissionStatusOfParticipants(courseId, true);
 	}
 
@@ -71,7 +71,7 @@ export class AdmissionStatusController {
 		@Param("courseId") courseId: CourseId,
 		@Param("userId") userId: UserId
 	): Promise<AdmissionStatusDto> {
-		// ParticipantIdentityGuard -> isLecturor = false
+		// ParticipantIdentityGuard -> isLecturer = false
 		return this.admissionStatus.getAdmissionStatusOfParticipant(courseId, userId, false);
 	}
 }

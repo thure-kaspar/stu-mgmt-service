@@ -143,7 +143,7 @@ export abstract class DtoFactory {
 			configs: assignment.configs ?? undefined
 		};
 
-		// Show tool configurations only to lecturors and hide them for students
+		// Show tool configurations only to lecturers and hide them for students
 		if (!isLecturer) {
 			assignmentDto.configs = undefined;
 		}
