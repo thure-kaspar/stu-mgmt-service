@@ -39,20 +39,40 @@ describe("GET-REQUESTS of AssignmentController (e2e)", () => {
 		return request(app.getHttpServer())
 			.get(`/courses/${course.id}/assignments`)
 			.expect(({ body }) => {
-				expect(body.length).toEqual(expected);
+				const result = body as AssignmentDto[];
+				expect(result.length).toEqual(expected);
+				expect(result).toMatchSnapshot();
 			});
 	});
 
-	it("(GET) /courses/{courseId}/assignments/{assignmentId} Retrieves the assignment", () => {
-		const assignment = ASSIGNMENT_JAVA_IN_REVIEW_SINGLE;
+	describe("(GET) /courses/{courseId}/assignments/{assignmentId} Retrieves the assignment", () => {
+		it("Without configs and links", () => {
+			const assignment = ASSIGNMENT_JAVA_IN_REVIEW_SINGLE;
 
-		return request(app.getHttpServer())
-			.get(`/courses/${course.id}/assignments/${assignment.id}`)
-			.expect(({ body }) => {
-				const result = body as AssignmentDto;
-				expect(result.id).toEqual(assignment.id);
-				expect(result.state).toEqual(assignment.state);
-			});
+			return request(app.getHttpServer())
+				.get(`/courses/${course.id}/assignments/${assignment.id}`)
+				.expect(({ body }) => {
+					const result = body as AssignmentDto;
+					expect(result.id).toEqual(assignment.id);
+					expect(result.links).toEqual(undefined);
+					expect(result.configs).toEqual(undefined);
+					expect(result).toMatchSnapshot();
+				});
+		});
+
+		it("With configs and links", () => {
+			const assignment = ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP;
+
+			return request(app.getHttpServer())
+				.get(`/courses/${course.id}/assignments/${assignment.id}`)
+				.expect(({ body }) => {
+					const result = body as AssignmentDto;
+					expect(result.id).toEqual(assignment.id);
+					expect(result.links).toEqual(assignment.links);
+					expect(result.configs).toEqual(assignment.configs);
+					expect(result).toMatchSnapshot();
+				});
+		});
 	});
 });
 
@@ -83,9 +103,8 @@ describe("POST-REQUESTS of AssignmentController (e2e)", () => {
 			.expect(201)
 			.expect(({ body }) => {
 				const result = body as AssignmentDto;
-				expect(result.name).toEqual(assignment.name);
-				expect(result.type).toEqual(assignment.type);
-				expect(result.points).toEqual(assignment.points);
+				result.id = "assignment-id-replacement";
+				expect(result).toMatchSnapshot();
 			});
 	});
 });
@@ -115,14 +134,24 @@ describe("PATCH-REQUESTS of AssignmentController (e2e)", () => {
 		changedAssignment.points = 1000;
 		changedAssignment.comment = "new comment";
 
+		expect(assignment.configs?.length).toBeGreaterThan(0);
+		changedAssignment.configs = null;
+
+		expect(assignment.links?.length).toBeGreaterThan(0);
+		changedAssignment.links = null;
+
 		return request(app.getHttpServer())
 			.patch(`/courses/${course.id}/assignments/${assignment.id}`)
 			.send(changedAssignment)
 			.expect(({ body }) => {
-				expect(body.id).toEqual(assignment.id); // Check if we retrieved the correct assignment
-				expect(body.name).toEqual(changedAssignment.name);
-				expect(body.points).toEqual(changedAssignment.points);
-				expect(body.comment).toEqual(changedAssignment.comment);
+				const result = body as AssignmentDto;
+				expect(result.id).toEqual(assignment.id);
+				expect(result.name).toEqual(changedAssignment.name);
+				expect(result.points).toEqual(changedAssignment.points);
+				expect(result.comment).toEqual(changedAssignment.comment);
+				expect(result.configs).toEqual(undefined);
+				expect(result.links).toEqual(undefined);
+				expect(result).toMatchSnapshot();
 			});
 	});
 });

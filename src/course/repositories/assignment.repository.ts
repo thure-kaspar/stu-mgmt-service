@@ -40,7 +40,7 @@ export class AssignmentRepository extends Repository<Assignment> {
 	 */
 	async updateAssignment(assignmentId: string, update: AssessmentUpdateDto): Promise<Assignment> {
 		const assignment = await this.getAssignmentById(assignmentId);
-		const updated = { ...assignment, ...update };
+		const updated = { ...assignment, ...update, assignmentId };
 		return this.save(updated);
 	}
 

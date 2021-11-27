@@ -18,6 +18,16 @@ export const ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP: AssignmentDto = {
 			name: "Example URL",
 			url: "https://example-url.com"
 		}
+	],
+	configs: [
+		{
+			tool: "tool-1",
+			config: "{hello: 'world'}"
+		},
+		{
+			tool: "tool-2",
+			config: "{lorem: 'ipsum'}"
+		}
 	]
 };
 

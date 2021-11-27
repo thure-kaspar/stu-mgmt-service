@@ -1,0 +1,173 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GET-REQUESTS of AssignmentController (e2e) (GET) /courses/{courseId}/assignments Retrieves all assignments of a course 1`] = `
+Array [
+  Object {
+    "collaboration": "GROUP",
+    "comment": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione ab, quaerat minus corrupti quia nostrum facere quibusdam, repellendus, reprehenderit officiis rerum nemo modi perspiciatis ex obcaecati consectetur nisi voluptatum veritatis.",
+    "configs": Array [
+      Object {
+        "config": "{hello: 'world'}",
+        "tool": "tool-1",
+      },
+      Object {
+        "config": "{lorem: 'ipsum'}",
+        "tool": "tool-2",
+      },
+    ],
+    "id": "b2f6c008-b9f7-477f-9e8b-ff34ce339077",
+    "links": Array [
+      Object {
+        "name": "Example URL",
+        "url": "https://example-url.com",
+      },
+    ],
+    "name": "Test_Assignment 01 (Java)",
+    "points": 100,
+    "startDate": "2020-09-02T22:00:00.000Z",
+    "state": "IN_PROGRESS",
+    "type": "HOMEWORK",
+  },
+  Object {
+    "collaboration": "GROUP_OR_SINGLE",
+    "id": "8ffc9608-4c3d-4fca-b4fc-3768822d6c0d",
+    "name": "Test_Assignment 05 (Java) Invisible",
+    "points": 100,
+    "state": "INVISIBLE",
+    "type": "HOMEWORK",
+  },
+  Object {
+    "collaboration": "SINGLE",
+    "id": "5b69db81-edbd-4f73-8928-1450036a75cb",
+    "name": "Test_Assignment 06 (Java) Testat In Progress",
+    "points": 100,
+    "startDate": "2020-08-01T22:00:00.000Z",
+    "state": "IN_PROGRESS",
+    "type": "TESTAT",
+  },
+  Object {
+    "collaboration": "GROUP",
+    "endDate": "2020-08-21T22:00:00.000Z",
+    "id": "f50b8474-1fb9-4d69-85a2-76648d0fd3f9",
+    "name": "Test_Assignment 08 (Java) - GROUP - IN_REVIEW",
+    "points": 100,
+    "startDate": "2020-08-20T22:00:00.000Z",
+    "state": "IN_REVIEW",
+    "type": "HOMEWORK",
+  },
+  Object {
+    "collaboration": "SINGLE",
+    "endDate": "2020-06-17T22:00:00.000Z",
+    "id": "993b3cd0-6207-11ea-bc55-0242ac130003",
+    "name": "Test_Assignment 03 (Java) - SINGLE - IN_REVIEW",
+    "points": 100,
+    "startDate": "2020-06-10T22:00:00.000Z",
+    "state": "IN_REVIEW",
+    "type": "HOMEWORK",
+  },
+  Object {
+    "collaboration": "GROUP_OR_SINGLE",
+    "endDate": "2020-05-10T22:00:00.000Z",
+    "id": "c2bc4aa4-6207-11ea-bc55-0242ac130003",
+    "name": "Test_Assignment 04 (Java)",
+    "points": 100,
+    "startDate": "2020-05-03T22:00:00.000Z",
+    "state": "EVALUATED",
+    "type": "HOMEWORK",
+  },
+  Object {
+    "collaboration": "SINGLE",
+    "endDate": "2020-04-26T22:00:00.000Z",
+    "id": "75b799a1-a406-419b-a448-909aa3d34afa",
+    "name": "Test_Assignment 07 (Java) Testat Evaluated",
+    "points": 100,
+    "startDate": "2020-04-19T22:00:00.000Z",
+    "state": "EVALUATED",
+    "type": "TESTAT",
+  },
+  Object {
+    "collaboration": "GROUP",
+    "endDate": "2020-02-15T23:00:00.000Z",
+    "id": "74aa124c-0753-467f-8f52-48d1901282f8",
+    "name": "Test_Assignment 02 (Java)",
+    "points": 100,
+    "startDate": "2020-02-08T23:00:00.000Z",
+    "state": "CLOSED",
+    "type": "HOMEWORK",
+  },
+]
+`;
+
+exports[`GET-REQUESTS of AssignmentController (e2e) (GET) /courses/{courseId}/assignments/{assignmentId} Retrieves the assignment With configs and links 1`] = `
+Object {
+  "collaboration": "GROUP",
+  "comment": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione ab, quaerat minus corrupti quia nostrum facere quibusdam, repellendus, reprehenderit officiis rerum nemo modi perspiciatis ex obcaecati consectetur nisi voluptatum veritatis.",
+  "configs": Array [
+    Object {
+      "config": "{hello: 'world'}",
+      "tool": "tool-1",
+    },
+    Object {
+      "config": "{lorem: 'ipsum'}",
+      "tool": "tool-2",
+    },
+  ],
+  "id": "b2f6c008-b9f7-477f-9e8b-ff34ce339077",
+  "links": Array [
+    Object {
+      "name": "Example URL",
+      "url": "https://example-url.com",
+    },
+  ],
+  "name": "Test_Assignment 01 (Java)",
+  "points": 100,
+  "startDate": "2020-09-02T22:00:00.000Z",
+  "state": "IN_PROGRESS",
+  "type": "HOMEWORK",
+}
+`;
+
+exports[`GET-REQUESTS of AssignmentController (e2e) (GET) /courses/{courseId}/assignments/{assignmentId} Retrieves the assignment Without configs and links 1`] = `
+Object {
+  "collaboration": "SINGLE",
+  "endDate": "2020-06-17T22:00:00.000Z",
+  "id": "993b3cd0-6207-11ea-bc55-0242ac130003",
+  "name": "Test_Assignment 03 (Java) - SINGLE - IN_REVIEW",
+  "points": 100,
+  "startDate": "2020-06-10T22:00:00.000Z",
+  "state": "IN_REVIEW",
+  "type": "HOMEWORK",
+}
+`;
+
+exports[`PATCH-REQUESTS of AssignmentController (e2e) (PATCH) /courses/{courseId}/assignments/{assignmentId} Updates the assignment 1`] = `
+Object {
+  "collaboration": "GROUP",
+  "comment": "new comment",
+  "id": "b2f6c008-b9f7-477f-9e8b-ff34ce339077",
+  "name": "new name",
+  "points": 1000,
+  "startDate": "2020-09-02T22:00:00.000Z",
+  "state": "IN_PROGRESS",
+  "type": "HOMEWORK",
+}
+`;
+
+exports[`POST-REQUESTS of AssignmentController (e2e) (POST) /courses/{courseId}/assignments Creates the given assignment and returns it 1`] = `
+Object {
+  "collaboration": "GROUP",
+  "comment": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione ab, quaerat minus corrupti quia nostrum facere quibusdam, repellendus, reprehenderit officiis rerum nemo modi perspiciatis ex obcaecati consectetur nisi voluptatum veritatis.",
+  "id": "assignment-id-replacement",
+  "links": Array [
+    Object {
+      "name": "Example URL",
+      "url": "https://example-url.com",
+    },
+  ],
+  "name": "Test_Assignment 01 (Java)",
+  "points": 100,
+  "startDate": "2020-09-02T22:00:00.000Z",
+  "state": "IN_PROGRESS",
+  "type": "HOMEWORK",
+}
+`;
