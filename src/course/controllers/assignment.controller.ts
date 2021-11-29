@@ -47,7 +47,8 @@ export class AssignmentController {
 		@Param("courseId") courseId: CourseId,
 		@GetParticipant() participant: Participant
 	): Promise<AssignmentDto[]> {
-		let assignments = await this.assignmentService.getAssignments(courseId, participant.isLecturer());
+		const isTeachingStuff = participant.isLecturer() || participant.isTutor();
+		let assignments = await this.assignmentService.getAssignments(courseId, isTeachingStuff);
 
 		if (participant.isStudent()) {
 			assignments = assignments.filter(a => a.state !== AssignmentState.INVISIBLE);
@@ -67,7 +68,8 @@ export class AssignmentController {
 		@Param("assignmentId") assignmentId: string,
 		@GetParticipant() participant: Participant
 	): Promise<AssignmentDto> {
-		return this.assignmentService.getAssignmentById(assignmentId, participant.isLecturer());
+		const isTeachingStuff = participant.isLecturer() || participant.isTutor();
+		return this.assignmentService.getAssignmentById(assignmentId, isTeachingStuff);
 	}
 
 	@ApiOperation({
