@@ -19,6 +19,7 @@ lerna-debug.log*
 
 # Tests
 /coverage
+/output
 /test/**/coverage
 /.nyc_output
 
