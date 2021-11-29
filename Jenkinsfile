@@ -17,15 +17,31 @@ pipeline {
       }
     }
     
-    /*
     stage('Test') {
+	  environment {
+            POSTGRES_DB = 'StudentMgmtDb'
+            POSTGRES_USER = 'postgres'
+            POSTGRES_PASSWORD = 'admin'
+      }
       steps {
-         sh 'npm run test'
-         sh 'npm run test:e2e'
-         sh 'npm run test:cov'
+		node {
+			// Sidecar Pattern: https://www.jenkins.io/doc/book/pipeline/docker/#running-sidecar-containers
+			docker.image('postgres:14.1-apline').withRun('-e POSTGRES_USER=${env.POSTGRES_USER} -e POSTGRES_PASSWORD=${env.POSTGRES_PASSWORD} -e POSTGRES_DB=${env.POSTGRES_DB}') { db ->
+				pg.inside("--link ${db.id}:${env.PGHOST}") {                                
+                                sh '''
+                                    echo "$(date) - waiting for database to start"
+                                    while ! pg_isready
+                                    do
+                                        sleep 10
+                                    done
+                                '''
+			}
+		}
+         // sh 'npm run test'
+         // sh 'npm run test:e2e'
+         // sh 'npm run test:cov'
       }
     }
-    */
     
     
     stage('Build') {
