@@ -35,6 +35,7 @@ pipeline {
                                         sleep 10
                                     done
                                 '''
+								}
 			}
 		}
          // sh 'npm run test'
