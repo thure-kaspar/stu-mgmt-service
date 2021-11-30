@@ -26,11 +26,17 @@ export class NotificationService {
 		);
 
 		subscribers.forEach(sub => {
-			this.logger.verbose("Sending notification to: " + sub.url);
+			this.logger.verbose(
+				`[${notification.event}] Sending notification to "${sub.name}" at ${sub.url}`
+			);
 			this.http
 				.post(sub.url, notification)
 				.toPromise()
-				.catch(err => this.logger.error(err.message));
+				.catch(err =>
+					this.logger.error(
+						`Failed to notify "${sub.name}" at ${sub.url} - ${err.message}`
+					)
+				);
 		});
 	}
 }
