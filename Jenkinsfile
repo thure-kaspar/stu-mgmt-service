@@ -33,6 +33,11 @@ pipeline {
                     }
                 }
             }
+            post {
+                always {
+                    junit 'output/**/junit*.xml'
+                }
+            }
         }
 
         stage('Build') {
@@ -62,12 +67,7 @@ pipeline {
                             exit
                         EOF'''
                 }
-            }
-        }
-
-        stage('Report') {
-            steps {
-                findText(textFinders: [textFinder(regexp: '(- error TS\\*)|(Cannot find module.*or its corresponding type declarations\\.)', alsoCheckConsoleOutput: true, buildResult: 'FAILURE')])
+				findText(textFinders: [textFinder(regexp: '(- error TS\\*)|(Cannot find module.*or its corresponding type declarations\\.)', alsoCheckConsoleOutput: true, buildResult: 'FAILURE')])
             }
         }
 
