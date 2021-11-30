@@ -28,13 +28,12 @@ pipeline {
                 script {
                     // Sidecar Pattern: https://www.jenkins.io/doc/book/pipeline/docker/#running-sidecar-containers
                     docker.image('postgres:14.1-alpine').withRun("-e POSTGRES_USER=${env.POSTGRES_USER} -e POSTGRES_PASSWORD=${env.POSTGRES_PASSWORD} -e POSTGRES_DB=${env.POSTGRES_DB} -p ${env.PORT}:${env.PORT}") { c ->
-                        // sh 'npm run test'
                         sh 'npm run jenkins:e2e'
                     }
                 }
                 step([
                     $class: 'CloverPublisher',
-                    cloverReportDir: 'output/e2e/coverage/',
+                    cloverReportDir: 'output/test/coverage/',
                     cloverReportFileName: 'clover.xml',
                     healthyTarget: [methodCoverage: 70, conditionalCoverage: 80, statementCoverage: 80], // optional, default is: method=70, conditional=80, statement=80
                     unhealthyTarget: [methodCoverage: 50, conditionalCoverage: 50, statementCoverage: 50], // optional, default is none

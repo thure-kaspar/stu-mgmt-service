@@ -18,8 +18,11 @@ const mock_CourseRepository = () => ({
 	getCourses: jest
 		.fn()
 		.mockResolvedValue([
-			convertToEntity(Course, COURSE_JAVA_1920),
-			convertToEntity(Course, COURSE_INFO_2_2020)
+			[
+				convertToEntity(Course, COURSE_JAVA_1920),
+				convertToEntity(Course, COURSE_INFO_2_2020)
+			],
+			2
 		]),
 	getCourseById: jest.fn().mockResolvedValue(COURSE_JAVA_1920),
 	getCourseByNameAndSemester: jest.fn(),
@@ -64,45 +67,6 @@ describe("CourseService", () => {
 		expect(service).toBeDefined();
 	});
 
-	describe("createCourse", () => {
-		let courseCreateDto: CourseCreateDto;
-
-		beforeEach(() => {
-			courseCreateDto = { ...courseDto, config: copy(COURSE_CONFIG_JAVA_1920) };
-		});
-
-		it("Calls repository for creation", async () => {
-			await service.createCourse(courseCreateDto);
-			expect(courseRepository.createCourse).toHaveBeenCalledWith(courseDto);
-		});
-
-		it("Dto contains id -> Assigns id", async () => {
-			courseDto.id = "my-id";
-			await service.createCourse(courseCreateDto);
-			expect(courseRepository.createCourse).toHaveBeenCalledWith(courseDto);
-		});
-
-		it("Dto does not contain id -> Assigns shortname-semester as id", async () => {
-			courseDto.id = undefined;
-			const expected = copy(courseDto);
-			expected.id = expected.shortname + "-" + expected.semester;
-
-			await service.createCourse(courseCreateDto);
-			expect(courseRepository.createCourse).toHaveBeenCalledWith(expected);
-		});
-
-		it("Dto contains password -> Assigns password", async () => {
-			courseCreateDto.config.password = "hasAPassword";
-			await service.createCourse(courseCreateDto);
-			expect(courseRepository.createCourse).toHaveBeenCalledWith(courseDto);
-		});
-
-		it("Returns Dto", async () => {
-			await service.createCourse(courseCreateDto);
-			expect(DtoFactory.createCourseDto).toHaveBeenCalled();
-		});
-	});
-
 	describe("getCourses", () => {
 		it("No filter -> Calls repository for retrieval", async () => {
 			await service.getCourses();
@@ -127,7 +91,7 @@ describe("CourseService", () => {
 		it("Calls repository for retrieval", async () => {
 			const id = courseDto.id;
 			await service.getCourseById(id);
-			expect(courseRepository.getCourseById).toHaveBeenCalledWith(id);
+			expect(courseRepository.getCourseWithConfig).toHaveBeenCalledWith(id);
 		});
 
 		it("Returns Dto", async () => {

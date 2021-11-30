@@ -2,12 +2,13 @@
 	"moduleFileExtensions": ["ts", "tsx", "js"],
 	"rootDir": "../",
 	"testEnvironment": "node",
-	"testMatch": ["<rootDir>/test/unit/**/*.spec.ts"],
+	"testMatch": ["<rootDir>/test/**/*.(e2e-spec|spec).ts"],
 	"transform": {
 		"^.+\\.(ts|tsx)$": "ts-jest"
 	},
-	"collectCoverageFrom": ["src/**/*.ts", "!src/**/*.module.ts", "!src/main.ts"],
+	"collectCoverageFrom": ["src/**/*.ts", "!src/main.ts"],
 	"coveragePathIgnorePatterns": [],
+	"setupFilesAfterEnv": ["<rootDir>/test/jest.setup.js"],
 	"globals": {
 		"ts-jest": {
 			"isolatedModules": true

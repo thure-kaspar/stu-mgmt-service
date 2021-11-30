@@ -1,9 +1,9 @@
-import { AssessmentDto } from "../../../src/course/dto/assessment/assessment.dto";
+import { AssessmentDto } from "../../../src/assessment/dto/assessment.dto";
+import { AssessmentUserRelation } from "../../../src/assessment/entities/assessment-user-relation.entity";
+import { Assessment } from "../../../src/assessment/entities/assessment.entity";
 import { AssignmentDto } from "../../../src/course/dto/assignment/assignment.dto";
 import { CourseDto } from "../../../src/course/dto/course/course.dto";
 import { GroupDto } from "../../../src/course/dto/group/group.dto";
-import { AssessmentUserRelation } from "../../../src/course/entities/assessment-user-relation.entity";
-import { Assessment } from "../../../src/course/entities/assessment.entity";
 import { Assignment } from "../../../src/course/entities/assignment.entity";
 import { Course } from "../../../src/course/entities/course.entity";
 import { Group } from "../../../src/course/entities/group.entity";
@@ -89,6 +89,7 @@ describe("DtoFactory", () => {
 
 			// Password should be exluded
 			expected.password = undefined;
+			expected.hasPassword = true;
 		});
 
 		it("No relation loaded -> Returns Dto", () => {
@@ -149,8 +150,16 @@ describe("DtoFactory", () => {
 			assessment = convertToEntity(Assessment, ASSESSMENT_JAVA_EVALUATED_GROUP_1);
 			assessment.group = convertToEntity(Group, GROUP_1_JAVA);
 			expected = copy(ASSESSMENT_JAVA_EVALUATED_GROUP_1);
-			expected.group = copy(GROUP_1_JAVA);
-			expected.group.password = undefined;
+			expected.group = {
+				...copy(GROUP_1_JAVA),
+				hasPassword: true,
+				password: undefined,
+				members: undefined, // TODO: Test with members
+				size: undefined
+			};
+			expected.creationDate = undefined;
+			expected.updateDate = undefined;
+			expected.partialAssessments = undefined;
 
 			const result = DtoFactory.createAssessmentDto(assessment);
 
