@@ -2,7 +2,7 @@ db:
     synchronize: true
 
 mailing:
-    enabled: true
+    enabled: false
 
 logger:
     levels:
