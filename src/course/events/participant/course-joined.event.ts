@@ -1,4 +1,4 @@
-import { Event } from "..";
+import { Event } from "../events";
 import { NotificationDto } from "../../../shared/dto/notification.dto";
 import { CourseWithGroupSettings } from "../../models/course-with-group-settings.model";
 import { Participant } from "../../models/participant.model";

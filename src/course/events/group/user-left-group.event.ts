@@ -1,7 +1,7 @@
 import { Logger } from "@nestjs/common";
 import { EventsHandler, IEventHandler } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Event } from "..";
+import { Event } from "../events";
 import { NotificationDto } from "../../../shared/dto/notification.dto";
 import { UserId } from "../../../shared/entities/user.entity";
 import { CourseId } from "../../entities/course.entity";

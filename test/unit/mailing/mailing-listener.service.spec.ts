@@ -1,5 +1,5 @@
 import { Participant } from "../../../src/course/entities/participant.entity";
-import { Event } from "../../../src/course/events";
+import { Event } from "../../../src/course/events/events";
 import { AssignmentStateChanged } from "../../../src/course/events/assignment/assignment-state-changed.event";
 import { Assignment as AssignmentEntity } from "../../../src/course/entities/assignment.entity";
 import { ParticipantRepository } from "../../../src/course/repositories/participant.repository";

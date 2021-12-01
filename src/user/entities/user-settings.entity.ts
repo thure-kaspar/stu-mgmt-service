@@ -1,5 +1,5 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from "typeorm";
-import { Event } from "../../course/events";
+import { Event } from "../../course/events/events";
 import { User, UserId } from "../../shared/entities/user.entity";
 import { ToDto } from "../../shared/interfaces/to-dto.interface";
 import { Language } from "../../shared/language";

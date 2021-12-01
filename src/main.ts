@@ -11,7 +11,7 @@ import {
 	OverallPercentRuleDto
 } from "./admission-status/dto/admission-rule.dto";
 import { AppModule } from "./app.module";
-import { StudentMgmtEvent } from "./course/events";
+import { StudentMgmtEvent } from "./course/events/events";
 import { StudentMgmtException } from "./course/exceptions/custom-exceptions";
 import { SubscribedEvents } from "./notification/subscriber/subscriber.dto";
 import { SubscriberRepository } from "./notification/subscriber/subscriber.repository";

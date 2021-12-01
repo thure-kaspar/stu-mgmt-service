@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Event } from "../../course/events";
+import { Event } from "../../course/events/events";
 
 export type SubscribedEvents = { [key in Event]?: boolean } & { ALL?: boolean };
 

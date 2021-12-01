@@ -1,4 +1,4 @@
-import { Event } from "..";
+import { Event } from "../events";
 import { NotificationDto } from "../../../shared/dto/notification.dto";
 import { INotify } from "../interfaces";
 

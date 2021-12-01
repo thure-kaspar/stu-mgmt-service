@@ -1,4 +1,4 @@
-import { Event } from "..";
+import { Event } from "../events";
 import { NotificationDto } from "../../../shared/dto/notification.dto";
 import { UserId } from "../../../shared/entities/user.entity";
 import { AssignmentId } from "../../entities/assignment.entity";

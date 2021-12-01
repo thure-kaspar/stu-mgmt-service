@@ -1,4 +1,4 @@
-import { Event } from "..";
+import { Event } from "../events";
 import { NotificationDto } from "../../../shared/dto/notification.dto";
 import { Assignment } from "../../models/assignment.model";
 import { INotify } from "../interfaces";

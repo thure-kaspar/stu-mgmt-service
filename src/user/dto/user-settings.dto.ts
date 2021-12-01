@@ -1,4 +1,4 @@
-import { Event } from "../../course/events";
+import { Event } from "../../course/events/events";
 import { Language } from "../../shared/language";
 
 type BlacklistedEvents = { [key in Event]?: boolean };
