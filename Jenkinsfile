@@ -63,7 +63,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 sshagent(credentials: ['Stu-Mgmt_Demo-System']) {
-                    sh '''
+                    sh """
                         [ -d ~/.ssh ] || mkdir ~/.ssh && chmod 0700 ~/.ssh
                         ssh-keyscan -t rsa,dsa example.com >> ~/.ssh/known_hosts
                         ssh -i ~/.ssh/id_rsa_student_mgmt_backend elscha@${env.DEMO_SERVER} <<EOF
@@ -77,7 +77,7 @@ pipeline {
                             sleep 30
                             ./chk_logs_for_err.sh
                             exit
-                        EOF'''
+                        EOF"""
                 }
                 findText(textFinders: [textFinder(regexp: '(- error TS\\*)|(Cannot find module.*or its corresponding type declarations\\.)', alsoCheckConsoleOutput: true, buildResult: 'FAILURE')])
             }
