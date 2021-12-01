@@ -100,7 +100,7 @@ pipeline {
                         fi
 
                         rm -f ${env.API_FILE}
-                        wget ${env.API_URL} &> /dev/null
+                        wget ${env.API_URL} \&> /dev/null
                         attempt_counter=$(($attempt_counter+1))
                         sleep ${sleep_timer}
                     done
