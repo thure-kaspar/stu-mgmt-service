@@ -87,26 +87,10 @@ pipeline {
 
         stage('API Client') {
             steps {
-                sh """
-                    attempt_counter=0
-                    max_attempts=5
-                    sleep_timer=5
-
-                    rm -f ${env.API_FILE}
-                    until [[ -f ${env.API_FILE} && -s ${env.API_FILE} ]];do
-                        if [ ${attempt_counter} -eq ${max_attempts} ];then
-                          echo 'Error: Max attempts reached'
-                          exit 1
-                        fi
-
-                        rm -f ${env.API_FILE}
-                        wget ${env.API_URL} 2> /dev/null
-                        attempt_counter=$(($attempt_counter+1))
-                        sleep ${sleep_timer}
-                    done
-
-                    exit 0
-                """
+                sh 'rm -rf gen-jenkins/api-client'
+                sh 'npm install @openapitools/openapi-generator-cli'
+                sh "npx openapi-generator-cli generate -i ${env.API_URL} -g typescript-angular -o gen-jenkins/api-client"
+                sh "tar czf api-client.tar.gz --directory=gen-jenkins api-client"
             }
         }
         
