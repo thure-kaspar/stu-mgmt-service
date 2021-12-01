@@ -5,7 +5,9 @@ pipeline {
     
     environment {
         DEMO_SERVER = '147.172.178.30'
-        API_URL = "http://${env.DEMO_SERVER}:8080/stmgmt/api-json"
+        DEMO_SERVER_PORT = '8080'
+        API_FILE = 'api-json'
+        API_URL = "http://${env.DEMO_SERVER}:${env.DEMO_SERVER_PORT}/stmgmt/${env.API_FILE}"
     }
     
     stages {
@@ -85,7 +87,26 @@ pipeline {
 
         stage('API Client') {
             steps {
-                sh "wget ${env.API_URL}"
+                sh """
+                    attempt_counter=0
+                    max_attempts=5
+                    sleep_timer=5
+
+                    rm -f ${env.API_FILE}
+                    until [[ -f ${env.API_FILE} && -s ${env.API_FILE} ]];do
+                        if [ ${attempt_counter} -eq ${max_attempts} ];then
+                          echo "Error: Max attempts reached"
+                          exit 1
+                        fi
+
+                        rm -f ${env.API_FILE}
+                        wget ${env.API_URL} &> /dev/null
+                        attempt_counter=$(($attempt_counter+1))
+                        sleep ${sleep_timer}
+                    done
+
+                    exit 0
+                """
             }
         }
         
