@@ -95,7 +95,7 @@ pipeline {
                     rm -f ${env.API_FILE}
                     until [[ -f ${env.API_FILE} && -s ${env.API_FILE} ]];do
                         if [ ${attempt_counter} -eq ${max_attempts} ];then
-                          echo "Error: Max attempts reached"
+                          echo 'Error: Max attempts reached'
                           exit 1
                         fi
 
