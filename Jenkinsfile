@@ -2,7 +2,12 @@ pipeline {
     agent any
 
     tools {nodejs "NodeJS 16.13"}
-
+    
+    environment {
+        DEMO_SERVER = '147.172.178.30'
+        API_URL = "http://${env.DEMO_SERVER}:8080/stmgmt/api-json"
+    }
+    
     stages {
 
         stage('Cloning Git') {
@@ -61,7 +66,7 @@ pipeline {
                     sh '''
                         [ -d ~/.ssh ] || mkdir ~/.ssh && chmod 0700 ~/.ssh
                         ssh-keyscan -t rsa,dsa example.com >> ~/.ssh/known_hosts
-                        ssh -i ~/.ssh/id_rsa_student_mgmt_backend elscha@147.172.178.30 <<EOF
+                        ssh -i ~/.ssh/id_rsa_student_mgmt_backend elscha@${env.DEMO_SERVER} <<EOF
                             cd ~/StudentMgmt-Backend
                             git reset --hard
                             git pull
@@ -78,6 +83,12 @@ pipeline {
             }
         }
 
+        stage('API Client') {
+            steps {
+                sh "wget ${env.API_URL}"
+            }
+        }
+        
         stage('Publish Results') {
             steps {
                 archiveArtifacts artifacts: '*.tar.gz'
