@@ -106,6 +106,7 @@ For reference, the `Event` enumeration can be see below:
 export enum Event {
 	COURSE_JOINED = "COURSE_JOINED",
 	ASSIGNMENT_CREATED = "ASSIGNMENT_CREATED",
+	ASSIGNMENT_UPDATED = "ASSIGNMENT_UPDATED",
 	ASSIGNMENT_REMOVED = "ASSIGNMENT_REMOVED",
 	ASSIGNMENT_STATE_CHANGED = "ASSIGNMENT_STATE_CHANGED",
 	GROUP_REGISTERED = "GROUP_REGISTERED",
@@ -128,6 +129,18 @@ Published when a new assignment has been created.
 ```json
 {
 	"event": Event.ASSIGNMENT_CREATED,
+	"courseId": event.courseId,
+	"assignmentId": event.assignmentId
+}
+```
+
+### AssignmentUpdated
+
+Published when an assignment has been updated.
+
+```json
+{
+	"event": Event.ASSIGNMENT_UPDATED,
 	"courseId": event.courseId,
 	"assignmentId": event.assignmentId
 }
