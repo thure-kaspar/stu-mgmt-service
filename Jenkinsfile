@@ -12,8 +12,9 @@ pipeline {
     
     stages {
 
-        stage('Cloning Git') {
+        stage('Git') {
             steps {
+                cleanWs()
                 git 'https://github.com/Student-Management-System/StudentMgmt-Backend.git'
             }
         }
