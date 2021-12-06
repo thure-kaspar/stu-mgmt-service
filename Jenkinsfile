@@ -84,6 +84,7 @@ pipeline {
                         EOF"""
                 }
                 findText(textFinders: [textFinder(regexp: '(- error TS\\*)|(Cannot find module.*or its corresponding type declarations\\.)', alsoCheckConsoleOutput: true, buildResult: 'FAILURE')])
+                sh "wget ${env.API_URL}"
             }
         }
 
@@ -93,6 +94,7 @@ pipeline {
             when { changeset "src/main.ts"}
             steps {
                 // TODO: API Generation here
+                build job: 'Teaching_StudentMgmt-API-Client', wait: false
                 sh 'echo "API potentially changed"'
                 // sh 'rm -rf gen-jenkins/api-client'
                 // sh 'npm install @openapitools/openapi-generator-cli'
@@ -104,6 +106,7 @@ pipeline {
         stage('Publish Results') {
             steps {
                 archiveArtifacts artifacts: '*.tar.gz'
+                archiveArtifacts artifacts: "${env.API_FILE}"
             }
         }
 
