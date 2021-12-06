@@ -1,27 +1,19 @@
-import { Test, TestingModule } from "@nestjs/testing";
-import { INestApplication } from "@nestjs/common";
-import * as request from "supertest";
-import { AppModule } from "../../src/app.module";
-import { getConnection } from "typeorm";
+import { TestSetup } from "../utils/e2e";
 
-describe("AppController (e2e)", () => {
-	let app: INestApplication;
+describe("AppController E2E", () => {
+	let setup: TestSetup;
 
-	beforeEach(async () => {
-		const moduleFixture: TestingModule = await Test.createTestingModule({
-			imports: [AppModule]
-		}).compile();
-
-		app = moduleFixture.createNestApplication();
-		await app.init();
+	beforeAll(async () => {
+		setup = await TestSetup.create();
 	});
 
-	afterEach(async () => {
-		await getConnection().close(); // Close Db-Connection after all tests have been executed
+	afterAll(async () => {
+		await setup.teardown();
 	});
 
 	it("(GET) /uptime", () => {
-		return request(app.getHttpServer())
+		return setup
+			.request()
 			.get("/uptime")
 			.expect(200)
 			.expect(({ body }) => {

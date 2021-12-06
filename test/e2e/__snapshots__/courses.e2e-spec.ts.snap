@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`GET-REQUESTS of CourseController (e2e) (GET) /courses/{courseId} Retrieves the course 1`] = `
+exports[`Courses E2E GET-REQUESTS of CourseController (e2e) (GET) /courses/{courseId} Retrieves the course 1`] = `
 Object {
   "admissionCriteria": Object {
     "rules": Array [

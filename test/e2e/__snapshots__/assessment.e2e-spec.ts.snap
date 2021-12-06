@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`GET-REQUESTS of AssessmentController (e2e) (GET) /courses/{courseId}/assignments/{assignmentId}/assessments/{assessmentId} Assessment with partial assessments -> Retrieves partials 1`] = `
+exports[`Assessment E2E GET-REQUESTS of AssessmentController (e2e) (GET) /courses/{courseId}/assignments/{assignmentId}/assessments/{assessmentId} Assessment with partial assessments -> Retrieves partials 1`] = `
 Object {
   "achievedPoints": 50,
   "assignment": Object {
@@ -55,7 +55,7 @@ Object {
 }
 `;
 
-exports[`PATCH-REQUESTS of AssessmentController (e2e) (PATCH) /courses/{courseId}/assignments/{assignmentId}/assessments/{assessmentId} No partial assessments before -> Adds partial assessments 1`] = `
+exports[`Assessment E2E PATCH-REQUESTS of AssessmentController (e2e) (PATCH) /courses/{courseId}/assignments/{assignmentId}/assessments/{assessmentId} No partial assessments before -> Adds partial assessments 1`] = `
 Object {
   "achievedPoints": 99,
   "assignment": Object {
@@ -118,7 +118,7 @@ Object {
 }
 `;
 
-exports[`PATCH-REQUESTS of AssessmentController (e2e) (PATCH) /courses/{courseId}/assignments/{assignmentId}/assessments/{assessmentId} Partial assessments before -> Remove partial assessments 1`] = `
+exports[`Assessment E2E PATCH-REQUESTS of AssessmentController (e2e) (PATCH) /courses/{courseId}/assignments/{assignmentId}/assessments/{assessmentId} Partial assessments before -> Remove partial assessments 1`] = `
 Object {
   "achievedPoints": 75,
   "assignment": Object {
@@ -183,7 +183,7 @@ Object {
 }
 `;
 
-exports[`PATCH-REQUESTS of AssessmentController (e2e) (PATCH) /courses/{courseId}/assignments/{assignmentId}/assessments/{assessmentId} Partial assessments before -> Updates partial assessments 1`] = `
+exports[`Assessment E2E PATCH-REQUESTS of AssessmentController (e2e) (PATCH) /courses/{courseId}/assignments/{assignmentId}/assessments/{assessmentId} Partial assessments before -> Updates partial assessments 1`] = `
 Object {
   "achievedPoints": 75,
   "assignment": Object {
@@ -297,7 +297,7 @@ Object {
 }
 `;
 
-exports[`POST-REQUESTS of AssessmentController (e2e) (POST) /courses/{courseId}/assignments/{assignmentId}/assessments Assessment with partial assessments -> Creates partial assessments 1`] = `
+exports[`Assessment E2E POST-REQUESTS of AssessmentController (e2e) (POST) /courses/{courseId}/assignments/{assignmentId}/assessments Assessment with partial assessments -> Creates partial assessments 1`] = `
 Object {
   "achievedPoints": 50,
   "assignmentId": "993b3cd0-6207-11ea-bc55-0242ac130003",
@@ -327,7 +327,7 @@ Object {
 }
 `;
 
-exports[`POST-REQUESTS of AssessmentController (e2e) (POST) /courses/{courseId}/assignments/{assignmentId}/assessments Creates the given (group-)assessment and returns it 1`] = `
+exports[`Assessment E2E POST-REQUESTS of AssessmentController (e2e) (POST) /courses/{courseId}/assignments/{assignmentId}/assessments Creates the given (group-)assessment and returns it 1`] = `
 Object {
   "achievedPoints": 75,
   "assignmentId": "c2bc4aa4-6207-11ea-bc55-0242ac130003",
@@ -342,7 +342,7 @@ Object {
 }
 `;
 
-exports[`POST-REQUESTS of AssessmentController (e2e) (POST) /courses/{courseId}/assignments/{assignmentId}/assessments Creates the given (user-)assessment and returns it 1`] = `
+exports[`Assessment E2E POST-REQUESTS of AssessmentController (e2e) (POST) /courses/{courseId}/assignments/{assignmentId}/assessments Creates the given (user-)assessment and returns it 1`] = `
 Object {
   "achievedPoints": 25,
   "assignmentId": "75b799a1-a406-419b-a448-909aa3d34afa",

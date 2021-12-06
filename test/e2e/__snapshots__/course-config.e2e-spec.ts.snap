@@ -1,13 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`PUT-REQUEST of CourseConfigController (e2e) (PUT) courses/{courseId}/config/admission-from-previous-semester Empty array -> Clears existing data 1`] = `
+exports[`CourseConfig E2E PUT-REQUEST of CourseConfigController (e2e) (PUT) courses/{courseId}/config/admission-from-previous-semester Empty array -> Clears existing data 1`] = `
 Object {
   "matrNrs": Array [],
   "participants": Array [],
 }
 `;
 
-exports[`PUT-REQUEST of CourseConfigController (e2e) (PUT) courses/{courseId}/config/admission-from-previous-semester With matrNrs -> Returns DTO 1`] = `
+exports[`CourseConfig E2E PUT-REQUEST of CourseConfigController (e2e) (PUT) courses/{courseId}/config/admission-from-previous-semester With matrNrs -> Returns DTO 1`] = `
 Object {
   "matrNrs": Array [
     123456,
