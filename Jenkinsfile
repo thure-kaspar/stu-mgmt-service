@@ -105,7 +105,7 @@ pipeline {
         stage('Trigger API Client') {
             // Execute this step only if Version number was changed
             // Based on: https://stackoverflow.com/a/57823724
-            when { changeset "src/main.ts"}
+            when { changeset "src/version.ts"}
             steps {
                 build job: 'Teaching_StudentMgmt-API-Client', parameters: [string(name: 'API', value:'STU-MGMT')], wait: false
             }
