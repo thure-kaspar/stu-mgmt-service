@@ -16,7 +16,7 @@
 		"lint:fix": "eslint src test --ext .ts,.tsx --fix",
 		"prettier:check": "prettier --check **/*",
 		"prettier:write": "prettier --write **/*",
-		"test": "env NODE_ENV=testing jest --runInBand --config ./test/jest-unit.json",
+		"test": "env NODE_ENV=testing jest --config ./test/jest-unit.json",
 		"test:watch": "env NODE_ENV=testing jest --watch --runInBand --config ./test/jest-unit.json",
 		"test:cov": "env NODE_ENV=testing jest --coverage --config ./test/jest-unit.json",
 		"test:debug": "env NODE_ENV=testing node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand --config ./test/jest-unit.json",
