@@ -63,6 +63,7 @@ pipeline {
             }
         }
 
+        // Based on: https://medium.com/@mosheezderman/c51581cc783c
         stage('Deploy') {
             steps {
                 sshagent(credentials: ['Stu-Mgmt_Demo-System']) {
@@ -87,11 +88,16 @@ pipeline {
         }
 
         stage('API Client') {
+            // Execute this step only if Version number was changed
+            // Based on: https://stackoverflow.com/a/57823724
+            when { changeset "src/main.ts"}
             steps {
-                sh 'rm -rf gen-jenkins/api-client'
-                sh 'npm install @openapitools/openapi-generator-cli'
-                sh "npx openapi-generator-cli generate -i ${env.API_URL} -g typescript-angular -o gen-jenkins/api-client"
-                sh "tar czf api-client.tar.gz --directory=gen-jenkins api-client"
+                // TODO: API Generation here
+                sh 'echo "API potentially changed"'
+                // sh 'rm -rf gen-jenkins/api-client'
+                // sh 'npm install @openapitools/openapi-generator-cli'
+                // sh "npx openapi-generator-cli generate -i ${env.API_URL} -g typescript-angular -o gen-jenkins/api-client"
+                // sh "tar czf api-client.tar.gz --directory=gen-jenkins api-client"
             }
         }
         
