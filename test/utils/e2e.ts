@@ -4,6 +4,25 @@ import { Connection, getConnection } from "typeorm";
 import { createApplication } from "../mocks/application.mock";
 import { DbMockService } from "../mocks/db-mock.service";
 
+/**
+ * E2E-Testing utility that provides methods for ...
+ * - Application and database connection setup and teardown
+ * - HTTP requests to application
+ * - Clearing database data
+ *
+ * @example 
+ * describe("TestSetup Example", () => {
+	let setup: TestSetup;
+
+	beforeAll(async () => {
+		setup = await TestSetup.create();
+	});
+
+	afterAll(async () => {
+		await setup.teardown();
+	});
+});
+ */
 export class TestSetup {
 	/**
 	 * Creates the setup for an e2e testing suite.
@@ -18,7 +37,7 @@ export class TestSetup {
 		return new TestSetup(app, connection, dbMockService);
 	}
 
-	constructor(
+	private constructor(
 		readonly app: INestApplication,
 		readonly connection: Connection,
 		readonly dbMockService: DbMockService
