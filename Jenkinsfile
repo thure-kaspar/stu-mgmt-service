@@ -87,21 +87,6 @@ pipeline {
                 sh "wget ${env.API_URL}"
             }
         }
-
-        stage('API Client') {
-            // Execute this step only if Version number was changed
-            // Based on: https://stackoverflow.com/a/57823724
-            when { changeset "src/main.ts"}
-            steps {
-                // TODO: API Generation here
-                build job: 'Teaching_StudentMgmt-API-Client', wait: false
-                sh 'echo "API potentially changed"'
-                // sh 'rm -rf gen-jenkins/api-client'
-                // sh 'npm install @openapitools/openapi-generator-cli'
-                // sh "npx openapi-generator-cli generate -i ${env.API_URL} -g typescript-angular -o gen-jenkins/api-client"
-                // sh "tar czf api-client.tar.gz --directory=gen-jenkins api-client"
-            }
-        }
         
         stage('Publish Results') {
             steps {
@@ -114,6 +99,15 @@ pipeline {
             steps {
                 build job: 'Teaching_StuMgmtDocker', wait: false
                 build job: 'Teaching_StudentMgmt-Backend-API-Gen', wait: false
+            }
+        }
+        
+        stage('Trigger API Client') {
+            // Execute this step only if Version number was changed
+            // Based on: https://stackoverflow.com/a/57823724
+            when { changeset "src/main.ts"}
+            steps {
+                build job: 'Teaching_StudentMgmt-API-Client', parameters: [string(name: 'API', value:'STU-MGMT')], wait: false
             }
         }
     }
