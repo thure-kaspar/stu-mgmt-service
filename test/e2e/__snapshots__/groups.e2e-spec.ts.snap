@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`GET-REQUESTS of GroupController (e2e) (GET) /courses/{courseId}/groups Filters by member name 1`] = `
+exports[`Groups E2E GET-REQUESTS of GroupController (e2e) (GET) /courses/{courseId}/groups Filters by member name 1`] = `
 Array [
   Object {
     "hasPassword": true,
@@ -30,7 +30,7 @@ Array [
 ]
 `;
 
-exports[`GET-REQUESTS of GroupController (e2e) (GET) /courses/{courseId}/groups Filters empty groups (exludeEmpty=true) 1`] = `
+exports[`Groups E2E GET-REQUESTS of GroupController (e2e) (GET) /courses/{courseId}/groups Filters empty groups (exludeEmpty=true) 1`] = `
 Array [
   Object {
     "hasPassword": true,
@@ -85,7 +85,7 @@ Array [
 ]
 `;
 
-exports[`GET-REQUESTS of GroupController (e2e) (GET) /groups/{groupId} Retrieves the group 1`] = `
+exports[`Groups E2E GET-REQUESTS of GroupController (e2e) (GET) /groups/{groupId} Retrieves the group 1`] = `
 Object {
   "hasPassword": true,
   "id": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
@@ -114,7 +114,7 @@ Object {
 }
 `;
 
-exports[`GET-REQUESTS of GroupController (e2e) (GET) /groups/assignments/{assignmentId}/with-assigned-evaluator Returns groups with their assigned evaluator 1`] = `
+exports[`Groups E2E GET-REQUESTS of GroupController (e2e) (GET) /groups/assignments/{assignmentId}/with-assigned-evaluator Returns groups with their assigned evaluator 1`] = `
 Array [
   Object {
     "assignedEvaluatorId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",

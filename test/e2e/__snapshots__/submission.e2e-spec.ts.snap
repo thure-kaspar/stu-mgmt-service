@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`GET-Requests of SubmissionController (e2e) (GET) /courses/:courseId/submissions Retrieves all submissions 1`] = `
+exports[`Submission E2E GET-Requests of SubmissionController (e2e) (GET) /courses/:courseId/submissions Retrieves all submissions 1`] = `
 Array [
   Object {
     "assignmentId": "b2f6c008-b9f7-477f-9e8b-ff34ce339077",
@@ -36,7 +36,7 @@ Array [
 ]
 `;
 
-exports[`GET-Requests of SubmissionController (e2e) (GET) /courses/:courseId/submissions/groups/:groupId/assignments/:assignmentId Retrieves all submissions of a group for an assignment 1`] = `
+exports[`Submission E2E GET-Requests of SubmissionController (e2e) (GET) /courses/:courseId/submissions/groups/:groupId/assignments/:assignmentId Retrieves all submissions of a group for an assignment 1`] = `
 Array [
   Object {
     "assignmentId": "b2f6c008-b9f7-477f-9e8b-ff34ce339077",
@@ -72,7 +72,7 @@ Array [
 ]
 `;
 
-exports[`GET-Requests of SubmissionController (e2e) (GET) /courses/:courseId/submissions/users/:user/assignments/:assignments Retrieves the latest submission of a user (or their group) for an assignment 1`] = `
+exports[`Submission E2E GET-Requests of SubmissionController (e2e) (GET) /courses/:courseId/submissions/users/:user/assignments/:assignments Retrieves the latest submission of a user (or their group) for an assignment 1`] = `
 Object {
   "assignmentId": "b2f6c008-b9f7-477f-9e8b-ff34ce339077",
   "date": "2020-02-02T08:42:00.000Z",
@@ -84,7 +84,7 @@ Object {
 }
 `;
 
-exports[`GET-Requests of SubmissionController (e2e) (GET) /courses/:courseId/submissions/users/:userId Retrieves all submissions of user 1`] = `
+exports[`Submission E2E GET-Requests of SubmissionController (e2e) (GET) /courses/:courseId/submissions/users/:userId Retrieves all submissions of user 1`] = `
 Array [
   Object {
     "assignmentId": "b2f6c008-b9f7-477f-9e8b-ff34ce339077",
@@ -120,7 +120,7 @@ Array [
 ]
 `;
 
-exports[`POST-Requests of SubmissionController (e2e) (POST) /courses/:courseId/submissions/assignments/:assignmentId Adds a submission 1`] = `
+exports[`Submission E2E POST-Requests of SubmissionController (e2e) (POST) /courses/:courseId/submissions/assignments/:assignmentId Adds a submission 1`] = `
 Object {
   "assignmentId": "b2f6c008-b9f7-477f-9e8b-ff34ce339077",
   "date": null,

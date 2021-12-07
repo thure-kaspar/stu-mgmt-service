@@ -18,9 +18,10 @@ import { SubscriberRepository } from "./notification/subscriber/subscriber.repos
 import { EntityAlreadyExistsFilter } from "./shared/entity-already-exists.filter";
 import { EntityNotFoundFilter } from "./shared/entity-not-found.filter";
 import { RoundingBehavior } from "./utils/math";
+import { VERSION } from "./version";
 
 async function bootstrap(): Promise<void> {
-	const version = "2.0.0";
+	const version = VERSION;
 
 	const logger = new Logger("Bootstrap");
 	const logLevels = Config.getLogger().levels;

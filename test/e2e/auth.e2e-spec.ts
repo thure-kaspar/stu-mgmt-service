@@ -1,31 +1,32 @@
-import { INestApplication } from "@nestjs/common";
-import * as request from "supertest";
-import { getConnection } from "typeorm";
-import { createApplication } from "../mocks/application.mock";
-import { DbMockService } from "../mocks/db-mock.service";
+import { TestSetup } from "../utils/e2e";
 
-let app: INestApplication;
+describe("Auth E2E", () => {
+	let setup: TestSetup;
 
-describe("GET-REQUESTS of AuthController (e2e)", () => {
 	beforeAll(async () => {
-		app = await createApplication();
-		const dbMockService = new DbMockService(getConnection());
-		await dbMockService.createAll();
+		setup = await TestSetup.create();
 	});
 
 	afterAll(async () => {
-		await getConnection().dropDatabase(); // Drop database with all tables and data
-		await getConnection().close(); // Close Db-Connection after all tests have been executed
+		await setup.teardown();
 	});
 
-	describe("auth/whoAmI", () => {
-		it("Returns user associated with the provided auth token", () => {
-			return request(app.getHttpServer())
-				.get("/auth/whoAmI")
-				.expect(200)
-				.expect(({ body }) => {
-					expect(body).toMatchSnapshot();
-				});
+	describe("GET-REQUESTS of AuthController (e2e)", () => {
+		beforeAll(async () => {
+			await setup.clearDb();
+			await setup.dbMockService.createAll();
+		});
+
+		describe("auth/whoAmI", () => {
+			it("Returns user associated with the provided auth token", () => {
+				return setup
+					.request()
+					.get("/auth/whoAmI")
+					.expect(200)
+					.expect(({ body }) => {
+						expect(body).toMatchSnapshot();
+					});
+			});
 		});
 	});
 });

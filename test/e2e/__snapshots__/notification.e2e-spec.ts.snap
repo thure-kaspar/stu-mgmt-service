@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`GET-Requests of NotificationController (e2e) (GET) /notifications/courses/{courseId}/subscribers Retrieves all subscribers 1`] = `
+exports[`Notification E2E GET-Requests of NotificationController (e2e) (GET) /notifications/courses/{courseId}/subscribers Retrieves all subscribers 1`] = `
 Array [
   Object {
     "events": Object {
