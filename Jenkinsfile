@@ -110,29 +110,29 @@ pipeline {
                 build job: 'Teaching_StudentMgmt-API-Client', parameters: [string(name: 'API', value:'STU-MGMT')], wait: false
             }
         }
-        
-        post {
-            unstable {
-                // Based on: https://stackoverflow.com/a/39178479
-                load "$JENKINS_HOME/.envvars/emails.vars"
-                mail to: "${mail.elsharkawy}, ${mail.klingebiel}",
-                    subject: "Jenkins: Student Management Backend is unstable",
-                    body: "See: <a href="${env.BUILD_URL}">${env.JOB_NAME}</a>"
-            }
-            failure {
-                // Based on: https://stackoverflow.com/a/39178479
-                load "$JENKINS_HOME/.envvars/emails.vars"
-                mail to: "${mail.elsharkawy}, ${mail.klingebiel}",
-                    subject: "Jenkins: Student Management Backend failed",
-                    body: "See: <a href="${env.BUILD_URL}">${env.JOB_NAME}</a>"
-            }
-            changed {
-                // Based on: https://stackoverflow.com/a/39178479
-                load "$JENKINS_HOME/.envvars/emails.vars"
-                mail to: "${mail.elsharkawy}, ${mail.klingebiel}",
-                    subject: "Jenkins: Student Management Backend back to normal",
-                    body: "Student Management Backend is back to normal. See: <a href="${env.BUILD_URL}">${env.JOB_NAME}</a>"
-            }
+    }
+    
+    post {
+        unstable {
+            // Based on: https://stackoverflow.com/a/39178479
+            load "$JENKINS_HOME/.envvars/emails.vars"
+            mail to: "${mail.elsharkawy}, ${mail.klingebiel}",
+                subject: "Jenkins: Student Management Backend is unstable",
+                body: "See: <a href="${env.BUILD_URL}">${env.JOB_NAME}</a>"
+        }
+        failure {
+            // Based on: https://stackoverflow.com/a/39178479
+            load "$JENKINS_HOME/.envvars/emails.vars"
+            mail to: "${mail.elsharkawy}, ${mail.klingebiel}",
+                subject: "Jenkins: Student Management Backend failed",
+                body: "See: <a href="${env.BUILD_URL}">${env.JOB_NAME}</a>"
+        }
+        changed {
+            // Based on: https://stackoverflow.com/a/39178479
+            load "$JENKINS_HOME/.envvars/emails.vars"
+            mail to: "${mail.elsharkawy}, ${mail.klingebiel}",
+                subject: "Jenkins: Student Management Backend back to normal",
+                body: "Student Management Backend is back to normal. See: <a href="${env.BUILD_URL}">${env.JOB_NAME}</a>"
         }
     }
 }
