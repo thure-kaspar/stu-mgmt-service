@@ -114,25 +114,19 @@ pipeline {
     
     post {
         unstable {
-            // Based on: https://stackoverflow.com/a/39178479
-            load "$JENKINS_HOME/.envvars/emails.vars"
-            mail to: "${mail.elsharkawy}, ${mail.klingebiel}",
-                subject: "Jenkins: Student Management Backend is unstable",
-                body: "See: <a href="${env.BUILD_URL}">${env.JOB_NAME}</a>"
+             // Based on: https://stackoverflow.com/a/39178479
+             load "$JENKINS_HOME/.envvars/emails.vars" 
+             step([$class: 'Mailer', to: "${env.elsharkawy}, ${env.klingebiel}", subject: "Jenkins: Student Management Backend is unstable", body: "See: <a href=\"${env.BUILD_URL}\">${env.JOB_NAME}</a>"])
         }
         failure {
             // Based on: https://stackoverflow.com/a/39178479
-            load "$JENKINS_HOME/.envvars/emails.vars"
-            mail to: "${mail.elsharkawy}, ${mail.klingebiel}",
-                subject: "Jenkins: Student Management Backend failed",
-                body: "See: <a href="${env.BUILD_URL}">${env.JOB_NAME}</a>"
+            load "$JENKINS_HOME/.envvars/emails.vars" 
+            step([$class: 'Mailer', to: "${env.elsharkawy}, ${env.klingebiel}", subject: "Jenkins: Student Management Backend failed", body: "See: <a href=\"${env.BUILD_URL}\">${env.JOB_NAME}</a>"])
         }
-        changed {
+        fixed {
             // Based on: https://stackoverflow.com/a/39178479
-            load "$JENKINS_HOME/.envvars/emails.vars"
-            mail to: "${mail.elsharkawy}, ${mail.klingebiel}",
-                subject: "Jenkins: Student Management Backend back to normal",
-                body: "Student Management Backend is back to normal. See: <a href="${env.BUILD_URL}">${env.JOB_NAME}</a>"
+            load "$JENKINS_HOME/.envvars/emails.vars" 
+            step([$class: 'Mailer', to: "${env.elsharkawy}, ${env.klingebiel}", subject: "Jenkins: Student Management Backend back to normal", body: "Student Management Backend is back to normal. See: <a href=\"${env.BUILD_URL}\">${env.JOB_NAME}</a>"])
         }
     }
 }
