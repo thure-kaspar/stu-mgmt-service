@@ -3,7 +3,6 @@ import { GroupWithAssignedEvaluatorDto } from "../../src/assessment/queries/grou
 import { GroupCreateBulkDto } from "../../src/course/dto/group/group-create-bulk.dto";
 import { GroupEventDto } from "../../src/course/dto/group/group-event.dto";
 import { GroupDto } from "../../src/course/dto/group/group.dto";
-import { createApplication_STUDENT } from "../mocks/application.mock";
 import { ASSESSMENT_ALLOCATIONS_MOCK } from "../mocks/assessment-allocation.mock";
 import {
 	AssessmentsMock,
@@ -454,57 +453,6 @@ describe("Groups E2E", () => {
 			const group = GROUP_1_JAVA;
 
 			return setup.request().delete(`/courses/${course.id}/groups/${group.id}`).expect(200);
-		});
-	});
-});
-
-xdescribe("As STUDENT", () => {
-	let setup: TestSetup;
-
-	beforeAll(async () => {
-		setup = await TestSetup.create(createApplication_STUDENT);
-	});
-
-	afterAll(async () => {
-		await setup.teardown();
-	});
-
-	describe("courses/{courseId}/groups/{groupId}/users/{userId} - addUserToGroup", () => {
-		beforeEach(async () => {
-			await setup.clearDb();
-			await setupMocks(setup.dbMockService);
-		});
-
-		it("Correct password -> Adds the user to the group", () => {
-			const group = GROUP_1_JAVA;
-
-			return setup
-				.request()
-				.post(`/courses/${course.id}/groups/${group.id}/users/${users[0].id}`)
-				.send({ password: group.password })
-				.expect(201);
-		});
-
-		it("Incorrect password -> 400 BadRequest", () => {
-			const group = GROUP_1_JAVA;
-			console.assert(group.password, "Expecting group to have a password.");
-
-			return setup
-				.request()
-				.post(`/courses/${course.id}/groups/${group.id}/users/${users[0].id}`)
-				.send({ password: "wrong_password" })
-				.expect(400);
-		});
-
-		it("Group is closed -> 403 Forbidden", () => {
-			const group = GROUP_2_JAVA;
-			console.assert(group.isClosed, "Expecting group to be closed.");
-
-			return setup
-				.request()
-				.post(`/courses/${course.id}/groups/${group.id}/users/${users[0].id}`)
-				.send({ password: group.password })
-				.expect(403);
 		});
 	});
 });
