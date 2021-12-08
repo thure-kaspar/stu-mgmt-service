@@ -117,7 +117,8 @@ export class UserRepository extends Repository<User> {
 		user.displayName = userDto.displayName;
 		user.role = userDto.role;
 
-		return this.save(user);
+		await this.save(user);
+		return this.getUserById(userId);
 	}
 
 	async deleteUser(userId: UserId): Promise<boolean> {

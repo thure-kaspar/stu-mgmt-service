@@ -10,7 +10,7 @@ import { AuthStrategy } from "./guards/auth.strategy";
 import { RoleGuard } from "./guards/role.guard";
 import { SparkyAuthStrategy } from "./guards/sparky-auth.strategy";
 import { TestUserAuthStrategy } from "./guards/test-user-auth.strategy";
-import { AuthSystemService } from "./services/auth-system.service";
+import { SparkyService } from "./services/sparky.service";
 import { AuthService } from "./services/auth.service";
 
 @Module({
@@ -18,7 +18,7 @@ import { AuthService } from "./services/auth.service";
 	controllers: [AuthController],
 	providers: [
 		AuthService,
-		AuthSystemService,
+		SparkyService,
 		CacheService,
 		RoleGuard,
 		SparkyAuthStrategy,

@@ -1,13 +1,65 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { DtoFactory } from "../../shared/dto-factory";
+import { UserDto } from "../../shared/dto/user.dto";
 import { User } from "../../shared/entities/user.entity";
 import { UserRole } from "../../shared/enums";
 import { UserRepository } from "../../user/repositories/user.repository";
 import { AuthInfo } from "../dto/auth-info.dto";
+import { AuthResultDto } from "../dto/auth-result.dto";
+import { CredentialsDto } from "../dto/credentials.dto";
+import { SparkyService } from "./sparky.service";
 
 @Injectable()
 export class AuthService {
-	constructor(@InjectRepository(UserRepository) private userRepository: UserRepository) {}
+	private readonly logger = new Logger(AuthService.name);
+
+	constructor(
+		@InjectRepository(UserRepository) private userRepository: UserRepository,
+		private sparkyService: SparkyService
+	) {}
+
+	async getUserById(id: string): Promise<UserDto> {
+		const user = await this.userRepository.getUserById(id);
+		return DtoFactory.createUserDto(user);
+	}
+
+	/**
+	 * Attempts to authenticate the user with {@link SparkyService} using the given credentials.
+	 * If the user does not exists already, a new {@link User} will be created.
+	 *
+	 * @param credentials
+	 */
+	async login(credentials: CredentialsDto): Promise<AuthResultDto> {
+		const authInfo = await this.sparkyService.authenticate(credentials);
+		const user = await this.getOrCreateUser(authInfo);
+		return {
+			user,
+			accessToken: authInfo.token.expiration,
+			expiration: authInfo.token.expiration ? new Date(authInfo.token.expiration) : undefined
+		};
+	}
+
+	/**
+	 * Tries to look up the external user by their `username`.
+	 * If it does not exists, the user will be created.
+	 *
+	 * @param extUser - AuthInfo returned from SparkyService.
+	 */
+	async getOrCreateUser(extUser: AuthInfo): Promise<UserDto> {
+		// Try to find user in this system
+		let intUser = await this.userRepository.tryGetUserByUsername(extUser.user.username);
+
+		if (!intUser) {
+			// User does not exist, create account in this system
+			intUser = await this.createUser(extUser);
+			this.logger.verbose("Created new user: " + intUser.username);
+		} else if (this.userInfoHasChanged(intUser, extUser)) {
+			intUser = await this.updateUser(intUser, extUser);
+		}
+
+		return DtoFactory.createUserDto(intUser);
+	}
 
 	/**
 	 * Updates the user's `email` and `displayName` according to the information received

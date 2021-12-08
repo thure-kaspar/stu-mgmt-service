@@ -2,21 +2,18 @@ import { ExecutionContext, UnauthorizedException } from "@nestjs/common";
 import { CacheService } from "../../../src/auth/cache.service";
 import { AuthInfo } from "../../../src/auth/dto/auth-info.dto";
 import { SparkyAuthStrategy } from "../../../src/auth/guards/sparky-auth.strategy";
-import { AuthSystemService } from "../../../src/auth/services/auth-system.service";
+import { SparkyService } from "../../../src/auth/services/sparky.service";
 import { AuthService } from "../../../src/auth/services/auth.service";
 import { User } from "../../../src/shared/entities/user.entity";
-import { UserRepository } from "../../../src/user/repositories/user.repository";
 import { USER_STUDENT_JAVA } from "../../mocks/users.mock";
 
 const defaultUser = User.fromDto(USER_STUDENT_JAVA);
 
 const mock_AuthService = (): Partial<AuthService> => ({
-	createUser: jest.fn().mockResolvedValue(defaultUser),
-	updateUser: jest.fn().mockResolvedValue(defaultUser),
-	userInfoHasChanged: jest.fn()
+	getOrCreateUser: jest.fn().mockResolvedValue(defaultUser)
 });
 
-const mock_AuthSystemService = (): Partial<AuthSystemService> => ({
+const mock_SparkyService = (): Partial<SparkyService> => ({
 	checkAuthentication: jest.fn().mockImplementation(() => {
 		const authInfo: AuthInfo = {
 			token: {
@@ -34,10 +31,6 @@ const mock_AuthSystemService = (): Partial<AuthSystemService> => ({
 		};
 		return authInfo;
 	})
-});
-
-const mock_UserRepository = (): Partial<UserRepository> => ({
-	tryGetUserByUsername: jest.fn().mockResolvedValue(defaultUser)
 });
 
 function createExecutionContextWithHeader(authorization?: string): ExecutionContext {
@@ -60,16 +53,14 @@ const validAuthHeader = {
 describe("SparkyAuthStrategy", () => {
 	let cache: CacheService;
 	let authService: AuthService;
-	let authSystem: AuthSystemService;
-	let userRepository: UserRepository;
+	let sparkyService: SparkyService;
 	let sparkyAuthStrategy: SparkyAuthStrategy;
 
 	beforeEach(() => {
 		cache = new CacheService();
 		authService = mock_AuthService() as AuthService;
-		authSystem = mock_AuthSystemService() as AuthSystemService;
-		userRepository = mock_UserRepository() as UserRepository;
-		sparkyAuthStrategy = new SparkyAuthStrategy(cache, authService, authSystem, userRepository);
+		sparkyService = mock_SparkyService() as SparkyService;
+		sparkyAuthStrategy = new SparkyAuthStrategy(cache, authService, sparkyService);
 	});
 
 	it("Should be defined", () => {
@@ -122,13 +113,13 @@ describe("SparkyAuthStrategy", () => {
 					return USER_STUDENT_JAVA;
 				});
 
-				authSystem.checkAuthentication = jest.fn();
+				sparkyService.checkAuthentication = jest.fn();
 
 				const context = createExecutionContextWithHeader(validAuthHeader.value);
 
 				const result = await sparkyAuthStrategy.canActivate(context);
 
-				expect(authSystem.checkAuthentication).not.toHaveBeenCalled();
+				expect(sparkyService.checkAuthentication).not.toHaveBeenCalled();
 				expect(context.switchToHttp().getRequest().user).toEqual(defaultUser);
 				expect(result).toEqual(true);
 			});
@@ -139,7 +130,7 @@ describe("SparkyAuthStrategy", () => {
 				const context = createExecutionContextWithHeader(validAuthHeader.value);
 				const result = await sparkyAuthStrategy.canActivate(context);
 
-				expect(authSystem.checkAuthentication).toHaveBeenCalledWith({
+				expect(sparkyService.checkAuthentication).toHaveBeenCalledWith({
 					token: validAuthHeader.jwt
 				});
 				expect(cache.set).toHaveBeenCalledWith(validAuthHeader.jwt, defaultUser);
