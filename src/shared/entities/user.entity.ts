@@ -4,6 +4,7 @@ import { AssessmentUserRelation } from "../../assessment/entities/assessment-use
 import { Participant } from "../../course/entities/participant.entity";
 import { UserGroupRelation } from "../../course/entities/user-group-relation.entity";
 import { UserSettings } from "../../user/entities/user-settings.entity";
+import { UserDto } from "../dto/user.dto";
 import { UserRole } from "../enums";
 
 export type UserId = string;
@@ -28,19 +29,16 @@ export class User {
 	@Column({ type: "enum", enum: UserRole, default: UserRole.USER })
 	role: UserRole;
 
-	@OneToMany(type => Participant, participants => participants.user)
+	@OneToMany(() => Participant, participants => participants.user)
 	participations: Participant[];
 
-	@OneToMany(type => UserGroupRelation, userGroupRelation => userGroupRelation.user)
+	@OneToMany(() => UserGroupRelation, userGroupRelation => userGroupRelation.user)
 	userGroupRelations: UserGroupRelation[];
 
-	@OneToMany(
-		type => AssessmentUserRelation,
-		assessmentUserRelation => assessmentUserRelation.user
-	)
+	@OneToMany(() => AssessmentUserRelation, assessmentUserRelation => assessmentUserRelation.user)
 	assessmentUserRelations: AssessmentUserRelation[];
 
-	@OneToMany(type => AssessmentAllocation, allocation => allocation.user)
+	@OneToMany(() => AssessmentAllocation, allocation => allocation.user)
 	assessmentAllocations: AssessmentAllocation[];
 
 	@OneToOne(() => UserSettings, userSettings => userSettings.user, { nullable: true })
@@ -48,5 +46,16 @@ export class User {
 
 	constructor(partial?: Partial<User>) {
 		if (partial) Object.assign(this, partial);
+	}
+
+	static fromDto(dto: UserDto): User {
+		return new User({
+			id: dto.id,
+			email: dto.email,
+			username: dto.username,
+			displayName: dto.displayName,
+			matrNr: dto.matrNr,
+			role: dto.role
+		});
 	}
 }

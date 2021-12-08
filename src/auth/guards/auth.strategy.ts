@@ -3,7 +3,13 @@ import { ExecutionContext, UnauthorizedException } from "@nestjs/common";
 export abstract class AuthStrategy {
 	abstract canActivate(context: ExecutionContext): boolean | Promise<boolean>;
 
-	validateAuthHeader(authorization: string): string {
+	/**
+	 * Checks, whether the given string has the following schema: `Bearer TOKEN`
+	 * If the schema is correct, returns `TOKEN`.
+	 *
+	 * @param authorization - Value from `request.headers.authorization`
+	 */
+	validateAuthHeader(authorization?: string): string {
 		if (!authorization) {
 			throw new UnauthorizedException("Authorization header is missing.");
 		}

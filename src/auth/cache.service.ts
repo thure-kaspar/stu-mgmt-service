@@ -12,10 +12,12 @@ export class CacheService {
 		});
 	}
 
+	/** Retrieves an item from the cache. */
 	get<T>(key: string): T | undefined {
 		return this.cache.get(key);
 	}
 
+	/** Stores an item in the cache. */
 	set<T>(key: string, value: T): void {
 		this.cache.set(key, value);
 	}
