@@ -1,17 +1,44 @@
 import { INestApplication, ValidationPipe } from "@nestjs/common";
-import { TestingModule, Test } from "@nestjs/testing";
+import { Test, TestingModule, TestingModuleBuilder } from "@nestjs/testing";
 import { AppModule } from "../../src/app.module";
+import { AuthGuard } from "../../src/auth/guards/auth.guard";
+import { CourseMemberGuard } from "../../src/course/guards/course-member.guard";
 import { NodemailerService } from "../../src/mailing/services/nodemailer.service";
-import { DisabledMailing } from "./mailing.mock";
+import { EntityAlreadyExistsFilter } from "../../src/shared/entity-already-exists.filter";
 import { EntityNotFoundFilter } from "../../src/shared/entity-not-found.filter";
 import {
 	AuthGuardMock,
 	CourseMemberGuardMock_LECTURER,
 	CourseMemberGuardMock_STUDENT
 } from "./guards.mock";
-import { CourseMemberGuard } from "../../src/course/guards/course-member.guard";
-import { EntityAlreadyExistsFilter } from "../../src/shared/entity-already-exists.filter";
-import { AuthGuard } from "../../src/auth/guards/auth.guard";
+import { DisabledMailing } from "./mailing.mock";
+
+/**
+ * Creates and initializes a NestApplication for e2e-testing purposes.
+ *
+ * - {@link AuthGuard} is overwritten to always return a logged in user with `ADMIN` privileges.
+ * - {@link NodemailerService} is replaced by {@link DisabledMailing}.
+ *
+ * @param override Function that can be used to create additional overrides.
+ */
+export async function setupDefaultApplication(
+	override?: (builder: TestingModuleBuilder) => void
+): Promise<INestApplication> {
+	const moduleBuilder: TestingModuleBuilder = Test.createTestingModule({
+		imports: [AppModule]
+	})
+		.overrideGuard(AuthGuard)
+		.useValue(new AuthGuardMock())
+		.overrideProvider(NodemailerService)
+		.useClass(DisabledMailing);
+
+	// Custom overrides
+	override?.(moduleBuilder);
+
+	const fixture = await moduleBuilder.compile();
+
+	return initDefaultApplication(fixture);
+}
 
 async function initDefaultApplication(moduleFixture: TestingModule): Promise<INestApplication> {
 	const app = moduleFixture.createNestApplication();
@@ -28,18 +55,9 @@ async function initDefaultApplication(moduleFixture: TestingModule): Promise<INe
  * the required permissions.
  */
 export async function createApplication(): Promise<INestApplication> {
-	const moduleFixture: TestingModule = await Test.createTestingModule({
-		imports: [AppModule]
-	})
-		.overrideGuard(AuthGuard)
-		.useValue(new AuthGuardMock())
-		.overrideGuard(CourseMemberGuard)
-		.useClass(CourseMemberGuardMock_LECTURER)
-		.overrideProvider(NodemailerService)
-		.useClass(DisabledMailing)
-		.compile();
-
-	return initDefaultApplication(moduleFixture);
+	return setupDefaultApplication(builder => {
+		builder.overrideGuard(CourseMemberGuard).useClass(CourseMemberGuardMock_LECTURER);
+	});
 }
 
 /**
@@ -47,24 +65,7 @@ export async function createApplication(): Promise<INestApplication> {
  * Simulates that all requests are done by an `USER` / `STUDENT` account.
  */
 export async function createApplication_STUDENT(): Promise<INestApplication> {
-	const moduleFixture: TestingModule = await Test.createTestingModule({
-		imports: [AppModule]
-	})
-		.overrideGuard(AuthGuard)
-		.useValue(new AuthGuardMock())
-		.overrideGuard(CourseMemberGuard)
-		.useClass(CourseMemberGuardMock_STUDENT)
-		.overrideProvider(NodemailerService)
-		.useClass(DisabledMailing)
-		.compile();
-
-	return initDefaultApplication(moduleFixture);
-}
-
-/**
- * Returns the imports that are required by all TestingModules.
- */
-export function getImports(): any[] {
-	const imports = [];
-	return imports;
+	return setupDefaultApplication(builder => {
+		builder.overrideGuard(CourseMemberGuard).useClass(CourseMemberGuardMock_STUDENT);
+	});
 }
