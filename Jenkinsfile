@@ -84,13 +84,20 @@ pipeline {
                         EOF"""
                 }
                 findText(textFinders: [textFinder(regexp: '(- error TS\\*)|(Cannot find module.*or its corresponding type declarations\\.)', alsoCheckConsoleOutput: true, buildResult: 'FAILURE')])
-                sh "wget ${env.API_URL}"
+            }
+        }
+        
+        stage('Lint') {
+            steps {
+                sh 'npm run lint'
             }
         }
         
         stage('Publish Results') {
             steps {
                 archiveArtifacts artifacts: '*.tar.gz'
+                
+                sh "wget ${env.API_URL}"
                 archiveArtifacts artifacts: "${env.API_FILE}"
             }
         }
