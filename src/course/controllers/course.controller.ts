@@ -23,7 +23,7 @@ import { CourseCreateDto } from "../dto/course/course-create.dto";
 import { CourseFilter } from "../dto/course/course-filter.dto";
 import { CourseDto } from "../dto/course/course.dto";
 import { CourseId } from "../entities/course.entity";
-import { CourseMemberGuard } from "../guards/course-member.guard";
+import { CourseMemberGuard } from "../guards/course-member/course-member.guard";
 import { TeachingStaffGuard } from "../guards/teaching-staff.guard";
 import { CourseParticipantsService } from "../services/course-participants.service";
 import { CourseService } from "../services/course.service";

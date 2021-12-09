@@ -3,7 +3,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { throwIfRequestFailed } from "../../utils/http-utils";
 import { AssignmentDto, AssignmentUpdateDto } from "../dto/assignment/assignment.dto";
 import { CourseId } from "../entities/course.entity";
-import { CourseMemberGuard } from "../guards/course-member.guard";
+import { CourseMemberGuard } from "../guards/course-member/course-member.guard";
 import { AssignmentService } from "../services/assignment.service";
 import { GetCourse, GetAssignment, GetParticipant } from "../decorators/decorators";
 import { Course } from "../models/course.model";

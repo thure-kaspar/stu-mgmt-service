@@ -11,7 +11,7 @@ import {
 import { ApiTags } from "@nestjs/swagger";
 import { Response } from "express";
 import { AuthGuard } from "../auth/guards/auth.guard";
-import { CourseMemberGuard } from "../course/guards/course-member.guard";
+import { CourseMemberGuard } from "../course/guards/course-member/course-member.guard";
 import { TeachingStaffGuard } from "../course/guards/teaching-staff.guard";
 import { writeWorkbookToResponse, Workbook } from "./excel";
 import { ExportService } from "./export.service";

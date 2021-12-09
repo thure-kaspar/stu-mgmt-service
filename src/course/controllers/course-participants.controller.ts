@@ -23,7 +23,7 @@ import { ChangeCourseRoleDto } from "../dto/change-course-role.dto";
 import { CourseParticipantsFilter } from "../dto/course-participant/course-participants.filter";
 import { ParticipantDto } from "../dto/course-participant/participant.dto";
 import { CourseId } from "../entities/course.entity";
-import { CourseMemberGuard } from "../guards/course-member.guard";
+import { CourseMemberGuard } from "../guards/course-member/course-member.guard";
 import { ParticipantIdentityGuard } from "../guards/identity.guard";
 import { TeachingStaffGuard } from "../guards/teaching-staff.guard";
 import { CanJoinCourseDto } from "../queries/can-join-course/can-join-course.dto";

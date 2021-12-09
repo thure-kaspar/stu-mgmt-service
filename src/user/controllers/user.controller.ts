@@ -22,7 +22,7 @@ import { GroupEventDto } from "../../course/dto/group/group-event.dto";
 import { GroupDto } from "../../course/dto/group/group.dto";
 import { CourseId } from "../../course/entities/course.entity";
 import { AssignmentGuard } from "../../course/guards/assignment.guard";
-import { CourseMemberGuard } from "../../course/guards/course-member.guard";
+import { CourseMemberGuard } from "../../course/guards/course-member/course-member.guard";
 import { ParticipantIdentityGuard } from "../../course/guards/identity.guard";
 import { Participant } from "../../course/models/participant.model";
 import { UserDto, UserUpdateDto } from "../../shared/dto/user.dto";

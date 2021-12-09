@@ -2,7 +2,7 @@ import { Controller, Get, Param, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { AuthGuard } from "../auth/guards/auth.guard";
 import { CourseId } from "../course/entities/course.entity";
-import { CourseMemberGuard } from "../course/guards/course-member.guard";
+import { CourseMemberGuard } from "../course/guards/course-member/course-member.guard";
 import { ParticipantIdentityGuard } from "../course/guards/identity.guard";
 import { TeachingStaffGuard } from "../course/guards/teaching-staff.guard";
 import { UserId } from "../shared/entities/user.entity";

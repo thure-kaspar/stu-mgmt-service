@@ -13,7 +13,7 @@ import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger"
 import { AuthGuard } from "../../auth/guards/auth.guard";
 import { CourseId } from "../../course/entities/course.entity";
 import { GroupId } from "../../course/entities/group.entity";
-import { CourseMemberGuard } from "../../course/guards/course-member.guard";
+import { CourseMemberGuard } from "../../course/guards/course-member/course-member.guard";
 import { TeachingStaffGuard } from "../../course/guards/teaching-staff.guard";
 import { UserId } from "../../shared/entities/user.entity";
 import { AssessmentAllocationDto } from "../dto/assessment-allocation.dto";

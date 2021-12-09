@@ -2,7 +2,7 @@ import { INestApplication, ValidationPipe } from "@nestjs/common";
 import { Test, TestingModule, TestingModuleBuilder } from "@nestjs/testing";
 import { AppModule } from "../../src/app.module";
 import { AuthGuard } from "../../src/auth/guards/auth.guard";
-import { CourseMemberGuard } from "../../src/course/guards/course-member.guard";
+import { CourseMemberGuard } from "../../src/course/guards/course-member/course-member.guard";
 import { NodemailerService } from "../../src/mailing/services/nodemailer.service";
 import { EntityAlreadyExistsFilter } from "../../src/shared/entity-already-exists.filter";
 import { EntityNotFoundFilter } from "../../src/shared/entity-not-found.filter";

@@ -18,7 +18,7 @@ import { CourseConfigDto, CourseConfigUpdateDto } from "../dto/course-config/cou
 import { GroupSettingsDto, GroupSettingsUpdateDto } from "../dto/course-config/group-settings.dto";
 import { ParticipantDto } from "../dto/course-participant/participant.dto";
 import { CourseId } from "../entities/course.entity";
-import { CourseMemberGuard } from "../guards/course-member.guard";
+import { CourseMemberGuard } from "../guards/course-member/course-member.guard";
 import { TeachingStaffGuard } from "../guards/teaching-staff.guard";
 import { CourseConfigService } from "../services/course-config.service";
 

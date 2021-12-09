@@ -18,7 +18,7 @@ import { AuthGuard } from "../../auth/guards/auth.guard";
 import { GetAssignment, GetParticipant } from "../../course/decorators/decorators";
 import { CourseId } from "../../course/entities/course.entity";
 import { AssignmentGuard } from "../../course/guards/assignment.guard";
-import { CourseMemberGuard } from "../../course/guards/course-member.guard";
+import { CourseMemberGuard } from "../../course/guards/course-member/course-member.guard";
 import { TeachingStaffGuard } from "../../course/guards/teaching-staff.guard";
 import { Assignment } from "../../course/models/assignment.model";
 import { Participant } from "../../course/models/participant.model";

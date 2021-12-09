@@ -14,7 +14,7 @@ import {
 	UserLeftGroupHandler
 } from "./events/group/user-left-group.event";
 import { Guards } from "./guards";
-import { CourseMemberGuard } from "./guards/course-member.guard";
+import { CourseMemberGuard } from "./guards/course-member/course-member.guard";
 import { ParticipantIdentityGuard } from "./guards/identity.guard";
 import { TeachingStaffGuard } from "./guards/teaching-staff.guard";
 import { QueryHandlers } from "./queries";

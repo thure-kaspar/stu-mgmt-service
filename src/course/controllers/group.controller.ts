@@ -30,7 +30,7 @@ import { GroupFilter } from "../dto/group/group-filter.dto";
 import { GroupDto, GroupUpdateDto } from "../dto/group/group.dto";
 import { CourseId } from "../entities/course.entity";
 import { GroupId } from "../entities/group.entity";
-import { CourseMemberGuard } from "../guards/course-member.guard";
+import { CourseMemberGuard } from "../guards/course-member/course-member.guard";
 import { GroupGuard } from "../guards/group.guard";
 import { SelectedParticipantGuard } from "../guards/selected-participant.guard";
 import { Course } from "../models/course.model";

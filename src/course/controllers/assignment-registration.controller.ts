@@ -8,7 +8,7 @@ import { GroupDto } from "../dto/group/group.dto";
 import { AssignmentId } from "../entities/assignment.entity";
 import { CourseId } from "../entities/course.entity";
 import { GroupId } from "../entities/group.entity";
-import { CourseMemberGuard } from "../guards/course-member.guard";
+import { CourseMemberGuard } from "../guards/course-member/course-member.guard";
 import { TeachingStaffGuard } from "../guards/teaching-staff.guard";
 import { Course } from "../models/course.model";
 import { Participant } from "../models/participant.model";
