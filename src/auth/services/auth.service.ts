@@ -35,7 +35,7 @@ export class AuthService {
 		const user = await this.getOrCreateUser(authInfo);
 		return {
 			user,
-			accessToken: authInfo.token.expiration,
+			accessToken: authInfo.token.token,
 			expiration: authInfo.token.expiration ? new Date(authInfo.token.expiration) : undefined
 		};
 	}
