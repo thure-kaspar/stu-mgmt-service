@@ -10,5 +10,5 @@ export class NotificationDto {
 	assignmentId?: AssignmentId;
 	groupId?: GroupId;
 	userId?: UserId;
-	payload?: object;
+	payload?: Record<string, unknown>;
 }

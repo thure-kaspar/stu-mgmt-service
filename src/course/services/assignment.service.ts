@@ -11,7 +11,6 @@ import { AssignmentStateChanged } from "../events/assignment/assignment-state-ch
 import { AssignmentUpdated } from "../events/assignment/assignment-updated.event";
 import { Assignment } from "../models/assignment.model";
 import { Course } from "../models/course.model";
-import { Participant } from "../models/participant.model";
 import { AssignmentRepository } from "../repositories/assignment.repository";
 import { AssignmentRegistrationService } from "./assignment-registration.service";
 

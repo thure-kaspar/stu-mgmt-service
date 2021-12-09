@@ -45,13 +45,13 @@ export class Assignment {
 	@Column({ type: "enum", enum: CollaborationType, default: CollaborationType.GROUP_OR_SINGLE })
 	collaboration: CollaborationType;
 
-	@ManyToOne(type => Course, course => course.assignments, { onDelete: "CASCADE" })
+	@ManyToOne(() => Course, course => course.assignments, { onDelete: "CASCADE" })
 	@JoinColumn()
 	course: Course;
 
 	@Column()
 	courseId: CourseId;
 
-	@OneToMany(type => Assessment, assessment => assessment.assignment)
+	@OneToMany(() => Assessment, assessment => assessment.assignment)
 	assessments: Assessment[];
 }

@@ -22,7 +22,7 @@ export class Participant implements ToDto<ParticipantDto> {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@ManyToOne(type => Course, course => course.participants, {
+	@ManyToOne(() => Course, course => course.participants, {
 		primary: true,
 		onDelete: "CASCADE"
 	})
@@ -32,14 +32,14 @@ export class Participant implements ToDto<ParticipantDto> {
 	@Column()
 	courseId: CourseId;
 
-	@ManyToOne(type => User, user => user.participations, { primary: true, onDelete: "CASCADE" })
+	@ManyToOne(() => User, user => user.participations, { primary: true, onDelete: "CASCADE" })
 	@JoinColumn()
 	user?: User;
 
 	@Column()
 	userId: UserId;
 
-	@OneToOne(type => UserGroupRelation, userGroupRelation => userGroupRelation.participant, {
+	@OneToOne(() => UserGroupRelation, userGroupRelation => userGroupRelation.participant, {
 		nullable: true
 	})
 	groupRelation?: UserGroupRelation;

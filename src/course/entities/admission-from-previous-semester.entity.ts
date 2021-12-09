@@ -7,7 +7,7 @@ export class AdmissionFromPreviousSemester implements ToDto<number[]> {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@OneToOne(type => CourseConfig, courseConfig => courseConfig.admissionFromPreviousSemester, {
+	@OneToOne(() => CourseConfig, courseConfig => courseConfig.admissionFromPreviousSemester, {
 		onDelete: "CASCADE"
 	})
 	@JoinColumn()

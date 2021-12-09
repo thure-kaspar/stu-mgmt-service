@@ -11,7 +11,7 @@ export class CourseDto {
 	/** Shortname of this course, i.e "java". Should be reused every semester. Will be used in URLs. */
 	@ApiProperty({
 		description:
-			'Shortname of this course, i.e "java". Should be reused every semester. Will be used in URLs.'
+			"Shortname of this course, i.e 'java'. Should be reused every semester. Will be used in URLs."
 	})
 	shortname: string;
 

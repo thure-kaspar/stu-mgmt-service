@@ -1,6 +1,5 @@
 import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { CourseConfigDto } from "../dto/course-config/course-config.dto";
-import { SubscriberDto } from "../../notification/subscriber/subscriber.dto";
 import { AdmissionCriteria } from "./admission-criteria.entity";
 import { AdmissionFromPreviousSemester } from "./admission-from-previous-semester.entity";
 import { AssignmentTemplate } from "./assignment-template.entity";
@@ -12,7 +11,7 @@ export class CourseConfig {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@OneToOne(type => Course, course => course.config, { onDelete: "CASCADE" })
+	@OneToOne(() => Course, course => course.config, { onDelete: "CASCADE" })
 	@JoinColumn()
 	course: Course;
 
@@ -22,21 +21,21 @@ export class CourseConfig {
 	@Column({ nullable: true })
 	password?: string;
 
-	@OneToOne(type => GroupSettings, groupSettings => groupSettings.courseConfig, {
+	@OneToOne(() => GroupSettings, groupSettings => groupSettings.courseConfig, {
 		cascade: ["insert"]
 	})
 	groupSettings: GroupSettings;
 
-	@OneToOne(type => AdmissionCriteria, admissionCriteria => admissionCriteria.courseConfig, {
+	@OneToOne(() => AdmissionCriteria, admissionCriteria => admissionCriteria.courseConfig, {
 		cascade: ["insert"],
 		nullable: true
 	})
 	admissionCriteria?: AdmissionCriteria;
 
-	@OneToOne(type => AdmissionFromPreviousSemester, { cascade: ["insert"], nullable: true })
+	@OneToOne(() => AdmissionFromPreviousSemester, { cascade: ["insert"], nullable: true })
 	admissionFromPreviousSemester?: AdmissionFromPreviousSemester;
 
-	@OneToMany(type => AssignmentTemplate, assignmentTemplate => assignmentTemplate.courseConfig, {
+	@OneToMany(() => AssignmentTemplate, assignmentTemplate => assignmentTemplate.courseConfig, {
 		cascade: ["insert"]
 	})
 	assignmentTemplates: AssignmentTemplate[];

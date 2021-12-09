@@ -7,7 +7,7 @@ export class SubmissionCreateDto {
 	userId: UserId;
 	groupId?: GroupId;
 	links?: LinkDto[];
-	payload?: any;
+	payload?: Record<string, unknown>;
 }
 
 export class SubmissionDto {
@@ -18,5 +18,5 @@ export class SubmissionDto {
 	groupId?: GroupId;
 	groupName?: string;
 	links?: LinkDto[];
-	payload?: any;
+	payload?: Record<string, unknown>;
 }

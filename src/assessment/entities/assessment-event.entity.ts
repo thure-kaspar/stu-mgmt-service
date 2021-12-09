@@ -7,19 +7,24 @@ import { EventEntity } from "../../shared/entities/event.entity";
 
 @Entity()
 export class AssessmentEvent extends EventEntity {
-	@ManyToOne(type => Assessment, { onDelete: "CASCADE" })
+	@ManyToOne(() => Assessment, { onDelete: "CASCADE" })
 	assessment: Assessment;
 
 	@Column()
 	assessmentId: string;
 
-	@ManyToOne(type => User, { eager: true, onDelete: "CASCADE" })
+	@ManyToOne(() => User, { eager: true, onDelete: "CASCADE" })
 	user: User;
 
 	@Column()
 	userId: UserId;
 
-	constructor(event: string, assessmentId: string, userId: UserId, payload?: object) {
+	constructor(
+		event: string,
+		assessmentId: string,
+		userId: UserId,
+		payload?: Record<string, unknown>
+	) {
 		super();
 		this.event = event;
 		this.assessmentId = assessmentId;

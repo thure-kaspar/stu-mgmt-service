@@ -6,7 +6,7 @@ import { Assessment } from "./assessment.entity";
 @Entity("assessment_user_relations")
 @Index("IDX_AssignmentId_UserId", ["assignmentId", "userId"], { unique: true })
 export class AssessmentUserRelation {
-	@ManyToOne(type => Assessment, assessment => assessment.assessmentUserRelations, {
+	@ManyToOne(() => Assessment, assessment => assessment.assessmentUserRelations, {
 		onDelete: "CASCADE"
 	})
 	@JoinColumn()
@@ -15,13 +15,13 @@ export class AssessmentUserRelation {
 	@PrimaryColumn()
 	assessmentId: string;
 
-	@ManyToOne(type => Assignment, { onDelete: "CASCADE" })
+	@ManyToOne(() => Assignment, { onDelete: "CASCADE" })
 	assignment: Assignment;
 
 	@Column()
 	assignmentId: string;
 
-	@ManyToOne(type => User, user => user.assessmentUserRelations, { onDelete: "CASCADE" })
+	@ManyToOne(() => User, user => user.assessmentUserRelations, { onDelete: "CASCADE" })
 	@JoinColumn()
 	user: User;
 

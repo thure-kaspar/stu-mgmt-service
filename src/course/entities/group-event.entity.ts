@@ -1,27 +1,19 @@
-import {
-	BaseEntity,
-	Entity,
-	PrimaryGeneratedColumn,
-	Column,
-	CreateDateColumn,
-	ManyToOne,
-	JoinTable
-} from "typeorm";
-import { Group, GroupId } from "./group.entity";
-import { User, UserId } from "../../shared/entities/user.entity";
-import { GroupEventDto } from "../dto/group/group-event.dto";
+import { Column, Entity, ManyToOne } from "typeorm";
 import { DtoFactory } from "../../shared/dto-factory";
 import { EventEntity } from "../../shared/entities/event.entity";
+import { User, UserId } from "../../shared/entities/user.entity";
+import { GroupEventDto } from "../dto/group/group-event.dto";
+import { Group, GroupId } from "./group.entity";
 
 @Entity()
 export class GroupEvent extends EventEntity {
-	@ManyToOne(type => Group, group => group.history, { onDelete: "CASCADE" })
+	@ManyToOne(() => Group, group => group.history, { onDelete: "CASCADE" })
 	group: Group;
 
 	@Column()
 	groupId: GroupId;
 
-	@ManyToOne(type => User, { eager: true, onDelete: "CASCADE" })
+	@ManyToOne(() => User, { eager: true, onDelete: "CASCADE" })
 	user: User;
 
 	@Column()

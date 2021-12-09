@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CourseId } from "../../../course/entities/course.entity";

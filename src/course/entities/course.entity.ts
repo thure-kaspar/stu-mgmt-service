@@ -28,15 +28,15 @@ export class Course {
 	@Column({ type: "json", nullable: true })
 	links?: LinkDto[];
 
-	@OneToMany(type => Participant, participants => participants.course, { cascade: ["insert"] })
+	@OneToMany(() => Participant, participants => participants.course, { cascade: ["insert"] })
 	participants: Participant[];
 
-	@OneToMany(type => Group, group => group.course)
+	@OneToMany(() => Group, group => group.course)
 	groups: Group[];
 
-	@OneToMany(type => Assignment, assignment => assignment.course)
+	@OneToMany(() => Assignment, assignment => assignment.course)
 	assignments: Assignment[];
 
-	@OneToOne(type => CourseConfig, config => config.course, { cascade: ["insert"] })
+	@OneToOne(() => CourseConfig, config => config.course, { cascade: ["insert"] })
 	config: CourseConfig;
 }

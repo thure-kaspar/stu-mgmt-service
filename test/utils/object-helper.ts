@@ -1,5 +1,3 @@
-import { BaseEntity } from "typeorm";
-
 /**
  * Returns a deep copy of the given object.
  */
@@ -15,12 +13,12 @@ export function copy<T>(target: T): T {
 	if (typeof target === "object") {
 		if (typeof target[(Symbol as any).iterator] === "function") {
 			const cp = [] as any[];
-			if (((target as any) as any[]).length > 0) {
-				for (const arrayMember of (target as any) as any[]) {
+			if ((target as any as any[]).length > 0) {
+				for (const arrayMember of target as any as any[]) {
 					cp.push(copy(arrayMember));
 				}
 			}
-			return (cp as any) as T;
+			return cp as any as T;
 		} else {
 			const targetKeys = Object.keys(target);
 			const cp = {};

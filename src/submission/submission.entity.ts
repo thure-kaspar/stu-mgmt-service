@@ -1,5 +1,5 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Assignment, AssignmentId } from "../course/entities/assignment.entity";
+import { Assignment } from "../course/entities/assignment.entity";
 import { Course, CourseId } from "../course/entities/course.entity";
 import { Group, GroupId } from "../course/entities/group.entity";
 import { LinkDto } from "../shared/dto/link.dto";
@@ -12,19 +12,19 @@ export class Submission implements ToDto<SubmissionDto> {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@ManyToOne(type => Assignment, { onDelete: "CASCADE" })
+	@ManyToOne(() => Assignment, { onDelete: "CASCADE" })
 	assignment?: Assignment;
 
 	@Column()
 	assignmentId: string;
 
-	@ManyToOne(type => User, { onDelete: "CASCADE" })
+	@ManyToOne(() => User, { onDelete: "CASCADE" })
 	user?: User;
 
 	@Column()
 	userId: UserId;
 
-	@ManyToOne(type => Course, { onDelete: "CASCADE" })
+	@ManyToOne(() => Course, { onDelete: "CASCADE" })
 	course?: Course;
 
 	@Column()
@@ -33,7 +33,7 @@ export class Submission implements ToDto<SubmissionDto> {
 	@CreateDateColumn()
 	date: Date;
 
-	@ManyToOne(type => Group, { onDelete: "SET NULL" })
+	@ManyToOne(() => Group, { onDelete: "SET NULL" })
 	group?: Group;
 
 	@Column({ nullable: true })
@@ -43,7 +43,7 @@ export class Submission implements ToDto<SubmissionDto> {
 	links?: LinkDto[];
 
 	@Column({ type: "json", nullable: true })
-	payload?: any;
+	payload?: Record<string, unknown>;
 
 	toDto(): SubmissionDto {
 		return {

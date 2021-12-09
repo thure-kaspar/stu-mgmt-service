@@ -1,4 +1,3 @@
-import { AssessmentDto } from "../../../src/course/dto/assessment/assessment.dto";
 import { AssignmentDto } from "../../../src/course/dto/assignment/assignment.dto";
 import { AssignmentState, AssignmentType } from "../../../src/shared/enums";
 import { RoundingType } from "../../../src/utils/math";
@@ -8,6 +7,7 @@ import {
 } from "../../../src/admission-status/rules/abstract-rules";
 import { IndividualPercentWithAllowedFailuresImpl } from "../../../src/admission-status/rules/impl/individual-percent-with-allowed-failures";
 import { copy } from "../../utils/object-helper";
+import { AssessmentDto } from "../../../src/assessment/dto/assessment.dto";
 
 describe("PassedXPercentWithAtLeastYPercentImpl", () => {
 	let assessments: AssessmentDto[];
@@ -76,7 +76,7 @@ describe("PassedXPercentWithAtLeastYPercentImpl", () => {
 			assignment_ignored_not_evaluated,
 			assignment_3,
 			assignment_4_no_assessment
-		] as any; // Cast to any, because we only defined necessary properties
+		] as AssignmentDto[];
 
 		const _assessments: Partial<AssessmentDto>[] = assignments.map(assignment => ({
 			assignmentId: assignment.id,
@@ -85,7 +85,7 @@ describe("PassedXPercentWithAtLeastYPercentImpl", () => {
 		}));
 		_assessments.pop(); // Simulate that no assessment exists for last assignment
 
-		assessments = _assessments as any;
+		assessments = _assessments as AssessmentDto[];
 	});
 
 	it("3/4 Assignments passed (One missing assessment) -> Passed", () => {

@@ -10,7 +10,7 @@ import { AdmissionFromPreviousSemesterRepository } from "../course/repositories/
 import { ParticipantRepository } from "../course/repositories/participant.repository";
 import { AssignmentService } from "../course/services/assignment.service";
 import { UserId } from "../shared/entities/user.entity";
-import { AssignmentState, isLecturer } from "../shared/enums";
+import { AssignmentState } from "../shared/enums";
 import { AdmissionRuleDto } from "./dto/admission-rule.dto";
 import { AdmissionStatusDto } from "./dto/admission-status.dto";
 import { PointsOverviewDto, StudentResults } from "./dto/points-overview.dto";
@@ -29,7 +29,10 @@ export class AdmissionStatusService {
 		private assignmentService: AssignmentService
 	) {}
 
-	async getAdmissionStatusOfParticipants(courseId: CourseId, isLecturer = false): Promise<AdmissionStatusDto[]> {
+	async getAdmissionStatusOfParticipants(
+		courseId: CourseId,
+		isLecturer = false
+	): Promise<AdmissionStatusDto[]> {
 		const [students, assignments, admissionCriteria, admissionFromPrevious] = await Promise.all(
 			[
 				this.participants.getStudentsWithAssessments(courseId),

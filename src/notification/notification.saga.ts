@@ -12,14 +12,14 @@ import { NotificationService } from "./notification.service";
 @Injectable()
 export class NotificationSaga {
 	@Saga()
-	saga = (events$: Observable<INotify>): Observable<any> => {
+	saga = (events$: Observable<INotify>): Observable<undefined> => {
 		return events$.pipe(
 			tap(event => {
 				if (typeof event.toNotificationDto === "function") {
 					this.notificationService.notifySubscribers(event.toNotificationDto());
 				}
 			}),
-			map(event => undefined)
+			map(() => undefined)
 		);
 	};
 

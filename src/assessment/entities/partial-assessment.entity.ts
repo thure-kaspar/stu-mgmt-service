@@ -9,7 +9,7 @@ export class PartialAssessment {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@ManyToOne(type => Assessment, assessment => assessment.partialAssessments, {
+	@ManyToOne(() => Assessment, assessment => assessment.partialAssessments, {
 		onDelete: "CASCADE"
 	})
 	@JoinColumn()

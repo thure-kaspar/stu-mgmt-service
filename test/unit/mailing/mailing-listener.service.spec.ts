@@ -1,25 +1,22 @@
-import { Participant } from "../../../src/course/entities/participant.entity";
-import { Event } from "../../../src/course/events/events";
-import { AssignmentStateChanged } from "../../../src/course/events/assignment/assignment-state-changed.event";
+import { Assessment } from "../../../src/assessment/entities/assessment.entity";
+import { AssessmentScoreChanged } from "../../../src/assessment/events/assessment-score-changed.event";
+import { AssessmentRepository } from "../../../src/assessment/repositories/assessment.repository";
+import { GroupDto } from "../../../src/course/dto/group/group.dto";
 import { Assignment as AssignmentEntity } from "../../../src/course/entities/assignment.entity";
+import { Participant } from "../../../src/course/entities/participant.entity";
+import { AssignmentStateChanged } from "../../../src/course/events/assignment/assignment-state-changed.event";
+import { UserJoinedGroupEvent } from "../../../src/course/events/group/user-joined-group.event";
+import { Assignment } from "../../../src/course/models/assignment.model";
 import { ParticipantRepository } from "../../../src/course/repositories/participant.repository";
+import { GroupService } from "../../../src/course/services/group.service";
 import { MailingListener } from "../../../src/mailing/services/mailing-listener.service";
 import { MailingService } from "../../../src/mailing/services/mailing.service";
 import { User } from "../../../src/shared/entities/user.entity";
+import { AssignmentState, AssignmentType } from "../../../src/shared/enums";
 import { Language } from "../../../src/shared/language";
 import { UserSettings } from "../../../src/user/entities/user-settings.entity";
-import { convertToEntity, copy } from "../../utils/object-helper";
-import { ASSIGNMENT_JAVA2020_GROUP, ASSIGNMENT_JAVA_EVALUATED } from "../../mocks/assignments.mock";
-import { AssignmentState, AssignmentType } from "../../../src/shared/enums";
-import { AssessmentRepository } from "../../../src/assessment/repositories/assessment.repository";
-import { AssessmentScoreChanged } from "../../../src/assessment/events/assessment-score-changed.event";
 import { ASSESSMENT_JAVA_EVALUATED_GROUP_1 } from "../../mocks/assessments.mock";
-import { USER_STUDENT_2_JAVA, USER_STUDENT_JAVA } from "../../mocks/users.mock";
-import { Assessment } from "../../../src/assessment/entities/assessment.entity";
-import { Assignment } from "../../../src/course/models/assignment.model";
-import { GroupService } from "../../../src/course/services/group.service";
-import { UserJoinedGroupEvent } from "../../../src/course/events/group/user-joined-group.event";
-import { GroupDto } from "../../../src/course/dto/group/group.dto";
+import { ASSIGNMENT_JAVA2020_GROUP, ASSIGNMENT_JAVA_EVALUATED } from "../../mocks/assignments.mock";
 import { GROUP_1_JAVA } from "../../mocks/groups/groups.mock";
 import {
 	PARTICIPANT_JAVA_1920_STUDENT,
@@ -27,6 +24,8 @@ import {
 	PARTICIPANT_JAVA_1920_TUTOR
 } from "../../mocks/participants/participants.mock";
 import { USER_SETTINGS_MOCK } from "../../mocks/user-settings.mock";
+import { USER_STUDENT_2_JAVA, USER_STUDENT_JAVA } from "../../mocks/users.mock";
+import { convertToEntity, copy } from "../../utils/object-helper";
 
 const mock_MailingService = (): Partial<MailingService> => ({
 	send: jest.fn()

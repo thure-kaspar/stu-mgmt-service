@@ -27,19 +27,19 @@ export class Assessment {
 	@Column({ nullable: true })
 	comment: string;
 
-	@ManyToOne(type => Assignment, assignment => assignment.assessments, { onDelete: "CASCADE" })
+	@ManyToOne(() => Assignment, assignment => assignment.assessments, { onDelete: "CASCADE" })
 	assignment: Assignment;
 
 	@Column()
 	assignmentId: string;
 
-	@ManyToOne(type => Group, group => group.assessments, { onDelete: "SET NULL" })
+	@ManyToOne(() => Group, group => group.assessments, { onDelete: "SET NULL" })
 	group: Group;
 
 	@Column({ nullable: true })
 	groupId: GroupId;
 
-	@ManyToOne(type => User)
+	@ManyToOne(() => User)
 	creator: User;
 
 	@Column({ nullable: false })
@@ -48,7 +48,7 @@ export class Assessment {
 	@CreateDateColumn()
 	creationDate: Date;
 
-	@ManyToOne(type => User)
+	@ManyToOne(() => User)
 	lastUpdatedBy?: User;
 
 	@Column({ nullable: true })
@@ -57,14 +57,14 @@ export class Assessment {
 	@UpdateDateColumn({ nullable: true })
 	updateDate?: Date;
 
-	@OneToMany(type => PartialAssessment, partialAssessment => partialAssessment.assessment, {
+	@OneToMany(() => PartialAssessment, partialAssessment => partialAssessment.assessment, {
 		cascade: ["insert"]
 	})
 	partialAssessments: PartialAssessment[];
 
 	// We need to assign the points to users individually, in case they switch group
 	@OneToMany(
-		type => AssessmentUserRelation,
+		() => AssessmentUserRelation,
 		assessmentUserRelation => assessmentUserRelation.assessment,
 		{ cascade: ["insert"] }
 	)

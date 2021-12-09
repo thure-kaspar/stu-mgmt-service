@@ -8,7 +8,7 @@ export class EventEntity {
 	event: string;
 
 	@Column({ type: "json", nullable: true })
-	payload: object;
+	payload: Record<string, unknown>;
 
 	@CreateDateColumn()
 	timestamp: Date;

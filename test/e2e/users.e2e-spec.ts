@@ -1,4 +1,3 @@
-import { getConnection } from "typeorm";
 import { CourseDto } from "../../src/course/dto/course/course.dto";
 import { GroupEventDto } from "../../src/course/dto/group/group-event.dto";
 import { GroupDto } from "../../src/course/dto/group/group.dto";

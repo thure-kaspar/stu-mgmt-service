@@ -8,7 +8,7 @@ export class AssignmentTemplate {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@ManyToOne(type => CourseConfig, courseConfig => courseConfig.assignmentTemplates, {
+	@ManyToOne(() => CourseConfig, courseConfig => courseConfig.assignmentTemplates, {
 		onDelete: "CASCADE"
 	})
 	@JoinColumn()

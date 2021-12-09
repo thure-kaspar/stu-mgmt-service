@@ -11,27 +11,27 @@ export class AssessmentAllocation {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@ManyToOne(type => Assignment, { onDelete: "CASCADE" })
+	@ManyToOne(() => Assignment, { onDelete: "CASCADE" })
 	assignment: Assignment;
 
 	@Column()
 	assignmentId: string;
 
 	/** The user, whose solution should be evaluated. */
-	@ManyToOne(type => User, { nullable: true, onDelete: "CASCADE" })
+	@ManyToOne(() => User, { nullable: true, onDelete: "CASCADE" })
 	user: User;
 
 	@Column({ nullable: true })
 	userId: UserId;
 
 	/** The group, whose solution should be evaluated. */
-	@ManyToOne(type => Group, { nullable: true, onDelete: "CASCADE" })
+	@ManyToOne(() => Group, { nullable: true, onDelete: "CASCADE" })
 	group: Group;
 
 	@Column({ nullable: true })
 	groupId: GroupId;
 
-	@ManyToOne(type => User, { onDelete: "CASCADE" })
+	@ManyToOne(() => User, { onDelete: "CASCADE" })
 	assignedEvaluator: User;
 
 	@Column()

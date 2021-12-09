@@ -16,16 +16,16 @@ export function setTotalCountHeader(request: Request, count: number): void {
  * @param target The enum that the given values belong to.
  * @param values Values from the query string.
  */
-export function sanitizeEnum<Enum>(target: Enum, values: any[]): any[] | undefined {
+export function sanitizeEnum<Enum>(target: Enum, values: unknown[]): Enum[] | undefined {
 	if (!values) return undefined;
 
-	if (Array.isArray(values as any)) {
+	if (Array.isArray(values as unknown)) {
 		// Values is of type array: Filter and return all values that actually exist in the enum.
-		return values.filter(value => Object.values(target).includes(value));
+		return values.filter(value => Object.values(target).includes(value)) as Enum[];
 	} else {
-		if (Object.values(target).includes(values as any)) {
+		if (Object.values(target).includes(values as unknown)) {
 			// Values is just a value (not array), which exists in enum: Return as array
-			return [values];
+			return [values] as unknown as Enum[];
 		} else {
 			return undefined;
 		}

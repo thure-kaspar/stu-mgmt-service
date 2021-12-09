@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/class-name-casing */
 import { ExecutionContext } from "@nestjs/common";
 import { Course as CourseEntity } from "../../src/course/entities/course.entity";
 import { Participant as ParticipantEntity } from "../../src/course/entities/participant.entity";
@@ -8,8 +7,7 @@ import { User } from "../../src/shared/entities/user.entity";
 import { CourseRole } from "../../src/shared/enums";
 import { convertToEntity, copy } from "../utils/object-helper";
 import { COURSE_JAVA_1920 } from "./courses.mock";
-import { USER_MGMT_ADMIN_JAVA_LECTURER, USER_SYSTEM_ADMIN, USER_STUDENT_JAVA } from "./users.mock";
-import { COURSE_JAVA_1920_PARTICIPANTS } from "./participants/participants.mock";
+import { USER_MGMT_ADMIN_JAVA_LECTURER, USER_STUDENT_JAVA, USER_SYSTEM_ADMIN } from "./users.mock";
 
 export class AuthGuardMock {
 	canActivate(context: ExecutionContext): boolean {

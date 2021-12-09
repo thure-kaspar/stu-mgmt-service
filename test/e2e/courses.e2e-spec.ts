@@ -1,4 +1,3 @@
-import { getConnection } from "typeorm";
 import { CourseCreateDto } from "../../src/course/dto/course/course-create.dto";
 import { CourseFilter } from "../../src/course/dto/course/course-filter.dto";
 import {

@@ -11,7 +11,6 @@ import { COURSE_CONFIG_JAVA_1920 } from "../../mocks/course-config/course-config
 import { COURSE_INFO_2_2020, COURSE_JAVA_1920 } from "../../mocks/courses.mock";
 import { USER_STUDENT_2_JAVA, USER_STUDENT_JAVA } from "../../mocks/users.mock";
 import { convertToEntity, copy } from "../../utils/object-helper";
-import { CourseCreateDto } from "../../../src/course/dto/course/course-create.dto";
 
 const mock_CourseRepository = () => ({
 	createCourse: jest.fn().mockResolvedValue(convertToEntity(Course, COURSE_JAVA_1920)),

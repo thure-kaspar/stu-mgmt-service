@@ -34,23 +34,23 @@ export class Group {
 	@CreateDateColumn()
 	createdAt: Date;
 
-	@ManyToOne(type => Course, course => course.groups, { onDelete: "CASCADE" })
+	@ManyToOne(() => Course, course => course.groups, { onDelete: "CASCADE" })
 	@JoinColumn()
 	course: Course;
 
 	@Column()
 	courseId: CourseId;
 
-	@OneToMany(type => UserGroupRelation, userGroupRelation => userGroupRelation.group)
+	@OneToMany(() => UserGroupRelation, userGroupRelation => userGroupRelation.group)
 	userGroupRelations: UserGroupRelation[];
 
-	@OneToMany(type => Assessment, assessment => assessment.group)
+	@OneToMany(() => Assessment, assessment => assessment.group)
 	assessments: Assessment[];
 
-	@OneToMany(type => GroupEvent, groupEvent => groupEvent.group)
+	@OneToMany(() => GroupEvent, groupEvent => groupEvent.group)
 	history: GroupEvent[];
 
-	@OneToMany(type => AssessmentAllocation, allocation => allocation.group)
+	@OneToMany(() => AssessmentAllocation, allocation => allocation.group)
 	assessmentAllocations: AssessmentAllocation[];
 
 	constructor(partial?: Partial<Group>) {

@@ -18,18 +18,18 @@ export class UserGroupRelation {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@ManyToOne(type => User, user => user.userGroupRelations, { onDelete: "CASCADE" })
+	@ManyToOne(() => User, user => user.userGroupRelations, { onDelete: "CASCADE" })
 	@JoinColumn()
 	user?: User;
 
 	@Column()
 	userId: UserId;
 
-	@ManyToOne(type => Group, group => group.userGroupRelations, { onDelete: "CASCADE" })
+	@ManyToOne(() => Group, group => group.userGroupRelations, { onDelete: "CASCADE" })
 	@JoinColumn()
 	group?: Group;
 
-	@OneToOne(type => Participant, participant => participant.groupRelation, {
+	@OneToOne(() => Participant, participant => participant.groupRelation, {
 		onDelete: "CASCADE"
 	})
 	@JoinColumn()
