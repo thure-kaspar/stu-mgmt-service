@@ -23,7 +23,9 @@ export class AssessmentRepository extends Repository<Assessment> {
 
 		assessment.id = undefined;
 		assessment.creatorId = creatorId;
-		assessment.partialAssessments?.forEach(p => (p.assessmentId = null)); // Id can't be known prior to insert -> prevent insert with wrong id
+
+		assessment.partialAssessments =
+			assessmentDto.partialAssessments?.map(p => PartialAssessment.create(null, p)) ?? [];
 
 		assessment.assessmentUserRelations = userIds.map(userId => {
 			const relation = new AssessmentUserRelation();
@@ -37,7 +39,7 @@ export class AssessmentRepository extends Repository<Assessment> {
 		} catch (error) {
 			if (error.code === DbException.PG_UNIQUE_VIOLATION) {
 				throw new ConflictException("A user has already received an assessment.");
-			}
+			} else throw error;
 		}
 	}
 

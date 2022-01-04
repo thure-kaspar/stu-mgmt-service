@@ -309,6 +309,34 @@ describe("Assessment E2E", () => {
 				});
 		});
 
+		it("(POST) /courses/{courseId}/assignments/{assignmentId}/assessments Assessment with partial assessments (NO key) -> Creates partial assessments with random keys", () => {
+			const assessment = copy(ASSESSMENT_JAVA_IN_REVIEW);
+			assessment.id = undefined;
+
+			const partial1 = copy(PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW);
+			const partial2 = copy(PARTIAL_ASSESSMENT_2_JAVA_IN_REVIEW);
+			partial1.key = undefined;
+			partial2.key = undefined;
+
+			assessment.partialAssessments = [partial1, partial2];
+
+			const expected = copy(assessment);
+			expected.updateDate = undefined;
+			expected.creationDate = undefined;
+			expected.creatorId = USER_MGMT_ADMIN_JAVA_LECTURER.id;
+
+			return setup
+				.request()
+				.post(`/courses/${course.id}/assignments/${assessment.assignmentId}/assessments`)
+				.send(assessment)
+				.expect(201)
+				.expect(({ body }) => {
+					const result = body as AssessmentDto;
+					expect(result.partialAssessments[0].key).toBeDefined();
+					expect(result.partialAssessments[1].key).toBeDefined();
+				});
+		});
+
 		it("(POST) /courses/{courseId}/assignments/{assignmentId}/assessments/{assessmentId} Sets partial assignment", async () => {
 			await setup.dbMockService.createAssessments();
 			const assessment = copy(ASSESSMENT_JAVA_IN_REVIEW);
@@ -441,6 +469,36 @@ describe("Assessment E2E", () => {
 						result.creationDate = null;
 						result.updateDate = null;
 						expect(result).toMatchSnapshot();
+					});
+			});
+
+			it("Removing key from partial assessment -> Generates random key", () => {
+				const assessment = copy(ASSESSMENT_JAVA_IN_REVIEW_GROUP_PARTIALS);
+
+				console.assert(
+					PARTIAL_ASSESSMENT_MOCK.filter(p => p.assessmentId === assessment.id).length >
+						0,
+					"Assessment should have partial assessments"
+				);
+
+				const updatedPartial = copy(PARTIAL_ASSESSMENT_JAVA_IN_REVIEW_GROUP_MARKERS);
+				updatedPartial.key = undefined;
+
+				const changedAssessment: AssessmentUpdateDto = {
+					partialAssessments: [updatedPartial]
+				};
+
+				return setup
+					.request()
+					.patch(
+						`/courses/${course.id}/assignments/${assessment.assignmentId}/assessments/${assessment.id}`
+					)
+					.send(changedAssessment)
+					.expect(200)
+					.expect(({ body }) => {
+						const result = body as AssessmentDto;
+						expect(result.partialAssessments).toHaveLength(1);
+						expect(result.partialAssessments[0]).toBeDefined();
 					});
 			});
 

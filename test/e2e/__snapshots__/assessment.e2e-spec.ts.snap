@@ -338,6 +338,7 @@ Object {
   "id": undefined,
   "isDraft": false,
   "lastUpdatedById": "8330300e-9be7-4a70-ba7d-8a0139311343",
+  "partialAssessments": Array [],
   "updateDate": undefined,
 }
 `;
@@ -351,6 +352,7 @@ Object {
   "creatorId": "c17b67ea-d0b7-46bc-a2e0-ea2ec18f441d",
   "id": undefined,
   "isDraft": false,
+  "partialAssessments": Array [],
   "updateDate": undefined,
   "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
 }
