@@ -13,8 +13,8 @@ export class UserRepository extends Repository<User> {
 			const user = this.createEntityFromDto(userDto);
 			const createdUser = await transaction.save(user);
 
-			const userSettingsRepository = await transaction.getRepository(UserSettings);
-			userSettingsRepository.insert({
+			const userSettingsRepository = transaction.getRepository(UserSettings);
+			await userSettingsRepository.insert({
 				userId: createdUser.id,
 				allowEmails: true,
 				language: Language.DE,
