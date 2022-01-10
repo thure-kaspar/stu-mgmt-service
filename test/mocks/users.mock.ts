@@ -1,7 +1,5 @@
 import { UserDto } from "../../src/shared/dto/user.dto";
-import { UserRole, CourseRole } from "../../src/shared/enums";
-import { User } from "../../src/shared/entities/user.entity";
-import { Participant } from "../../src/course/entities/participant.entity";
+import { UserRole } from "../../src/shared/enums";
 
 export const USER_STUDENT_JAVA: UserDto = {
 	id: "a019ea22-5194-4b83-8d31-0de0dc9bca53",
@@ -57,15 +55,6 @@ export const USER_FROM_AUTH_SYSTEM: UserDto = {
 	role: UserRole.SYSTEM_ADMIN
 };
 
-export const USER_KLING_AUTH_SYSTEM: UserDto = {
-	id: "6478e13c-aa9c-4483-82e0-96bdca865472",
-	matrNr: 666666,
-	email: "kling@email.test",
-	displayName: "kling001",
-	username: "kling",
-	role: UserRole.SYSTEM_ADMIN
-};
-
 export const USER_ELSHAR: UserDto = {
 	id: "3e52e822-4ebc-49c3-94e2-06ba447b5d1f",
 	matrNr: 777777,
@@ -103,33 +92,4 @@ export const UsersMock: UserDto[] = [
 	USER_ELSHAR,
 	USER_KUNOLD,
 	USER_NOT_IN_COURSE
-	//USER_KLING_AUTH_SYSTEM
 ];
-
-export function getUsersOfCourseMock(): User[] {
-	const participants: UserDto[] = [
-		USER_STUDENT_JAVA,
-		USER_STUDENT_2_JAVA,
-		USER_STUDENT_3_JAVA_TUTOR,
-		USER_MGMT_ADMIN_JAVA_LECTURER
-	];
-
-	const users: User[] = [];
-
-	participants.forEach(p => {
-		const user = new User();
-		user.id = p.id;
-		user.email = p.email;
-		user.displayName = p.displayName;
-		user.username = p.username;
-		user.role = p.role;
-		user.participations = [new Participant()];
-		user.participations[0].courseId = "java-wise1920";
-		user.participations[0].userId = p.id;
-		user.participations[0].role = CourseRole.STUDENT;
-
-		users.push(user);
-	});
-
-	return users;
-}

@@ -41,7 +41,10 @@ export class User {
 	@OneToMany(() => AssessmentAllocation, allocation => allocation.user)
 	assessmentAllocations: AssessmentAllocation[];
 
-	@OneToOne(() => UserSettings, userSettings => userSettings.user, { nullable: true })
+	@OneToOne(() => UserSettings, userSettings => userSettings.user, {
+		nullable: true,
+		cascade: ["insert"]
+	})
 	settings: UserSettings;
 
 	constructor(partial?: Partial<User>) {

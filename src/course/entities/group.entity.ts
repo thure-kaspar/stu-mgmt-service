@@ -41,7 +41,9 @@ export class Group {
 	@Column()
 	courseId: CourseId;
 
-	@OneToMany(() => UserGroupRelation, userGroupRelation => userGroupRelation.group)
+	@OneToMany(() => UserGroupRelation, userGroupRelation => userGroupRelation.group, {
+		cascade: ["insert"]
+	})
 	userGroupRelations: UserGroupRelation[];
 
 	@OneToMany(() => Assessment, assessment => assessment.group)

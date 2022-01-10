@@ -59,4 +59,15 @@ export class CourseConfig {
 
 		return configDto;
 	}
+
+	static create(props: {
+		courseId: string;
+		password?: string;
+		groupSettings: GroupSettings;
+		admissionCriteria?: AdmissionCriteria;
+	}): CourseConfig {
+		const entity = new CourseConfig();
+		Object.assign(entity, props);
+		return entity;
+	}
 }
