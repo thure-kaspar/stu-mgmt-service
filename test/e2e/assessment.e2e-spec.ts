@@ -1,4 +1,5 @@
 import { AssessmentDto, AssessmentUpdateDto } from "../../src/assessment/dto/assessment.dto";
+import { PartialAssessmentDto } from "../../src/assessment/dto/partial-assessment.dto";
 import {
 	AssessmentsMock,
 	ASSESSMENT_JAVA_EVALUATED_GROUP_1,
@@ -350,7 +351,7 @@ describe("Assessment E2E", () => {
 				.send(partialAssessment)
 				.expect(200)
 				.expect(({ body }) => {
-					const result = body as AssessmentDto;
+					const result = body as PartialAssessmentDto;
 					expect(result).toEqual(partialAssessment);
 				});
 		});

@@ -1,4 +1,4 @@
-import { StudentMgmtDbEntities } from "../utils/demo-db";
+import { StudentMgmtDbData, StudentMgmtDbEntities } from "../utils/demo-db";
 import { Assessment } from "../../src/assessment/entities/assessment.entity";
 import { Assignment } from "../../src/course/entities/assignment.entity";
 import { Course } from "../../src/course/entities/course.entity";
@@ -10,6 +10,13 @@ import { EXAMPLE_CONFIG } from "../db-setup/example";
 import { DEMO_CONFIG } from "../db-setup/demo";
 import { DbMockService } from "../mocks/db-mock.service";
 import { ISUM_ONLY_CONFIG } from "../db-setup/isum-only";
+import { AssignmentRegistration } from "../../src/course/entities/assignment-group-registration.entity";
+import { CourseRole } from "../../src/shared/enums";
+import { SubscriberRepository } from "../../src/notification/subscriber/subscriber.repository";
+import { Subscriber } from "../../src/notification/subscriber/subscriber.entity";
+import { GroupEvent } from "../../src/course/entities/group-event.entity";
+import { Submission } from "../../src/submission/submission.entity";
+import { TESTING_CONFIG } from "../db-setup/testing";
 
 describe("StudentMgmtDbEntities", () => {
 	let setup: TestSetup;
@@ -24,18 +31,74 @@ describe("StudentMgmtDbEntities", () => {
 	});
 
 	describe("constructor", () => {
-		it("Maps configuration to entities", () => {
-			const data = EXAMPLE_CONFIG;
-			const result = new StudentMgmtDbEntities(data);
+		const data = EXAMPLE_CONFIG;
+		let result: StudentMgmtDbEntities;
+
+		beforeAll(() => {
+			result = new StudentMgmtDbEntities(data);
+		});
+
+		it("Creates users with settings", () => {
 			expect(result.users).toHaveLength(data.users.length);
 			expect(result.users[0].settings).toBeDefined();
+		});
+
+		it("Creates courses with config", () => {
 			expect(result.courses).toHaveLength(data.courses.length);
 			expect(result.courses[0].config).toBeDefined();
 			expect(result.courses[0].config.groupSettings).toBeDefined();
 			expect(result.courses[0].config.admissionCriteria).toBeDefined();
-			expect(result.assignments.length).toBeGreaterThan(0);
+		});
+
+		it("Adds participants to courses", () => {
+			expect(result.courses[0].participants).toHaveLength(4);
+
+			const [dumbledore, hpotter, rweasley, dmalfoy] = result.courses[0].participants;
+
+			expect(dumbledore.role).toEqual(CourseRole.LECTURER);
+			expect(hpotter.role).toEqual(CourseRole.STUDENT);
+			expect(rweasley.role).toEqual(CourseRole.STUDENT);
+			expect(dmalfoy.role).toEqual(CourseRole.STUDENT);
+		});
+
+		it("Creates groups", () => {
 			expect(result.groups.length).toBeGreaterThan(0);
+		});
+
+		it("Adds members to groups", () => {
+			expect(result.groups[0].userGroupRelations.length).toBeGreaterThan(0);
+		});
+
+		it("Creates assignments", () => {
+			expect(result.assignments.length).toBeGreaterThan(0);
+		});
+
+		it("Creates assessments with partialAssessments", () => {
 			expect(result.assessments.length).toBeGreaterThan(0);
+			expect(result.assessments[2].partialAssessments.length).toBeGreaterThan(0);
+		});
+
+		it("Creates assignment registrations with relations", () => {
+			expect(result.registrations.length).toBeGreaterThan(0);
+
+			expect(result.registrations[0].groupRelations).toHaveLength(2); // Gryffindor
+			expect(result.registrations[0].groupRelations[0].participant.id).toEqual(1); // hpotter
+			expect(result.registrations[0].groupRelations[1].participant.id).toEqual(2); // rweasley
+
+			expect(result.registrations[1].groupRelations).toHaveLength(1); // Slytherin
+			expect(result.registrations[1].groupRelations[0].participant.id).toEqual(3); // dmalfoy
+		});
+
+		it("Creates subscribers", () => {
+			expect(result.subscribers).toHaveLength(1);
+		});
+
+		it("Creates group events", () => {
+			expect(result.groupEvents).toHaveLength(2);
+		});
+
+		it("Creates submissions", () => {
+			expect(result.submissions).toHaveLength(1);
 		});
 	});
 
@@ -134,29 +197,69 @@ describe("StudentMgmtDbEntities", () => {
 			expect(a2_dmalfoy.partialAssessments).toHaveLength(1);
 			expect(a2_dmalfoy.partialAssessments[0].markers).toHaveLength(1);
 		});
+
+		it("Creates assignment registrations", async () => {
+			const repo = setup.connection.getRepository(AssignmentRegistration);
+			const registrations = await repo.find({
+				relations: [
+					"groupRelations",
+					"groupRelations.participant",
+					"groupRelations.participant.user"
+				]
+			});
+
+			const [gryffindor, slytherin] = registrations;
+
+			expect(registrations).toHaveLength(2);
+
+			expect(gryffindor.groupRelations).toHaveLength(2);
+			expect(slytherin.groupRelations).toHaveLength(1);
+
+			expect(gryffindor.groupRelations[0].participant.user.username).toEqual("hpotter");
+			expect(gryffindor.groupRelations[1].participant.user.username).toEqual("rweasley");
+			expect(slytherin.groupRelations[0].participant.user.username).toEqual("dmalfoy");
+		});
+
+		it("Creates subscribers", async () => {
+			const repo = setup.connection.getRepository(Subscriber);
+			const subscribers = await repo.find();
+			expect(subscribers).toHaveLength(1);
+		});
+
+		it("Creates group events", async () => {
+			const repo = setup.connection.getRepository(GroupEvent);
+			const events = await repo.find();
+			expect(events).toHaveLength(2);
+		});
+
+		it("Creates submissions", async () => {
+			const repo = setup.connection.getRepository(Submission);
+			const submissions = await repo.find();
+			expect(submissions).toHaveLength(1);
+		});
 	});
 
 	describe("Demo Config", () => {
 		it("Insert", async () => {
 			await setup.clearDb();
 			await new StudentMgmtDbEntities(DEMO_CONFIG).populateDatabase(setup.connection);
+
+			const courseRepo = setup.connection.getRepository(Course);
+			const courses = await courseRepo.find();
+
+			expect(courses).toHaveLength(8);
 		});
 	});
 
-	describe("ISUM Extension", () => {
+	describe("Testing Config", () => {
 		it("Insert", async () => {
 			await setup.clearDb();
-			await new DbMockService(setup.connection).createAll();
-			await new StudentMgmtDbEntities(ISUM_ONLY_CONFIG).populateDatabase(setup.connection);
+			await new StudentMgmtDbEntities(TESTING_CONFIG).populateDatabase(setup.connection);
 
-			const participantsRepo = setup.connection.getRepository(Participant);
-			const participants = await participantsRepo.find({
-				relations: ["user"]
-			});
+			const courseRepo = setup.connection.getRepository(Course);
+			const courses = await courseRepo.find();
 
-			const dumbledore = participants.filter(p => p.user.username === "dumbledore");
-
-			expect(dumbledore).toHaveLength(4);
+			expect(courses).toHaveLength(4);
 		});
 	});
 });

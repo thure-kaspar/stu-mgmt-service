@@ -18,7 +18,8 @@ import { copy } from "../utils/object-helper";
 const course = COURSE_JAVA_1920;
 const assignment = ASSIGNMENT_JAVA_IN_REVIEW_SINGLE;
 
-describe("AssessmentAllocation E2E", () => {
+// TODO: Disabled ... Remove this feature ?
+xdescribe("AssessmentAllocation E2E", () => {
 	let setup: TestSetup;
 
 	beforeAll(async () => {

@@ -21,6 +21,8 @@ import { User } from "../../src/shared/entities/user.entity";
 import { AssignmentState } from "../../src/shared/enums";
 import { Submission } from "../../src/submission/submission.entity";
 import { UserSettings } from "../../src/user/entities/user-settings.entity";
+import { TESTING_CONFIG } from "../db-setup/testing";
+import { StudentMgmtDbEntities } from "../utils/demo-db";
 import { convertToEntity, convertToEntityNoRelations } from "../utils/object-helper";
 import { ASSESSMENT_ALLOCATIONS_MOCK } from "./assessment-allocation.mock";
 import { AssessmentsMock } from "./assessments.mock";
@@ -75,25 +77,7 @@ export class DbMockService {
 	 * Fills the database with test data.
 	 */
 	async createAll(): Promise<void> {
-		await this.createCourses();
-		await this.createCourseConfig();
-		await this.createAssignmentTemplates();
-		await this.createAdmissionCriteria();
-		await this.createGroupSettings();
-		await this.createUsers();
-		await this.createUserSettings();
-		await this.createGroups();
-		await this.createParticipants();
-		await this.createUserGroupRelations();
-		await this.createGroupEvents();
-		await this.createAssignments();
-		await this.createAssignmentRegistrations();
-		await this.createAssessments();
-		await this.createPartialAssessments();
-		await this.createAssessmentUserRelations();
-		await this.createAssessmentAllocations();
-		await this.createSubmissions();
-		await this.createSubscribers();
+		return new StudentMgmtDbEntities(TESTING_CONFIG).populateDatabase(this.con.connection);
 	}
 
 	async createCourses(): Promise<void> {

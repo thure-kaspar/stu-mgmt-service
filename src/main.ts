@@ -3,8 +3,7 @@ import { NestFactory } from "@nestjs/core";
 import { NestExpressApplication } from "@nestjs/platform-express";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { getConnection } from "typeorm";
-import { ISUM_ONLY_CONFIG } from "../test/db-setup/isum-only";
-import { DbMockService } from "../test/mocks/db-mock.service";
+import { DEMO_CONFIG } from "../test/db-setup/demo";
 import { StudentMgmtDbEntities } from "../test/utils/demo-db";
 import { Config } from "./.config/config";
 import { environment } from "./.config/environment";
@@ -47,10 +46,7 @@ async function bootstrap(): Promise<void> {
 
 	// If demo environment, populate database with test data
 	if (environment.is("demo")) {
-		const connection = getConnection();
-		const dbMockService = new DbMockService(connection);
-		await dbMockService.createAll();
-		await new StudentMgmtDbEntities(ISUM_ONLY_CONFIG).populateDatabase(connection);
+		await new StudentMgmtDbEntities(DEMO_CONFIG).populateDatabase(getConnection());
 	}
 
 	// If notification subscribers were specified

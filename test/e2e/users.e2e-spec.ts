@@ -181,15 +181,15 @@ describe("Users E2E", () => {
 			const course = COURSE_JAVA_1920;
 
 			it("Retrieves the user's group history in a course (sorted by timestamp descending)", () => {
-				const expected = GROUP_EVENT_REJOIN_SCENARIO().reverse(); // Ordered from new to old
-				const expectedJson = JSON.parse(JSON.stringify(expected)) as GroupEventDto[];
-
 				return setup
 					.request()
 					.get(`/users/${user.id}/courses/${course.id}/group-history`)
 					.expect(({ body }) => {
-						const result = body as GroupDto[];
-						expect(result).toEqual(expectedJson);
+						const result = body as GroupEventDto[];
+						expect(result).toHaveLength(1);
+						expect(result[0].userId).toEqual(user.id);
+						expect(result[0].event).toEqual("UserJoinedGroupEvent");
+						expect(result).toMatchSnapshot();
 					});
 			});
 		});
@@ -237,14 +237,13 @@ describe("Users E2E", () => {
 			const currentGroup = GROUP_1_JAVA;
 
 			it("Retrieves the user's groups for all assignments", () => {
-				// TODO: Create a more complicated scenario with test data instead of using implicit knowledge about data
 				return setup
 					.request()
 					.get(`/users/${user.id}/courses/${course.id}/assignments/groups`)
 					.expect(200)
 					.expect(({ body }) => {
 						const result = body as AssignmentGroupTuple[];
-						expect(result.length).toBeGreaterThan(3);
+						expect(result).toHaveLength(3);
 						result.forEach(entry => {
 							expect(entry.assignment).toBeTruthy();
 							expect(entry.group).toBeTruthy();

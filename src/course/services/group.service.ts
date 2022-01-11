@@ -153,7 +153,7 @@ export class GroupService {
 	): GroupDto[] {
 		const groups: GroupDto[] = [];
 		for (let i = 1; i <= count; i++) {
-			groups.push({ isClosed: false, name: nameSchema + i });
+			groups.push({ isClosed: false, name: nameSchema + i, id: null });
 		}
 		return groups;
 	}
@@ -169,7 +169,7 @@ export class GroupService {
 		}
 
 		// Create groups using given names
-		return names.map(name => ({ courseId, isClosed: false, name }));
+		return names.map(name => ({ courseId, isClosed: false, name, id: null }));
 	}
 
 	/**

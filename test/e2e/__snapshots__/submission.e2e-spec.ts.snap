@@ -4,32 +4,28 @@ exports[`Submission E2E GET-Requests of SubmissionController (e2e) (GET) /course
 Array [
   Object {
     "assignmentId": "b2f6c008-b9f7-477f-9e8b-ff34ce339077",
-    "date": "2020-02-02T08:42:00.000Z",
-    "displayName": "Max Mustermann",
-    "groupId": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
-    "groupName": "Testgroup 1",
-    "links": null,
-    "payload": null,
-    "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
-  },
-  Object {
-    "assignmentId": "b2f6c008-b9f7-477f-9e8b-ff34ce339077",
-    "date": "2020-02-02T07:42:00.000Z",
+    "date": "2022-02-01T23:00:00.000Z",
     "displayName": "Max Mustermann",
     "groupId": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
     "groupName": "Testgroup 1",
     "links": Array [
       Object {
-        "name": "Link 1",
-        "url": "http://example.url",
-      },
-      Object {
-        "name": "Link 2",
+        "name": "A link",
         "url": "http://example.url",
       },
     ],
+    "payload": null,
+    "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
+  },
+  Object {
+    "assignmentId": "b2f6c008-b9f7-477f-9e8b-ff34ce339077",
+    "date": "2022-01-31T23:00:00.000Z",
+    "displayName": "Max Mustermann",
+    "groupId": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
+    "groupName": "Testgroup 1",
+    "links": null,
     "payload": Object {
-      "error": "Something went wrong.",
+      "hello": "world",
     },
     "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
   },
@@ -40,32 +36,28 @@ exports[`Submission E2E GET-Requests of SubmissionController (e2e) (GET) /course
 Array [
   Object {
     "assignmentId": "b2f6c008-b9f7-477f-9e8b-ff34ce339077",
-    "date": "2020-02-02T08:42:00.000Z",
-    "displayName": "Max Mustermann",
-    "groupId": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
-    "groupName": "Testgroup 1",
-    "links": null,
-    "payload": null,
-    "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
-  },
-  Object {
-    "assignmentId": "b2f6c008-b9f7-477f-9e8b-ff34ce339077",
-    "date": "2020-02-02T07:42:00.000Z",
+    "date": "2022-02-01T23:00:00.000Z",
     "displayName": "Max Mustermann",
     "groupId": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
     "groupName": "Testgroup 1",
     "links": Array [
       Object {
-        "name": "Link 1",
-        "url": "http://example.url",
-      },
-      Object {
-        "name": "Link 2",
+        "name": "A link",
         "url": "http://example.url",
       },
     ],
+    "payload": null,
+    "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
+  },
+  Object {
+    "assignmentId": "b2f6c008-b9f7-477f-9e8b-ff34ce339077",
+    "date": "2022-01-31T23:00:00.000Z",
+    "displayName": "Max Mustermann",
+    "groupId": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
+    "groupName": "Testgroup 1",
+    "links": null,
     "payload": Object {
-      "error": "Something went wrong.",
+      "hello": "world",
     },
     "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
   },
@@ -75,10 +67,15 @@ Array [
 exports[`Submission E2E GET-Requests of SubmissionController (e2e) (GET) /courses/:courseId/submissions/users/:user/assignments/:assignments Retrieves the latest submission of a user (or their group) for an assignment 1`] = `
 Object {
   "assignmentId": "b2f6c008-b9f7-477f-9e8b-ff34ce339077",
-  "date": "2020-02-02T08:42:00.000Z",
+  "date": "2022-02-01T23:00:00.000Z",
   "displayName": "Max Mustermann",
   "groupId": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
-  "links": null,
+  "links": Array [
+    Object {
+      "name": "A link",
+      "url": "http://example.url",
+    },
+  ],
   "payload": null,
   "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
 }
@@ -88,32 +85,28 @@ exports[`Submission E2E GET-Requests of SubmissionController (e2e) (GET) /course
 Array [
   Object {
     "assignmentId": "b2f6c008-b9f7-477f-9e8b-ff34ce339077",
-    "date": "2020-02-02T08:42:00.000Z",
-    "displayName": "Max Mustermann",
-    "groupId": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
-    "groupName": "Testgroup 1",
-    "links": null,
-    "payload": null,
-    "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
-  },
-  Object {
-    "assignmentId": "b2f6c008-b9f7-477f-9e8b-ff34ce339077",
-    "date": "2020-02-02T07:42:00.000Z",
+    "date": "2022-02-01T23:00:00.000Z",
     "displayName": "Max Mustermann",
     "groupId": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
     "groupName": "Testgroup 1",
     "links": Array [
       Object {
-        "name": "Link 1",
-        "url": "http://example.url",
-      },
-      Object {
-        "name": "Link 2",
+        "name": "A link",
         "url": "http://example.url",
       },
     ],
+    "payload": null,
+    "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
+  },
+  Object {
+    "assignmentId": "b2f6c008-b9f7-477f-9e8b-ff34ce339077",
+    "date": "2022-01-31T23:00:00.000Z",
+    "displayName": "Max Mustermann",
+    "groupId": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
+    "groupName": "Testgroup 1",
+    "links": null,
     "payload": Object {
-      "error": "Something went wrong.",
+      "hello": "world",
     },
     "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
   },

@@ -51,7 +51,7 @@ export class JoinRandomGroupHandler implements ICommandHandler<JoinRandomGroupCo
 			separator: ""
 		});
 
-		return this.groupService.createGroup(course, participant, { name: randomName });
+		return this.groupService.createGroup(course, participant, { name: randomName, id: null });
 	}
 
 	/**

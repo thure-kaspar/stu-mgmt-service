@@ -5,8 +5,8 @@ import { GroupEventDto } from "./group-event.dto";
 
 export class GroupDto {
 	/** Unique identifier of this group. */
-	@ApiPropertyOptional({ description: "Unique identifier of this group." })
-	id?: string;
+	@ApiProperty({ description: "Unique identifier of this group." })
+	id: string;
 
 	/** Name of the group. */
 	@ApiProperty({ description: "Name of the group." })

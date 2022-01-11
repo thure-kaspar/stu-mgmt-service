@@ -3,6 +3,23 @@
 exports[`Assignment E2E GET-REQUESTS of AssignmentController (e2e) (GET) /courses/{courseId}/assignments Retrieves all assignments of a course 1`] = `
 Array [
   Object {
+    "collaboration": "GROUP_OR_SINGLE",
+    "id": "8ffc9608-4c3d-4fca-b4fc-3768822d6c0d",
+    "name": "Test_Assignment 05 (Java) Invisible",
+    "points": 100,
+    "state": "INVISIBLE",
+    "type": "HOMEWORK",
+  },
+  Object {
+    "collaboration": "SINGLE",
+    "id": "5b69db81-edbd-4f73-8928-1450036a75cb",
+    "name": "Test_Assignment 06 (Java) Testat In Progress",
+    "points": 100,
+    "startDate": "2020-08-01T22:00:00.000Z",
+    "state": "IN_PROGRESS",
+    "type": "TESTAT",
+  },
+  Object {
     "collaboration": "GROUP",
     "comment": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione ab, quaerat minus corrupti quia nostrum facere quibusdam, repellendus, reprehenderit officiis rerum nemo modi perspiciatis ex obcaecati consectetur nisi voluptatum veritatis.",
     "configs": Array [
@@ -27,23 +44,6 @@ Array [
     "startDate": "2020-09-02T22:00:00.000Z",
     "state": "IN_PROGRESS",
     "type": "HOMEWORK",
-  },
-  Object {
-    "collaboration": "GROUP_OR_SINGLE",
-    "id": "8ffc9608-4c3d-4fca-b4fc-3768822d6c0d",
-    "name": "Test_Assignment 05 (Java) Invisible",
-    "points": 100,
-    "state": "INVISIBLE",
-    "type": "HOMEWORK",
-  },
-  Object {
-    "collaboration": "SINGLE",
-    "id": "5b69db81-edbd-4f73-8928-1450036a75cb",
-    "name": "Test_Assignment 06 (Java) Testat In Progress",
-    "points": 100,
-    "startDate": "2020-08-01T22:00:00.000Z",
-    "state": "IN_PROGRESS",
-    "type": "TESTAT",
   },
   Object {
     "collaboration": "GROUP",

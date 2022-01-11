@@ -3,9 +3,7 @@
 exports[`UserSettings E2E GET-REQUESTS of UserSettingsController (e2e) (GET) /users/{userId}/settings Returns user settings 1`] = `
 Object {
   "allowEmails": true,
-  "blacklistedEvents": Object {
-    "ASSIGNMENT_STATE_CHANGED": true,
-  },
-  "language": "EN",
+  "blacklistedEvents": null,
+  "language": "DE",
 }
 `;

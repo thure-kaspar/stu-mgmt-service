@@ -1,4 +1,3 @@
-import { StudentMgmtDbData } from "../utils/demo-db";
 import { RuleType } from "../../src/admission-status/rules/abstract-rules";
 import { Severity } from "../../src/assessment/dto/marker.dto";
 import {
@@ -8,13 +7,21 @@ import {
 	UserRole
 } from "../../src/shared/enums";
 import { RoundingType } from "../../src/utils/math";
+import { StudentMgmtDbData } from "../utils/demo-db";
+
+const hpotter = "hpotter";
+const rweasley = "rweasley";
+const dmalfoy = "dmalfoy";
+const dumbledore = "dumbledore";
+const Gryffindor = "Gryffindor";
+const Slytherin = "Slytherin";
 
 export const EXAMPLE_CONFIG: StudentMgmtDbData = {
 	users: [
 		{
 			id: "22bff4cb-94bb-4d88-8624-55ff3a53a52b",
 			displayName: "Harry Potter",
-			username: "hpotter",
+			username: hpotter,
 			email: "hpotter@example.email",
 			matrNr: 123456,
 			role: UserRole.USER
@@ -22,7 +29,7 @@ export const EXAMPLE_CONFIG: StudentMgmtDbData = {
 		{
 			id: "27569cf9-110d-4523-a177-a1ee2a89a34f",
 			displayName: "Ron Weasley",
-			username: "rweasley",
+			username: rweasley,
 			email: "rweasley@example.email",
 			matrNr: 654321,
 			role: UserRole.USER
@@ -30,7 +37,7 @@ export const EXAMPLE_CONFIG: StudentMgmtDbData = {
 		{
 			id: "11f89ffc-e646-4bfa-b978-e148aae21a8d",
 			displayName: "Draco Malfoy",
-			username: "dmalfoy",
+			username: dmalfoy,
 			email: "dmalfoy@example.email",
 			matrNr: 111222,
 			role: UserRole.USER
@@ -38,7 +45,7 @@ export const EXAMPLE_CONFIG: StudentMgmtDbData = {
 		{
 			id: "b39c19de-ea2d-48a9-803e-ca641bcdd393",
 			displayName: "Albus Dumbledore",
-			username: "dumbledore",
+			username: dumbledore,
 			email: "dumbledore@example.email",
 			role: UserRole.USER
 		}
@@ -72,20 +79,43 @@ export const EXAMPLE_CONFIG: StudentMgmtDbData = {
 					selfmanaged: true,
 					sizeMax: 2,
 					sizeMin: 2
-				}
+				},
+				subscribers: [
+					{
+						events: {
+							ALL: true
+						},
+						name: "ExampleSubscriber",
+						url: "http://example.url"
+					}
+				]
 			},
 			participants: {
-				students: ["hpotter", "rweasley", "dmalfoy"],
-				lecturers: ["dumbledore"]
+				students: [hpotter, rweasley, dmalfoy],
+				lecturers: [dumbledore]
 			},
 			groups: [
 				{
-					name: "Gryffindor",
-					members: ["hpotter", "rweasley"]
+					id: "c712b961-e38f-475b-8f09-77a994097112",
+					name: Gryffindor,
+					members: [hpotter, rweasley],
+					events: [
+						{
+							event: "UserJoinedGroupEvent",
+							username: hpotter,
+							timestamp: new Date(2022, 1, 1)
+						},
+						{
+							event: "UserJoinedGroupEvent",
+							username: rweasley,
+							timestamp: new Date(2022, 1, 2)
+						}
+					]
 				},
 				{
-					name: "Slytherin",
-					members: ["dmalfoy"]
+					id: "5711c719-0136-4499-8b19-5ecd692f1ba9",
+					name: Slytherin,
+					members: [dmalfoy]
 				}
 			],
 			assignments: [
@@ -100,20 +130,40 @@ export const EXAMPLE_CONFIG: StudentMgmtDbData = {
 						{
 							id: "4132efa8-a40d-4587-87c2-924249c24830",
 							isDraft: false,
-							creator: "dumbledore",
+							creator: dumbledore,
 							target: {
-								group: "Gryffindor"
+								group: Gryffindor
 							},
 							achievedPoints: 10
 						},
 						{
 							id: "7933ee59-eda2-4ae9-b386-320e2e346ef9",
 							isDraft: true,
-							creator: "dumbledore",
+							creator: dumbledore,
 							target: {
-								group: "Slytherin"
+								group: Slytherin
 							},
 							achievedPoints: 5
+						}
+					],
+					registrations: [
+						{
+							groupName: Gryffindor,
+							members: [hpotter, rweasley]
+						},
+						{
+							groupName: Slytherin,
+							members: [dmalfoy]
+						}
+					],
+					submissions: [
+						{
+							date: new Date(2022, 1, 1),
+							username: hpotter,
+							group: Gryffindor,
+							payload: {
+								hello: "world"
+							}
 						}
 					]
 				},
@@ -129,9 +179,9 @@ export const EXAMPLE_CONFIG: StudentMgmtDbData = {
 						{
 							id: "4df0d1ec-1137-4836-86cc-71bb9cf4678d",
 							isDraft: true,
-							creator: "dumbledore",
+							creator: dumbledore,
 							target: {
-								user: "dmalfoy"
+								user: dmalfoy
 							},
 							achievedPoints: 7,
 							partialAssessments: [
