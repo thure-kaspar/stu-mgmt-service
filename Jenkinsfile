@@ -97,6 +97,7 @@ pipeline {
             steps {
                 archiveArtifacts artifacts: '*.tar.gz'
                 
+                sleep(time:20, unit:"SECONDS")
                 sh "wget ${env.API_URL}"
                 archiveArtifacts artifacts: "${env.API_FILE}"
             }
