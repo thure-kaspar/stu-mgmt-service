@@ -9,7 +9,8 @@ import * as courses from "../mocks/courses.mock";
 import * as groups from "../mocks/groups/groups.mock";
 import {
 	PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW,
-	PARTIAL_ASSESSMENT_2_JAVA_IN_REVIEW
+	PARTIAL_ASSESSMENT_2_JAVA_IN_REVIEW,
+	PARTIAL_ASSESSMENT_JAVA_IN_REVIEW_GROUP_MARKERS
 } from "../mocks/partial-assessments.mock";
 import * as users from "../mocks/users.mock";
 import { CourseSetup, StudentMgmtDbData } from "../utils/demo-db";
@@ -17,7 +18,7 @@ import { CourseSetup, StudentMgmtDbData } from "../utils/demo-db";
 const defaultRegistrations: StudentMgmtDbData["courses"][0]["assignments"][0]["registrations"] = [
 	{
 		groupName: "Testgroup 1",
-		members: ["mmustermann", "jdoe"]
+		members: ["mmustermann", "hpeter"]
 	},
 	{
 		groupName: "Testgroup 2",
@@ -168,10 +169,7 @@ const JAVA_WISE1920: CourseSetup = {
 			assessments: [
 				{
 					...assessments.ASSESSMENT_JAVA_IN_REVIEW_GROUP_PARTIALS,
-					partialAssessments: [
-						PARTIAL_ASSESSMENT_1_JAVA_IN_REVIEW,
-						PARTIAL_ASSESSMENT_2_JAVA_IN_REVIEW
-					],
+					partialAssessments: [PARTIAL_ASSESSMENT_JAVA_IN_REVIEW_GROUP_MARKERS],
 					creator: users.USER_STUDENT_3_JAVA_TUTOR.username,
 					target: {
 						group: groups.GROUP_1_JAVA.name
