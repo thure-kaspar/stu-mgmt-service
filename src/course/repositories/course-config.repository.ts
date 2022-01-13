@@ -3,7 +3,6 @@ import { CourseConfig } from "../entities/course-config.entity";
 import { CourseConfigDto } from "../dto/course-config/course-config.dto";
 import { CourseConfigUpdateDto } from "../dto/course-config/course-config.dto";
 import { GroupSettings } from "../entities/group-settings.entity";
-import { AssignmentTemplate } from "../entities/assignment-template.entity";
 import { AdmissionCriteria } from "../entities/admission-criteria.entity";
 import { CourseId } from "../entities/course.entity";
 
@@ -24,7 +23,7 @@ export class CourseConfigRepository extends Repository<CourseConfig> {
 	getByCourseId(courseId: CourseId): Promise<CourseConfig> {
 		return this.findOneOrFail({
 			where: { courseId },
-			relations: ["groupSettings", "admissionCriteria", "assignmentTemplates"]
+			relations: ["groupSettings", "admissionCriteria"]
 		});
 	}
 
@@ -59,15 +58,6 @@ export class CourseConfigRepository extends Repository<CourseConfig> {
 		if (configDto.admissionCriteria?.rules?.length > 0) {
 			config.admissionCriteria = new AdmissionCriteria();
 			config.admissionCriteria.admissionCriteria = configDto.admissionCriteria;
-		}
-
-		// Assignment templates
-		if (configDto.assignmentTemplates?.length > 0) {
-			config.assignmentTemplates = configDto.assignmentTemplates.map((t, index) => {
-				const template = new AssignmentTemplate();
-				Object.assign(template, configDto.assignmentTemplates[index]);
-				return template;
-			});
 		}
 
 		return config;

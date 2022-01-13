@@ -13,7 +13,6 @@ import {
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { AuthGuard } from "../../auth/guards/auth.guard";
 import { AdmissionCriteriaDto } from "../dto/course-config/admission-criteria.dto";
-import { AssignmentTemplateDto } from "../dto/course-config/assignment-template.dto";
 import { CourseConfigDto, CourseConfigUpdateDto } from "../dto/course-config/course-config.dto";
 import { GroupSettingsDto, GroupSettingsUpdateDto } from "../dto/course-config/group-settings.dto";
 import { ParticipantDto } from "../dto/course-participant/participant.dto";
@@ -57,21 +56,6 @@ export class CourseConfigController {
 		@Body() admissionCriteria: AdmissionCriteriaDto
 	): Promise<AdmissionCriteriaDto> {
 		return this.configService.createAdmissionCriteria(configId, admissionCriteria);
-	}
-
-	@ApiOperation({
-		operationId: "createAssignmentTemplate",
-		summary: "Create assignment template.",
-		description: "Creates an assignment template."
-	})
-	@Post(":configId/assignment-templates")
-	@UseGuards(TeachingStaffGuard)
-	createAssignmentTemplate(
-		@Param("courseId") courseId: CourseId,
-		@Param("configId") configId: number,
-		@Body() template: AssignmentTemplateDto
-	): Promise<AssignmentTemplateDto> {
-		return this.configService.createAssignmentTemplate(configId, template);
 	}
 	//#endregion
 
@@ -144,19 +128,6 @@ export class CourseConfigController {
 	): Promise<{ matrNrs: number[]; participants: ParticipantDto[] }> {
 		return this.configService.getAdmissionFromPreviousSemester(courseId);
 	}
-
-	@ApiOperation({
-		operationId: "getAssignmentTemplates",
-		summary: "Get assignment templates.",
-		description: "Retrieves the assignment templates of a course."
-	})
-	@Get("assignment-templates")
-	@UseGuards(TeachingStaffGuard)
-	getAssignmentTemplates(
-		@Param("courseId") courseId: CourseId
-	): Promise<AssignmentTemplateDto[]> {
-		return this.configService.getAssignmentTemplates(courseId);
-	}
 	//#endregion
 
 	//#region PATCH
@@ -201,22 +172,6 @@ export class CourseConfigController {
 	): Promise<AdmissionCriteriaDto> {
 		return this.configService.updateAdmissionCriteria(courseId, criteria);
 	}
-
-	@ApiOperation({
-		operationId: "updateAssignmentTemplate",
-		summary: "Update assignment template.",
-		description: "Updates the assignment template."
-	})
-	@Patch("assignment-template/:id")
-	@UseGuards(TeachingStaffGuard)
-	updateAssignmentTemplate(
-		@Param("courseId") courseId: CourseId,
-		@Param("id") id: number,
-		@Body() template: AssignmentTemplateDto
-	): Promise<AssignmentTemplateDto> {
-		return this.configService.updateAssignmentTemplate(id, template);
-	}
-
 	//#endregion
 
 	//#region DELETE
@@ -241,20 +196,6 @@ export class CourseConfigController {
 	@UseGuards(TeachingStaffGuard)
 	deleteAdmissionCriteria(@Param("courseId") courseId: CourseId): Promise<void> {
 		return this.configService.removeAdmissionCriteria(courseId);
-	}
-
-	@ApiOperation({
-		operationId: "deleteAssignmentTemplate",
-		summary: "Delete assignment template.",
-		description: "Deletes the assignment template."
-	})
-	@Delete("assignment-template/:id")
-	@UseGuards(TeachingStaffGuard)
-	deleteAssignmentTemplate(
-		@Param("courseId") courseId: CourseId,
-		@Param("id") id: number
-	): Promise<void> {
-		return this.configService.removeAssignmentTemplateFromCourse(courseId, id);
 	}
 	//#endregion
 }

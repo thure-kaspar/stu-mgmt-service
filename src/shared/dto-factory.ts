@@ -2,14 +2,12 @@ import { AssessmentDto } from "../assessment/dto/assessment.dto";
 import { Assessment } from "../assessment/entities/assessment.entity";
 import { AssignmentDto } from "../course/dto/assignment/assignment.dto";
 import { AdmissionCriteriaDto } from "../course/dto/course-config/admission-criteria.dto";
-import { AssignmentTemplateDto } from "../course/dto/course-config/assignment-template.dto";
 import { CourseConfigDto } from "../course/dto/course-config/course-config.dto";
 import { GroupSettingsDto } from "../course/dto/course-config/group-settings.dto";
 import { ParticipantDto } from "../course/dto/course-participant/participant.dto";
 import { CourseDto } from "../course/dto/course/course.dto";
 import { GroupDto } from "../course/dto/group/group.dto";
 import { AdmissionCriteria } from "../course/entities/admission-criteria.entity";
-import { AssignmentTemplate } from "../course/entities/assignment-template.entity";
 import { Assignment } from "../course/entities/assignment.entity";
 import { CourseConfig } from "../course/entities/course-config.entity";
 import { Course } from "../course/entities/course.entity";
@@ -42,11 +40,6 @@ export abstract class DtoFactory {
 		if (config.groupSettings)
 			configDto.groupSettings = this.createGroupSettingsDto(config.groupSettings);
 
-		if (config.assignmentTemplates)
-			configDto.assignmentTemplates = config.assignmentTemplates.map(t =>
-				this.createAssignmentTemplateDto(t)
-			);
-
 		if (includePrivileged) {
 			configDto.password = config.password;
 		}
@@ -67,17 +60,6 @@ export abstract class DtoFactory {
 
 	static createAdmissionCriteriaDto(criteria: AdmissionCriteria): AdmissionCriteriaDto {
 		return criteria.admissionCriteria;
-	}
-
-	static createAssignmentTemplateDto(template: AssignmentTemplate): AssignmentTemplateDto {
-		return {
-			id: template.id,
-			templateName: template.templateName,
-			collaboration: template.collaboration,
-			type: template.type,
-			name: template.name,
-			points: template.points
-		};
 	}
 
 	static createUserDto(user: User, options?: { removeEmail: boolean }): UserDto {

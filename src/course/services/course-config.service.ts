@@ -1,14 +1,12 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { AdmissionCriteriaDto } from "../dto/course-config/admission-criteria.dto";
-import { AssignmentTemplateDto } from "../dto/course-config/assignment-template.dto";
 import { CourseConfigDto, CourseConfigUpdateDto } from "../dto/course-config/course-config.dto";
 import { GroupSettingsDto, GroupSettingsUpdateDto } from "../dto/course-config/group-settings.dto";
 import { ParticipantDto } from "../dto/course-participant/participant.dto";
 import { CourseId } from "../entities/course.entity";
 import { AdmissionCriteriaRepository } from "../repositories/admission-criteria.repository";
 import { AdmissionFromPreviousSemesterRepository } from "../repositories/admission-from-previous-semester.repository";
-import { AssignmentTemplateRepository } from "../repositories/assignment-template.repository";
 import { CourseConfigRepository } from "../repositories/course-config.repository";
 import { GroupSettingsRepository } from "../repositories/group-settings.repository";
 import { ParticipantRepository } from "../repositories/participant.repository";
@@ -23,8 +21,6 @@ export class CourseConfigService {
 		private admissionCriteriaRepo: AdmissionCriteriaRepository,
 		@InjectRepository(AdmissionFromPreviousSemesterRepository)
 		private admissionFromPreviousRepo: AdmissionFromPreviousSemesterRepository,
-		@InjectRepository(AssignmentTemplateRepository)
-		private templateRepo: AssignmentTemplateRepository,
 		@InjectRepository(ParticipantRepository) private participantRepo: ParticipantRepository
 	) {}
 
@@ -47,15 +43,6 @@ export class CourseConfigService {
 			criteriaDto
 		);
 		return criteria.toDto();
-	}
-
-	/** Creates a template for an assignment. */
-	async createAssignmentTemplate(
-		configId: number,
-		templateDto: AssignmentTemplateDto
-	): Promise<AssignmentTemplateDto> {
-		const template = await this.templateRepo.createAssignmentTemplate(configId, templateDto);
-		return template.toDto();
 	}
 
 	async setAdmissionFromPreviousSemester(
@@ -117,12 +104,6 @@ export class CourseConfigService {
 		return result;
 	}
 
-	/** Returns all assignment templates that are available for this course. */
-	async getAssignmentTemplates(courseId: CourseId): Promise<AssignmentTemplateDto[]> {
-		const templates = await this.templateRepo.getTemplatesByCourseId(courseId);
-		return templates.map(t => t.toDto());
-	}
-
 	/** Updates the course configuration. */
 	async updateCourseConfig(
 		courseId: CourseId,
@@ -155,15 +136,6 @@ export class CourseConfigService {
 		return criteria.toDto();
 	}
 
-	/** Updates the assignment template */
-	async updateAssignmentTemplate(
-		id: number,
-		update: AssignmentTemplateDto
-	): Promise<AssignmentTemplateDto> {
-		const template = await this.templateRepo.updateTemplate(id, update);
-		return template.toDto();
-	}
-
 	/**
 	 * Removes the complete course configuration.
 	 * @throws Error, if deletion failed or had no effect.
@@ -180,15 +152,5 @@ export class CourseConfigService {
 	async removeAdmissionCriteria(courseId: CourseId): Promise<void> {
 		const deleted = await this.admissionCriteriaRepo.removeAdmissionCriteria(courseId);
 		if (!deleted) throw new Error("Delete had no effect.");
-	}
-
-	/**
-	 * Removes the assignment template from a course.
-	 * @param id Id of the assignment template
-	 * @throws Error, if deletion failed or had no effect.
-	 */
-	async removeAssignmentTemplateFromCourse(courseId: CourseId, id: number): Promise<void> {
-		const deleted = await this.templateRepo.removeTemplate(id);
-		if (!deleted) throw new BadRequestException("Failed to delete the template.");
 	}
 }

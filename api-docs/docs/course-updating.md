@@ -62,7 +62,3 @@ If the request was successful, you'll receive the updated `GroupSettingsDto` as 
 ## Admission criteria
 
 It's possible to update the admission criteria of a course. See [this](TODO) article to learn more.
-
-## Assignment templates
-
-Assignment templates are a part of the course configuration. You can read more about them [here](TODO).

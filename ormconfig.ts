@@ -8,7 +8,6 @@ import { PartialAssessment } from "./src/assessment/entities/partial-assessment.
 import { AdmissionCriteria } from "./src/course/entities/admission-criteria.entity";
 import { AdmissionFromPreviousSemester } from "./src/course/entities/admission-from-previous-semester.entity";
 import { AssignmentRegistration } from "./src/course/entities/assignment-group-registration.entity";
-import { AssignmentTemplate } from "./src/course/entities/assignment-template.entity";
 import { Assignment } from "./src/course/entities/assignment.entity";
 import { CourseConfig } from "./src/course/entities/course-config.entity";
 import { Course } from "./src/course/entities/course.entity";
@@ -55,7 +54,6 @@ const typeOrmConfig: TypeOrmModuleOptions = {
 		AssignmentRegistration,
 		GroupRegistrationRelation,
 		CourseConfig,
-		AssignmentTemplate,
 		GroupSettings,
 		AdmissionCriteria,
 		AdmissionFromPreviousSemester,

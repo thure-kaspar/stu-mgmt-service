@@ -1,6 +1,5 @@
 import { ApiPropertyOptional, PartialType, PickType } from "@nestjs/swagger";
 import { AdmissionCriteriaDto } from "./admission-criteria.dto";
-import { AssignmentTemplateDto } from "./assignment-template.dto";
 import { GroupSettingsDto } from "./group-settings.dto";
 
 /**
@@ -11,7 +10,6 @@ export class CourseConfigDto {
 	id?: number;
 	groupSettings?: GroupSettingsDto;
 	admissionCriteria?: AdmissionCriteriaDto;
-	assignmentTemplates?: AssignmentTemplateDto[];
 
 	/** Password required to sign up for the course. */
 	@ApiPropertyOptional({ description: "Password required to sign up for the course." })

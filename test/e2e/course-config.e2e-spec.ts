@@ -1,5 +1,4 @@
 import { AdmissionCriteriaDto } from "../../src/course/dto/course-config/admission-criteria.dto";
-import { AssignmentTemplateDto } from "../../src/course/dto/course-config/assignment-template.dto";
 import {
 	CourseConfigDto,
 	CourseConfigUpdateDto
@@ -119,7 +118,6 @@ describe("CourseConfig E2E", () => {
 
 		it("(GET) .../config Returns complete course configuration", () => {
 			const expected = copy(COURSE_CONFIG_JAVA_1920);
-			expected.assignmentTemplates = []; // TODO: Remove feature ?
 
 			return setup
 				.request()
@@ -156,20 +154,6 @@ describe("CourseConfig E2E", () => {
 					expect(result).toEqual(expected);
 				});
 		});
-
-		// TODO: Disabled - Remove feature ?
-		xit("(GET) .../config/assignment-templates Returns assignment templates", () => {
-			const expected = COURSE_CONFIG_JAVA_1920.assignmentTemplates;
-
-			return setup
-				.request()
-				.get(`/courses/${course.id}/config/assignment-templates`)
-				.expect(200)
-				.expect(({ body }) => {
-					const result = body as AssignmentTemplateDto[];
-					expect(result).toEqual(expected);
-				});
-		});
 	});
 
 	describe("PATCH-REQUEST of CourseConfigController (e2e)", () => {
@@ -179,7 +163,6 @@ describe("CourseConfig E2E", () => {
 			await setup.dbMockService.createCourseConfig();
 			await setup.dbMockService.createGroupSettings();
 			await setup.dbMockService.createAdmissionCriteria();
-			await setup.dbMockService.createAssignmentTemplates();
 		});
 
 		it("(PATCH) .../config Updates course config (no relations)", () => {
@@ -252,7 +235,6 @@ describe("CourseConfig E2E", () => {
 			await setup.dbMockService.createCourseConfig();
 			await setup.dbMockService.createGroupSettings();
 			await setup.dbMockService.createAdmissionCriteria();
-			await setup.dbMockService.createAssignmentTemplates();
 		});
 
 		it("(DELETE) .../config Deletes complete config", () => {

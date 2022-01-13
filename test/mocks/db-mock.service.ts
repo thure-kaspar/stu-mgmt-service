@@ -6,7 +6,6 @@ import { PartialAssessment } from "../../src/assessment/entities/partial-assessm
 import { AssignmentDto } from "../../src/course/dto/assignment/assignment.dto";
 import { AdmissionCriteria } from "../../src/course/entities/admission-criteria.entity";
 import { AssignmentRegistration } from "../../src/course/entities/assignment-group-registration.entity";
-import { AssignmentTemplate } from "../../src/course/entities/assignment-template.entity";
 import { Assignment, AssignmentId } from "../../src/course/entities/assignment.entity";
 import { CourseConfig } from "../../src/course/entities/course-config.entity";
 import { Course } from "../../src/course/entities/course.entity";
@@ -28,7 +27,6 @@ import { ASSESSMENT_ALLOCATIONS_MOCK } from "./assessment-allocation.mock";
 import { AssessmentsMock } from "./assessments.mock";
 import { ASSIGNMENTS_ALL, ASSIGNMENTS_JAVA_1920 } from "./assignments.mock";
 import { ADMISSION_CRITERIA_MOCK } from "./course-config/admission-criteria.mock";
-import { ASSIGNMENT_TEMPLATES_MOCK } from "./course-config/assignment-templates.mock";
 import { COURSE_CONFIGS_MOCK } from "./course-config/course-config.mock";
 import { GROUP_SETTINGS_MOCK } from "./course-config/group-settings.mock";
 import { CoursesMock } from "./courses.mock";
@@ -61,7 +59,6 @@ export class DbMockService {
 	partialAssessments = PARTIAL_ASSESSMENT_MOCK;
 	userGroupRelations = UserGroupRelationsMock;
 	assessmentUserRelations = AssessmentUserRelationsMock;
-	assignmentTemplates = ASSIGNMENT_TEMPLATES_MOCK;
 	groupSettings = GROUP_SETTINGS_MOCK;
 	admissionCriteria = ADMISSION_CRITERIA_MOCK;
 	configs = COURSE_CONFIGS_MOCK;
@@ -117,17 +114,6 @@ export class DbMockService {
 		criteria.courseConfigId = this.configs[0].id;
 
 		await repo.insert(criteria).catch(error => console.error(error));
-	}
-
-	async createAssignmentTemplates(): Promise<void> {
-		const repo = this.con.getRepository(AssignmentTemplate);
-		const templates = this.assignmentTemplates.map(t => repo.create(t));
-		templates.forEach(t => (t.courseConfigId = 1));
-
-		await this.con
-			.getRepository(AssignmentTemplate)
-			.insert(templates)
-			.catch(error => console.error(error));
 	}
 
 	async createUsers(): Promise<void> {

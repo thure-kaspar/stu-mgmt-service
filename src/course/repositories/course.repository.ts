@@ -5,7 +5,6 @@ import { CourseFilter } from "../dto/course/course-filter.dto";
 import { AdmissionCriteria } from "../entities/admission-criteria.entity";
 import { CourseConfig } from "../entities/course-config.entity";
 import { GroupSettings } from "../entities/group-settings.entity";
-import { AssignmentTemplate } from "../entities/assignment-template.entity";
 import { CourseCreateDto } from "../dto/course/course-create.dto";
 import { Participant } from "../entities/participant.entity";
 import { CourseRole } from "../../shared/enums";
@@ -171,12 +170,6 @@ export class CourseRepository extends Repository<Course> {
 
 		course.config.groupSettings = new GroupSettings();
 		Object.assign(course.config.groupSettings, configDto.groupSettings);
-
-		course.config.assignmentTemplates = configDto.assignmentTemplates?.map(t => {
-			const template = new AssignmentTemplate();
-			Object.assign(template, t);
-			return template;
-		});
 
 		if (configDto.admissionCriteria?.rules?.length > 0) {
 			course.config.admissionCriteria = new AdmissionCriteria();

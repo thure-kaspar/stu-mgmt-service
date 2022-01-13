@@ -128,8 +128,3 @@ of your selected lecturers.
 The Student-Management-System's API allows you to specify admission criteria, which can be used by students and the teaching staff, i.e.
 to determine which student is allowed to participate in the final exam and to see how well students are performing.
 A detailed description can be found [here](TODO).
-
-## Assignment templates
-
-The Student-Management-System's API allows you to create templates for assignments. Templates provide the teaching staff with a way
-to easily create assignments with predefined settings. A detailed description can be found [here](TODO).

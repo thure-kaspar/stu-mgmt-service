@@ -1,8 +1,7 @@
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { CourseConfigDto } from "../dto/course-config/course-config.dto";
 import { AdmissionCriteria } from "./admission-criteria.entity";
 import { AdmissionFromPreviousSemester } from "./admission-from-previous-semester.entity";
-import { AssignmentTemplate } from "./assignment-template.entity";
 import { Course, CourseId } from "./course.entity";
 import { GroupSettings } from "./group-settings.entity";
 
@@ -35,11 +34,6 @@ export class CourseConfig {
 	@OneToOne(() => AdmissionFromPreviousSemester, { cascade: ["insert"], nullable: true })
 	admissionFromPreviousSemester?: AdmissionFromPreviousSemester;
 
-	@OneToMany(() => AssignmentTemplate, assignmentTemplate => assignmentTemplate.courseConfig, {
-		cascade: ["insert"]
-	})
-	assignmentTemplates: AssignmentTemplate[];
-
 	/**
 	 * Returns the Dto-representation of this entity.
 	 * @param [excludePrivileged=false] If true, excludes password and subscription url.
@@ -51,11 +45,7 @@ export class CourseConfig {
 		};
 
 		if (this.admissionCriteria) configDto.admissionCriteria = this.admissionCriteria.toDto();
-
 		if (this.groupSettings) configDto.groupSettings = this.groupSettings.toDto();
-
-		if (this.assignmentTemplates)
-			configDto.assignmentTemplates = this.assignmentTemplates.map(t => t.toDto());
 
 		return configDto;
 	}
