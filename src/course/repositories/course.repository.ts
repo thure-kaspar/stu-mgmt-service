@@ -73,8 +73,7 @@ export class CourseRepository extends Repository<Course> {
 			where: {
 				shortname: name,
 				semester: semester
-			},
-			relations: ["assignments"]
+			}
 		});
 	}
 

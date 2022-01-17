@@ -35,11 +35,6 @@ export class CourseService {
 		return DtoFactory.createCourseDto(course);
 	}
 
-	async getCourseByNameAndSemester(name: string, semester: string): Promise<CourseDto> {
-		const course = await this.courseRepository.getCourseByNameAndSemester(name, semester);
-		return DtoFactory.createCourseDto(course);
-	}
-
 	async updateCourse(courseId: CourseId, courseDto: CourseDto): Promise<CourseDto> {
 		const course = await this.courseRepository.updateCourse(courseId, courseDto);
 		return DtoFactory.createCourseDto(course);

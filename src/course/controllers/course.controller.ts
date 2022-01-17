@@ -17,14 +17,17 @@ import { AuthGuard } from "../../auth/guards/auth.guard";
 import { RoleGuard } from "../../auth/guards/role.guard";
 import { CourseRole, UserRole } from "../../shared/enums";
 import { PaginatedResult, throwIfRequestFailed } from "../../utils/http-utils";
+import { GetCourse } from "../decorators/decorators";
 import { ParticipantDto } from "../dto/course-participant/participant.dto";
 import { CourseAboutDto } from "../dto/course/course-about.dto";
 import { CourseCreateDto } from "../dto/course/course-create.dto";
 import { CourseFilter } from "../dto/course/course-filter.dto";
 import { CourseDto } from "../dto/course/course.dto";
 import { CourseId } from "../entities/course.entity";
+import { CourseByNameAndSemesterGuard } from "../guards/course-by-name-semester.guard";
 import { CourseMemberGuard } from "../guards/course-member/course-member.guard";
 import { TeachingStaffGuard } from "../guards/teaching-staff.guard";
+import { Course } from "../models/course.model";
 import { CourseParticipantsService } from "../services/course-participants.service";
 import { CourseService } from "../services/course.service";
 
@@ -115,12 +118,13 @@ export class CourseController {
 		description: ""
 	})
 	@Get(":name/semester/:semester")
-	@UseGuards(AuthGuard, CourseMemberGuard)
+	@UseGuards(AuthGuard, CourseByNameAndSemesterGuard, CourseMemberGuard)
 	getCourseByNameAndSemester(
 		@Param("name") name: string,
-		@Param("semester") semester: string
+		@Param("semester") semester: string,
+		@GetCourse() course: Course
 	): Promise<CourseDto> {
-		return this.courseService.getCourseByNameAndSemester(name, semester);
+		return this.courseService.getCourseById(course.id);
 	}
 
 	/**
