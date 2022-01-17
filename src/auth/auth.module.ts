@@ -25,7 +25,9 @@ import { AuthService } from "./services/auth.service";
 		{
 			provide: AuthStrategy,
 			useClass: (() =>
-				environment.is("development", "demo") ? TestUserAuthStrategy : SparkyAuthStrategy)()
+				environment.is("development", "demo", "testing")
+					? TestUserAuthStrategy
+					: SparkyAuthStrategy)()
 		},
 		AuthGuard
 	],

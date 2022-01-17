@@ -1,3 +1,4 @@
+import { IsNotEmpty } from "class-validator";
 import { MarkerDto } from "./marker.dto";
 
 export class PartialAssessmentDto {
@@ -8,6 +9,7 @@ export class PartialAssessmentDto {
 	 * @example "task_1"
 	 */
 	key?: string;
+	@IsNotEmpty()
 	title: string;
 	/** Determines whether the partial assessment should be included, when the assessment is not a draft anymore. */
 	draftOnly: boolean;

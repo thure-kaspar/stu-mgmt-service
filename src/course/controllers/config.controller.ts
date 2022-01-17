@@ -28,37 +28,6 @@ import { CourseConfigService } from "../services/course-config.service";
 export class CourseConfigController {
 	constructor(private configService: CourseConfigService) {}
 
-	//#region POST
-	@ApiOperation({
-		operationId: "createCourseConfig",
-		summary: "Create course config.",
-		description: "Saves a configuration for a course, if it does not have one already."
-	})
-	@Post()
-	@UseGuards(TeachingStaffGuard)
-	createCourseConfig(
-		@Param("courseId") courseId: CourseId,
-		@Body() config: CourseConfigDto
-	): Promise<CourseConfigDto> {
-		return this.configService.createCourseConfig(courseId, config);
-	}
-
-	@ApiOperation({
-		operationId: "createAdmissionCriteria",
-		summary: "Create admission criteria.",
-		description: "Creates admission criteria for a course."
-	})
-	@Post(":configId/admission-criteria")
-	@UseGuards(TeachingStaffGuard)
-	createAdmissionCriteria(
-		@Param("courseId") courseId: CourseId,
-		@Param("configId") configId: number,
-		@Body() admissionCriteria: AdmissionCriteriaDto
-	): Promise<AdmissionCriteriaDto> {
-		return this.configService.createAdmissionCriteria(configId, admissionCriteria);
-	}
-	//#endregion
-
 	//#region PUT
 	@ApiOperation({
 		operationId: "setAdmissionFromPreviousSemester",
@@ -123,6 +92,7 @@ export class CourseConfigController {
 			"Retrieves a dictionary that maps matrNrs to a UserDto or null (if user does not exist in the system)."
 	})
 	@Get("admission-from-previous-semester")
+	@UseGuards(TeachingStaffGuard)
 	getAdmissionFromPreviousSemester(
 		@Param("courseId") courseId: CourseId
 	): Promise<{ matrNrs: number[]; participants: ParticipantDto[] }> {
@@ -142,6 +112,9 @@ export class CourseConfigController {
 		@Param("courseId") courseId: CourseId,
 		@Body() update: CourseConfigUpdateDto
 	): Promise<CourseConfigDto> {
+		if (!update) {
+			throw new BadRequestException("No update object provided.");
+		}
 		return this.configService.updateCourseConfig(courseId, update);
 	}
 
@@ -171,31 +144,6 @@ export class CourseConfigController {
 		@Body() criteria: AdmissionCriteriaDto
 	): Promise<AdmissionCriteriaDto> {
 		return this.configService.updateAdmissionCriteria(courseId, criteria);
-	}
-	//#endregion
-
-	//#region DELETE
-	@ApiOperation({
-		operationId: "removeCourseConfig",
-		summary: "Remove course config.",
-		description:
-			"Removes the complete configuration of a course. Includes group settings, admission criteria and templates."
-	})
-	@Delete()
-	@UseGuards(TeachingStaffGuard)
-	deleteCourseConfig(@Param("courseId") courseId: CourseId): Promise<void> {
-		return this.configService.removeCourseConfig(courseId);
-	}
-
-	@ApiOperation({
-		operationId: "removeAdmissionCriteria",
-		summary: "Remove admission criteria.",
-		description: "Removes the admission criteria of a course."
-	})
-	@Delete("admission-criteria")
-	@UseGuards(TeachingStaffGuard)
-	deleteAdmissionCriteria(@Param("courseId") courseId: CourseId): Promise<void> {
-		return this.configService.removeAdmissionCriteria(courseId);
 	}
 	//#endregion
 }

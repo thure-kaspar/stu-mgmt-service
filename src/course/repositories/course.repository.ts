@@ -170,10 +170,10 @@ export class CourseRepository extends Repository<Course> {
 		course.config.groupSettings = new GroupSettings();
 		Object.assign(course.config.groupSettings, configDto.groupSettings);
 
-		if (configDto.admissionCriteria?.rules?.length > 0) {
-			course.config.admissionCriteria = new AdmissionCriteria();
-			course.config.admissionCriteria.admissionCriteria = configDto.admissionCriteria;
-		}
+		course.config.admissionCriteria = new AdmissionCriteria();
+		course.config.admissionCriteria.admissionCriteria = configDto.admissionCriteria ?? {
+			rules: []
+		};
 
 		return course;
 	}

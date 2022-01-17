@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { EventBus } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DtoFactory } from "../../shared/dto-factory";
@@ -23,6 +23,11 @@ export class AssignmentService {
 	) {}
 
 	async createAssignment(course: Course, assignmentDto: AssignmentDto): Promise<AssignmentDto> {
+		// TODO: Validate full assignment ... (using class-validator decorators might break update method?)
+		if (!assignmentDto?.name) {
+			throw new BadRequestException("Assignment schema is invalid.");
+		}
+
 		const createdAssignment = await this.assignmentRepository.createAssignment(
 			course.id,
 			assignmentDto

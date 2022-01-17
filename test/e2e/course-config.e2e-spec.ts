@@ -29,45 +29,6 @@ describe("CourseConfig E2E", () => {
 		await setup.teardown();
 	});
 
-	describe("POST-REQUEST of CourseConfigController (e2e)", () => {
-		beforeEach(async () => {
-			await setup.clearDb();
-			await setup.dbMockService.createCourses();
-		});
-
-		it("(POST) .../config Creates configuration and returns it", () => {
-			const config = copy(COURSE_CONFIG_JAVA_1920);
-			const expected = COURSE_CONFIG_JAVA_1920;
-
-			return setup
-				.request()
-				.post(`/courses/${course.id}/config`)
-				.send(config)
-				.expect(201)
-				.expect(({ body }) => {
-					const result = body as CourseConfigDto;
-					expect(result).toEqual(expected);
-				});
-		});
-
-		it("(POST) .../config/admission-criteria Creates admission criteria and returns it", async () => {
-			await setup.dbMockService.createCourseConfig();
-			const config = copy(COURSE_CONFIG_JAVA_1920);
-			const criteria = copy(ADMISSION_CRITERIA_MOCK);
-			const expected = ADMISSION_CRITERIA_MOCK;
-
-			return setup
-				.request()
-				.post(`/courses/${course.id}/config/${config.id}/admission-criteria`)
-				.send(criteria)
-				.expect(201)
-				.expect(({ body }) => {
-					const result = body as AdmissionCriteriaDto;
-					expect(result).toEqual(expected);
-				});
-		});
-	});
-
 	describe("PUT-REQUEST of CourseConfigController (e2e)", () => {
 		beforeEach(async () => {
 			await setup.clearDb();
@@ -225,27 +186,6 @@ describe("CourseConfig E2E", () => {
 					const result = body as AdmissionCriteriaDto;
 					expect(result).toEqual(criteria);
 				});
-		});
-	});
-
-	describe("DELETE-REQUEST of CourseConfigController (e2e)", () => {
-		beforeEach(async () => {
-			await setup.clearDb();
-			await setup.dbMockService.createCourses();
-			await setup.dbMockService.createCourseConfig();
-			await setup.dbMockService.createGroupSettings();
-			await setup.dbMockService.createAdmissionCriteria();
-		});
-
-		it("(DELETE) .../config Deletes complete config", () => {
-			return setup.request().delete(`/courses/${course.id}/config/`).expect(200);
-		});
-
-		it("(DELETE) .../config/admission-criteria Deletes admission criteria ", () => {
-			return setup
-				.request()
-				.delete(`/courses/${course.id}/config/admission-criteria`)
-				.expect(200);
 		});
 	});
 });

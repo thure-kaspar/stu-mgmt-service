@@ -35,6 +35,7 @@ export class GroupSettingsRepository extends Repository<GroupSettings> {
 	): Promise<GroupSettings> {
 		const settings = await this.getByCourseId(courseId);
 		const updated = this.create({ ...settings, ...partial });
+		updated.courseConfigId = settings.courseConfigId; // Prevent assignment to wrong id
 		return this.save(updated);
 	}
 }

@@ -17,6 +17,7 @@ import { GetUser } from "../../auth/decorators/get-user.decorator";
 import { AuthGuard } from "../../auth/guards/auth.guard";
 import { GetAssignment, GetParticipant } from "../../course/decorators/decorators";
 import { CourseId } from "../../course/entities/course.entity";
+import { AssessmentGuard } from "../../course/guards/assessment.guard";
 import { AssignmentGuard } from "../../course/guards/assignment.guard";
 import { CourseMemberGuard } from "../../course/guards/course-member/course-member.guard";
 import { TeachingStaffGuard } from "../../course/guards/teaching-staff.guard";
@@ -60,7 +61,7 @@ export class AssessmentController {
 		description: "Adds or updates the partial assessment with the specified key."
 	})
 	@Put(":assessmentId")
-	@UseGuards(TeachingStaffGuard)
+	@UseGuards(TeachingStaffGuard, AssignmentGuard, AssessmentGuard)
 	setPartialAssessment(
 		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string,
@@ -76,7 +77,7 @@ export class AssessmentController {
 		description: "Retrieves assessments that have been created for the assignment."
 	})
 	@Get()
-	@UseGuards(TeachingStaffGuard)
+	@UseGuards(TeachingStaffGuard, AssignmentGuard)
 	getAssessmentsForAssignment(
 		@Req() request: Request,
 		@Param("courseId") courseId: CourseId,
