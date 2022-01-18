@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { IsNotEmpty } from "class-validator";
 import { LinkDto } from "../../../shared/dto/link.dto";
 import { AdmissionCriteriaDto } from "../course-config/admission-criteria.dto";
 import { GroupSettingsDto } from "../course-config/group-settings.dto";
@@ -13,14 +14,17 @@ export class CourseDto {
 		description:
 			"Shortname of this course, i.e 'java'. Should be reused every semester. Will be used in URLs."
 	})
+	@IsNotEmpty()
 	shortname: string;
 
 	/** Semester that the iteration of this course belong to. */
 	@ApiProperty({ description: "Semester that the iteration of this course belong to." })
+	@IsNotEmpty()
 	semester: string;
 
 	/** The full title of this course, i.e Programming I: Java */
 	@ApiProperty({ description: "The full title of this course, i.e Programming I: Java" })
+	@IsNotEmpty()
 	title: string;
 
 	/** Determines, wether changes (i.e joining this course) can be made to this course. */

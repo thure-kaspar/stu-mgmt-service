@@ -1,19 +1,19 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
-import { throwIfRequestFailed } from "../../utils/http-utils";
-import { AssignmentDto, AssignmentUpdateDto } from "../dto/assignment/assignment.dto";
-import { CourseId } from "../entities/course.entity";
-import { CourseMemberGuard } from "../guards/course-member/course-member.guard";
-import { AssignmentService } from "../services/assignment.service";
-import { GetCourse, GetAssignment, GetParticipant } from "../decorators/decorators";
-import { Course } from "../models/course.model";
-import { Assignment } from "../models/assignment.model";
-import { AssignmentGuard } from "../guards/assignment.guard";
-import { AssignmentId } from "../entities/assignment.entity";
-import { TeachingStaffGuard } from "../guards/teaching-staff.guard";
-import { Participant } from "../models/participant.model";
-import { AssignmentState } from "../../shared/enums";
 import { AuthGuard } from "../../auth/guards/auth.guard";
+import { AssignmentState } from "../../shared/enums";
+import { throwIfRequestFailed } from "../../utils/http-utils";
+import { GetAssignment, GetCourse, GetParticipant } from "../decorators/decorators";
+import { AssignmentDto, AssignmentUpdateDto } from "../dto/assignment/assignment.dto";
+import { AssignmentId } from "../entities/assignment.entity";
+import { CourseId } from "../entities/course.entity";
+import { AssignmentGuard } from "../guards/assignment.guard";
+import { CourseMemberGuard } from "../guards/course-member/course-member.guard";
+import { TeachingStaffGuard } from "../guards/teaching-staff.guard";
+import { Assignment } from "../models/assignment.model";
+import { Course } from "../models/course.model";
+import { Participant } from "../models/participant.model";
+import { AssignmentService } from "../services/assignment.service";
 
 @ApiBearerAuth()
 @ApiTags("assignment")
@@ -63,6 +63,7 @@ export class AssignmentController {
 		summary: "Get assignment.",
 		description: "Retrieves the assignment."
 	})
+	@UseGuards(AssignmentGuard)
 	getAssignmentById(
 		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string,
@@ -95,7 +96,7 @@ export class AssignmentController {
 		description: "Deletes the assignment. Returns true, if removal was successful."
 	})
 	@Delete(":assignmentId")
-	@UseGuards(TeachingStaffGuard)
+	@UseGuards(TeachingStaffGuard, AssignmentGuard)
 	async deleteAssignment(
 		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string

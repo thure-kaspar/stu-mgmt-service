@@ -59,6 +59,7 @@ export class CourseParticipantsController {
 		description:
 			"Adds a user to the course. If the course requires a password, the correct password needs to be included in the request body."
 	})
+	@UseGuards(CourseMemberGuard)
 	addUser(
 		@Param("courseId") courseId: CourseId,
 		@Param("userId") userId: UserId,

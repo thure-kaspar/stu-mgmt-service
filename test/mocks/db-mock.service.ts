@@ -72,9 +72,10 @@ export class DbMockService {
 
 	/**
 	 * Fills the database with test data.
+	 * Uses {@link TESTING_CONFIG} by default.
 	 */
-	async createAll(): Promise<void> {
-		return new StudentMgmtDbEntities(TESTING_CONFIG).populateDatabase(this.con.connection);
+	async createAll(entities = new StudentMgmtDbEntities(TESTING_CONFIG)): Promise<void> {
+		return entities.populateDatabase(this.con.connection);
 	}
 
 	async createCourses(): Promise<void> {

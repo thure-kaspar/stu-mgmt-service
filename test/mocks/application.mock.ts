@@ -40,6 +40,17 @@ export async function setupDefaultApplication(
 	return initDefaultApplication(fixture);
 }
 
+export async function createAuthTestApplication(): Promise<INestApplication> {
+	const moduleBuilder: TestingModuleBuilder = Test.createTestingModule({
+		imports: [AppModule]
+	})
+		.overrideProvider(NodemailerService)
+		.useClass(DisabledMailing);
+
+	const fixture = await moduleBuilder.compile();
+	return initDefaultApplication(fixture);
+}
+
 async function initDefaultApplication(moduleFixture: TestingModule): Promise<INestApplication> {
 	const app = moduleFixture.createNestApplication();
 	app.useGlobalFilters(new EntityNotFoundFilter());

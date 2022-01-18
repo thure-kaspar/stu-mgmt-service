@@ -70,7 +70,8 @@ export class AssignmentDto {
 
 	/** Optional information to allow the configuration of connected submission tools. */
 	@ApiPropertyOptional({
-		description: "Optional information to allow the configuration of connected submission tools."
+		description:
+			"Optional information to allow the configuration of connected submission tools."
 	})
 	configs?: SubmissionConfigDto[];
 }

@@ -16,10 +16,11 @@ import { AssignmentRegistrationService } from "../services/assignment-registrati
 import { AssignmentRegistrationFilter } from "../dto/assignment/assignment-registration.filter";
 import { SelectedParticipantGuard } from "../guards/selected-participant.guard";
 import { AuthGuard } from "../../auth/guards/auth.guard";
+import { AssignmentGuard } from "../guards/assignment.guard";
 
 @ApiBearerAuth()
 @ApiTags("assignment-registration")
-@UseGuards(AuthGuard, CourseMemberGuard)
+@UseGuards(AuthGuard, CourseMemberGuard, AssignmentGuard)
 @Controller("courses/:courseId/assignments/:assignmentId/registrations")
 export class AssignmentRegistrationController {
 	constructor(private registrations: AssignmentRegistrationService) {}

@@ -100,29 +100,6 @@ describe("CourseService", () => {
 		});
 	});
 
-	describe("getCourseByNameAndSemester", () => {
-		it("Calls repository for retrieval", async () => {
-			const name = "java";
-			const semester = "wise1920";
-
-			await service.getCourseByNameAndSemester(name, semester);
-
-			expect(courseRepository.getCourseByNameAndSemester).toHaveBeenCalledWith(
-				name,
-				semester
-			);
-		});
-
-		it("Returns Dto", async () => {
-			const name = "java";
-			const semester = "wise1920";
-
-			await service.getCourseByNameAndSemester(name, semester);
-
-			expect(DtoFactory.createCourseDto).toHaveBeenCalled();
-		});
-	});
-
 	describe("updateCourse", () => {
 		it("Calls repository for update", async () => {
 			await service.updateCourse(courseDto.id, courseDto);
