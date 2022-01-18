@@ -1,11 +1,12 @@
-import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
+import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { AssessmentRepository } from "../../assessment/repositories/assessment.repository";
+import { Participant } from "../models/participant.model";
 
 /**
  * Attaches the `assessment` to the `request`.
- * Always returns `true`, unless the assessment does not exist.
- * Also ensures that the assessments belongs to `request.assignment`.
+ * - Ensures that the assessments belongs to `request.assignment`
+ * - If requested by `STUDENT` role, ensures that student is target of assessment
  */
 @Injectable()
 export class AssessmentGuard implements CanActivate {
@@ -23,8 +24,19 @@ export class AssessmentGuard implements CanActivate {
 		const assessment = await this.assessments.findOneOrFail(request.params.assessmentId, {
 			where: {
 				assignmentId: request.assignment.id
-			}
+			},
+			relations: ["assessmentUserRelations"]
 		});
+
+		const participant: Participant = request.participant;
+
+		if (participant.isStudent()) {
+			if (!assessment.assessmentUserRelations.find(r => r.userId === participant.userId)) {
+				throw new ForbiddenException(
+					"Students can not view assessments of other students."
+				);
+			}
+		}
 
 		request.assessment = assessment;
 		return true;

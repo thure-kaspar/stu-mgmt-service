@@ -34,7 +34,7 @@ import { AssessmentService } from "../services/assessment.service";
 @ApiBearerAuth()
 @ApiTags("assessment")
 @Controller("courses/:courseId/assignments/:assignmentId/assessments")
-@UseGuards(AuthGuard, CourseMemberGuard)
+@UseGuards(AuthGuard, CourseMemberGuard, AssignmentGuard)
 export class AssessmentController {
 	constructor(private assessmentService: AssessmentService) {}
 
@@ -44,7 +44,7 @@ export class AssessmentController {
 		description: "Creates a new assessment."
 	})
 	@Post()
-	@UseGuards(TeachingStaffGuard, AssignmentGuard)
+	@UseGuards(TeachingStaffGuard)
 	createAssessment(
 		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string,
@@ -61,7 +61,7 @@ export class AssessmentController {
 		description: "Adds or updates the partial assessment with the specified key."
 	})
 	@Put(":assessmentId")
-	@UseGuards(TeachingStaffGuard, AssignmentGuard, AssessmentGuard)
+	@UseGuards(TeachingStaffGuard, AssessmentGuard)
 	setPartialAssessment(
 		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string,
@@ -77,7 +77,7 @@ export class AssessmentController {
 		description: "Retrieves assessments that have been created for the assignment."
 	})
 	@Get()
-	@UseGuards(TeachingStaffGuard, AssignmentGuard)
+	@UseGuards(TeachingStaffGuard)
 	getAssessmentsForAssignment(
 		@Req() request: Request,
 		@Param("courseId") courseId: CourseId,
@@ -99,6 +99,7 @@ export class AssessmentController {
 		description: "Retrieves the assessment."
 	})
 	@Get(":assessmentId")
+	@UseGuards(AssessmentGuard)
 	getAssessmentById(
 		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string,
@@ -113,7 +114,7 @@ export class AssessmentController {
 		description: "Retrieves events of the assessment."
 	})
 	@Get(":assessmentId/events")
-	@UseGuards(TeachingStaffGuard)
+	@UseGuards(TeachingStaffGuard, AssessmentGuard)
 	getEventsOfAssessment(
 		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string,
@@ -123,7 +124,7 @@ export class AssessmentController {
 	}
 
 	@Patch(":assessmentId")
-	@UseGuards(TeachingStaffGuard)
+	@UseGuards(TeachingStaffGuard, AssessmentGuard)
 	@ApiOperation({
 		operationId: "updateAssessment",
 		summary: "Update assessment.",
@@ -145,7 +146,7 @@ export class AssessmentController {
 		description: "Deletes the assessment."
 	})
 	@Delete(":assessmentId")
-	@UseGuards(TeachingStaffGuard)
+	@UseGuards(TeachingStaffGuard, AssessmentGuard)
 	deleteAssessment(
 		@Param("courseId") courseId: CourseId,
 		@Param("assignmentId") assignmentId: string,

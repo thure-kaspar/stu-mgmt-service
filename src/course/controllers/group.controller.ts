@@ -96,7 +96,6 @@ export class GroupController {
 			"Tries to add the user to an open group with sufficient capacity. If no such group exists, creates a new group and adds the requesting user. Returns the joined group and its members."
 	})
 	@Post("joinOrCreateGroup")
-	@UseGuards()
 	joinOrCreateGroup(
 		@Param("courseId") courseId: CourseId,
 		@GetCourse() course: Course,
@@ -196,7 +195,7 @@ export class GroupController {
 		description: "Returns the group with its members."
 	})
 	@Get(":groupId")
-	@UseGuards(GroupMemberGuard)
+	@UseGuards(GroupGuard, GroupMemberGuard)
 	getGroup(
 		@Param("courseId") courseId: CourseId,
 		@Param("groupId") groupId: GroupId
@@ -210,7 +209,7 @@ export class GroupController {
 		description: "Retrieves all users that are members of the group."
 	})
 	@Get(":groupId/users")
-	@UseGuards(GroupMemberGuard)
+	@UseGuards(GroupGuard, GroupMemberGuard)
 	getUsersOfGroup(
 		@Param("courseId") courseId: CourseId,
 		@Param("groupId") groupId: GroupId
@@ -224,7 +223,7 @@ export class GroupController {
 		description: "Retrieves all assessments of this group."
 	})
 	@Get(":groupId/assessments")
-	@UseGuards(TeachingStaffGuard)
+	@UseGuards(TeachingStaffGuard, GroupGuard)
 	getAssessmentsOfGroup(
 		@Param("courseId") courseId: CourseId,
 		@Param("groupId") groupId: GroupId
@@ -238,7 +237,7 @@ export class GroupController {
 		description: "Updates the group partially."
 	})
 	@Patch(":groupId")
-	@UseGuards(GroupGuard)
+	@UseGuards(GroupGuard, GroupMemberGuard)
 	updateGroup(
 		@Param("courseId") courseId: CourseId,
 		@Param("groupId") groupId: GroupId,
@@ -255,7 +254,7 @@ export class GroupController {
 		description: "Removes the user from the group."
 	})
 	@Delete(":groupId/users/:userId")
-	@UseGuards(SelectedParticipantGuard, GroupGuard)
+	@UseGuards(GroupGuard, SelectedParticipantGuard)
 	removeUserFromGroup(
 		@Param("courseId") courseId: CourseId,
 		@Param("groupId") groupId: GroupId,
@@ -281,7 +280,7 @@ export class GroupController {
 		description: "Deletes the group."
 	})
 	@Delete(":groupId")
-	@UseGuards(GroupGuard)
+	@UseGuards(GroupGuard, GroupMemberGuard)
 	deleteGroup(
 		@Param("courseId") courseId: CourseId,
 		@Param("groupId") groupId: GroupId,
