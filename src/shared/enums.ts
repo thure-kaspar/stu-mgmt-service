@@ -58,3 +58,8 @@ export function isTutor(participant: ParticipantDto): boolean {
 export function isLecturer(participant: ParticipantDto): boolean {
 	return participant.role === CourseRole.LECTURER;
 }
+
+const adminRoles = [UserRole.SYSTEM_ADMIN, UserRole.MGMT_ADMIN, UserRole.ADMIN_TOOL];
+export function isAdmin(role: UserRole): boolean {
+	return adminRoles.includes(role);
+}

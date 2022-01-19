@@ -168,6 +168,11 @@ export class ParticipantRepository extends Repository<Participant> {
 		return query;
 	}
 
+	/** Tries to find the participant. If it does not exist, returns `undefined` */
+	async tryGetParticipant(courseId: CourseId, userId: UserId): Promise<Participant | undefined> {
+		return this.findOne({ where: { userId, courseId } });
+	}
+
 	async updateRole(courseId: CourseId, userId: UserId, role: CourseRole): Promise<boolean> {
 		const relation = await this.findOneOrFail({ where: { courseId, userId } });
 		relation.role = role;

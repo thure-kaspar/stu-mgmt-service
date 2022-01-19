@@ -15,6 +15,8 @@ const student = "courseStudent";
 const studentUserId = "a44c818b-4494-4d78-8fd3-dfada7e2359c";
 const lecturer = "courseLecturer";
 const lecturerUserId = "ae85f9ab-2bcd-4cd1-a1ad-382f9900d54b";
+const userNotInCourse = "userNotInCourse";
+const userNotInCourseId = "ae62dbd3-18da-4fb7-a664-1c93816808a6";
 const courseId = "test-course";
 const otherCourseId = "other-course";
 const assignmentId = "44e9e03b-6c53-402c-bae5-78f3adfde797";
@@ -59,6 +61,12 @@ export const PERMISSIONS_TESTING_CONFIG: StudentMgmtDbData = {
 			displayName: "System Admin",
 			id: "062ad1be-4512-4a4a-be4c-4eda7645315a",
 			role: UserRole.SYSTEM_ADMIN
+		},
+		{
+			username: userNotInCourse,
+			displayName: "NotInCourse",
+			id: userNotInCourseId,
+			role: UserRole.USER
 		}
 	],
 	courses: [
@@ -268,6 +276,38 @@ describe("Permissions", () => {
 	});
 
 	describe("CourseParticipantsController", () => {
+		describe("addUser", () => {
+			beforeEach(async () => {
+				await setup.clearDb();
+				await setup.dbMockService.createAll(
+					new StudentMgmtDbEntities(PERMISSIONS_TESTING_CONFIG)
+				);
+			});
+
+			afterAll(async () => {
+				await setup.clearDb();
+				await setup.dbMockService.createAll(
+					new StudentMgmtDbEntities(PERMISSIONS_TESTING_CONFIG)
+				);
+			});
+
+			it.each([
+				[201, userNotInCourse, userNotInCourseId, courseId],
+				[201, lecturer, userNotInCourseId, courseId], // Lecturers may add users
+				[201, admin, userNotInCourseId, courseId],
+				[409, student, studentUserId, courseId], // Already in course
+				[403, student, userNotInCourseId, courseId], // Can't sign up foreign user as participant
+				[403, userNotInCourse, studentUserId, otherCourseId] // Can't sign up foreign user as non-participant
+			])("%#: %d -> %s", (status, requestingUser, targetUserId, courseId) => {
+				return test(
+					"post",
+					`/courses/${courseId}/users/${targetUserId}`,
+					requestingUser,
+					status
+				);
+			});
+		});
+
 		describe("getUsersOfCourse", () => {
 			it.each([
 				[lecturerOtherCourse, 403],

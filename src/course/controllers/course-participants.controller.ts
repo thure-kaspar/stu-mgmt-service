@@ -37,6 +37,8 @@ import { Participant } from "../models/participant.model";
 import { ParticipantsWithAssignedEvaluatorDto } from "../../assessment/queries/participants-with-assigned-evaluator/participants-with-assigned-evaluator.dto";
 import { ParticipantsWithAssignedEvaluatorQuery } from "../../assessment/queries/participants-with-assigned-evaluator/participants-with-assigned-evaluator.query";
 import { AuthGuard } from "../../auth/guards/auth.guard";
+import { GetUser } from "../../auth/decorators/get-user.decorator";
+import { UserDto } from "../../shared/dto/user.dto";
 
 @ApiBearerAuth()
 @ApiTags("course-participants")
@@ -59,13 +61,18 @@ export class CourseParticipantsController {
 		description:
 			"Adds a user to the course. If the course requires a password, the correct password needs to be included in the request body."
 	})
-	@UseGuards(CourseMemberGuard)
 	addUser(
+		@GetUser() requestingUser: UserDto,
 		@Param("courseId") courseId: CourseId,
 		@Param("userId") userId: UserId,
 		@Body() password?: PasswordDto
 	): Promise<void> {
-		return this.courseParticipantsService.addParticipant(courseId, userId, password.password);
+		return this.courseParticipantsService.addParticipant(
+			requestingUser,
+			courseId,
+			userId,
+			password.password
+		);
 	}
 
 	/**

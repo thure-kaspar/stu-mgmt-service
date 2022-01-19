@@ -1,8 +1,9 @@
-import { Injectable } from "@nestjs/common";
+import { ConflictException, ForbiddenException, Injectable } from "@nestjs/common";
 import { EventBus } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
+import { UserDto } from "../../shared/dto/user.dto";
 import { UserId } from "../../shared/entities/user.entity";
-import { CourseRole } from "../../shared/enums";
+import { CourseRole, isAdmin } from "../../shared/enums";
 import { toDtos } from "../../shared/interfaces/to-dto.interface";
 import { CourseParticipantsFilter } from "../dto/course-participant/course-participants.filter";
 import { ParticipantDto } from "../dto/course-participant/participant.dto";
@@ -27,7 +28,14 @@ export class CourseParticipantsService {
 	 * If the course requires a password, the given password must match the specified password.
 	 * Throws exception, if course is closed or password does not match.
 	 */
-	async addParticipant(courseId: CourseId, userId: UserId, password?: string): Promise<void> {
+	async addParticipant(
+		requestingUser: UserDto,
+		courseId: CourseId,
+		targetUserId: UserId,
+		password?: string
+	): Promise<void> {
+		await this.checkIfUserCanAddParticipant(courseId, targetUserId, requestingUser);
+
 		const course = await this.courseRepo.getCourseWithConfigAndGroupSettings(courseId);
 
 		if (course.isClosed) throw new CourseClosedException(course.id);
@@ -40,12 +48,52 @@ export class CourseParticipantsService {
 
 		const participant = await this.participantRepo.createParticipant(
 			courseId,
-			userId,
+			targetUserId,
 			CourseRole.STUDENT
 		);
 
 		const courseModel = new CourseWithGroupSettings(course, course.config.groupSettings);
 		this.events.publish(new CourseJoined(courseModel, new Participant(participant)));
+	}
+
+	/**
+	 * Checks, if the user with `userId` may be added to the course by the `requestingUser`.
+	 * Throws an appropriate exception, when this operation is not allowed.
+	 *
+	 * - Lecturers and Admins may add other users to a course
+	 * - Normal users can only add themselves
+	 */
+	private async checkIfUserCanAddParticipant(
+		courseId: string,
+		targetUserId: string,
+		requestingUser: UserDto
+	): Promise<void> {
+		const requestingParticipant = await this.participantRepo.tryGetParticipant(
+			courseId,
+			requestingUser.id
+		);
+
+		if (requestingParticipant) {
+			const isAlreadyInCourse = requestingParticipant.userId === targetUserId;
+			if (isAlreadyInCourse) {
+				throw new ConflictException(
+					`User (${targetUserId}) is already a member of course (${courseId}).`
+				);
+			}
+
+			const canAddOthers =
+				isAdmin(requestingUser.role) || requestingParticipant.role === CourseRole.LECTURER;
+			if (!canAddOthers) {
+				throw new ForbiddenException("Users can not add other users to courses.");
+			}
+		}
+
+		if (!requestingParticipant) {
+			const isAddingAnotherUser = requestingUser.id !== targetUserId;
+			if (isAddingAnotherUser && !isAdmin(requestingUser.role)) {
+				throw new ForbiddenException("Users can not add other users to courses.");
+			}
+		}
 	}
 
 	async getParticipants(

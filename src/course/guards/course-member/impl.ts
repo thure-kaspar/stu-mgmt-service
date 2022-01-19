@@ -1,18 +1,12 @@
 import { EntityNotFoundError } from "typeorm";
 import { UserDto } from "../../../shared/dto/user.dto";
 import { User } from "../../../shared/entities/user.entity";
-import { CourseRole, UserRole } from "../../../shared/enums";
+import { CourseRole, isAdmin } from "../../../shared/enums";
 import { Participant as ParticipantEntity } from "../../entities/participant.entity";
 import { NotACourseMemberException } from "../../exceptions/custom-exceptions";
 import { Course } from "../../models/course.model";
 import { Participant } from "../../models/participant.model";
 import { CourseRepository } from "../../repositories/course.repository";
-
-const adminRoles = [UserRole.SYSTEM_ADMIN, UserRole.MGMT_ADMIN, UserRole.ADMIN_TOOL];
-
-export function isAdmin(role: UserRole): boolean {
-	return adminRoles.includes(role);
-}
 
 export type CourseMemberGuardRequest = {
 	/** User set by {@link AuthGuard} */
