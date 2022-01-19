@@ -208,14 +208,23 @@ export class AssessmentRepository extends Repository<Assessment> {
 	async updateAssessment(
 		assessmentId: string,
 		updateDto: AssessmentUpdateDto,
-		updatedBy: UserId
+		updatedBy: UserId,
+		changeCreator: boolean
 	): Promise<Assessment> {
 		const { achievedPoints, isDraft, comment, partialAssessments } = updateDto;
 		const assessment = await this.findOneOrFail(assessmentId, {
 			relations: ["partialAssessments"]
 		});
 
-		assessment.lastUpdatedById = updatedBy;
+		if (changeCreator) {
+			assessment.creatorId = updatedBy;
+			assessment.creationDate = new Date(Date.now());
+
+			assessment.lastUpdatedById = null;
+			assessment.updateDate = null;
+		} else {
+			assessment.lastUpdatedById = updatedBy;
+		}
 
 		// Update achievedPoints, if included (check for undefined, because 0 and null is allowed)
 		if (achievedPoints !== undefined) {

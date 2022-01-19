@@ -21,7 +21,11 @@ import {
 	PARTIAL_ASSESSMENT_JAVA_IN_REVIEW_GROUP_MARKERS,
 	PARTIAL_ASSESSMENT_MOCK
 } from "../mocks/partial-assessments.mock";
-import { USER_MGMT_ADMIN_JAVA_LECTURER, USER_STUDENT_JAVA } from "../mocks/users.mock";
+import {
+	USER_MGMT_ADMIN_JAVA_LECTURER,
+	USER_STUDENT_JAVA,
+	USER_SYSTEM_ADMIN
+} from "../mocks/users.mock";
 import { TestSetup } from "../utils/e2e";
 import { copy } from "../utils/object-helper";
 
@@ -387,6 +391,10 @@ describe("Assessment E2E", () => {
 			it("Changes assessment from draft to non-draft", () => {
 				const assessment = copy(ASSESSMENT_JAVA_IN_REVIEW_NO_PARTIALS);
 				console.assert(assessment.isDraft, "Assessment should be marked as draft.");
+				console.assert(
+					assessment.creatorId !== USER_SYSTEM_ADMIN.id,
+					"USER_SYSTEM_ADMIN should not be creator."
+				);
 
 				// Create clone of original data and perform some changes
 				const changedAssessment: AssessmentUpdateDto = copy(assessment);
@@ -403,6 +411,7 @@ describe("Assessment E2E", () => {
 						const result = body as AssessmentDto;
 						expect(result.id).toEqual(assessment.id);
 						expect(result.isDraft).toEqual(changedAssessment.isDraft);
+						expect(result.creatorId).toEqual(USER_SYSTEM_ADMIN.id);
 					});
 			});
 

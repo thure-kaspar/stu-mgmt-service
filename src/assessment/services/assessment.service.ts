@@ -152,7 +152,8 @@ export class AssessmentService {
 		const updated = await this.assessmentRepository.updateAssessment(
 			assessmentId,
 			update,
-			updatedBy
+			updatedBy,
+			original.isDraft && update.isDraft === false // User that changes assessment from draft to non-draft becomes the creator
 		);
 
 		if (this.scoreChangedAfterRelease(original, updated)) {
