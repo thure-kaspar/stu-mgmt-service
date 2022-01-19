@@ -4,12 +4,11 @@ import { Participant } from "../../../src/course/entities/participant.entity";
 import { NotACourseMemberException } from "../../../src/course/exceptions/custom-exceptions";
 import {
 	checkIsCourseMemberOrAdmin,
-	CourseMemberGuardRequest,
-	isAdmin
+	CourseMemberGuardRequest
 } from "../../../src/course/guards/course-member/impl";
 import { CourseRepository } from "../../../src/course/repositories/course.repository";
 import { User } from "../../../src/shared/entities/user.entity";
-import { UserRole } from "../../../src/shared/enums";
+import { isAdmin, UserRole } from "../../../src/shared/enums";
 import { COURSE_JAVA_1920 } from "../../mocks/courses.mock";
 import { convertToEntity, copy } from "../../utils/object-helper";
 
