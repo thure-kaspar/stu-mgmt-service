@@ -147,14 +147,14 @@ describe("Courses E2E", () => {
 				.expect(201);
 		});
 
-		it("(POST) /courses/{courseId}/users/{userId} Incorrect password -> Throws BadRequestException", () => {
+		it("(POST) /courses/{courseId}/users/{userId} Incorrect password with ADMIN account -> Adds user to course", () => {
 			const user = USER_STUDENT_JAVA;
 
 			return setup
 				.request()
 				.post(`/courses/${course.id}/users/${user.id}`)
 				.send({ password: "incorrect" }) // an incorrect password
-				.expect(400);
+				.expect(201);
 		});
 
 		it("(POST) /courses/{courseId}/groups Creates the given group and returns it (Part 1/2)", () => {

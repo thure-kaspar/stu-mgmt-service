@@ -34,16 +34,22 @@ export class CourseParticipantsService {
 		targetUserId: UserId,
 		password?: string
 	): Promise<void> {
-		await this.checkIfUserCanAddParticipant(courseId, targetUserId, requestingUser);
+		const { isAdminOrLecturer } = await this.checkIfUserCanAddParticipant(
+			courseId,
+			targetUserId,
+			requestingUser
+		);
 
 		const course = await this.courseRepo.getCourseWithConfigAndGroupSettings(courseId);
 
-		if (course.isClosed) throw new CourseClosedException(course.id);
+		if (!isAdminOrLecturer) {
+			if (course.isClosed) throw new CourseClosedException(course.id);
 
-		// Check if password is required + matches
-		const requiredPassword = course.config.password;
-		if (requiredPassword && requiredPassword !== password) {
-			throw new InvalidPasswordException();
+			// Check if password is required + matches
+			const requiredPassword = course.config.password;
+			if (requiredPassword && requiredPassword !== password) {
+				throw new InvalidPasswordException();
+			}
 		}
 
 		const participant = await this.participantRepo.createParticipant(
@@ -67,7 +73,7 @@ export class CourseParticipantsService {
 		courseId: string,
 		targetUserId: string,
 		requestingUser: UserDto
-	): Promise<void> {
+	): Promise<{ isAdminOrLecturer: boolean }> {
 		const requestingParticipant = await this.participantRepo.tryGetParticipant(
 			courseId,
 			requestingUser.id
@@ -94,6 +100,11 @@ export class CourseParticipantsService {
 				throw new ForbiddenException("Users can not add other users to courses.");
 			}
 		}
+
+		return {
+			isAdminOrLecturer:
+				requestingParticipant?.role === CourseRole.LECTURER || isAdmin(requestingUser.role)
+		};
 	}
 
 	async getParticipants(
