@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { AssignmentDto } from "../course/dto/assignment/assignment.dto";
 import { AdmissionCriteria } from "../course/entities/admission-criteria.entity";
@@ -84,7 +84,7 @@ export class AdmissionStatusService {
 		const rules = admissionCriteria.admissionCriteria?.rules;
 
 		if (this.courseHasNoAdmissionCriteria(rules)) {
-			throw new BadRequestException(`Course (${courseId}) does not have admission criteria.`);
+			throw new NotFoundException(`Course (${courseId}) does not have admission criteria.`);
 		}
 
 		const criteria = rules.map(rule => AdmissionRuleFactory.create(rule, evaluated));
