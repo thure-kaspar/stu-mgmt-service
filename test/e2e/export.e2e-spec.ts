@@ -39,7 +39,8 @@ describe("Export", () => {
 				"member-1-matrNr",
 				"member-2-name",
 				"member-2-username",
-				"member-2-matrNr"
+				"member-2-matrNr",
+				"json"
 			]);
 		});
 
