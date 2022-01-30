@@ -23,7 +23,7 @@ export async function writeWorkbookToResponse(
 }
 
 export function addHeaderRow<T>(flatData: T[], worksheet: excel.Worksheet): void {
-	let objectWithMostKeys = flatData[0];
+	let objectWithMostKeys = flatData[0] || {};
 	let maxKeyCount = Object.keys(objectWithMostKeys).length;
 
 	for (const data of flatData) {
