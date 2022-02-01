@@ -175,6 +175,21 @@ export class AssessmentService {
 		);
 	}
 
+	/**
+	 * Removes the assessments and replaces it assessments for each connected user.
+	 * @returns The created assessments.
+	 */
+	async convertGroupToIndividualAssessment(
+		assessmentId: string,
+		requestingUserId: string
+	): Promise<AssessmentDto[]> {
+		const assessments = await this.assessmentRepository.convertGroupToIndividualAssessment(
+			assessmentId,
+			requestingUserId
+		);
+		return assessments.map(DtoFactory.createAssessmentDto);
+	}
+
 	async deleteAssessment(assessmentId: string): Promise<boolean> {
 		return this.assessmentRepository.deleteAssessment(assessmentId);
 	}

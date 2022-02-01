@@ -666,6 +666,45 @@ describe("Permissions", () => {
 			});
 		});
 
+		describe("convertGroupToIndividualAssessment", () => {
+			beforeEach(async () => {
+				await setup.clearDb();
+				await setup.dbMockService.createAll(
+					new StudentMgmtDbEntities(PERMISSIONS_TESTING_CONFIG)
+				);
+			});
+
+			afterAll(async () => {
+				await setup.clearDb();
+				await setup.dbMockService.createAll(
+					new StudentMgmtDbEntities(PERMISSIONS_TESTING_CONFIG)
+				);
+			});
+
+			it.each([
+				[lecturerOtherCourse, 403],
+				[admin, 201],
+				[lecturer, 201],
+				[student, 403]
+			])("%#: %s -> %d", (username, status) => {
+				return test(
+					"post",
+					`/courses/${courseId}/assignments/${assignmentId}/assessments/${assessmentId}/convert-to-individual`,
+					username,
+					status
+				);
+			});
+
+			it(`Attack: ${lecturerOtherCourse} with courseId=${otherCourseId} -> 404`, () => {
+				return test(
+					"post",
+					`/courses/${otherCourseId}/assignments/${assignmentId}/assessments/${assessmentId}/convert-to-individual`,
+					lecturerOtherCourse,
+					404
+				);
+			});
+		});
+
 		describe("setPartialAssessment", () => {
 			it.each([
 				[lecturerOtherCourse, 403],

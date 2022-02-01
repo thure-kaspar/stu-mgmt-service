@@ -55,6 +55,25 @@ export class AssessmentController {
 		return this.assessmentService.createAssessment(participant, assignment, assessment);
 	}
 
+	@Post(":assessmentId/convert-to-individual")
+	@UseGuards(TeachingStaffGuard, AssessmentGuard)
+	@ApiOperation({
+		operationId: "convertGroupToIndividualAssessment",
+		summary: "Convert group to individual assessment.",
+		description: "Removes the group assessment and creates assessments for each member instead."
+	})
+	convertGroupToIndividualAssessment(
+		@Param("courseId") courseId: CourseId,
+		@Param("assignmentId") assignmentId: string,
+		@Param("assessmentId") assessmentId: string,
+		@GetUser() requestingUser: UserDto
+	): Promise<AssessmentDto[]> {
+		return this.assessmentService.convertGroupToIndividualAssessment(
+			assessmentId,
+			requestingUser.id
+		);
+	}
+
 	@ApiOperation({
 		operationId: "setPartialAssessment",
 		summary: "Set partial assessment.",

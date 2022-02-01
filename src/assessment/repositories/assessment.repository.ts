@@ -1,4 +1,4 @@
-import { ConflictException } from "@nestjs/common";
+import { BadRequestException, ConflictException } from "@nestjs/common";
 import { Brackets, EntityManager, EntityRepository, Repository } from "typeorm";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
 import { CourseId } from "../../course/entities/course.entity";
@@ -269,6 +269,70 @@ export class AssessmentRepository extends Repository<Assessment> {
 
 		// Insert the updated partials
 		await transaction.insert(PartialAssessment, partials);
+	}
+
+	/**
+	 * Creates an {@link Assessment} for each user connected to this assessment.
+	 * {@link PartialAssessment}s will be copied into each assessment.
+	 * Information about creation date, update date and corresponding user not be copied.
+	 *
+	 * @returns The created {@link Assessment}s.
+	 * @throws {@link BadRequestException} when {@link Assessment} had no `assessmentUserRelations`.
+	 */
+	async convertGroupToIndividualAssessment(
+		assessmentId: string,
+		creatorId: string
+	): Promise<Assessment[]> {
+		return this.manager.transaction(async trx => {
+			const assessment = await trx.findOne(Assessment, {
+				where: {
+					id: assessmentId
+				},
+				relations: ["assessmentUserRelations", "partialAssessments"]
+			});
+
+			await trx.remove(assessment);
+
+			if (assessment.assessmentUserRelations.length == 0) {
+				throw new BadRequestException("Assessment is not connected to any users.");
+			}
+
+			const individualAssessments = this._splitAssessment(assessment, creatorId);
+
+			const createdAssessments = await trx.save(individualAssessments);
+
+			return createdAssessments;
+		});
+	}
+
+	/**
+	 * Creates an {@link Assessment} object for each user that occurs in the `assessment.assessmentUserRelations`.
+	 * {@link PartialAssessment}s will be copied into each assessment.
+	 * Creation and update dates and corresponding user will be reset to `undefined`.
+	 */
+	_splitAssessment(assessment: Assessment, creatorId: string): Assessment[] {
+		assessment.id = undefined;
+		assessment.groupId = undefined;
+		assessment.lastUpdatedById = undefined;
+		assessment.updateDate = undefined;
+		assessment.creatorId = undefined;
+		assessment.creationDate = undefined;
+
+		for (const partialAssessment of assessment.partialAssessments) {
+			partialAssessment.id = undefined;
+			partialAssessment.assessmentId = undefined;
+		}
+
+		return assessment.assessmentUserRelations.map(({ userId, assignmentId }) => {
+			const individualAssessment = this.create(assessment);
+			const relation = new AssessmentUserRelation();
+			relation.assignmentId = assignmentId;
+			relation.userId = userId;
+
+			individualAssessment.assessmentUserRelations = [relation];
+			individualAssessment.creatorId = creatorId;
+			return individualAssessment;
+		});
 	}
 
 	async deleteAssessment(assessmentId: string): Promise<boolean> {
