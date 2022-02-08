@@ -4,6 +4,8 @@ import { Connection, getConnection } from "typeorm";
 import { createApplication } from "../mocks/application.mock";
 import { DbMockService } from "../mocks/db-mock.service";
 
+type HttpMethod = "post" | "put" | "patch" | "get" | "delete";
+
 /**
  * E2E-Testing utility that provides methods for ...
  * - Application and database connection setup and teardown
@@ -37,6 +39,9 @@ export class TestSetup {
 		return new TestSetup(app, connection, dbMockService);
 	}
 
+	/** Determines which user will be used for authenticated requests. */
+	defaultUsername = "";
+
 	private constructor(
 		readonly app: INestApplication,
 		readonly connection: Connection,
@@ -46,6 +51,15 @@ export class TestSetup {
 	/** Returns a request builder that will send the configured HTTP request to the application instance managed by this class. */
 	request(): request.SuperTest<request.Test> {
 		return request(this.app.getHttpServer());
+	}
+
+	requestWithAuth(httpMethod: HttpMethod, url: string, username?: string): request.Test {
+		return (
+			this.request()
+				// eslint-disable-next-line no-unexpected-multiline
+				[httpMethod](url)
+				.set("Authorization", `Bearer ${username ?? this.defaultUsername}`)
+		);
 	}
 
 	/** Drops all data from the database. */
