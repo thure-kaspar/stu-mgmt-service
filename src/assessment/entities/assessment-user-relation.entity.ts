@@ -27,4 +27,17 @@ export class AssessmentUserRelation {
 
 	@PrimaryColumn()
 	userId: UserId;
+
+	/** Creates an instance of {@link AssessmentUserRelation}. */
+	static create(
+		assessmentId: string,
+		assignmentId: string,
+		userId: string
+	): AssessmentUserRelation {
+		const relation = new AssessmentUserRelation();
+		relation.assessmentId = assessmentId;
+		relation.assignmentId = assignmentId;
+		relation.userId = userId;
+		return relation;
+	}
 }

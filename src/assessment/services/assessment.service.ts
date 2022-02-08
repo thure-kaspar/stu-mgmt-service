@@ -48,6 +48,18 @@ export class AssessmentService {
 		return DtoFactory.createAssessmentDto(createdAssessment);
 	}
 
+	async createAssessments(
+		participant: Participant,
+		assignment: Assignment,
+		assessments: AssessmentCreateDto[]
+	): Promise<void> {
+		await this.assessmentRepository.createAssessments(
+			assignment.id,
+			assessments,
+			participant.userId
+		);
+	}
+
 	/**
 	 * Validates the assessment.
 	 * Throws appropriate exceptions, if the assessment is invalid.

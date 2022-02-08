@@ -1,8 +1,11 @@
 import { BadRequestException, ConflictException } from "@nestjs/common";
+import { randomUUID } from "crypto";
 import { Brackets, EntityManager, EntityRepository, Repository } from "typeorm";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
+import { GroupDto } from "../../course/dto/group/group.dto";
 import { CourseId } from "../../course/entities/course.entity";
 import { GroupId } from "../../course/entities/group.entity";
+import { AssignmentRegistrationRepository } from "../../course/repositories/assignment-registration.repository";
 import { DbException } from "../../shared/database-exceptions";
 import { UserId } from "../../shared/entities/user.entity";
 import { AssessmentFilter } from "../dto/assessment-filter.dto";
@@ -41,6 +44,83 @@ export class AssessmentRepository extends Repository<Assessment> {
 				throw new ConflictException("A user has already received an assessment.");
 			} else throw error;
 		}
+	}
+
+	async createAssessments(
+		assignmentId: string,
+		assessments: AssessmentCreateDto[],
+		creatorId: string
+	): Promise<void> {
+		const entities = await this._createAssessmentEntities(assignmentId, assessments, creatorId);
+		const relations = entities.flatMap(a => a.assessmentUserRelations);
+		const partialAssessments = entities.flatMap(a => a.partialAssessments);
+
+		try {
+			await this.manager.transaction(async trx => {
+				await trx.insert(Assessment, entities);
+				await trx.insert(AssessmentUserRelation, relations);
+				await trx.insert(PartialAssessment, partialAssessments);
+			});
+		} catch (error) {
+			if (error.code === DbException.PG_UNIQUE_VIOLATION) {
+				throw new ConflictException("A user has already received an assessment.");
+			} else {
+				throw error;
+			}
+		}
+	}
+
+	async _createAssessmentEntities(
+		assignmentId: string,
+		assessments: AssessmentCreateDto[],
+		creatorId: string
+	): Promise<Assessment[]> {
+		const registrationRepo = this.manager.getCustomRepository(AssignmentRegistrationRepository);
+		const assessmentRelationsRepo = this.manager.getRepository(AssessmentUserRelation);
+		const [[registeredGroups]] = await Promise.all([
+			registrationRepo.getRegisteredGroupsWithMembers(assignmentId),
+			assessmentRelationsRepo.find({ where: { assignmentId } })
+		]);
+
+		const groupMap = new Map<string, GroupDto>();
+		for (const group of registeredGroups) {
+			groupMap.set(group.id, group);
+		}
+
+		const entities: Assessment[] = assessments.map(a => {
+			const assessment = this.create(a);
+			assessment.id = randomUUID();
+			assessment.assignmentId = assignmentId;
+			assessment.creatorId = creatorId;
+			assessment.partialAssessments =
+				a.partialAssessments?.map(partial =>
+					PartialAssessment.create(assessment.id, partial)
+				) ?? [];
+
+			if (a.groupId) {
+				const group = groupMap.get(a.groupId);
+
+				if (!group) {
+					throw new BadRequestException(
+						`Group (${a.groupId}) is not registered for this assignment`
+					);
+				}
+
+				assessment.assessmentUserRelations = group.members.map(m =>
+					AssessmentUserRelation.create(assessment.id, assignmentId, m.userId)
+				);
+			} else if (a.userId) {
+				assessment.assessmentUserRelations = [
+					AssessmentUserRelation.create(assessment.id, assignmentId, a.userId)
+				];
+			} else {
+				throw new BadRequestException("No groupId or userId defined.");
+			}
+
+			return assessment;
+		});
+
+		return entities;
 	}
 
 	async addOrUpdatePartialAssessment(

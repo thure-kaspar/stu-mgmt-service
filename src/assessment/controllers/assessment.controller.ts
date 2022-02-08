@@ -55,6 +55,23 @@ export class AssessmentController {
 		return this.assessmentService.createAssessment(participant, assignment, assessment);
 	}
 
+	@ApiOperation({
+		operationId: "createAssessments",
+		summary: "Create multiple assessments.",
+		description: "Creates multiple assessments at once."
+	})
+	@Post("bulk")
+	@UseGuards(TeachingStaffGuard)
+	createAssessments(
+		@Param("courseId") courseId: CourseId,
+		@Param("assignmentId") assignmentId: string,
+		@Body() assessments: AssessmentCreateDto[],
+		@GetParticipant() participant: Participant,
+		@GetAssignment() assignment: Assignment
+	): Promise<void> {
+		return this.assessmentService.createAssessments(participant, assignment, assessments);
+	}
+
 	@Post(":assessmentId/convert-to-individual")
 	@UseGuards(TeachingStaffGuard, AssessmentGuard)
 	@ApiOperation({
