@@ -11,7 +11,7 @@ import {
 	Req,
 	UseGuards
 } from "@nestjs/common";
-import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 import { GetUser } from "../../auth/decorators/get-user.decorator";
 import { AuthGuard } from "../../auth/guards/auth.guard";
@@ -60,6 +60,7 @@ export class AssessmentController {
 		summary: "Create multiple assessments.",
 		description: "Creates multiple assessments at once."
 	})
+	@ApiBody({ type: [AssessmentCreateDto] })
 	@Post("bulk")
 	@UseGuards(TeachingStaffGuard)
 	createAssessments(
