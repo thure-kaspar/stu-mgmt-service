@@ -1,6 +1,6 @@
-import { AssessmentDto } from "../../../src/assessment/dto/assessment.dto";
 import { AssessmentUserRelation } from "../../../src/assessment/entities/assessment-user-relation.entity";
 import { Assessment } from "../../../src/assessment/entities/assessment.entity";
+import { PartialAssessment } from "../../../src/assessment/entities/partial-assessment.entity";
 import { AssignmentDto } from "../../../src/course/dto/assignment/assignment.dto";
 import { CourseDto } from "../../../src/course/dto/course/course.dto";
 import { GroupDto } from "../../../src/course/dto/group/group.dto";
@@ -119,12 +119,9 @@ describe("DtoFactory", () => {
 	});
 
 	describe("createAssessmentDto", () => {
-		let assessment: Assessment;
-		let expected: AssessmentDto;
-
 		it("No relations loaded + Assessment for group -> Returns Dto with groupId", () => {
-			assessment = convertToEntity(Assessment, ASSESSMENT_JAVA_EVALUATED_GROUP_1);
-			expected = copy(ASSESSMENT_JAVA_EVALUATED_GROUP_1);
+			const assessment = convertToEntity(Assessment, ASSESSMENT_JAVA_EVALUATED_GROUP_1);
+			const expected = copy(ASSESSMENT_JAVA_EVALUATED_GROUP_1);
 
 			const result = DtoFactory.createAssessmentDto(assessment);
 
@@ -133,8 +130,8 @@ describe("DtoFactory", () => {
 		});
 
 		it("AssessmentUserRelation loaded + Assessment for single student -> Returns Dto with userId", () => {
-			expected = copy(ASSESSMENT_JAVA_TESTAT_USER_1);
-			assessment = convertToEntity(Assessment, ASSESSMENT_JAVA_TESTAT_USER_1);
+			const expected = copy(ASSESSMENT_JAVA_TESTAT_USER_1);
+			const assessment = convertToEntity(Assessment, ASSESSMENT_JAVA_TESTAT_USER_1);
 			const rel = new AssessmentUserRelation();
 			rel.assessmentId = assessment.id;
 			rel.userId = expected.userId;
@@ -147,9 +144,9 @@ describe("DtoFactory", () => {
 		});
 
 		it("Group loaded -> Returns Dto with group", () => {
-			assessment = convertToEntity(Assessment, ASSESSMENT_JAVA_EVALUATED_GROUP_1);
+			const assessment = convertToEntity(Assessment, ASSESSMENT_JAVA_EVALUATED_GROUP_1);
 			assessment.group = convertToEntity(Group, GROUP_1_JAVA);
-			expected = copy(ASSESSMENT_JAVA_EVALUATED_GROUP_1);
+			const expected = copy(ASSESSMENT_JAVA_EVALUATED_GROUP_1);
 			expected.group = {
 				...copy(GROUP_1_JAVA),
 				hasPassword: true,
@@ -164,6 +161,36 @@ describe("DtoFactory", () => {
 			const result = DtoFactory.createAssessmentDto(assessment);
 
 			expect(result).toEqual(expected);
+		});
+
+		describe("Excludes PartialAssessment that are draft only", () => {
+			let assessment: Assessment;
+
+			beforeEach(() => {
+				assessment = new Assessment();
+				const partialAlwaysInclude = PartialAssessment.create("assignmentId", {
+					draftOnly: false,
+					comment: "This will be included"
+				});
+				const partialDraftOnly = PartialAssessment.create("assignmentId", {
+					draftOnly: true,
+					comment: "Should only be included if assessment is draft."
+				});
+				assessment.partialAssessments = [partialAlwaysInclude, partialDraftOnly];
+			});
+
+			it("Is draft -> Includes partial assessments that are draft only", () => {
+				assessment.isDraft = true;
+				const result = DtoFactory.createAssessmentDto(assessment);
+				expect(result.partialAssessments).toHaveLength(2);
+			});
+
+			it("Is not draft -> Removes partial assessments that are draft only", () => {
+				assessment.isDraft = false;
+				const result = DtoFactory.createAssessmentDto(assessment);
+				expect(result.partialAssessments).toHaveLength(1);
+				expect(result.partialAssessments[0].draftOnly).toEqual(false);
+			});
 		});
 	});
 });
