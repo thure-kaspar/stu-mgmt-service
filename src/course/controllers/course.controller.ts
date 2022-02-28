@@ -10,14 +10,16 @@ import {
 	Req,
 	UseGuards
 } from "@nestjs/common";
+import { EventBus } from "@nestjs/cqrs";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
+import { ActivityEvent } from "../../activity/activity.event";
 import { Roles } from "../../auth/decorators/roles.decorator";
 import { AuthGuard } from "../../auth/guards/auth.guard";
 import { RoleGuard } from "../../auth/guards/role.guard";
 import { CourseRole, UserRole } from "../../shared/enums";
 import { PaginatedResult, throwIfRequestFailed } from "../../utils/http-utils";
-import { GetCourse } from "../decorators/decorators";
+import { GetCourse, GetParticipant } from "../decorators/decorators";
 import { ParticipantDto } from "../dto/course-participant/participant.dto";
 import { CourseAboutDto } from "../dto/course/course-about.dto";
 import { CourseCreateDto } from "../dto/course/course-create.dto";
@@ -28,6 +30,7 @@ import { CourseByNameAndSemesterGuard } from "../guards/course-by-name-semester.
 import { CourseMemberGuard } from "../guards/course-member/course-member.guard";
 import { TeachingStaffGuard } from "../guards/teaching-staff.guard";
 import { Course } from "../models/course.model";
+import { Participant } from "../models/participant.model";
 import { CourseParticipantsService } from "../services/course-participants.service";
 import { CourseService } from "../services/course.service";
 
@@ -37,7 +40,8 @@ import { CourseService } from "../services/course.service";
 export class CourseController {
 	constructor(
 		private courseService: CourseService,
-		private participantsService: CourseParticipantsService
+		private participantsService: CourseParticipantsService,
+		private events: EventBus
 	) {}
 
 	/**
@@ -78,8 +82,17 @@ export class CourseController {
 	})
 	@Get(":courseId")
 	@UseGuards(AuthGuard, CourseMemberGuard)
-	getCourseById(@Param("courseId") courseId: CourseId): Promise<CourseDto> {
-		return this.courseService.getCourseById(courseId);
+	getCourseById(
+		@Param("courseId") courseId: CourseId,
+		@GetParticipant() participant: Participant
+	): Promise<CourseDto> {
+		const course = this.courseService.getCourseById(courseId);
+
+		if (participant.isStudent()) {
+			this.events.publish(new ActivityEvent(participant.userId, courseId));
+		}
+
+		return course;
 	}
 
 	@ApiOperation({

@@ -2,6 +2,8 @@ import { HttpModule } from "@nestjs/axios";
 import { Module } from "@nestjs/common";
 import { CqrsModule } from "@nestjs/cqrs";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { Activity } from "../activity/activity.entity";
+import { ActivityEventHandler } from "../activity/activity.event";
 import { AssessmentRepository } from "../assessment/repositories/assessment.repository";
 import { AuthModule } from "../auth/auth.module";
 import { UserRepository } from "../user/repositories/user.repository";
@@ -27,7 +29,8 @@ import { Services } from "./services";
 			...Repositories,
 			UserRepository,
 			GroupRegistrationRelation,
-			AssessmentRepository
+			AssessmentRepository,
+			Activity
 		]),
 		CqrsModule,
 		HttpModule,
@@ -41,7 +44,8 @@ import { Services } from "./services";
 		JoinRandomGroupHandler,
 		UserJoinedGroupHandler,
 		UserLeftGroupHandler,
-		CloseEmptyGroupsHandler
+		CloseEmptyGroupsHandler,
+		ActivityEventHandler
 	],
 	exports: [
 		TypeOrmModule,
