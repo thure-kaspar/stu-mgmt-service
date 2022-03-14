@@ -12,7 +12,7 @@ const mock_ActivityRepository = (): Partial<Repository<Activity>> => ({
 });
 
 describe("Activity", () => {
-	describe("isSameDate", () => {
+	describe("isSameDay", () => {
 		it.each([
 			["Identical date", new Date(2022, 1, 1, 1), new Date(2022, 1, 1, 1), true],
 			["Different hour", new Date(2022, 1, 1, 1), new Date(2022, 1, 1, 2), true],
