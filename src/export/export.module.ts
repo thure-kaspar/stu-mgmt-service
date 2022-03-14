@@ -3,12 +3,14 @@ import { AdmissionStatusModule } from "../admission-status/admission-status.modu
 import { AssessmentModule } from "../assessment/assessment.module";
 import { AuthModule } from "../auth/auth.module";
 import { CourseModule } from "../course/course.module";
+import { SubmissionModule } from "../submission/submission.module";
 import { ExportController } from "./export.controller";
 import { ExportService } from "./export.service";
+import { RecommenderExportService } from "./recommender-export.service";
 
 @Module({
-	imports: [AuthModule, CourseModule, AssessmentModule, AdmissionStatusModule],
+	imports: [AuthModule, CourseModule, AssessmentModule, AdmissionStatusModule, SubmissionModule],
 	controllers: [ExportController],
-	providers: [ExportService]
+	providers: [ExportService, RecommenderExportService]
 })
 export class ExportModule {}

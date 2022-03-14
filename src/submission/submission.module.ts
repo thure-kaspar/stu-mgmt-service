@@ -9,6 +9,7 @@ import { AuthModule } from "../auth/auth.module";
 @Module({
 	imports: [TypeOrmModule.forFeature([Submission]), AuthModule, CourseModule],
 	controllers: [SubmissionController],
-	providers: [SubmissionService]
+	providers: [SubmissionService],
+	exports: [SubmissionService]
 })
 export class SubmissionModule {}
