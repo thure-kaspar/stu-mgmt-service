@@ -40,7 +40,7 @@ type StudentData = {
 	};
 };
 
-type RecommenderExport = {
+export type RecommenderExport = {
 	students: StudentData[];
 	groups: GroupDto[];
 	assignments: AssignmentDto[];
@@ -80,6 +80,9 @@ export class RecommenderExportService {
 		private admissionStatusService: AdmissionStatusService
 	) {}
 
+	/**
+	 * Returns a {@link RecommenderExport} containing information about a course and its participants, such as grades and activity.
+	 */
 	async getRecommenderExportData(courseId: string): Promise<RecommenderExport> {
 		if (!courseId) {
 			throw new BadRequestException("courseId must be defined.");
@@ -91,6 +94,10 @@ export class RecommenderExportService {
 		return exportData;
 	}
 
+	/**
+	 * Gathers all data required to build a {@link RecommenderExport} and puts it into an object.
+	 * {@link RawData} object.
+	 */
 	async _getRawData(courseId: string): Promise<RawData> {
 		const [
 			course,
@@ -133,6 +140,25 @@ export class RecommenderExportService {
 		};
 	}
 
+	/**
+	 * Returns all assessments that belong the given `assignmentIds`.
+	 *
+	 * @param assignmentIds
+	 * @return {*}
+	 */
+	async _getAssessmentForAssignments(assignmentIds: string[]): Promise<Assessment[]> {
+		const assessments = await this.assessmentsRepository.find({
+			where: {
+				assignmentId: In(assignmentIds)
+			},
+			relations: ["assessmentUserRelations"]
+		});
+		return assessments;
+	}
+
+	/**
+	 * Builds a {@link RecommenderExport} from the given {@link RawData}.
+	 */
 	_mapRawData(rawData: RawData): RecommenderExport {
 		const assignmentMap = this.mapAssignmentsToId(rawData.assignments);
 		const studentMap = this.createStudentsMap(rawData.students);
@@ -254,15 +280,5 @@ export class RecommenderExportService {
 			assignmentMap.set(assignment.id, assignment);
 		}
 		return assignmentMap;
-	}
-
-	async _getAssessmentForAssignments(assignmentIds: string[]): Promise<Assessment[]> {
-		const assessments = await this.assessmentsRepository.find({
-			where: {
-				assignmentId: In(assignmentIds)
-			},
-			relations: ["assessmentUserRelations"]
-		});
-		return assessments;
 	}
 }
