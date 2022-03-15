@@ -224,11 +224,11 @@ describe("Recommender Export", () => {
 		});
 
 		it("Should contain grades of student for each assignment", () => {
-			const grade = result.students[0].grades[ASSIGNMENT_JAVA_EVALUATED.id];
-			expect(grade).toBeDefined();
-			expect(grade.achievedPointsInPercent).toEqual(22);
-			expect(grade.group).toBeDefined();
-			expect(grade.group.members).toHaveLength(2);
+			const grades = result.students[0].grades;
+			expect(grades).toHaveLength(2);
+			expect(grades[0].achievedPointsInPercent).toEqual(22);
+			expect(grades[0].group).toBeDefined();
+			expect(grades[0].group.members).toHaveLength(2);
 		});
 
 		it("Should contain admission status of each student", () => {

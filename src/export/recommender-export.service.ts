@@ -17,38 +17,9 @@ import { AssignmentService } from "../course/services/assignment.service";
 import { CourseParticipantsService } from "../course/services/course-participants.service";
 import { CourseService } from "../course/services/course.service";
 import { GroupService } from "../course/services/group.service";
-import { AssignmentType, CourseRole } from "../shared/enums";
+import { CourseRole } from "../shared/enums";
 import { SubmissionService } from "../submission/submission.service";
-
-type StudentData = {
-	userInfo: {
-		userId: string;
-		username: string;
-		displayName: string;
-		matrNr: number;
-	};
-	activity: Date[];
-	submissions: { assignmentId: string; date: Date }[];
-	admissionStatus: AdmissionStatusDto;
-	grades: {
-		[assignmentId: string]: {
-			assessmentId: string;
-			assignmentType: AssignmentType;
-			achievedPointsInPercent: number;
-			group?: GroupDto;
-		};
-	};
-};
-
-export type RecommenderExport = {
-	students: StudentData[];
-	groups: GroupDto[];
-	assignments: AssignmentDto[];
-	groupsForAssignment: {
-		[assignmentId: string]: GroupDto[];
-	};
-	course: CourseDto;
-};
+import { RExportDto } from "./recommender-export.dto";
 
 type RawData = {
 	course: CourseDto;
@@ -57,14 +28,16 @@ type RawData = {
 	assessments: AssessmentDto[];
 	groups: GroupDto[];
 	groupsForAssignment: {
-		[assignmentId: string]: GroupDto[];
-	};
+		assignmentId: string;
+		groups: GroupDto[];
+	}[];
 	activity: ActivityDto[];
 	submissions: SubmissionData[];
 	admissionStatus: AdmissionStatusDto[];
 };
 
 type SubmissionData = { assignmentId: string; userId: string; date: Date };
+type StudentData = RExportDto["students"][0];
 
 @Injectable()
 export class RecommenderExportService {
@@ -81,9 +54,9 @@ export class RecommenderExportService {
 	) {}
 
 	/**
-	 * Returns a {@link RecommenderExport} containing information about a course and its participants, such as grades and activity.
+	 * Returns a {@link RecommenderExportDto} containing information about a course and its participants, such as grades and activity.
 	 */
-	async getRecommenderExportData(courseId: string): Promise<RecommenderExport> {
+	async getRecommenderExportData(courseId: string): Promise<RExportDto> {
 		if (!courseId) {
 			throw new BadRequestException("courseId must be defined.");
 		}
@@ -95,7 +68,7 @@ export class RecommenderExportService {
 	}
 
 	/**
-	 * Gathers all data required to build a {@link RecommenderExport} and puts it into an object.
+	 * Gathers all data required to build a {@link RecommenderExportDto} and puts it into an object.
 	 * {@link RawData} object.
 	 */
 	async _getRawData(courseId: string): Promise<RawData> {
@@ -121,10 +94,13 @@ export class RecommenderExportService {
 
 		const assessments = await this._getAssessmentForAssignments(assignments.map(a => a.id));
 
-		const groupsForAssignment = {};
+		const groupsForAssignment: RawData["groupsForAssignment"] = [];
 		for (const assignment of assignments) {
 			const [groups] = await this.registrations.getRegisteredGroupsWithMembers(assignment.id);
-			groupsForAssignment[assignment.id] = groups;
+			groupsForAssignment.push({
+				assignmentId: assignment.id,
+				groups
+			});
 		}
 
 		return {
@@ -159,7 +135,7 @@ export class RecommenderExportService {
 	/**
 	 * Builds a {@link RecommenderExport} from the given {@link RawData}.
 	 */
-	_mapRawData(rawData: RawData): RecommenderExport {
+	_mapRawData(rawData: RawData): RExportDto {
 		const assignmentMap = this.mapAssignmentsToId(rawData.assignments);
 		const studentMap = this.createStudentsMap(rawData.students);
 
@@ -172,7 +148,7 @@ export class RecommenderExportService {
 			course: rawData.course,
 			groups: rawData.groups,
 			assignments: rawData.assignments,
-			groupsForAssignment: rawData.groupsForAssignment,
+			groupsForAssignment: rawData.groupsForAssignment as any,
 			students: Array.from(studentMap.values())
 		};
 	}
@@ -222,22 +198,24 @@ export class RecommenderExportService {
 				assessment.group.members.forEach(member => {
 					const student = studentMap.get(member.userId);
 					if (student) {
-						student.grades[assessment.assignmentId] = {
+						student.grades.push({
+							assignmentId: assignment.id,
 							assessmentId: assessment.id,
 							assignmentType: assignment.type,
 							group: assessment.group,
 							achievedPointsInPercent
-						};
+						});
 					}
 				});
 			} else if (assessment.participant) {
 				const student = studentMap.get(assessment.participant.userId);
 				if (student) {
-					student.grades[assessment.assignmentId] = {
+					student.grades.push({
+						assignmentId: assignment.id,
 						assessmentId: assessment.id,
 						assignmentType: assignment.type,
 						achievedPointsInPercent
-					};
+					});
 				}
 			}
 		}
@@ -267,7 +245,7 @@ export class RecommenderExportService {
 				},
 				activity: [],
 				submissions: [],
-				grades: {},
+				grades: [],
 				admissionStatus: null
 			});
 		}
