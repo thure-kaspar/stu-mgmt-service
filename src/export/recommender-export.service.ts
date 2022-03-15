@@ -6,7 +6,6 @@ import { ActivityService } from "../activity/activity.service";
 import { AdmissionStatusService } from "../admission-status/admission-status.service";
 import { AdmissionStatusDto } from "../admission-status/dto/admission-status.dto";
 import { AssessmentDto } from "../assessment/dto/assessment.dto";
-import { Assessment } from "../assessment/entities/assessment.entity";
 import { AssessmentRepository } from "../assessment/repositories/assessment.repository";
 import { AssignmentDto } from "../course/dto/assignment/assignment.dto";
 import { ParticipantDto } from "../course/dto/course-participant/participant.dto";
@@ -17,6 +16,7 @@ import { AssignmentService } from "../course/services/assignment.service";
 import { CourseParticipantsService } from "../course/services/course-participants.service";
 import { CourseService } from "../course/services/course.service";
 import { GroupService } from "../course/services/group.service";
+import { DtoFactory } from "../shared/dto-factory";
 import { CourseRole } from "../shared/enums";
 import { SubmissionService } from "../submission/submission.service";
 import { RExportDto } from "./recommender-export.dto";
@@ -118,18 +118,15 @@ export class RecommenderExportService {
 
 	/**
 	 * Returns all assessments that belong the given `assignmentIds`.
-	 *
-	 * @param assignmentIds
-	 * @return {*}
 	 */
-	async _getAssessmentForAssignments(assignmentIds: string[]): Promise<Assessment[]> {
+	async _getAssessmentForAssignments(assignmentIds: string[]): Promise<AssessmentDto[]> {
 		const assessments = await this.assessmentsRepository.find({
 			where: {
 				assignmentId: In(assignmentIds)
 			},
-			relations: ["assessmentUserRelations"]
+			relations: ["assessmentUserRelations", "assessmentUserRelations.user", "group"]
 		});
-		return assessments;
+		return assessments.map(DtoFactory.createAssessmentDto);
 	}
 
 	/**
@@ -140,7 +137,7 @@ export class RecommenderExportService {
 		const studentMap = this.createStudentsMap(rawData.students);
 
 		this.addSubmissionsToStudents(rawData.submissions, studentMap);
-		this.addAssessmentsToStudents(rawData.assessments, assignmentMap, studentMap);
+		this._addAssessmentsToStudents(rawData.assessments, assignmentMap, studentMap);
 		this.addActivityToStudents(rawData.activity, studentMap);
 		this.addAdmissionStatusToStudents(rawData.admissionStatus, studentMap);
 
@@ -181,7 +178,7 @@ export class RecommenderExportService {
 		}
 	}
 
-	private addAssessmentsToStudents(
+	_addAssessmentsToStudents(
 		assessments: AssessmentDto[],
 		assignmentMap: Map<string, AssignmentDto>,
 		studentMap: Map<string, StudentData>

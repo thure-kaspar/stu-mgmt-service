@@ -10,12 +10,11 @@ export class RExportRegisteredGroups {
 	assignmentId: string;
 	groups: RExportGroup;
 }
-[];
 
 export class RExportDto {
 	students: RExportStudent[];
 	groups: RExportGroup[];
 	assignments: AssignmentDto[];
-	groupsForAssignment: RExportRegisteredGroups;
+	groupsForAssignment: RExportRegisteredGroups[];
 	course: CourseDto;
 }

@@ -35,10 +35,12 @@ export abstract class DtoFactory {
 	static createCourseConfigDto(config: CourseConfig, includePrivileged = false): CourseConfigDto {
 		const configDto: CourseConfigDto = {};
 		if (config.admissionCriteria)
-			configDto.admissionCriteria = this.createAdmissionCriteriaDto(config.admissionCriteria);
+			configDto.admissionCriteria = DtoFactory.createAdmissionCriteriaDto(
+				config.admissionCriteria
+			);
 
 		if (config.groupSettings)
-			configDto.groupSettings = this.createGroupSettingsDto(config.groupSettings);
+			configDto.groupSettings = DtoFactory.createGroupSettingsDto(config.groupSettings);
 
 		if (includePrivileged) {
 			configDto.password = config.password;
@@ -77,7 +79,9 @@ export abstract class DtoFactory {
 			if (user.participations.length == 0) {
 				userDto.courses = [];
 			} else if (user.participations[0].course) {
-				userDto.courses = user.participations.map(rel => this.createCourseDto(rel.course));
+				userDto.courses = user.participations.map(rel =>
+					DtoFactory.createCourseDto(rel.course)
+				);
 			}
 		}
 
@@ -155,7 +159,7 @@ export abstract class DtoFactory {
 		}
 
 		if (assessment.assignment) {
-			assessmentDto.assignment = this.createAssignmentDto(assessment.assignment);
+			assessmentDto.assignment = DtoFactory.createAssignmentDto(assessment.assignment);
 		}
 
 		// If assessment belongs to a single student
@@ -178,14 +182,16 @@ export abstract class DtoFactory {
 
 		// If creator was loaded
 		if (assessment.creator)
-			assessmentDto.creator = this.createUserDto(assessment.creator, { removeEmail: true });
+			assessmentDto.creator = DtoFactory.createUserDto(assessment.creator, {
+				removeEmail: true
+			});
 		if (assessment.lastUpdatedBy)
-			assessmentDto.lastUpdatedBy = this.createUserDto(assessment.lastUpdatedBy, {
+			assessmentDto.lastUpdatedBy = DtoFactory.createUserDto(assessment.lastUpdatedBy, {
 				removeEmail: true
 			});
 
 		if (assessment.group) {
-			assessmentDto.group = this.createGroupDto(assessment.group);
+			assessmentDto.group = DtoFactory.createGroupDto(assessment.group);
 			assessmentDto.group.members = assessment.assessmentUserRelations?.map(rel => {
 				const participant: ParticipantDto = {
 					// TODO: GroupId missing

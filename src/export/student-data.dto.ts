@@ -31,4 +31,12 @@ export class RExportStudent {
 	submissions: RExportSubmission[];
 	admissionStatus: RExportAdmissionStatus;
 	grades: RExportGrade[];
+
+	constructor(userInfo: RExportUserInfo) {
+		this.userInfo = userInfo;
+		this.activity = [];
+		this.submissions = [];
+		this.admissionStatus = null;
+		this.grades = [];
+	}
 }
