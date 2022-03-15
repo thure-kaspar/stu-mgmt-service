@@ -134,38 +134,56 @@ export class RecommenderExportService {
 	}
 
 	_mapRawData(rawData: RawData): RecommenderExport {
-		const { students, assignments, assessments, submissions, activity, admissionStatus } =
-			rawData;
+		const assignmentMap = this.mapAssignmentsToId(rawData.assignments);
+		const studentMap = this.createStudentsMap(rawData.students);
 
-		const assignmentMap = new Map<string, AssignmentDto>();
-		const studentMap = new Map<string, StudentData>();
+		this.addSubmissionsToStudents(rawData.submissions, studentMap);
+		this.addAssessmentsToStudents(rawData.assessments, assignmentMap, studentMap);
+		this.addActivityToStudents(rawData.activity, studentMap);
+		this.addAdmissionStatusToStudents(rawData.admissionStatus, studentMap);
 
-		for (const assignment of assignments) {
-			assignmentMap.set(assignment.id, assignment);
+		return {
+			course: rawData.course,
+			groups: rawData.groups,
+			assignments: rawData.assignments,
+			groupsForAssignment: rawData.groupsForAssignment,
+			students: Array.from(studentMap.values())
+		};
+	}
+
+	private addAdmissionStatusToStudents(
+		admissionStatus: AdmissionStatusDto[],
+		studentMap: Map<string, StudentData>
+	): void {
+		for (const status of admissionStatus) {
+			const student = studentMap.get(status.participant.userId);
+
+			status.participant = undefined;
+
+			if (student) {
+				student.admissionStatus = status;
+			}
 		}
+	}
 
-		for (const student of students) {
-			studentMap.set(student.userId, {
-				userInfo: {
-					userId: student.userId,
-					displayName: student.displayName,
-					username: student.username,
-					matrNr: student.matrNr
-				},
-				activity: [],
-				submissions: [],
-				grades: {},
-				admissionStatus: null
-			});
+	private addActivityToStudents(
+		activity: ActivityDto[],
+		studentMap: Map<string, StudentData>
+	): void {
+		for (const act of activity) {
+			const student = studentMap.get(act.user.userId);
+
+			if (student) {
+				student.activity = act.dates;
+			}
 		}
+	}
 
-		for (const submission of submissions) {
-			studentMap.get(submission.userId)?.submissions.push({
-				date: submission.date,
-				assignmentId: submission.assignmentId
-			});
-		}
-
+	private addAssessmentsToStudents(
+		assessments: AssessmentDto[],
+		assignmentMap: Map<string, AssignmentDto>,
+		studentMap: Map<string, StudentData>
+	): void {
 		for (const assessment of assessments) {
 			const assignment = assignmentMap.get(assessment.assignmentId);
 			let achievedPointsInPercent: number | undefined = undefined;
@@ -197,32 +215,45 @@ export class RecommenderExportService {
 				}
 			}
 		}
+	}
 
-		for (const act of activity) {
-			const student = studentMap.get(act.user.userId);
-
-			if (student) {
-				student.activity = act.dates;
-			}
+	private addSubmissionsToStudents(
+		submissions: SubmissionData[],
+		studentMap: Map<string, StudentData>
+	): void {
+		for (const submission of submissions) {
+			studentMap.get(submission.userId)?.submissions.push({
+				date: submission.date,
+				assignmentId: submission.assignmentId
+			});
 		}
+	}
 
-		for (const status of admissionStatus) {
-			const student = studentMap.get(status.participant.userId);
-
-			status.participant = undefined;
-
-			if (student) {
-				student.admissionStatus = status;
-			}
+	private createStudentsMap(students: ParticipantDto[]): Map<string, StudentData> {
+		const studentMap = new Map<string, StudentData>();
+		for (const student of students) {
+			studentMap.set(student.userId, {
+				userInfo: {
+					userId: student.userId,
+					displayName: student.displayName,
+					username: student.username,
+					matrNr: student.matrNr
+				},
+				activity: [],
+				submissions: [],
+				grades: {},
+				admissionStatus: null
+			});
 		}
+		return studentMap;
+	}
 
-		return {
-			course: rawData.course,
-			groups: rawData.groups,
-			assignments: rawData.assignments,
-			groupsForAssignment: rawData.groupsForAssignment,
-			students: Array.from(studentMap.values())
-		};
+	private mapAssignmentsToId(assignments: AssignmentDto[]): Map<string, AssignmentDto> {
+		const assignmentMap = new Map<string, AssignmentDto>();
+		for (const assignment of assignments) {
+			assignmentMap.set(assignment.id, assignment);
+		}
+		return assignmentMap;
 	}
 
 	async _getAssessmentForAssignments(assignmentIds: string[]): Promise<Assessment[]> {
