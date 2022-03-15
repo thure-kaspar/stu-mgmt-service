@@ -41,6 +41,7 @@
 		"class-validator": "^0.13.1",
 		"config": "^3.3.6",
 		"cron": "^1.8.2",
+		"dayjs": "^1.11.0",
 		"exceljs": "^4.3.0",
 		"flat": "^5.0.2",
 		"json2csv": "^5.0.6",
