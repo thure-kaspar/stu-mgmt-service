@@ -1,16 +1,17 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { ActivityService } from "../../activity/activity.service";
-import { SubmissionService } from "../../submission/submission.service";
-import { ParticipantDto } from "../dto/course-participant/participant.dto";
-import { GroupDto } from "../dto/group/group.dto";
-import { ParticipantRepository } from "../repositories/participant.repository";
 import * as dayjs from "dayjs";
 import * as weekOfYear from "dayjs/plugin/weekOfYear";
-import { SubmissionDto } from "../../submission/submission.dto";
 import { ActivityDto } from "../../activity/activity.dto";
+import { ActivityService } from "../../activity/activity.service";
+import { SubmissionDto } from "../../submission/submission.dto";
+import { SubmissionService } from "../../submission/submission.service";
+import { ParticipantDto } from "../dto/course-participant/participant.dto";
+import { ParticipantRepository } from "../repositories/participant.repository";
 
 dayjs.extend(weekOfYear);
+
+type GroupType = { id: string; members: ParticipantDto[] };
 
 @Injectable()
 export class MergeByActivityStrategy {
@@ -25,14 +26,17 @@ export class MergeByActivityStrategy {
 		courseId: string,
 		minSize: number,
 		maxSize: number,
-		groups: { name: string; members: ParticipantDto[] }[]
-	): Promise<GroupDto[]> {
-		const invalidGroups = groups.filter(
-			g => g.members.length >= 0 && g.members.length < minSize
-		);
+		groups: GroupType[]
+	): Promise<GroupType[]> {
+		const { invalidGroups, validGroups } = splitGroupsByValidity(groups, minSize);
+
+		// If merges are not necessary
+		if (invalidGroups.length == 0) {
+			return validGroups;
+		}
 
 		const studentsInInvalidGroups = invalidGroups.flatMap(g => g.members);
-		const studentsInInvalidGroupsUserIds = studentsInInvalidGroups.map(p => p.userId);
+		const studentsInInvalidGroupsUserIds = new Set(studentsInInvalidGroups.map(p => p.userId));
 
 		const [activity, [submissions]] = await Promise.all([
 			this.activityService.getActivityData(courseId),
@@ -40,7 +44,7 @@ export class MergeByActivityStrategy {
 		]);
 
 		const activityOfStudentsFromInvalidGroups = activity.filter(a =>
-			studentsInInvalidGroupsUserIds.includes(a.user.userId)
+			studentsInInvalidGroupsUserIds.has(a.user.userId)
 		);
 
 		const activeWeekCountByStudent = countActiveWeeks(activityOfStudentsFromInvalidGroups);
@@ -58,8 +62,107 @@ export class MergeByActivityStrategy {
 
 		const idealGroupSizes = calculateIdealGroupSizes(rankedStudents.length, minSize, maxSize);
 
-		return [];
+		if (idealGroupSizes.length == 0) {
+			return [...validGroups, ...invalidGroups];
+		}
+
+		const mergedGroups = mergeInvalidGroups(idealGroupSizes, rankedStudents);
+
+		return [...validGroups, ...mergedGroups];
 	}
+}
+
+/**
+ * Merges groups by placing the given `rankedStudents` into groups according the specified `idealGroupSizes`.
+ * Uses the existing groups (see example below).
+ *
+ * **Example**:
+ *
+ * **Input**:
+ * - `idealGroupSizes`: [3, 2]
+ * - `rankedStudents`: [A, B, C, D, E]
+ * **Result**:
+ *
+ * 	- Group of A: [A, B, C]
+ * 	- Group of D: [D, E]
+ */
+export function mergeInvalidGroups(
+	idealGroupSizes: number[],
+	rankedStudents: ParticipantDto[]
+): GroupType[] {
+	const groupIds = rankedStudents.map(s => s.groupId);
+	const availableIds = new Set<string>(groupIds);
+
+	const REQUIRES_ID = "REQUIRES-ID";
+
+	const mergedGroups: GroupType[] = [];
+	let firstMemberIndex = 0;
+
+	for (const groupSize of idealGroupSizes) {
+		const lastMemberIndex = firstMemberIndex + groupSize - 1;
+
+		const group: GroupType = {
+			id: REQUIRES_ID,
+			members: []
+		};
+
+		// Find available group name
+		for (let i = firstMemberIndex; i <= lastMemberIndex; i++) {
+			const student = rankedStudents[i];
+
+			if (availableIds.has(student.groupId)) {
+				group.id = student.groupId;
+				availableIds.delete(student.groupId);
+				break;
+			}
+		}
+
+		// Add members to group
+		for (let i = firstMemberIndex; i <= lastMemberIndex; i++) {
+			group.members.push(rankedStudents[i]);
+		}
+
+		firstMemberIndex += groupSize;
+		mergedGroups.push(group);
+	}
+
+	const remainingGroupIds = Array.from(availableIds.values());
+	const unnamedGroups = mergedGroups.filter(g => g.id === REQUIRES_ID);
+
+	for (const group of unnamedGroups) {
+		if (remainingGroupIds.length > 0) {
+			group.id = remainingGroupIds.pop();
+		} else {
+			console.log("No groupId was available ... This should not happen");
+		}
+	}
+
+	return mergedGroups;
+}
+
+export function splitGroupsByValidity(
+	groups: GroupType[],
+	minSize: number
+): {
+	validGroups: GroupType[];
+	invalidGroups: GroupType[];
+	emptyGroups: GroupType[];
+} {
+	const emptyGroups: GroupType[] = [];
+	const validGroups: GroupType[] = [];
+	const invalidGroups: GroupType[] = [];
+
+	for (const g of groups) {
+		if (g.members.length == 0) {
+			emptyGroups.push(g);
+		} else if (g.members.length < minSize) {
+			invalidGroups.push(g);
+		} else {
+			validGroups.push(g);
+		}
+	}
+
+	return { validGroups, invalidGroups, emptyGroups };
 }
 
 export function calculateIdealGroupSizes(
@@ -67,18 +170,55 @@ export function calculateIdealGroupSizes(
 	minSize: number,
 	maxSize: number
 ): number[] {
-	let idealGroupSize = -1;
+	if (numberOfStudents == 0) {
+		return [];
+	}
 
-	for (let size = maxSize; size >= minSize; size--) {
-		const remaining = numberOfStudents % size;
+	if (numberOfStudents <= minSize) {
+		return [numberOfStudents];
+	}
 
-		if (remaining == 0 || remaining >= minSize) {
-			idealGroupSize = size;
-			// TODO
+	const possibleGroupSizes: number[] = [];
+	for (let size = minSize; size <= maxSize; size++) {
+		possibleGroupSizes.push(size);
+	}
+
+	const optCombination = bestSum(numberOfStudents, possibleGroupSizes);
+
+	if (optCombination) {
+		return optCombination;
+	}
+
+	const remaining = numberOfStudents % maxSize;
+
+	const sizes: number[] = [];
+	sizes.push(...Array(Math.ceil(numberOfStudents / maxSize) - 1).fill(maxSize));
+	sizes.push(remaining);
+	return sizes;
+}
+
+/**
+ * Computes the minimal combination of `numbers` (sorted by descending order) to sum up to the given `targetSum`.
+ * @returns `undefined`, if no valid combination exists.
+ */
+export function bestSum(targetSum: number, numbers: number[]): number[] | undefined {
+	const table: number[][] = Array(targetSum + 1).fill(null);
+	table[0] = [];
+
+	for (let i = 0; i < targetSum; i++) {
+		if (table[i] !== null) {
+			for (const num of numbers) {
+				const combinationLength = table[i].length + 1;
+
+				if (!table[i + num] || combinationLength < table[i + num].length) {
+					const combination = [...table[i], num];
+					table[i + num] = combination;
+				}
+			}
 		}
 	}
 
-	return [];
+	return table[targetSum]?.sort((a, b) => b - a); // Sort DESC
 }
 
 function countActiveWeeks(activity: ActivityDto[]) {
@@ -119,7 +259,7 @@ export function isSameWeek(d1: Date, d2: Date): boolean {
 
 export function countSubmittedAssignment(
 	submissions: SubmissionDto[],
-	userIds: string[]
+	userIds: Set<string>
 ): Map<string, number> {
 	const relevantStudents = new Map<string, { [assignmentId: string]: boolean }>();
 	userIds.forEach(id => {

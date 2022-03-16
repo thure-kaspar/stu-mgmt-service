@@ -1,3 +1,4 @@
+import { ParticipantDto } from "../../../src/course/dto/course-participant/participant.dto";
 import { Course } from "../../../src/course/entities/course.entity";
 import { GroupSettings } from "../../../src/course/entities/group-settings.entity";
 import { Group as GroupEntity } from "../../../src/course/entities/group.entity";
@@ -7,20 +8,20 @@ import { Group } from "../../../src/course/models/group.model";
 import { Participant } from "../../../src/course/models/participant.model";
 import { GroupMergeStrategy } from "../../../src/course/services/group-merge.strategy";
 import {
-	MergeByActivityStrategy,
-	isSameWeek,
-	getWeekOfYear,
-	countUniqueWeeks,
+	bestSum,
+	calculateIdealGroupSizes,
 	countSubmittedAssignment,
-	sortStudentsByActivity
+	countUniqueWeeks,
+	getWeekOfYear,
+	isSameWeek,
+	mergeInvalidGroups,
+	sortStudentsByActivity,
+	splitGroupsByValidity
 } from "../../../src/course/services/merge-by-activity.strategy";
 import { User } from "../../../src/shared/entities/user.entity";
-
-import * as dayjs from "dayjs";
 import { SubmissionDto } from "../../../src/submission/submission.dto";
-import { ParticipantDto } from "../../../src/course/dto/course-participant/participant.dto";
 
-xdescribe("GroupMergeStrategy", () => {
+describe("GroupMergeStrategy", () => {
 	describe("Min: 2, Max: 2", () => {
 		const course = new CourseWithGroupSettings(
 			new Course(),
@@ -254,7 +255,7 @@ describe("countSubmittedAssignments", () => {
 	};
 
 	it("Counts number of submitted assignments by user", () => {
-		const userIds = ["max", "moritz", "harry", "ronald"];
+		const userIds = new Set(["max", "moritz", "harry", "ronald"]);
 
 		const submissions: SubmissionDto[] = [
 			submission("homework-01", "max"),
@@ -345,5 +346,128 @@ describe("sortStudentsByActivity", () => {
 			{ userId: "max" },
 			{ userId: "harry" }
 		]);
+	});
+});
+
+describe("splitGroupsByValidity", () => {
+	type GroupType = {
+		id: string;
+		name: string;
+		members: ParticipantDto[];
+	};
+
+	const group = (name: string, memberCount: number): GroupType => {
+		return {
+			id: name,
+			name,
+			members: Array(memberCount).fill({} as ParticipantDto)
+		};
+	};
+
+	it("Splits groups into valid, invalid and empty", () => {
+		const groups = [
+			group("empty", 0),
+			group("invalid #1", 1),
+			group("invalid #2", 1),
+			group("valid #1", 2),
+			group("valid #2", 3),
+			group("valid #3", 4)
+		];
+
+		const { validGroups, invalidGroups, emptyGroups } = splitGroupsByValidity(groups, 2);
+
+		expect(emptyGroups).toHaveLength(1);
+		expect(invalidGroups).toHaveLength(2);
+		expect(validGroups).toHaveLength(3);
+	});
+});
+
+describe("bestSum", () => {
+	test.each([
+		[7, [5, 3, 4, 7], [7]],
+		[8, [2, 3, 5], [5, 3]],
+		[8, [1, 4, 5], [4, 4]],
+		[3, [2, 4], undefined] // No valid combination exists
+	])("Target: %d, Numbers: %s -> %s", (targetSum, numbers, expected) => {
+		expect(bestSum(targetSum, numbers)).toEqual(expected);
+	});
+});
+
+describe("calculateIdealGroupSizes", () => {
+	test.each([
+		[0, 2, 2, []], // 0 groups
+		[2, 2, 2, [2]], // numberOfStudents == minSize
+		[1, 2, 2, [1]], // numberOfStudent < minSize -> 1 invalid group
+		[5, 3, 3, [3, 2]], // 1 Invalid group,
+		[7, 3, 3, [3, 3, 1]], // 1 Invalid group,
+		[4, 0, 2, [2, 2]],
+		[6, 2, 3, [3, 3]],
+		[5, 2, 3, [3, 2]],
+		[7, 2, 3, [3, 2, 2]],
+		[9, 2, 4, [4, 3, 2]],
+		[9, 2, 5, [5, 4]]
+	])("Students: %d, Min: %d, Max: %d -> %s", (numberOfStudents, minSize, maxSize, expected) => {
+		expect(calculateIdealGroupSizes(numberOfStudents, minSize, maxSize)).toEqual(expected);
+	});
+});
+
+describe("mergeInvalidGroups", () => {
+	const student = (name: string, group: string): ParticipantDto => {
+		return {
+			username: name,
+			groupId: group
+		} as ParticipantDto;
+	};
+
+	it("Picks groupId from first student in group", () => {
+		const rankedStudents: ParticipantDto[] = [
+			student("Max", "A"),
+			student("Moritz", "B"),
+			student("Harry", "B"),
+			student("Ronald", "C")
+		];
+
+		const idealGroupSizes = [2, 2];
+
+		const groups = mergeInvalidGroups(idealGroupSizes, rankedStudents);
+
+		expect(groups).toHaveLength(2);
+
+		const [groupA, groupB] = groups;
+
+		expect(groupA.id).toEqual("A");
+		expect(groupB.id).toEqual("B");
+
+		expect(groupA.members[0].username).toEqual("Max");
+		expect(groupA.members[1].username).toEqual("Moritz");
+
+		expect(groupB.members[0].username).toEqual("Harry");
+		expect(groupB.members[1].username).toEqual("Ronald");
+	});
+
+	it("GroupIds not available -> Picks groupId from remaining groups", () => {
+		const rankedStudents: ParticipantDto[] = [
+			student("Max", "A"),
+			student("Moritz", "B"),
+			student("Harry", "A"),
+			student("Ronald", "A")
+		];
+
+		const idealGroupSizes = [2, 2];
+
+		const groups = mergeInvalidGroups(idealGroupSizes, rankedStudents);
+
+		expect(groups).toHaveLength(2);
+
+		const [groupA, groupB] = groups;
+
+		expect(groupA.id).toEqual("A");
+		expect(groupB.id).toEqual("B");
+
+		expect(groupA.members[0].username).toEqual("Max");
+		expect(groupA.members[1].username).toEqual("Moritz");
+
+		expect(groupB.members[0].username).toEqual("Harry");
+		expect(groupB.members[1].username).toEqual("Ronald");
 	});
 });
