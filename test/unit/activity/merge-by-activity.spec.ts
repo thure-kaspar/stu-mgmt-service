@@ -1,3 +1,4 @@
+import { ActivityService } from "../../../src/activity/activity.service";
 import { ParticipantDto } from "../../../src/course/dto/course-participant/participant.dto";
 import { Course } from "../../../src/course/entities/course.entity";
 import { GroupSettings } from "../../../src/course/entities/group-settings.entity";
@@ -6,7 +7,7 @@ import { Participant as ParticipantEntity } from "../../../src/course/entities/p
 import { CourseWithGroupSettings } from "../../../src/course/models/course-with-group-settings.model";
 import { Group } from "../../../src/course/models/group.model";
 import { Participant } from "../../../src/course/models/participant.model";
-import { GroupMergeStrategy } from "../../../src/course/services/group-merge.strategy";
+import { SimpleGroup } from "../../../src/course/services/group-merge-strategy/group-merge.strategy";
 import {
 	bestSum,
 	calculateIdealGroupSizes,
@@ -14,12 +15,51 @@ import {
 	countUniqueWeeks,
 	getWeekOfYear,
 	isSameWeek,
+	mergeByActivity,
+	MergeByActivityStrategy,
 	mergeInvalidGroups,
 	sortStudentsByActivity,
 	splitGroupsByValidity
-} from "../../../src/course/services/merge-by-activity.strategy";
+} from "../../../src/course/services/group-merge-strategy/merge-by-activity.strategy";
+import { SimpleMergeStrategy } from "../../../src/course/services/group-merge-strategy/simple-merge.strategy";
 import { User } from "../../../src/shared/entities/user.entity";
 import { SubmissionDto } from "../../../src/submission/submission.dto";
+import { SubmissionService } from "../../../src/submission/submission.service";
+
+function createFakeGroup(name: string, members: string[]) {
+	const fullGroup = new Group({
+		name,
+		userGroupRelations: []
+	} as GroupEntity);
+
+	fullGroup.members = members.map(
+		m => new Participant({ user: { username: m } as User } as ParticipantEntity)
+	);
+
+	return fullGroup;
+}
+
+const student = (name: string): ParticipantDto => {
+	return { userId: name } as ParticipantDto;
+};
+
+const group = (groupName: string, memberNames: string[]): SimpleGroup => {
+	return {
+		id: groupName,
+		members: memberNames.map(
+			username =>
+				({
+					userId: username,
+					username: username,
+					groupId: groupName // IMPORTANT - Used to determine groupId of merged groups
+				} as ParticipantDto)
+		)
+	};
+};
+
+const submission = (assignmentId: string, userId: string): SubmissionDto => {
+	return { assignmentId, userId } as SubmissionDto;
+};
 
 describe("GroupMergeStrategy", () => {
 	describe("Min: 2, Max: 2", () => {
@@ -32,7 +72,7 @@ describe("GroupMergeStrategy", () => {
 		);
 
 		it("Empty group list -> []", async () => {
-			const result = new GroupMergeStrategy().merge([], course);
+			const result = new SimpleMergeStrategy().merge([], course);
 			expect(result).toEqual([]);
 		});
 
@@ -42,7 +82,7 @@ describe("GroupMergeStrategy", () => {
 				createFakeGroup("Group 2", ["Member 3", "Member 4"])
 			];
 
-			const result = new GroupMergeStrategy().merge(groups, course);
+			const result = new SimpleMergeStrategy().merge(groups, course);
 
 			expect(result).toEqual(groups);
 		});
@@ -54,7 +94,7 @@ describe("GroupMergeStrategy", () => {
 				createFakeGroup("Group 3", ["Member B"])
 			];
 
-			const result = new GroupMergeStrategy().merge(groups, course);
+			const result = new SimpleMergeStrategy().merge(groups, course);
 
 			expect(result).toHaveLength(2);
 			expect(result[0].name).toEqual("Group 1");
@@ -72,7 +112,7 @@ describe("GroupMergeStrategy", () => {
 				createFakeGroup("Group 3", ["Member C"])
 			];
 
-			const result = new GroupMergeStrategy().merge(groups, course);
+			const result = new SimpleMergeStrategy().merge(groups, course);
 
 			expect(result).toHaveLength(4);
 
@@ -186,13 +226,242 @@ describe("GroupMergeStrategy", () => {
 });
 
 describe("MergeByActivityStrategy", () => {
-	//let mergeByActivityStrategy: MergeByActivityStrategy;
+	let mergeByActivityStrategy: MergeByActivityStrategy;
+	let activityService: ActivityService;
+	let submissionService: SubmissionService;
+	const courseId = "java-wise1920";
 
-	it("merge", async () => {
-		const isSame = isSameWeek(new Date(2022, 1, 3), new Date(2022, 1, 5));
-		expect(isSame).toEqual(true);
+	const student = (name: string): ParticipantDto => {
+		return { userId: name } as ParticipantDto;
+	};
+
+	const activityData: Awaited<ReturnType<ActivityService["getActivityData"]>> = [
+		{
+			user: student("A"),
+			dates: [new Date(2022, 1, 1)]
+		}
+	];
+
+	const submissions: Awaited<ReturnType<SubmissionService["getAllSubmissions"]>> = [
+		[
+			{
+				assignmentId: "homework-01",
+				userId: "A"
+			} as SubmissionDto,
+			{
+				assignmentId: "homework-01",
+				userId: "A"
+			} as SubmissionDto,
+			{
+				assignmentId: "homework-01",
+				userId: "B"
+			} as SubmissionDto
+		],
+		3
+	];
+
+	const mock_ActivityService = (): Partial<ActivityService> => ({
+		getActivityData: jest.fn().mockResolvedValue(activityData)
 	});
 
+	const mock_SubmissionService = (): Partial<SubmissionService> => ({
+		getAllSubmissions: jest.fn().mockResolvedValue(submissions)
+	});
+
+	beforeEach(() => {
+		activityService = mock_ActivityService() as ActivityService;
+		submissionService = mock_SubmissionService() as SubmissionService;
+		mergeByActivityStrategy = new MergeByActivityStrategy(activityService, submissionService);
+	});
+
+	it("Should be defined", () => {
+		expect(mergeByActivityStrategy).toBeDefined();
+	});
+
+	it("No groups -> Returns empty list", async () => {
+		const result = await mergeByActivityStrategy.merge(courseId, 2, 3, []);
+		expect(result).toEqual([]);
+	});
+
+	it("No invalid groups -> Returns valid groups", async () => {
+		const valid1 = group("Valid #1", ["A", "B", "C"]);
+		const valid2 = group("Valid #2", ["D", "E"]);
+
+		const groups: SimpleGroup[] = [valid1, valid2, group("Empty #1", [])];
+
+		const result = await mergeByActivityStrategy.merge(courseId, 2, 3, groups);
+
+		expect(result).toHaveLength(2);
+
+		expect(result[0]).toEqual(valid1);
+		expect(result[1]).toEqual(valid2);
+	});
+
+	it("Has invalid group -> Loads activity data", async () => {
+		await mergeByActivityStrategy.merge(courseId, 2, 2, [group("A", ["Max"])]);
+		expect(activityService.getActivityData).toHaveBeenCalledWith(courseId);
+	});
+
+	it("Has invalid group -> Loads submissions", async () => {
+		await mergeByActivityStrategy.merge(courseId, 2, 2, [group("A", ["Max"])]);
+		expect(submissionService.getAllSubmissions).toHaveBeenCalledWith(courseId);
+	});
+
+	it("Has invalid group -> Merges groups", async () => {
+		const valid1 = group("Valid #1", ["A", "B", "C"]);
+		const valid2 = group("Valid #2", ["D", "E"]);
+		const invalid1 = group("Invalid #1", ["X"]);
+		const invalid2 = group("Invalid #1", ["Y"]);
+
+		const groups: SimpleGroup[] = [valid1, invalid1, valid2, group("Empty #1", []), invalid2];
+
+		const result = await mergeByActivityStrategy.merge(courseId, 2, 3, groups);
+
+		expect(result).toHaveLength(3);
+
+		expect(result[0]).toEqual(valid1);
+		expect(result[1]).toEqual(valid2);
+
+		expect(result[2].id).toEqual(invalid1.id);
+		expect(result[2].members).toHaveLength(2);
+		expect(result[2].members[0].userId).toEqual("X");
+		expect(result[2].members[1].userId).toEqual("Y");
+	});
+});
+
+describe("mergeByActivity", () => {
+	it("Returns list of valid and merged groups", async () => {
+		const valid1 = group("Valid #1", ["A", "B", "C"]);
+		const valid2 = group("Valid #2", ["D", "E"]);
+		const invalid1 = group("Invalid #1", ["X"]);
+		const invalid2 = group("Invalid #1", ["Y"]);
+
+		const groups: SimpleGroup[] = [valid1, invalid1, valid2, group("Empty #1", []), invalid2];
+
+		const result = mergeByActivity(2, 3, groups, { activity: [], submissions: [] });
+
+		expect(result).toHaveLength(3);
+
+		expect(result[0]).toEqual(valid1);
+		expect(result[1]).toEqual(valid2);
+
+		expect(result[2].id).toEqual(invalid1.id);
+		expect(result[2].members).toHaveLength(2);
+		expect(result[2].members[0].userId).toEqual("X");
+		expect(result[2].members[1].userId).toEqual("Y");
+	});
+
+	it("Considers activity", () => {
+		const invalid1 = group("Group #1", ["A"]);
+		const invalid2 = group("Group #2", ["B"]);
+		const invalid3 = group("Group #3", ["C"]);
+		const invalid4 = group("Group #3", ["D"]);
+
+		const groups: SimpleGroup[] = [invalid1, invalid2, invalid3, invalid4];
+
+		const result = mergeByActivity(2, 2, groups, {
+			activity: [
+				{
+					user: student("A"),
+					dates: [new Date(2022, 1, 1)]
+				},
+				{
+					user: student("B"),
+					dates: [new Date(2022, 1, 1), new Date(2022, 2, 1), new Date(2022, 2, 1)]
+				},
+				{
+					user: student("C"),
+					dates: [new Date(2022, 1, 1), new Date(2022, 2, 1)]
+				},
+				{
+					user: student("D"),
+					dates: []
+				}
+			],
+			submissions: []
+		});
+
+		expect(result).toHaveLength(2);
+
+		const [mergedOne, mergedTwo] = result;
+
+		expect(mergedOne.members[0].username).toEqual("B");
+		expect(mergedOne.members[1].username).toEqual("C");
+
+		expect(mergedTwo.members[0].username).toEqual("A");
+		expect(mergedTwo.members[1].username).toEqual("D");
+	});
+
+	it("Considers submissions", () => {
+		const invalid1 = group("Group #1", ["A"]);
+		const invalid2 = group("Group #2", ["B"]);
+		const invalid3 = group("Group #3", ["C"]);
+		const invalid4 = group("Group #3", ["D"]);
+
+		const groups: SimpleGroup[] = [invalid1, invalid2, invalid3, invalid4];
+
+		const result = mergeByActivity(2, 2, groups, {
+			activity: [],
+			submissions: [
+				submission("homework-01", "A"),
+				submission("testat-02", "A"),
+				submission("homework-01", "B"),
+				submission("homework-01", "C"),
+				submission("homework-01", "D"),
+				submission("homework-02", "D"),
+				submission("testat-02", "D")
+			]
+		});
+
+		expect(result).toHaveLength(2);
+
+		const [mergedOne, mergedTwo] = result;
+
+		expect(mergedOne.members[0].username).toEqual("D");
+		expect(mergedOne.members[1].username).toEqual("A");
+
+		expect(mergedTwo.members[0].username).toEqual("B");
+		expect(mergedTwo.members[1].username).toEqual("C");
+	});
+
+	it("Splits up invalid groups", () => {
+		const groups: SimpleGroup[] = [
+			group("Group #1", ["A", "B"]),
+			group("Group #2", ["C", "D"]),
+			group("Group #3", ["E", "F"])
+		];
+
+		const result = mergeByActivity(3, 3, groups, {
+			activity: [],
+			submissions: []
+		});
+
+		expect(result).toHaveLength(2);
+		expect(result[0].members).toHaveLength(3);
+		expect(result[1].members).toHaveLength(3);
+	});
+
+	it("Allows invalid group if no valid solution exists", () => {
+		const groups: SimpleGroup[] = [
+			group("Group #1", ["A", "B"]),
+			group("Group #2", ["C", "D"]),
+			group("Group #3", ["E", "F"]),
+			group("Group #4", ["E", "F"])
+		];
+
+		const result = mergeByActivity(3, 3, groups, {
+			activity: [],
+			submissions: []
+		});
+
+		expect(result).toHaveLength(3);
+		expect(result[0].members).toHaveLength(3);
+		expect(result[1].members).toHaveLength(3);
+		expect(result[2].members).toHaveLength(2);
+	});
+});
+
+describe("getWeekOfYear (DayJs)", () => {
 	test.each([
 		[new Date(2022, 0, 1), 1],
 		[new Date(2022, 0, 2), 2],
@@ -206,18 +475,15 @@ describe("MergeByActivityStrategy", () => {
 	});
 });
 
-function createFakeGroup(name: string, members: string[]) {
-	const fullGroup = new Group({
-		name,
-		userGroupRelations: []
-	} as GroupEntity);
-
-	fullGroup.members = members.map(
-		m => new Participant({ user: { username: m } as User } as ParticipantEntity)
-	);
-
-	return fullGroup;
-}
+describe("isSame (week) (DayJs)", () => {
+	test.each([
+		[new Date(2022, 1, 1), new Date(2022, 1, 2), true],
+		[new Date(2022, 1, 1), new Date(2022, 1, 7), false]
+	])("%s same week as %s -> %s", (date1, date2, expected) => {
+		const result = isSameWeek(date1, date2);
+		expect(result).toEqual(expected);
+	});
+});
 
 describe("countUniqueWeeks", () => {
 	it("0 Dates -> 0 Unique weeks", () => {
@@ -250,10 +516,6 @@ describe("countUniqueWeeks", () => {
 });
 
 describe("countSubmittedAssignments", () => {
-	const submission = (assignmentId: string, userId: string): SubmissionDto => {
-		return { assignmentId, userId } as SubmissionDto;
-	};
-
 	it("Counts number of submitted assignments by user", () => {
 		const userIds = new Set(["max", "moritz", "harry", "ronald"]);
 
@@ -276,10 +538,6 @@ describe("countSubmittedAssignments", () => {
 });
 
 describe("sortStudentsByActivity", () => {
-	const student = (name: string): ParticipantDto => {
-		return { userId: name } as ParticipantDto;
-	};
-
 	it("Prefers higher submission count", () => {
 		const studentsInInvalidGroups: ParticipantDto[] = [
 			student("max"),
@@ -350,16 +608,9 @@ describe("sortStudentsByActivity", () => {
 });
 
 describe("splitGroupsByValidity", () => {
-	type GroupType = {
-		id: string;
-		name: string;
-		members: ParticipantDto[];
-	};
-
-	const group = (name: string, memberCount: number): GroupType => {
+	const group = (name: string, memberCount: number): SimpleGroup => {
 		return {
 			id: name,
-			name,
 			members: Array(memberCount).fill({} as ParticipantDto)
 		};
 	};

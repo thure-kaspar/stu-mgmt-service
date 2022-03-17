@@ -1,15 +1,16 @@
-import { Group } from "../models/group.model";
-import { CourseWithGroupSettings } from "../models/course-with-group-settings.model";
+import { Group } from "../../models/group.model";
+import { CourseWithGroupSettings } from "../../models/course-with-group-settings.model";
 
-export class GroupMergeStrategy {
-	/**
-	 * Merges invalid groups or adds them to open groups according to the following rules:
-	 * 1. Merge invalid group with other invalid group, repeat until group is valid
-	 * 2. Remaining invalid groups: Try to find joinable group, prioritize merged groups instead of touching existing groups
-	 * 3. If no joinable group is found, group is allowed to stay invalid
-	 *
-	 * Groups won't be split up in this strategy!
-	 */
+/**
+ * Merges invalid groups or adds them to open groups according to the following rules:
+ * 1. Merge invalid group with other invalid group, repeat until group is valid
+ * 2. Remaining invalid groups: Try to find joinable group, prioritize merged groups instead of touching existing groups
+ * 3. If no joinable group is found, group is allowed to stay invalid
+ *
+ * Groups won't be split up in this strategy!
+ */
+export class SimpleMergeStrategy {
+	// TODO: Does not implement GroupMergeStrategy
 	merge(groups: Group[], course: CourseWithGroupSettings): Group[] {
 		const sizeMin = course.getMinGroupSize();
 		const sizeMax = course.getMaxGroupSize();

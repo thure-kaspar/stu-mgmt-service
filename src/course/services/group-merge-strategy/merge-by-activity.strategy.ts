@@ -1,75 +1,85 @@
 import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
 import * as dayjs from "dayjs";
 import * as weekOfYear from "dayjs/plugin/weekOfYear";
-import { ActivityDto } from "../../activity/activity.dto";
-import { ActivityService } from "../../activity/activity.service";
-import { SubmissionDto } from "../../submission/submission.dto";
-import { SubmissionService } from "../../submission/submission.service";
-import { ParticipantDto } from "../dto/course-participant/participant.dto";
-import { ParticipantRepository } from "../repositories/participant.repository";
+import { ActivityDto } from "../../../activity/activity.dto";
+import { ActivityService } from "../../../activity/activity.service";
+import { SubmissionDto } from "../../../submission/submission.dto";
+import { SubmissionService } from "../../../submission/submission.service";
+import { GroupMergeStrategy, SimpleGroup } from "./group-merge.strategy";
 
 dayjs.extend(weekOfYear);
 
-type GroupType = { id: string; members: ParticipantDto[] };
-
 @Injectable()
-export class MergeByActivityStrategy {
-	constructor(
-		@InjectRepository(ParticipantRepository)
-		private participantsRepository: ParticipantRepository,
-		private activityService: ActivityService,
-		private submissions: SubmissionService
-	) {}
+export class MergeByActivityStrategy extends GroupMergeStrategy {
+	constructor(private activityService: ActivityService, private submissions: SubmissionService) {
+		super();
+	}
 
 	async merge(
 		courseId: string,
 		minSize: number,
 		maxSize: number,
-		groups: GroupType[]
-	): Promise<GroupType[]> {
-		const { invalidGroups, validGroups } = splitGroupsByValidity(groups, minSize);
-
-		// If merges are not necessary
-		if (invalidGroups.length == 0) {
-			return validGroups;
-		}
-
-		const studentsInInvalidGroups = invalidGroups.flatMap(g => g.members);
-		const studentsInInvalidGroupsUserIds = new Set(studentsInInvalidGroups.map(p => p.userId));
-
+		groups: SimpleGroup[]
+	): Promise<SimpleGroup[]> {
 		const [activity, [submissions]] = await Promise.all([
 			this.activityService.getActivityData(courseId),
 			this.submissions.getAllSubmissions(courseId)
 		]);
 
-		const activityOfStudentsFromInvalidGroups = activity.filter(a =>
-			studentsInInvalidGroupsUserIds.has(a.user.userId)
-		);
-
-		const activeWeekCountByStudent = countActiveWeeks(activityOfStudentsFromInvalidGroups);
-
-		const submittedAssignmentsByStudent = countSubmittedAssignment(
-			submissions,
-			studentsInInvalidGroupsUserIds
-		);
-
-		const rankedStudents = sortStudentsByActivity(
-			studentsInInvalidGroups,
-			submittedAssignmentsByStudent,
-			activeWeekCountByStudent
-		);
-
-		const idealGroupSizes = calculateIdealGroupSizes(rankedStudents.length, minSize, maxSize);
-
-		if (idealGroupSizes.length == 0) {
-			return [...validGroups, ...invalidGroups];
-		}
-
-		const mergedGroups = mergeInvalidGroups(idealGroupSizes, rankedStudents);
-
-		return [...validGroups, ...mergedGroups];
+		return mergeByActivity(minSize, maxSize, groups, { activity, submissions });
 	}
+}
+
+export function mergeByActivity(
+	minSize: number,
+	maxSize: number,
+	groups: SimpleGroup[],
+	data: { activity: ActivityDto[]; submissions: SubmissionDto[] }
+): SimpleGroup[] {
+	const { activity, submissions } = data;
+	const { invalidGroups, validGroups } = splitGroupsByValidity(groups, minSize);
+
+	// If merges are not necessary
+	if (invalidGroups.length == 0) {
+		return validGroups;
+	}
+
+	// Ensure groupId of each student is set, because it will be used to determine ids of merged groups
+	for (const group of groups) {
+		for (const member of group.members) {
+			member.groupId = group.id;
+		}
+	}
+
+	const studentsInInvalidGroups = invalidGroups.flatMap(g => g.members);
+	const studentsInInvalidGroupsUserIds = new Set(studentsInInvalidGroups.map(p => p.userId));
+
+	const activityOfStudentsFromInvalidGroups = activity.filter(a =>
+		studentsInInvalidGroupsUserIds.has(a.user.userId)
+	);
+
+	const activeWeekCountByStudent = countActiveWeeks(activityOfStudentsFromInvalidGroups);
+
+	const submittedAssignmentsByStudent = countSubmittedAssignment(
+		submissions,
+		studentsInInvalidGroupsUserIds
+	);
+
+	const rankedStudents = sortStudentsByActivity(
+		studentsInInvalidGroups,
+		submittedAssignmentsByStudent,
+		activeWeekCountByStudent
+	);
+
+	const idealGroupSizes = calculateIdealGroupSizes(rankedStudents.length, minSize, maxSize);
+
+	if (idealGroupSizes.length == 0) {
+		return [...validGroups, ...invalidGroups];
+	}
+
+	const mergedGroups = mergeInvalidGroups(idealGroupSizes, rankedStudents);
+
+	return [...validGroups, ...mergedGroups];
 }
 
 /**
@@ -88,20 +98,20 @@ export class MergeByActivityStrategy {
  */
 export function mergeInvalidGroups(
 	idealGroupSizes: number[],
-	rankedStudents: ParticipantDto[]
-): GroupType[] {
+	rankedStudents: SimpleGroup["members"]
+): SimpleGroup[] {
 	const groupIds = rankedStudents.map(s => s.groupId);
 	const availableIds = new Set<string>(groupIds);
 
 	const REQUIRES_ID = "REQUIRES-ID";
 
-	const mergedGroups: GroupType[] = [];
+	const mergedGroups: SimpleGroup[] = [];
 	let firstMemberIndex = 0;
 
 	for (const groupSize of idealGroupSizes) {
 		const lastMemberIndex = firstMemberIndex + groupSize - 1;
 
-		const group: GroupType = {
+		const group: SimpleGroup = {
 			id: REQUIRES_ID,
 			members: []
 		};
@@ -141,16 +151,16 @@ export function mergeInvalidGroups(
 }
 
 export function splitGroupsByValidity(
-	groups: GroupType[],
+	groups: SimpleGroup[],
 	minSize: number
 ): {
-	validGroups: GroupType[];
-	invalidGroups: GroupType[];
-	emptyGroups: GroupType[];
+	validGroups: SimpleGroup[];
+	invalidGroups: SimpleGroup[];
+	emptyGroups: SimpleGroup[];
 } {
-	const emptyGroups: GroupType[] = [];
-	const validGroups: GroupType[] = [];
-	const invalidGroups: GroupType[] = [];
+	const emptyGroups: SimpleGroup[] = [];
+	const validGroups: SimpleGroup[] = [];
+	const invalidGroups: SimpleGroup[] = [];
 
 	for (const g of groups) {
 		if (g.members.length == 0) {
@@ -230,10 +240,10 @@ function countActiveWeeks(activity: ActivityDto[]) {
 }
 
 export function sortStudentsByActivity(
-	studentsInInvalidGroups: ParticipantDto[],
+	studentsInInvalidGroups: SimpleGroup["members"],
 	submittedAssignmentsByStudent: Map<string, number>,
 	activeWeekCountByStudent: Map<string, number>
-): ParticipantDto[] {
+): SimpleGroup["members"] {
 	return studentsInInvalidGroups.sort((a, b) => {
 		const submittedAssignmentsA = submittedAssignmentsByStudent.get(a.userId);
 		const submittedAssignmentsB = submittedAssignmentsByStudent.get(b.userId);

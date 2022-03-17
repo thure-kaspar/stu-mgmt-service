@@ -22,6 +22,8 @@ import { TeachingStaffGuard } from "./guards/teaching-staff.guard";
 import { QueryHandlers } from "./queries";
 import { Repositories } from "./repositories";
 import { Services } from "./services";
+import { GroupMergeStrategy } from "./services/group-merge-strategy/group-merge.strategy";
+import { MergeByActivityStrategy } from "./services/group-merge-strategy/merge-by-activity.strategy";
 
 @Module({
 	imports: [
@@ -45,7 +47,8 @@ import { Services } from "./services";
 		UserJoinedGroupHandler,
 		UserLeftGroupHandler,
 		CloseEmptyGroupsHandler,
-		ActivityEventHandler
+		ActivityEventHandler,
+		{ provide: GroupMergeStrategy, useClass: MergeByActivityStrategy }
 	],
 	exports: [
 		TypeOrmModule,

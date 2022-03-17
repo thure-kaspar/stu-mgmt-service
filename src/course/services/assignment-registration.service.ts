@@ -7,6 +7,7 @@ import { GroupDto } from "../dto/group/group.dto";
 import { AssignmentId } from "../entities/assignment.entity";
 import { CourseId } from "../entities/course.entity";
 import { GroupId } from "../entities/group.entity";
+import { Participant as ParticipantEntity } from "../entities/participant.entity";
 import { GroupRegistered } from "../events/assignment/group-registered.event";
 import { GroupUnregistered } from "../events/assignment/group-unregistered.event";
 import { RegistrationsCreated } from "../events/assignment/registrations-created.event";
@@ -14,14 +15,13 @@ import { RegistrationsRemoved } from "../events/assignment/registrations-removed
 import { UserRegistered } from "../events/assignment/user-registered.event";
 import { UserUnregistered } from "../events/assignment/user-unregistered.event";
 import { AlreadyInGroupException } from "../exceptions/custom-exceptions";
-import { CourseWithGroupSettings } from "../models/course-with-group-settings.model";
 import { Course } from "../models/course.model";
-import { Group } from "../models/group.model";
 import { Participant } from "../models/participant.model";
 import { AssignmentRegistrationRepository } from "../repositories/assignment-registration.repository";
 import { GroupSettingsRepository } from "../repositories/group-settings.repository";
 import { GroupRepository } from "../repositories/group.repository";
-import { GroupMergeStrategy } from "./group-merge.strategy";
+import { ParticipantRepository } from "../repositories/participant.repository";
+import { GroupMergeStrategy } from "./group-merge-strategy/group-merge.strategy";
 
 @Injectable()
 export class AssignmentRegistrationService {
@@ -30,6 +30,8 @@ export class AssignmentRegistrationService {
 		private registrations: AssignmentRegistrationRepository,
 		@InjectRepository(GroupRepository) private groups: GroupRepository,
 		@InjectRepository(GroupSettingsRepository) private groupSettings: GroupSettingsRepository,
+		@InjectRepository(ParticipantRepository)
+		private participantsRepository: ParticipantRepository,
 		private groupMergeStrategy: GroupMergeStrategy,
 		private events: EventBus
 	) {}
@@ -45,13 +47,38 @@ export class AssignmentRegistrationService {
 			this.groupSettings.getByCourseId(course.id)
 		]);
 
-		let groups = groupEntities
-			.filter(g => g.userGroupRelations.length > 0) // Remove empty groups
-			.map(g => new Group(g));
+		let groups: Parameters<AssignmentRegistrationRepository["createRegistrations"]>[1] =
+			groupEntities.map(g => ({
+				id: g.id,
+				members: g.userGroupRelations.map(({ participantId, userId }) => ({
+					participantId,
+					userId
+				}))
+			}));
 
 		if (groupSettings.mergeGroupsOnAssignmentStarted) {
-			const _course = course.with(CourseWithGroupSettings, groupSettings);
-			groups = this.groupMergeStrategy.merge(groups, _course);
+			const [mergedGroups, [participants]] = await Promise.all([
+				this.groupMergeStrategy.merge(
+					course.id,
+					groupSettings.sizeMin,
+					groupSettings.sizeMax,
+					groups
+				),
+				this.participantsRepository.getParticipants(course.id)
+			]);
+
+			const participantsMap = new Map<string, ParticipantEntity>();
+			for (const participant of participants) {
+				participantsMap.set(participant.userId, participant);
+			}
+
+			groups = mergedGroups.map(g => ({
+				id: g.id,
+				members: g.members.map(m => ({
+					userId: m.userId,
+					participantId: participantsMap.get(m.userId).id
+				}))
+			}));
 		}
 
 		await this.registrations.createRegistrations(assignmentId, groups);

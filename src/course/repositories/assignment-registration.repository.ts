@@ -99,7 +99,7 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 	 */
 	createRegistrations(
 		assignmentId: AssignmentId,
-		groups: Group[]
+		groups: { id: string; members: { userId: string; participantId: number }[] }[]
 	): Promise<AssignmentRegistration[]> {
 		const registrations = this.buildRegistrations(groups, assignmentId);
 		if (registrations.length == 0) return [] as any;
@@ -110,7 +110,10 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 	 * Maps groups with members to `AssignmentGroupRegistration` entities for a specific assignment.
 	 * Groups must include `UserGroupRelation`.
 	 */
-	private buildRegistrations(groups: Group[], assignmentId: string): AssignmentRegistration[] {
+	private buildRegistrations(
+		groups: { id: string; members: { userId: string; participantId: number }[] }[],
+		assignmentId: string
+	): AssignmentRegistration[] {
 		const registrations = groups.map(group => {
 			const registration = new AssignmentRegistration({
 				assignmentId,
@@ -118,7 +121,7 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 			});
 
 			registration.groupRelations = group.members.map(member =>
-				this.createGroupRegistrationRelationEntity(assignmentId, member.id)
+				this.createGroupRegistrationRelationEntity(assignmentId, member.participantId)
 			);
 
 			return registration;
