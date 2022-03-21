@@ -61,7 +61,7 @@ const submission = (assignmentId: string, userId: string): SubmissionDto => {
 	return { assignmentId, userId } as SubmissionDto;
 };
 
-describe("GroupMergeStrategy", () => {
+describe("SimpleMergeStrategy", () => {
 	describe("Min: 2, Max: 2", () => {
 		const course = new CourseWithGroupSettings(
 			new Course(),
@@ -144,7 +144,7 @@ describe("GroupMergeStrategy", () => {
 				createFakeGroup("Group 3", ["C"])
 			];
 
-			const result = new GroupMergeStrategy().merge(groups, course);
+			const result = new SimpleMergeStrategy().merge(groups, course);
 
 			expect(result).toHaveLength(1);
 			expect(result[0].name).toEqual("Group 1");
@@ -157,7 +157,7 @@ describe("GroupMergeStrategy", () => {
 				createFakeGroup("Group 2", ["C"])
 			];
 
-			const result = new GroupMergeStrategy().merge(groups, course);
+			const result = new SimpleMergeStrategy().merge(groups, course);
 
 			expect(result).toHaveLength(1);
 			expect(result[0].name).toEqual("Group 1");
@@ -172,7 +172,7 @@ describe("GroupMergeStrategy", () => {
 				createFakeGroup("Group 4", ["D"])
 			];
 
-			const result = new GroupMergeStrategy().merge(groups, course);
+			const result = new SimpleMergeStrategy().merge(groups, course);
 
 			expect(result).toHaveLength(2);
 			expect(result[0].name).toEqual("Group 1");
@@ -196,7 +196,7 @@ describe("GroupMergeStrategy", () => {
 				createFakeGroup("Group 3", ["E"])
 			];
 
-			const result = new GroupMergeStrategy().merge(groups, course);
+			const result = new SimpleMergeStrategy().merge(groups, course);
 
 			expect(result).toHaveLength(1);
 			expect(result[0].name).toEqual("Group 3");
@@ -214,7 +214,7 @@ describe("GroupMergeStrategy", () => {
 				createFakeGroup("Group 6", ["F"])
 			];
 
-			const result = new GroupMergeStrategy().merge(groups, course);
+			const result = new SimpleMergeStrategy().merge(groups, course);
 
 			result.forEach(r => console.log(`${r.name}: ${r.members.map(m => m.username)}`));
 

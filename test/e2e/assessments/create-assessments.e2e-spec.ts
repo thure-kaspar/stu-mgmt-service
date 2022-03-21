@@ -1,6 +1,5 @@
 import { BadRequestException } from "@nestjs/common";
 import { AssessmentCreateDto } from "../../../src/assessment/dto/assessment.dto";
-import { Assessment } from "../../../src/assessment/entities/assessment.entity";
 import { AssessmentRepository } from "../../../src/assessment/repositories/assessment.repository";
 import {
 	AssignmentState,
