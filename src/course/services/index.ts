@@ -1,4 +1,5 @@
 import { ActivityService } from "../../activity/activity.service";
+import { SubmissionService } from "../../submission/submission.service";
 import { AssignmentRegistrationService } from "./assignment-registration.service";
 import { AssignmentService } from "./assignment.service";
 import { CourseConfigService } from "./course-config.service";
@@ -13,5 +14,6 @@ export const Services = [
 	CourseConfigService,
 	CourseParticipantsService,
 	CourseService,
-	GroupService
+	GroupService,
+	SubmissionService
 ];

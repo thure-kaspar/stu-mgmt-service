@@ -6,6 +6,7 @@ import { Activity } from "../activity/activity.entity";
 import { ActivityEventHandler } from "../activity/activity.event";
 import { AssessmentRepository } from "../assessment/repositories/assessment.repository";
 import { AuthModule } from "../auth/auth.module";
+import { Submission } from "../submission/submission.entity";
 import { UserRepository } from "../user/repositories/user.repository";
 import { JoinRandomGroupHandler } from "./commands/join-random-group.handler";
 import { Controllers } from "./controllers";
@@ -32,7 +33,8 @@ import { MergeByActivityStrategy } from "./services/group-merge-strategy/merge-b
 			UserRepository,
 			GroupRegistrationRelation,
 			AssessmentRepository,
-			Activity
+			Activity,
+			Submission
 		]),
 		CqrsModule,
 		HttpModule,
