@@ -8,7 +8,7 @@ export class RExportGroup extends OmitType(GroupDto, ["history"]) {}
 
 export class RExportRegisteredGroups {
 	assignmentId: string;
-	groups: RExportGroup;
+	groups: RExportGroup[];
 }
 
 export class RExportDto {

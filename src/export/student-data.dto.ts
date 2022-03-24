@@ -22,7 +22,7 @@ class RExportUserInfo {
 	userId: string;
 	username: string;
 	displayName: string;
-	matrNr: number;
+	matrNr?: number;
 }
 
 export class RExportStudent {
