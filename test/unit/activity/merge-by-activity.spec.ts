@@ -385,11 +385,11 @@ describe("mergeByActivity", () => {
 
 		const [mergedOne, mergedTwo] = result;
 
-		expect(mergedOne.members[0].username).toEqual("B");
-		expect(mergedOne.members[1].username).toEqual("C");
+		expect(mergedOne.members[0].userId).toEqual("B");
+		expect(mergedOne.members[1].userId).toEqual("C");
 
-		expect(mergedTwo.members[0].username).toEqual("A");
-		expect(mergedTwo.members[1].username).toEqual("D");
+		expect(mergedTwo.members[0].userId).toEqual("A");
+		expect(mergedTwo.members[1].userId).toEqual("D");
 	});
 
 	it("Considers submissions", () => {
@@ -417,11 +417,11 @@ describe("mergeByActivity", () => {
 
 		const [mergedOne, mergedTwo] = result;
 
-		expect(mergedOne.members[0].username).toEqual("D");
-		expect(mergedOne.members[1].username).toEqual("A");
+		expect(mergedOne.members[0].userId).toEqual("D");
+		expect(mergedOne.members[1].userId).toEqual("A");
 
-		expect(mergedTwo.members[0].username).toEqual("B");
-		expect(mergedTwo.members[1].username).toEqual("C");
+		expect(mergedTwo.members[0].userId).toEqual("B");
+		expect(mergedTwo.members[1].userId).toEqual("C");
 	});
 
 	it("Splits up invalid groups", () => {
@@ -665,7 +665,7 @@ describe("calculateIdealGroupSizes", () => {
 describe("mergeInvalidGroups", () => {
 	const student = (name: string, group: string): ParticipantDto => {
 		return {
-			username: name,
+			userId: name,
 			groupId: group
 		} as ParticipantDto;
 	};
@@ -689,11 +689,11 @@ describe("mergeInvalidGroups", () => {
 		expect(groupA.id).toEqual("A");
 		expect(groupB.id).toEqual("B");
 
-		expect(groupA.members[0].username).toEqual("Max");
-		expect(groupA.members[1].username).toEqual("Moritz");
+		expect(groupA.members[0].userId).toEqual("Max");
+		expect(groupA.members[1].userId).toEqual("Moritz");
 
-		expect(groupB.members[0].username).toEqual("Harry");
-		expect(groupB.members[1].username).toEqual("Ronald");
+		expect(groupB.members[0].userId).toEqual("Harry");
+		expect(groupB.members[1].userId).toEqual("Ronald");
 	});
 
 	it("GroupIds not available -> Picks groupId from remaining groups", () => {
@@ -715,10 +715,10 @@ describe("mergeInvalidGroups", () => {
 		expect(groupA.id).toEqual("A");
 		expect(groupB.id).toEqual("B");
 
-		expect(groupA.members[0].username).toEqual("Max");
-		expect(groupA.members[1].username).toEqual("Moritz");
+		expect(groupA.members[0].userId).toEqual("Max");
+		expect(groupA.members[1].userId).toEqual("Moritz");
 
-		expect(groupB.members[0].username).toEqual("Harry");
-		expect(groupB.members[1].username).toEqual("Ronald");
+		expect(groupB.members[0].userId).toEqual("Harry");
+		expect(groupB.members[1].userId).toEqual("Ronald");
 	});
 });
