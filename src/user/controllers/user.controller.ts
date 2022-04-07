@@ -11,7 +11,7 @@ import {
 	Req,
 	UseGuards
 } from "@nestjs/common";
-import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags, PickType } from "@nestjs/swagger";
 import { Request } from "express";
 import { CourseDto } from "src/course/dto/course/course.dto";
 import { AssessmentDto } from "../../assessment/dto/assessment.dto";
@@ -207,6 +207,10 @@ export class UserController {
 	})
 	@Put(":userId/matrNr")
 	@UseGuards(IdentityGuard)
+	@ApiBody({
+		required: true,
+		type: PickType(UserDto, ["matrNr"])
+	})
 	setMatrNr(
 		@Param("userId") userId: string,
 		@Body("matrNr") matrNr: number,
