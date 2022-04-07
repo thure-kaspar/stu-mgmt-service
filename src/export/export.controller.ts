@@ -8,19 +8,31 @@ import {
 	Res,
 	UseGuards
 } from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { Response } from "express";
 import { AuthGuard } from "../auth/guards/auth.guard";
 import { CourseMemberGuard } from "../course/guards/course-member/course-member.guard";
 import { TeachingStaffGuard } from "../course/guards/teaching-staff.guard";
 import { writeWorkbookToResponse, Workbook } from "./excel";
 import { ExportService } from "./export.service";
+import { RExportDto } from "./recommender-export.dto";
+import { RecommenderExportService } from "./recommender-export.service";
 
 @ApiTags("export")
+@ApiBearerAuth()
 @Controller("export")
 @UseGuards(AuthGuard)
 export class ExportController {
-	constructor(private exportService: ExportService) {}
+	constructor(
+		private exportService: ExportService,
+		private recommenderExportService: RecommenderExportService
+	) {}
+
+	@Get("recommender/:courseId")
+	@UseGuards(CourseMemberGuard, TeachingStaffGuard)
+	async recommenderExport(@Param("courseId") courseId: string): Promise<RExportDto> {
+		return this.recommenderExportService.getRecommenderExportData(courseId);
+	}
 
 	@Get(":courseId/:domain")
 	@UseGuards(CourseMemberGuard, TeachingStaffGuard)

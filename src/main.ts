@@ -88,6 +88,7 @@ function setupSwaggerDocument(
 		.addTag("assignment-registration")
 		.addTag("admission-status")
 		.addTag("submission")
+		.addTag("activity")
 		.addTag("assessment-allocation")
 		.addTag("notification")
 		.addTag("demo")

@@ -1,3 +1,5 @@
+import { ActivityController } from "../../activity/activity.controller";
+import { SubmissionController } from "../../submission/submission.controller";
 import { AssignmentRegistrationController } from "./assignment-registration.controller";
 import { AssignmentController } from "./assignment.controller";
 import { CourseConfigController } from "./config.controller";
@@ -11,5 +13,7 @@ export const Controllers = [
 	CourseConfigController,
 	CourseParticipantsController,
 	CourseController,
-	GroupController
+	GroupController,
+	ActivityController,
+	SubmissionController
 ];

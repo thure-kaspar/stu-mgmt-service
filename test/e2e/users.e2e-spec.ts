@@ -9,9 +9,13 @@ import {
 	ASSIGNMENT_JAVA_IN_PROGRESS_HOMEWORK_GROUP
 } from "../mocks/assignments.mock";
 import { COURSE_JAVA_1920 } from "../mocks/courses.mock";
-import { GROUP_EVENT_REJOIN_SCENARIO } from "../mocks/groups/group-events.mock";
 import { GROUP_1_JAVA } from "../mocks/groups/groups.mock";
-import { UsersMock, USER_MGMT_ADMIN_JAVA_LECTURER, USER_STUDENT_JAVA } from "../mocks/users.mock";
+import {
+	UsersMock,
+	USER_MGMT_ADMIN_JAVA_LECTURER,
+	USER_STUDENT_2_JAVA,
+	USER_STUDENT_JAVA
+} from "../mocks/users.mock";
 import { TestSetup } from "../utils/e2e";
 import { copy } from "../utils/object-helper";
 
@@ -295,6 +299,76 @@ describe("Users E2E", () => {
 					expect(body.email).toEqual(changedUser.email);
 					expect(body.role).toEqual(changedUser.role);
 				});
+		});
+	});
+
+	describe("PUT-REQUESTS of GroupController (e2e)", () => {
+		beforeEach(async () => {
+			await setup.clearDb();
+			await setup.dbMockService.createUsers();
+		});
+
+		describe("(PUT) /users/{userId}/matrNr", () => {
+			it("Own Account -> Sets matrNr of user", () => {
+				const user = USER_STUDENT_JAVA;
+
+				const oldMatrNr = user.matrNr;
+				const newMatrNr = 987645;
+
+				return setup
+					.requestWithAuth("put", `/users/${user.id}/matrNr`, user.username)
+					.send({ matrNr: newMatrNr })
+					.expect(({ body }) => {
+						const result = body as UserDto;
+						expect(oldMatrNr).not.toEqual(newMatrNr);
+						expect(result.matrNr).toEqual(newMatrNr);
+					});
+			});
+
+			it("Own Account Removes matrNr of user", () => {
+				const user = USER_STUDENT_JAVA;
+				const oldMatrNr = user.matrNr;
+
+				return setup
+					.requestWithAuth("put", `/users/${user.id}/matrNr`, user.username)
+					.send({ matrNr: null })
+					.expect(({ body }) => {
+						const result = body as UserDto;
+						expect(oldMatrNr).not.toEqual(null);
+						expect(result.matrNr).toEqual(null);
+					});
+			});
+
+			it("Other Account as Admin -> Allowed", () => {
+				const user = USER_STUDENT_JAVA;
+
+				const oldMatrNr = user.matrNr;
+				const newMatrNr = 987645;
+
+				return setup
+					.requestWithAuth("put", `/users/${user.id}/matrNr`, "mAdmin")
+					.send({ matrNr: newMatrNr })
+					.expect(({ body }) => {
+						const result = body as UserDto;
+						expect(oldMatrNr).not.toEqual(newMatrNr);
+						expect(result.matrNr).toEqual(newMatrNr);
+					});
+			});
+
+			// TODO: Test suite always uses admin account
+			xit("Other Account as User -> 403", () => {
+				const otherUser = USER_STUDENT_JAVA;
+				const requestingUser = USER_STUDENT_2_JAVA;
+
+				return setup
+					.requestWithAuth(
+						"put",
+						`/users/${otherUser.id}/matrNr`,
+						requestingUser.username
+					)
+					.send({ matrNr: 987645 })
+					.expect(403);
+			});
 		});
 	});
 

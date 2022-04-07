@@ -14,7 +14,6 @@ import { DemoModule } from "./demo/demo.module";
 import { ExportModule } from "./export/export.module";
 import { MailingModule } from "./mailing/mailing.module";
 import { NotificationModule } from "./notification/notification.module";
-import { SubmissionModule } from "./submission/submission.module";
 import { TaskSchedulingModule } from "./task-scheduling/task-scheduling.module";
 import { UserModule } from "./user/user.module";
 import { RequestLogger } from "./utils/request.logger";
@@ -32,7 +31,6 @@ function Imports(): (
 		UserModule,
 		AssessmentModule,
 		AdmissionStatusModule,
-		SubmissionModule,
 		NotificationModule,
 		ExportModule
 	];

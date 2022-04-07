@@ -1,5 +1,6 @@
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
 import { Config } from "./src/.config/config";
+import { Activity } from "./src/activity/activity.entity";
 import { AssessmentAllocation } from "./src/assessment/entities/assessment-allocation.entity";
 import { AssessmentEvent } from "./src/assessment/entities/assessment-event.entity";
 import { AssessmentUserRelation } from "./src/assessment/entities/assessment-user-relation.entity";
@@ -62,7 +63,8 @@ const typeOrmConfig: TypeOrmModuleOptions = {
 		AssessmentAllocation,
 		AssessmentEvent,
 		Submission,
-		Subscriber
+		Subscriber,
+		Activity
 	]
 };
 
