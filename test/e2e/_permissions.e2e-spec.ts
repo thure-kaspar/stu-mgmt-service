@@ -267,7 +267,7 @@ describe("Permissions", () => {
 			it.each([
 				[lecturerOtherCourse, 403],
 				[admin, 200],
-				[lecturer, 200],
+				[lecturer, 403],
 				[student, 403]
 			])("%#: %s -> %d", (username, status) => {
 				return test("delete", `/courses/${courseId}`, username, status);

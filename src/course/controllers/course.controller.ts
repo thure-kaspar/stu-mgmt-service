@@ -166,7 +166,8 @@ export class CourseController {
 		description: "Deletes the course."
 	})
 	@Delete(":courseId")
-	@UseGuards(AuthGuard, CourseMemberGuard, TeachingStaffGuard)
+	@UseGuards(AuthGuard, RoleGuard)
+	@Roles(UserRole.SYSTEM_ADMIN, UserRole.MGMT_ADMIN)
 	deleteCourse(@Param("courseId") courseId: CourseId): Promise<void> {
 		return throwIfRequestFailed(
 			this.courseService.deleteCourse(courseId),
