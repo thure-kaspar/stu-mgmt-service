@@ -14,7 +14,7 @@ export class IdentityGuard implements CanActivate {
 		const user = request.user as UserDto;
 
 		// Check if requesting user is requesting information about himself
-		if (request.user.id === userId) {
+		if (user.id === userId) {
 			return true;
 		}
 

@@ -152,6 +152,11 @@ export class UserService {
 		return DtoFactory.createUserDto(user);
 	}
 
+	async setMatrNr(userId: UserId, matrNr: number | undefined | null): Promise<UserDto> {
+		await this.userRepository.update(userId, { matrNr: matrNr ?? null });
+		return this.getUserById(userId);
+	}
+
 	async deleteUser(userId: UserId): Promise<boolean> {
 		return this.userRepository.deleteUser(userId);
 	}

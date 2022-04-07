@@ -6,6 +6,7 @@ import {
 	Param,
 	Patch,
 	Post,
+	Put,
 	Query,
 	Req,
 	UseGuards
@@ -14,6 +15,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 import { CourseDto } from "src/course/dto/course/course.dto";
 import { AssessmentDto } from "../../assessment/dto/assessment.dto";
+import { GetUser } from "../../auth/decorators/get-user.decorator";
 import { Roles } from "../../auth/decorators/roles.decorator";
 import { AuthGuard } from "../../auth/guards/auth.guard";
 import { RoleGuard } from "../../auth/guards/role.guard";
@@ -196,6 +198,21 @@ export class UserController {
 	@Roles(UserRole.SYSTEM_ADMIN, UserRole.MGMT_ADMIN)
 	updateUser(@Param("userId") userId: UserId, @Body() userDto: UserUpdateDto): Promise<UserDto> {
 		return this.userService.updateUser(userId, userDto);
+	}
+
+	@ApiOperation({
+		operationId: "setMatrNr",
+		summary: "Set MatrNr",
+		description: "Sets the MatrNr of a user."
+	})
+	@Put(":userId/matrNr")
+	@UseGuards(IdentityGuard)
+	setMatrNr(
+		@Param("userId") userId: string,
+		@Body("matrNr") matrNr: number,
+		@GetUser() user: UserDto
+	): Promise<UserDto> {
+		return this.userService.setMatrNr(user.id, matrNr);
 	}
 
 	@ApiOperation({
