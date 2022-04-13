@@ -7,6 +7,10 @@ export class Config {
 		return config.get("server");
 	}
 
+	static getClient(): Client {
+		return config.get("client");
+	}
+
 	static getDb(): Db {
 		return config.get("db");
 	}
@@ -44,6 +48,10 @@ type ConfigurationSettings = {
 type Server = {
 	basePath: string;
 	port: number;
+};
+
+type Client = {
+	basePath: string;
 };
 
 type Db = {

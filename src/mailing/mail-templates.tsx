@@ -1,9 +1,11 @@
 import * as jsxt from "template-jsx";
-import { Assessment } from "../assessment/entities/assessment.entity";
+import { Config } from "../.config/config";
 import { Assignment as AssignmentEntity } from "../course/entities/assignment.entity";
 import { Assignment } from "../course/models/assignment.model";
 import { Language } from "../shared/language";
 import { Mail } from "./mail.model";
+
+const clientBasePath = Config.getClient().basePath ?? "";
 
 type MailContent = {
 	subject: string;
@@ -119,6 +121,19 @@ function AssignmentEvaluatedMail(
 	if (language === Language.DE) {
 		mail.subject = `${props.courseId} – Bewertung von ${props.assignment.name}`;
 		mail.text = `Bewertung für Aufgabe "${props.assignment.name}" wurde veröffentlicht.`;
+		mail.html = jsxt.render(
+			<>
+				<h2>
+					{props.assignment.courseId} – Bewertung von {props.assignment.name}
+				</h2>
+				<p>Die Bewertung für Aufgabe "{props.assignment.name}" wurde veröffentlicht.</p>
+				<a
+					href={`${clientBasePath}/courses/${props.assignment.courseId}/assignments/${props.assignment.id}/assessments/view/${props.assessmentId}`}
+				>
+					Link zur Bewertung
+				</a>
+			</>
+		);
 	}
 
 	if (language === Language.EN) {
@@ -131,7 +146,7 @@ function AssignmentEvaluatedMail(
 				</h2>
 				<p>The assessment for "{props.assignment.name}" is now available.</p>
 				<a
-					href={`http://TODO/courses/${props.assignment.courseId}/assignments/${props.assignment.id}/assessments/view/${props.assessmentId}`}
+					href={`${clientBasePath}/courses/${props.assignment.courseId}/assignments/${props.assignment.id}/assessments/view/${props.assessmentId}`}
 				>
 					Link to the assessment
 				</a>
@@ -165,7 +180,7 @@ function AssessmentScoreChangedMail(
 				</h2>
 				<p>Die Bewertung für Aufgabe "{props.assignment.name}" wurde verändert.</p>
 				<a
-					href={`http://TODO/courses/${props.assignment.courseId}/assignments/${props.assignment.id}/assessments/view/${props.assessment.id}`}
+					href={`${clientBasePath}/courses/${props.assignment.courseId}/assignments/${props.assignment.id}/assessments/view/${props.assessment.id}`}
 				>
 					Link zur Bewertung
 				</a>
@@ -183,7 +198,7 @@ function AssessmentScoreChangedMail(
 				</h2>
 				<p>The assessment for "{props.assignment.name}" has been updated.</p>
 				<a
-					href={`http://TODO/courses/${props.assignment.courseId}/assignments/${props.assignment.id}/assessments/view/${props.assessment.id}`}
+					href={`${clientBasePath}/courses/${props.assignment.courseId}/assignments/${props.assignment.id}/assessments/view/${props.assessment.id}`}
 				>
 					Link to the assessment
 				</a>

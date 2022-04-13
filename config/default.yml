@@ -2,6 +2,9 @@ server:
     basePath: "http://localhost:3000"
     port: 3000
 
+client:
+    basePath: "http://localhost:4200"
+
 db:
     type: "postgres"
     port: 5432
