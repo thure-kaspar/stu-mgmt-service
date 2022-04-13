@@ -11,13 +11,6 @@ type MailContent = {
 	html: string;
 };
 
-export type MailEvent =
-	| "ASSIGNMENT_STARTED"
-	| "ASSIGNMENT_EVALUATED"
-	| "ASSESSMENT_SCORE_CHANGED"
-	| "PARTICIPANT_JOINED_GROUP"
-	| "PARTICIPANT_LEFT_GROUP";
-
 const EventFunction = {
 	ASSIGNMENT_STARTED: AssignmentStartedMail,
 	ASSIGNMENT_EVALUATED: AssignmentEvaluatedMail,
@@ -25,6 +18,9 @@ const EventFunction = {
 	PARTICIPANT_JOINED_GROUP: ParticipantJoinedGroupMail,
 	PARTICIPANT_LEFT_GROUP: ParticipantLeftGroupMail
 } as const;
+
+/** Type that contains all Events that can generate an email. */
+export type MailEvent = keyof typeof EventFunction;
 
 /**
  * Generic that extracts the type of the first parameter (`props`) of a function that
