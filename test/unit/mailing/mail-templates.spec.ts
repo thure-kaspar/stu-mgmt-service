@@ -23,7 +23,8 @@ describe("Mail Templates", () => {
 				courseId: "java-wise1920",
 				assignment: {
 					name: "Homework 01",
-					id: "homework-01"
+					id: "homework-01",
+					courseId: "java-wise1920"
 				} as Assignment,
 				assessmentId: "assessment-01"
 			});

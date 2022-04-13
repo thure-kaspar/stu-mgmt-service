@@ -6,7 +6,7 @@ Mail {
     "ex@mple.email",
   ],
   "from": "no-reply@student-mgmt-system",
-  "html": "<h2>java-wise1920 – Änderung der Bewertung von Homework 01</h2><p>Die Bewertung für Aufgabe \\"Homework 01\\" wurde verändert.</p><a href=\\"http://TODO/courses/java-wise1920/assignments/homework-01/assessments/view/assessment-01\\">Link zur Bewertung</a>",
+  "html": "<h2>java-wise1920 – Änderung der Bewertung von Homework 01</h2><p>Die Bewertung für Aufgabe \\"Homework 01\\" wurde verändert.</p><a href=\\"http://localhost:4200/courses/java-wise1920/assignments/homework-01/assessments/view/assessment-01\\">Link zur Bewertung</a>",
   "subject": "java-wise1920 – Änderung der Bewertung von Homework 01",
   "text": "Bewertung für Aufgabe \\"Homework 01\\" wurde verändert.",
 }
@@ -18,7 +18,7 @@ Mail {
     "ex@mple.email",
   ],
   "from": "no-reply@student-mgmt-system",
-  "html": "<h2>java-wise1920 – Updated assessment for Homework 01</h2><p>The assessment for \\"Homework 01\\" has been updated.</p><a href=\\"http://TODO/courses/java-wise1920/assignments/homework-01/assessments/view/assessment-01\\">Link to the assessment</a>",
+  "html": "<h2>java-wise1920 – Updated assessment for Homework 01</h2><p>The assessment for \\"Homework 01\\" has been updated.</p><a href=\\"http://localhost:4200/courses/java-wise1920/assignments/homework-01/assessments/view/assessment-01\\">Link to the assessment</a>",
   "subject": "java-wise1920 – Updated assessment for Homework 01",
   "text": "Assessment for \\"Homework 01\\" has been updated.",
 }
@@ -30,7 +30,7 @@ Mail {
     "ex@mple.email",
   ],
   "from": "no-reply@student-mgmt-system",
-  "html": null,
+  "html": "<h2>java-wise1920 – Bewertung von Homework 01</h2><p>Die Bewertung für Aufgabe \\"Homework 01\\" wurde veröffentlicht.</p><a href=\\"http://localhost:4200/courses/java-wise1920/assignments/homework-01/assessments/view/assessment-01\\">Link zur Bewertung</a>",
   "subject": "java-wise1920 – Bewertung von Homework 01",
   "text": "Bewertung für Aufgabe \\"Homework 01\\" wurde veröffentlicht.",
 }
@@ -42,8 +42,8 @@ Mail {
     "ex@mple.email",
   ],
   "from": "no-reply@student-mgmt-system",
-  "html": "<h2>java-wise1920 – Assessment for Homework 01</h2><p>The assessment for \\"Homework 01\\" is now available.</p><a href=\\"http://TODO/courses/undefined/assignments/homework-01/assessments/view/assessment-01\\">Link to the assessment</a>",
-  "subject": "undefined – Assessment for Homework 01",
+  "html": "<h2>java-wise1920 – Assessment for Homework 01</h2><p>The assessment for \\"Homework 01\\" is now available.</p><a href=\\"http://localhost:4200/courses/java-wise1920/assignments/homework-01/assessments/view/assessment-01\\">Link to the assessment</a>",
+  "subject": "java-wise1920 – Assessment for Homework 01",
   "text": "Assessment for \\"Homework 01\\" is now available.",
 }
 `;
