@@ -16,7 +16,8 @@ const EventFunction = {
 	ASSIGNMENT_EVALUATED: AssignmentEvaluatedMail,
 	ASSESSMENT_SCORE_CHANGED: AssessmentScoreChangedMail,
 	PARTICIPANT_JOINED_GROUP: ParticipantJoinedGroupMail,
-	PARTICIPANT_LEFT_GROUP: ParticipantLeftGroupMail
+	PARTICIPANT_LEFT_GROUP: ParticipantLeftGroupMail,
+	SUBMISSION_CREATED: SubmissionCreated
 } as const;
 
 /** Type that contains all Events that can generate an email. */
@@ -68,7 +69,7 @@ function AssignmentStartedMail(
 		mail.subject = `${props.courseId} – Neue Aufgabe: ${props.assignmentName}`;
 		mail.text = `Aufgabe "${props.assignmentName}" kann jetzt bearbeitet werden.`;
 		mail.html = jsxt.render(
-			<>
+			<div>
 				<h2>
 					{props.courseId} – Neue Aufgabe {props.assignmentName}
 				</h2>
@@ -78,13 +79,13 @@ function AssignmentStartedMail(
 				</jsxt.If>
 				<br />
 				<p>Viel Erfolg!</p>
-			</>
+			</div>
 		);
 	} else {
 		mail.subject = `${props.courseId} – New Assignment: ${props.assignmentName}`;
 		mail.text = `The assignment "${props.assignmentName}" is now available.`;
 		mail.html = jsxt.render(
-			<>
+			<div>
 				<h2>
 					{props.courseId} – New assignment {props.assignmentName}
 				</h2>
@@ -94,7 +95,7 @@ function AssignmentStartedMail(
 				</jsxt.If>
 				<br />
 				<p>Good luck!</p>
-			</>
+			</div>
 		);
 	}
 
@@ -105,7 +106,7 @@ function AssignmentEvaluatedMail(
 	props: {
 		courseId: string;
 		assignment: Assignment | AssignmentEntity;
-		assessment: Assessment;
+		assessmentId: string;
 	},
 	language: Language
 ): MailContent {
@@ -118,19 +119,6 @@ function AssignmentEvaluatedMail(
 	if (language === Language.DE) {
 		mail.subject = `${props.courseId} – Bewertung von ${props.assignment.name}`;
 		mail.text = `Bewertung für Aufgabe "${props.assignment.name}" wurde veröffentlicht.`;
-		mail.html = jsxt.render(
-			<>
-				<h2>
-					{props.assignment.courseId} – Bewertung von {props.assignment.name}
-				</h2>
-				<p>Die Bewertung für Aufgabe "{props.assignment.name}" wurde veröffentlicht.</p>
-				<a
-					href={`http://TODO/courses/${props.assignment.courseId}/assignments/${props.assignment.id}/assessments/view/${props.assessment.id}`}
-				>
-					Link zur Bewertung
-				</a>
-			</>
-		);
 	}
 
 	if (language === Language.EN) {
@@ -143,7 +131,7 @@ function AssignmentEvaluatedMail(
 				</h2>
 				<p>The assessment for "{props.assignment.name}" is now available.</p>
 				<a
-					href={`http://TODO/courses/${props.assignment.courseId}/assignments/${props.assignment.id}/assessments/view/${props.assessment.id}`}
+					href={`http://TODO/courses/${props.assignment.courseId}/assignments/${props.assignment.id}/assessments/view/${props.assessmentId}`}
 				>
 					Link to the assessment
 				</a>
@@ -156,8 +144,8 @@ function AssignmentEvaluatedMail(
 
 function AssessmentScoreChangedMail(
 	props: {
-		assignment: Assignment | AssignmentEntity;
-		assessment: Assessment;
+		assignment: { id: string; name: string; courseId: string };
+		assessment: { id: string };
 	},
 	language: Language
 ): MailContent {
@@ -282,6 +270,41 @@ function ParticipantLeftGroupMail(
 				<p>A member has left your group.</p>
 			</>
 		);
+	}
+
+	return mail;
+}
+
+function SubmissionCreated(
+	props: {
+		courseId: string;
+		assignmentName: string;
+		groupName?: string;
+	},
+	language: Language
+): MailContent {
+	const mail = {
+		subject: null,
+		text: null,
+		html: null
+	};
+
+	if (language === Language.DE) {
+		mail.subject = `${props.courseId} – ${props.assignmentName} - Abgabe eingereicht`;
+		if (props.groupName) {
+			mail.text = `Die Gruppe "${props.groupName}" hat eine Abgabe für "${props.assignmentName}" eingereicht.`;
+		} else {
+			mail.text = `Sie haben eine Abgabe für "${props.assignmentName}" eingereicht.`;
+		}
+	}
+
+	if (language === Language.EN) {
+		mail.subject = `${props.courseId} – ${props.assignmentName} - Solution submitted`;
+		if (props.groupName) {
+			mail.text = `Group "${props.groupName}" has submitted a solution for "${props.assignmentName}".`;
+		} else {
+			mail.text = `You have submitted a solution for "${props.assignmentName}".`;
+		}
 	}
 
 	return mail;

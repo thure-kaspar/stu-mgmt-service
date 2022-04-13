@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { ofType, Saga } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Observable } from "rxjs";
@@ -6,14 +6,17 @@ import { map, tap } from "rxjs/operators";
 import { Assessment } from "../../assessment/entities/assessment.entity";
 import { AssessmentScoreChanged } from "../../assessment/events/assessment-score-changed.event";
 import { AssessmentRepository } from "../../assessment/repositories/assessment.repository";
+import { GroupDto } from "../../course/dto/group/group.dto";
 import { Participant } from "../../course/entities/participant.entity";
 import { AssignmentStateChanged } from "../../course/events/assignment/assignment-state-changed.event";
 import { UserJoinedGroupEvent } from "../../course/events/group/user-joined-group.event";
 import { UserLeftGroupEvent } from "../../course/events/group/user-left-group.event";
+import { AssignmentRegistrationRepository } from "../../course/repositories/assignment-registration.repository";
 import { ParticipantRepository } from "../../course/repositories/participant.repository";
 import { GroupService } from "../../course/services/group.service";
 import { AssignmentState, AssignmentType } from "../../shared/enums";
 import { Language } from "../../shared/language";
+import { SubmissionCreated } from "../../submission/submission.event";
 import { MailEvent, MailFactory } from "../mail-templates";
 import { Mail } from "../mail.model";
 import { MailingService } from "./mailing.service";
@@ -81,13 +84,27 @@ export class MailingListener {
 		);
 	};
 
+	@Saga()
+	submissionCreated$ = (events$: Observable<unknown>): Observable<unknown> => {
+		return events$.pipe(
+			ofType(SubmissionCreated),
+			tap(async event => {
+				this.onSubmissionCreated(event);
+			}),
+			map(() => undefined)
+		);
+	};
+
+	private logger = new Logger("MailingListener");
+
 	constructor(
 		private mailingService: MailingService,
 		private groupService: GroupService,
 		@InjectRepository(ParticipantRepository)
 		private participantRepository: ParticipantRepository,
 		@InjectRepository(AssessmentRepository)
-		private assessmentRepository: AssessmentRepository
+		private assessmentRepository: AssessmentRepository,
+		private registrations: AssignmentRegistrationRepository
 	) {}
 
 	async onAssignmentStarted({ assignment }: AssignmentStateChanged): Promise<void> {
@@ -145,7 +162,7 @@ export class MailingListener {
 					[participant.user.email],
 					this.getPreferredLanguage(participant),
 					{
-						assessment,
+						assessmentId: assessment.id,
 						assignment,
 						courseId: assignment.courseId
 					}
@@ -243,6 +260,49 @@ export class MailingListener {
 		});
 
 		await Promise.all(mailPromises);
+	}
+
+	async onSubmissionCreated(event: SubmissionCreated): Promise<void> {
+		try {
+			const { assignment, userId, groupId } = event;
+
+			let group: GroupDto | null = null;
+
+			if (groupId) {
+				group = await this.registrations.getRegisteredGroupWithMembers(
+					assignment.id,
+					groupId
+				);
+			}
+
+			const userIds = group ? group.members.map(m => m.userId) : [userId];
+
+			const members = await this.participantRepository.getParticipantsWithUserSettings(
+				assignment.courseId,
+				{ userIds }
+			);
+
+			const recipients = this.filterReceivers(members, "SUBMISSION_CREATED");
+
+			const mailPromises = recipients.map(participant => {
+				const mail = MailFactory.create(
+					"SUBMISSION_CREATED",
+					[participant.user.email],
+					this.getPreferredLanguage(participant),
+					{
+						courseId: assignment.courseId,
+						assignmentName: assignment.name,
+						groupName: group?.name
+					}
+				);
+
+				return this.mailingService.send(mail);
+			});
+
+			await Promise.all(mailPromises);
+		} catch (error) {
+			this.logger.error("An error occurred in onSubmissionCreated.");
+		}
 	}
 
 	createMailPromises(

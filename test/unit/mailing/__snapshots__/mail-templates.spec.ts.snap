@@ -1,0 +1,169 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Mail Templates ASSESSMENT_SCORE_CHANGED DE 1`] = `
+Mail {
+  "bcc": Array [
+    "ex@mple.email",
+  ],
+  "from": "no-reply@student-mgmt-system",
+  "html": "<h2>java-wise1920 – Änderung der Bewertung von Homework 01</h2><p>Die Bewertung für Aufgabe \\"Homework 01\\" wurde verändert.</p><a href=\\"http://TODO/courses/java-wise1920/assignments/homework-01/assessments/view/assessment-01\\">Link zur Bewertung</a>",
+  "subject": "java-wise1920 – Änderung der Bewertung von Homework 01",
+  "text": "Bewertung für Aufgabe \\"Homework 01\\" wurde verändert.",
+}
+`;
+
+exports[`Mail Templates ASSESSMENT_SCORE_CHANGED EN 1`] = `
+Mail {
+  "bcc": Array [
+    "ex@mple.email",
+  ],
+  "from": "no-reply@student-mgmt-system",
+  "html": "<h2>java-wise1920 – Updated assessment for Homework 01</h2><p>The assessment for \\"Homework 01\\" has been updated.</p><a href=\\"http://TODO/courses/java-wise1920/assignments/homework-01/assessments/view/assessment-01\\">Link to the assessment</a>",
+  "subject": "java-wise1920 – Updated assessment for Homework 01",
+  "text": "Assessment for \\"Homework 01\\" has been updated.",
+}
+`;
+
+exports[`Mail Templates ASSIGNMENT_EVALUATED DE 1`] = `
+Mail {
+  "bcc": Array [
+    "ex@mple.email",
+  ],
+  "from": "no-reply@student-mgmt-system",
+  "html": null,
+  "subject": "java-wise1920 – Bewertung von Homework 01",
+  "text": "Bewertung für Aufgabe \\"Homework 01\\" wurde veröffentlicht.",
+}
+`;
+
+exports[`Mail Templates ASSIGNMENT_EVALUATED EN 1`] = `
+Mail {
+  "bcc": Array [
+    "ex@mple.email",
+  ],
+  "from": "no-reply@student-mgmt-system",
+  "html": "<h2>java-wise1920 – Assessment for Homework 01</h2><p>The assessment for \\"Homework 01\\" is now available.</p><a href=\\"http://TODO/courses/undefined/assignments/homework-01/assessments/view/assessment-01\\">Link to the assessment</a>",
+  "subject": "undefined – Assessment for Homework 01",
+  "text": "Assessment for \\"Homework 01\\" is now available.",
+}
+`;
+
+exports[`Mail Templates ASSIGNMENT_STARTED DE 1`] = `
+Mail {
+  "bcc": Array [
+    "ex@mple.email",
+  ],
+  "from": "no-reply@student-mgmt-system",
+  "html": "<div><h2>java-wise1920 – Neue Aufgabe Homework 01</h2><p>Die Aufgabe \\"Homework 01\\" kann jetzt bearbeitet werden.</p><p>Die Bearbeitungszeit endet am 5/20/2022, 12:00:00 AM.</p><br /><p>Viel Erfolg!</p></div>",
+  "subject": "java-wise1920 – Neue Aufgabe: Homework 01",
+  "text": "Aufgabe \\"Homework 01\\" kann jetzt bearbeitet werden.",
+}
+`;
+
+exports[`Mail Templates ASSIGNMENT_STARTED EN 1`] = `
+Mail {
+  "bcc": Array [
+    "ex@mple.email",
+  ],
+  "from": "no-reply@student-mgmt-system",
+  "html": "<div><h2>java-wise1920 – New assignment Homework 01</h2><p>The assignment \\"Homework 01\\" is now available.</p><p>Submissions can be turned in until 5/20/2022, 12:00:00 AM.</p><br /><p>Good luck!</p></div>",
+  "subject": "java-wise1920 – New Assignment: Homework 01",
+  "text": "The assignment \\"Homework 01\\" is now available.",
+}
+`;
+
+exports[`Mail Templates PARTICIPANT_JOINED_GROUP DE 1`] = `
+Mail {
+  "bcc": Array [
+    "ex@mple.email",
+  ],
+  "from": "no-reply@student-mgmt-system",
+  "html": "<h2>java-wise1920 – Neues Gruppenmitglied</h2><p>Ein neues Mitglied hat sich ihrer Gruppe angeschlossen:</p><p>Max Mustermann - particip@nt.email</p>",
+  "subject": "java-wise1920 – Neues Gruppenmitglied",
+  "text": "Ein neues Mitglied hat sich ihrer Gruppe angeschlossen.",
+}
+`;
+
+exports[`Mail Templates PARTICIPANT_JOINED_GROUP EN 1`] = `
+Mail {
+  "bcc": Array [
+    "ex@mple.email",
+  ],
+  "from": "no-reply@student-mgmt-system",
+  "html": "<h2>java-wise1920 – New group member</h2><p>A new member has joined your group.</p>",
+  "subject": "java-wise1920 – New group member",
+  "text": "A new member has joined your group.",
+}
+`;
+
+exports[`Mail Templates PARTICIPANT_LEFT_GROUP DE 1`] = `
+Mail {
+  "bcc": Array [
+    "ex@mple.email",
+  ],
+  "from": "no-reply@student-mgmt-system",
+  "html": "<h2>java-wise1920 – Ein Mitglied hat Ihre Gruppe verlassen</h2><p>Ein Mitglied hat Ihre Gruppe verlassen:</p><p>Max Mustermann</p>",
+  "subject": "java-wise1920 – Ein Mitglied hat Ihre Gruppe verlassen",
+  "text": "Ein Mitglied hat Ihre Gruppe verlassen.",
+}
+`;
+
+exports[`Mail Templates PARTICIPANT_LEFT_GROUP EN 1`] = `
+Mail {
+  "bcc": Array [
+    "ex@mple.email",
+  ],
+  "from": "no-reply@student-mgmt-system",
+  "html": "<h2>java-wise1920 – A member has left your group</h2><p>A member has left your group.</p>",
+  "subject": "java-wise1920 – A member has left your group",
+  "text": "A member has left your group.",
+}
+`;
+
+exports[`Mail Templates SUBMISSION_CREATED No group DE 1`] = `
+Mail {
+  "bcc": Array [
+    "ex@mple.email",
+  ],
+  "from": "no-reply@student-mgmt-system",
+  "html": null,
+  "subject": "java-wise1920 – Homework 01 - Abgabe eingereicht",
+  "text": "Sie haben eine Abgabe für \\"Homework 01\\" eingereicht.",
+}
+`;
+
+exports[`Mail Templates SUBMISSION_CREATED No group EN 1`] = `
+Mail {
+  "bcc": Array [
+    "ex@mple.email",
+  ],
+  "from": "no-reply@student-mgmt-system",
+  "html": null,
+  "subject": "java-wise1920 – Homework 01 - Solution submitted",
+  "text": "You have submitted a solution for \\"Homework 01\\".",
+}
+`;
+
+exports[`Mail Templates SUBMISSION_CREATED With group DE 1`] = `
+Mail {
+  "bcc": Array [
+    "ex@mple.email",
+  ],
+  "from": "no-reply@student-mgmt-system",
+  "html": null,
+  "subject": "java-wise1920 – Homework 01 - Abgabe eingereicht",
+  "text": "Die Gruppe \\"JAVA-GROUP-01\\" hat eine Abgabe für \\"Homework 01\\" eingereicht.",
+}
+`;
+
+exports[`Mail Templates SUBMISSION_CREATED With group EN 1`] = `
+Mail {
+  "bcc": Array [
+    "ex@mple.email",
+  ],
+  "from": "no-reply@student-mgmt-system",
+  "html": null,
+  "subject": "java-wise1920 – Homework 01 - Solution submitted",
+  "text": "Group \\"JAVA-GROUP-01\\" has submitted a solution for \\"Homework 01\\".",
+}
+`;

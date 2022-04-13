@@ -2,8 +2,11 @@ import { Body, Controller, Delete, Get, Param, Post, Query, Req, UseGuards } fro
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 import { AuthGuard } from "../auth/guards/auth.guard";
+import { GetAssignment } from "../course/decorators/decorators";
+import { AssignmentGuard } from "../course/guards/assignment.guard";
 import { CourseMemberGuard } from "../course/guards/course-member/course-member.guard";
 import { TeachingStaffGuard } from "../course/guards/teaching-staff.guard";
+import { Assignment } from "../course/models/assignment.model";
 import { IdentityGuard } from "../user/guards/identity.guard";
 import { PaginatedResult } from "../utils/http-utils";
 import { SubmissionCreateDto, SubmissionDto } from "./submission.dto";
@@ -23,13 +26,14 @@ export class SubmissionController {
 		description: "Adds a submission for the specified assignment."
 	})
 	@Post("assignments/:assignmentId")
-	@UseGuards(TeachingStaffGuard)
+	@UseGuards(TeachingStaffGuard, AssignmentGuard)
 	add(
 		@Param("courseId") courseId: string,
 		@Param("assignmentId") assignmentId: string,
-		@Body() submission: SubmissionCreateDto
+		@Body() submission: SubmissionCreateDto,
+		@GetAssignment() assignment: Assignment
 	): Promise<SubmissionDto> {
-		return this.service.add(courseId, assignmentId, submission);
+		return this.service.add(assignment, submission);
 	}
 
 	@ApiOperation({

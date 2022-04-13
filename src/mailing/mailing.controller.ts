@@ -1,13 +1,15 @@
 import { Controller, NotImplementedException, Post } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { environment } from "../.config/environment";
-// import c = require("config");
 // import { ASSESSMENT_JAVA_EVALUATED_GROUP_1 } from "../../test/mocks/assessments.mock";
 // import { ASSIGNMENT_JAVA_EVALUATED } from "../../test/mocks/assignments.mock";
 // import { GROUP_1_JAVA } from "../../test/mocks/groups/groups.mock";
-// import { USER_STUDENT_2_JAVA, USER_STUDENT_3_JAVA_TUTOR } from "../../test/mocks/users.mock";
+// import {
+// 	USER_STUDENT_2_JAVA,
+// 	USER_STUDENT_3_JAVA_TUTOR,
+// 	USER_STUDENT_JAVA
+// } from "../../test/mocks/users.mock";
 // import { convertToEntity } from "../../test/utils/object-helper";
-// import { environment } from "../.config/environment";
 // import { Assignment as AssignmentEntity } from "../course/entities/assignment.entity";
 // import { AssignmentStateChanged } from "../course/events/assignment/assignment-state-changed.event";
 // import { UserJoinedGroupEvent } from "../course/events/group/user-joined-group.event";
@@ -36,8 +38,14 @@ export class MailingController {
 
 		// return this.listener.onAssignmentEvaluated(new AssignmentStateChanged(assignment));
 
+		// return this.listener.onSubmissionCreated({
+		// 	assignment,
+		// 	userId: USER_STUDENT_JAVA.id,
+		// 	groupId: GROUP_1_JAVA.id
+		// });
+
 		// const assessment = ASSESSMENT_JAVA_EVALUATED_GROUP_1;
-		//const user = USER_STUDENT_3_JAVA_TUTOR;
+		// const user = USER_STUDENT_3_JAVA_TUTOR;
 		// return this.listener.onAssessmentScoreChanged({
 		// 	assessmentId: assessment.id,
 		// 	userId: user.id,
@@ -55,7 +63,7 @@ export class MailingController {
 		// const group = GROUP_1_JAVA;
 		// const user = USER_STUDENT_2_JAVA;
 		// const event = new UserLeftGroupEvent("java-wise1920", group.id, user.id);
-		// return this.listener.onParticipantLeftGroup(event);#
+		// return this.listener.onParticipantLeftGroup(event);
 
 		return null;
 	}

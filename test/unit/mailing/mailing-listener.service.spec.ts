@@ -1,12 +1,14 @@
 import { Assessment } from "../../../src/assessment/entities/assessment.entity";
 import { AssessmentScoreChanged } from "../../../src/assessment/events/assessment-score-changed.event";
 import { AssessmentRepository } from "../../../src/assessment/repositories/assessment.repository";
+import { ParticipantDto } from "../../../src/course/dto/course-participant/participant.dto";
 import { GroupDto } from "../../../src/course/dto/group/group.dto";
 import { Assignment as AssignmentEntity } from "../../../src/course/entities/assignment.entity";
 import { Participant } from "../../../src/course/entities/participant.entity";
 import { AssignmentStateChanged } from "../../../src/course/events/assignment/assignment-state-changed.event";
 import { UserJoinedGroupEvent } from "../../../src/course/events/group/user-joined-group.event";
 import { Assignment } from "../../../src/course/models/assignment.model";
+import { AssignmentRegistrationRepository } from "../../../src/course/repositories/assignment-registration.repository";
 import { ParticipantRepository } from "../../../src/course/repositories/participant.repository";
 import { GroupService } from "../../../src/course/services/group.service";
 import { MailingListener } from "../../../src/mailing/services/mailing-listener.service";
@@ -52,6 +54,10 @@ const mock_AssessmentRepository = (): Partial<AssessmentRepository> => ({
 	getAssessmentById: jest.fn()
 });
 
+const mock_AssignmentRegistrationRepository = (): Partial<AssignmentRegistrationRepository> => ({
+	getRegisteredGroupWithMembers: jest.fn()
+});
+
 function createMockParticipant(id: number): Participant {
 	return {
 		id,
@@ -73,17 +79,20 @@ describe("MailingService", () => {
 	let groupService: GroupService;
 	let participantRepository: ParticipantRepository;
 	let assessmentRepository: AssessmentRepository;
+	let registrations: AssignmentRegistrationRepository;
 
 	beforeEach(async () => {
 		mailingService = mock_MailingService() as MailingService;
 		participantRepository = mock_ParticipantRepository() as ParticipantRepository;
 		assessmentRepository = mock_AssessmentRepository() as AssessmentRepository;
 		groupService = mock_GroupService() as GroupService;
+		registrations = mock_AssignmentRegistrationRepository() as AssignmentRegistrationRepository;
 		sut = new MailingListener(
 			mailingService,
 			groupService,
 			participantRepository,
-			assessmentRepository
+			assessmentRepository,
+			registrations
 		);
 	});
 
@@ -236,6 +245,54 @@ describe("MailingService", () => {
 		it("Sends a mail to all old members", async () => {
 			await sut.onParticipantJoinedGroup(event);
 			expect(mailingService.send).toHaveBeenCalledTimes(2);
+		});
+	});
+
+	describe("onSubmissionCreated", () => {
+		it("With group", async () => {
+			const event = {
+				assignment: {
+					id: "assignment-01",
+					name: "Assignment 01"
+				} as Assignment,
+				userId: "abc-123",
+				groupId: "JAVA-GROUP-01"
+			};
+
+			const registeredGroup: GroupDto = {
+				id: "JAVA-GROUP-01",
+				name: "JAVA GROUP 01",
+				members: [
+					{ email: "max@mustermann.email" } as ParticipantDto,
+					{ email: "john@doe.email" } as ParticipantDto
+				]
+			};
+
+			registrations.getRegisteredGroupWithMembers = jest
+				.fn()
+				.mockResolvedValueOnce(registeredGroup);
+
+			await sut.onSubmissionCreated(event);
+
+			expect(registrations.getRegisteredGroupWithMembers).toHaveBeenCalledWith(
+				event.assignment.id,
+				registeredGroup.id
+			);
+			expect(mailingService.send).toHaveBeenCalled();
+		});
+
+		it("No group", async () => {
+			const event = {
+				assignment: {
+					id: "assignment-01",
+					name: "Assignment 01"
+				} as Assignment,
+				userId: "abc-123"
+			};
+			await sut.onSubmissionCreated(event);
+
+			expect(registrations.getRegisteredGroupWithMembers).not.toHaveBeenCalled();
+			expect(mailingService.send).toHaveBeenCalled();
 		});
 	});
 

@@ -1,27 +1,27 @@
 import { Injectable } from "@nestjs/common";
+import { EventBus } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { AssignmentId } from "../course/entities/assignment.entity";
 import { CourseId } from "../course/entities/course.entity";
+import { Assignment } from "../course/models/assignment.model";
 import { UserId } from "../shared/entities/user.entity";
 import { SubmissionCreateDto, SubmissionDto } from "./submission.dto";
 import { Submission } from "./submission.entity";
+import { SubmissionCreated } from "./submission.event";
 import { SubmissionFilter } from "./submission.filter";
 
 @Injectable()
 export class SubmissionService {
 	constructor(
-		@InjectRepository(Submission) private submissionRepository: Repository<Submission>
+		@InjectRepository(Submission) private submissionRepository: Repository<Submission>,
+		private events: EventBus
 	) {}
 
-	async add(
-		courseId: string,
-		assignmentId: string,
-		submission: SubmissionCreateDto
-	): Promise<SubmissionDto> {
+	async add(assignment: Assignment, submission: SubmissionCreateDto): Promise<SubmissionDto> {
 		const submissionEntity = this.submissionRepository.create({
-			courseId,
-			assignmentId,
+			courseId: assignment.courseId,
+			assignmentId: assignment.id,
 			userId: submission.userId,
 			groupId: submission.groupId,
 			links: submission.links,
@@ -29,6 +29,11 @@ export class SubmissionService {
 		});
 
 		await this.submissionRepository.save(submissionEntity);
+
+		this.events.publish(
+			new SubmissionCreated(assignment, submission.userId, submission.groupId)
+		);
+
 		return this.getSubmissionById(submissionEntity.id);
 	}
 
