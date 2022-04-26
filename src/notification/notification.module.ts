@@ -8,10 +8,10 @@ import { NotificationSaga } from "./notification.saga";
 import { NotificationService } from "./notification.service";
 import { SubscriberRepository } from "./subscriber/subscriber.repository";
 
-function optionalProviders(): any[] {
+function optionalProviders() {
 	const providers = [];
 
-	if (Config.getNotifications().enabled) {
+	if (Config.get().notifications.enabled) {
 		providers.push(NotificationSaga);
 	}
 

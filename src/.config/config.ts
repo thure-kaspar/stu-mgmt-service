@@ -1,106 +1,169 @@
-import { LogLevel } from "@nestjs/common";
 import * as config from "config";
-import { SubscribedEvents } from "../notification/subscriber/subscriber.dto";
+import { DeepPartial } from "typeorm";
+import * as y from "yup";
+import { environment } from "./environment";
 
 export class Config {
-	static getServer(): Server {
-		return config.get("server");
+	private static _config: ConfigurationSettings = null;
+
+	/** Merges the configuration values from `/config/[environment].yml` with environment variables. */
+	private static create(): void {
+		const cfg = config.util.toObject() as ConfigurationSettings;
+
+		// Partial configuration with environment variables and original config values as fallback
+		const cfgWithEnv: DeepPartial<ConfigurationSettings> = {
+			logger: {},
+			notifications: {},
+			authentication: {
+				url: process.env.AUTHENTICATION_BASE_PATH ?? cfg.authentication?.url
+			},
+			server: {
+				basePath: process.env.SERVER_BASE_PATH ?? cfg.server?.basePath,
+				port: process.env.SERVER_PORT ? Number(process.env.SERVER_PORT) : cfg.server?.port
+			},
+			client: {
+				basePath: process.env.CLIENT_BASE_PATH ?? cfg.client?.basePath
+			},
+			db: {
+				type: process.env.DB_TYPE ?? cfg.db?.type,
+				host: process.env.DB_HOST ?? cfg.db?.host,
+				port: process.env.DB_PORT ? Number(process.env.DB_PORT) : cfg.db?.port,
+				database: process.env.DB_DATABASE ?? cfg.db?.database,
+				username: process.env.DB_USERNAME ?? cfg.db?.username,
+				password: process.env.DB_PASSWORD ?? cfg.db?.password,
+				synchronize: process.env.TYPEORM_SYNC
+					? Boolean(JSON.parse(process.env.TYPEORM_SYNC))
+					: cfg.db?.synchronize
+			},
+			mailing: {
+				smtp: {
+					host: process.env.SMTP_HOST ?? cfg.mailing?.smtp?.host,
+					port: process.env.SMTP_PORT
+						? Number(process.env.SMTP_PORT)
+						: cfg.mailing?.smtp?.port,
+					useSecureConnection: process.env.SMTP_SECURE
+						? Boolean(JSON.parse(process.env.SMTP_SECURE))
+						: cfg.mailing?.smtp?.useSecureConnection,
+					username: process.env.SMTP_USERNAME ?? cfg.mailing?.smtp?.username,
+					password: process.env.SMTP_PASSWORD ?? cfg.mailing?.smtp?.password
+				}
+			}
+		};
+
+		this._config = config.util.extendDeep(cfg, cfgWithEnv);
 	}
 
-	static getClient(): Client {
-		return config.get("client");
+	/** Returns the configuration. Includes environment variables. */
+	static get(): ConfigurationSettings {
+		if (!this._config) {
+			this.create();
+		}
+
+		return this._config;
 	}
 
-	static getDb(): Db {
-		return config.get("db");
-	}
+	/** Validates the configuration (including environment variables) and throws an error, if it is invalid. */
+	static validate(): void {
+		if (!this._config) {
+			this.create();
+		}
 
-	static getAuthentication(): Authentication {
-		return config.get("authentication");
-	}
-
-	static getMailing(): Mailing {
-		return config.get("mailing");
-	}
-
-	static getNotifications(): Notifications {
-		return config.get("notifications");
-	}
-
-	static getLogger(): Logger {
-		return config.get("logger");
-	}
-
-	static getConfig(): ConfigurationSettings {
-		return config.util.toObject();
+		try {
+			configSchema.validateSync(this._config, { abortEarly: false });
+		} catch (error) {
+			console.error(
+				"The configuration contains invalid/missing fields. Please check your configuration for typos and invalid/missing values. (Note: Environment variables overwrite config values and were already considered for the validation.)"
+			);
+			if (error instanceof y.ValidationError) {
+				error.errors.forEach((message, index) => {
+					console.error(`Invalid #${index + 1}: ${message}`);
+				});
+			}
+			throw new Error("Config is invalid.");
+		}
 	}
 }
 
-type ConfigurationSettings = {
-	server: Server;
-	db: Db;
-	authentication: Authentication;
-	notifications: Notifications;
-	mailing: Mailing;
-	logger: Logger;
+const server = y
+	.object({
+		basePath: y.string().required(),
+		port: y.number().integer().positive().required()
+	})
+	.required();
+
+const client = y
+	.object({
+		basePath: y.string()
+	})
+	.required();
+
+const db = y
+	.object({
+		type: y.string().required(),
+		port: y.number().integer().positive().required(),
+		database: y.string().required(),
+		host: y.string().required(),
+		username: y.string().required(),
+		password: y.string().required(),
+		synchronize: y.boolean().required(),
+		dropSchema: y.boolean().required()
+	})
+	.required();
+
+const authentication = y.object({
+	url: y.string().required()
+});
+
+const mailing = y
+	.object({
+		enabled: y.boolean().required(),
+		smtp: y
+			.object({
+				host: y.string().required(),
+				port: y.number().integer().required(),
+				useSecureConnection: y.boolean().required(),
+				username: y.string().required(),
+				password: y.string()
+			})
+			.when("enabled", {
+				is: true,
+				then: y.object().required()
+			})
+	})
+	.required();
+
+const notifications = y.object({
+	enabled: y.boolean().required(),
+	subscribers: y.array().of(
+		y.object({
+			courseId: y.string().required(),
+			name: y.string().required(),
+			url: y.string().required(),
+			events: y.string().required()
+		})
+	)
+});
+
+const logger = y.object({
+	levels: y.array().of(y.string().oneOf(["log", "verbose", "debug", "warn", "error"])),
+	requests: y.boolean(),
+	dbErrors: y.boolean()
+});
+
+/**
+ * Object containing validation schemas for all parts of the configuration.
+ * Exported to enable testing of individual schemas.
+ */
+export const configValidationSchemas = {
+	server,
+	client,
+	db,
+	authentication,
+	notifications,
+	mailing,
+	logger
 };
 
-type Server = {
-	basePath: string;
-	port: number;
-};
+export const configSchema = y.object(configValidationSchemas).required();
 
-type Client = {
-	basePath: string;
-};
-
-type Db = {
-	/** The type of database, i.e., "postgres". */
-	type: "postgres";
-	port: number;
-	/** Name of the database, i.e. "StudentMgmtDb".  */
-	database: string;
-	host: string;
-	username: string;
-	password: string;
-	/** If `true`, will automatically update the database schema on startup. Should be disabled in production. */
-	synchronize: boolean;
-	/** If `true`, will drop all tables. Should be disabled in production. */
-	dropSchema: boolean;
-};
-
-type Authentication = {
-	url: string;
-};
-
-type Mailing = {
-	enabled: boolean;
-	smtp: {
-		host: string;
-		useSecureConnection: boolean;
-		username: string;
-		password: string;
-		port: number;
-	};
-};
-
-type Notifications = {
-	enabled: boolean;
-	subscribers: Subscriber[];
-};
-
-type Subscriber = {
-	courseId: string;
-	name: string;
-	url: string;
-	events: SubscribedEvents;
-};
-
-type Logger = {
-	/** Possible levels: `log`, `verbose`, `debug`, `warn`, `error`. */
-	levels: LogLevel[];
-	/** If `true`, logs incoming request and their response. May be used for debugging purposes. */
-	requests: boolean;
-	/** If `true`, logs database errors. */
-	dbErrors: boolean;
-};
+type ConfigurationSettings = y.InferType<typeof configSchema>;

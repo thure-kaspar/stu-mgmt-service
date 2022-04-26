@@ -1,4 +1,4 @@
-import { Logger, ValidationPipe } from "@nestjs/common";
+import { Logger, LogLevel, ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { NestExpressApplication } from "@nestjs/platform-express";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
@@ -23,14 +23,17 @@ import { VERSION } from "./version";
 
 async function bootstrap(): Promise<void> {
 	const version = VERSION;
-
 	const logger = new Logger("Bootstrap");
-	const logLevels = Config.getLogger().levels;
-	const basePath = process.env.SERVER_BASE_PATH || Config.getServer().basePath;
-	const port = process.env.SERVER_PORT || Config.getServer().port;
+	const basePath = process.env.SERVER_BASE_PATH || Config.get().server.basePath;
+	const port = process.env.SERVER_PORT || Config.get().server.port;
 
 	console.log(`Student-Management-System-API v${version}`);
 	console.log(`Environment: ${process.env.NODE_ENV}`);
+
+	Config.validate();
+	console.log("Your configuration appears to be valid.");
+
+	const logLevels = Config.get().logger.levels as LogLevel[];
 	console.log("Log levels:", logLevels);
 
 	logger.verbose("Creating application...");
@@ -50,9 +53,9 @@ async function bootstrap(): Promise<void> {
 	}
 
 	// If notification subscribers were specified
-	const notificationConfig = Config.getNotifications();
+	const notificationConfig = Config.get().notifications;
 	if (notificationConfig.subscribers?.length > 0) {
-		await registerSubscribers(notificationConfig.subscribers);
+		await registerSubscribers(notificationConfig.subscribers as any);
 	}
 
 	logger.verbose("Starting application...");

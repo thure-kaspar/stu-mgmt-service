@@ -4,7 +4,7 @@ import { Config } from "../../.config/config";
 import { Mail } from "../mail.model";
 import { Settings } from "../settings";
 
-const smtpConfig = Config.getMailing().smtp;
+const smtpConfig = Config.get().mailing.smtp;
 const settings: Settings = {
 	host: process.env.SMTP_HOST || smtpConfig.host,
 	port: (process.env.SMTP_PORT as any) || smtpConfig.port,

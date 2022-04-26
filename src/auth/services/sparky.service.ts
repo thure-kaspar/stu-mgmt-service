@@ -8,7 +8,7 @@ import { CredentialsDto } from "../dto/credentials.dto";
 
 @Injectable()
 export class SparkyService {
-	private readonly sparkyUrl = Config.getAuthentication().url;
+	private readonly sparkyUrl = Config.get().authentication.url;
 
 	constructor(private http: HttpService) {}
 

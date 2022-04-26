@@ -5,7 +5,7 @@ import { Assignment } from "../course/models/assignment.model";
 import { Language } from "../shared/language";
 import { Mail } from "./mail.model";
 
-const clientBasePath = Config.getClient().basePath ?? "";
+const clientBasePath = Config.get().client.basePath ?? "";
 
 type MailContent = {
 	subject: string;

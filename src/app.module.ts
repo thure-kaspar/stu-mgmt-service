@@ -35,7 +35,7 @@ function Imports(): (
 		ExportModule
 	];
 
-	if (Config.getMailing().enabled) {
+	if (Config.get().mailing.enabled) {
 		imports.push(MailingModule);
 	}
 
@@ -52,7 +52,7 @@ function Imports(): (
 
 function Providers(): Provider<unknown>[] {
 	const providers: Provider<unknown>[] = [];
-	if (Config.getLogger().requests) {
+	if (Config.get().logger.requests) {
 		providers.push({ provide: APP_INTERCEPTOR, useClass: RequestLogger });
 	}
 	return providers;

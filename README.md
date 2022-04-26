@@ -6,35 +6,35 @@ Backend of the Student Management System.
 
 ## Table of Contents
 
-- [Student-Management-System API](#student-management-system-api)
-	- [Table of Contents](#table-of-contents)
-	- [Usage as Client](#usage-as-client)
-	- [Building and Deployment](#building-and-deployment)
-		- [Alternatives](#alternatives)
-		- [Configuration](#configuration)
-	- [Development](#development)
-		- [Getting Started](#getting-started)
-		- [Running the Application](#running-the-application)
-		- [Testing](#testing)
-			- [Snapshot Testing](#snapshot-testing)
-		- [Debugging](#debugging)
-			- [Debugging the Application](#debugging-the-application)
-			- [Debugging Tests](#debugging-tests)
-		- [Adding Features](#adding-features)
-			- [Adding a Database Entity](#adding-a-database-entity)
-			- [Adding API Routes](#adding-api-routes)
-			- [Listening to Events](#listening-to-events)
-			- [Sending Notifications to other Systems](#sending-notifications-to-other-systems)
-		- [Database Migrations](#database-migrations)
-			- [Creating a Migration](#creating-a-migration)
-				- [Automatically](#automatically)
-				- [Manually](#manually)
-			- [Running Migrations](#running-migrations)
-			- [Reverting migrations](#reverting-migrations)
-			- [Exporting and Importing Database Dump with VS Code](#exporting-and-importing-database-dump-with-vs-code)
-				- [Setup](#setup)
-				- [Export](#export)
-				- [Import](#import)
+-   [Student-Management-System API](#student-management-system-api)
+    -   [Table of Contents](#table-of-contents)
+    -   [Usage as Client](#usage-as-client)
+    -   [Building and Deployment](#building-and-deployment)
+        -   [Alternatives](#alternatives)
+        -   [Configuration](#configuration)
+    -   [Development](#development)
+        -   [Getting Started](#getting-started)
+        -   [Running the Application](#running-the-application)
+        -   [Testing](#testing)
+            -   [Snapshot Testing](#snapshot-testing)
+        -   [Debugging](#debugging)
+            -   [Debugging the Application](#debugging-the-application)
+            -   [Debugging Tests](#debugging-tests)
+        -   [Adding Features](#adding-features)
+            -   [Adding a Database Entity](#adding-a-database-entity)
+            -   [Adding API Routes](#adding-api-routes)
+            -   [Listening to Events](#listening-to-events)
+            -   [Sending Notifications to other Systems](#sending-notifications-to-other-systems)
+        -   [Database Migrations](#database-migrations)
+            -   [Creating a Migration](#creating-a-migration)
+                -   [Automatically](#automatically)
+                -   [Manually](#manually)
+            -   [Running Migrations](#running-migrations)
+            -   [Reverting migrations](#reverting-migrations)
+            -   [Exporting and Importing Database Dump with VS Code](#exporting-and-importing-database-dump-with-vs-code)
+                -   [Setup](#setup)
+                -   [Export](#export)
+                -   [Import](#import)
 
 ## Usage as Client
 
@@ -51,7 +51,7 @@ Paste the specification into a generator such as https://editor.swagger.io or se
 
 ## Building and Deployment
 
-Please ensure that [Node.js](https://nodejs.org/en) is installed on your system.  
+Please ensure that [Node.js](https://nodejs.org/en) is installed on your system.
 Running the application requires a [PostgreSQL](https://www.postgresql.org) database.
 
 ```sh
@@ -62,7 +62,7 @@ npm install
 npm run build
 ```
 
-The build output can be found in the `dist` folder. The entry point is `dist/src/main.js`.  
+The build output can be found in the `dist` folder. The entry point is `dist/src/main.js`.
 You may use one of the following commands to start the application:
 
 ```sh
@@ -87,22 +87,24 @@ Also see [Student-Management-System/StuMgmtDocker](https://github.com/Student-Ma
 
 The following environment variables can be set. Environment variables will take precedence over those specified in [/config](https://github.com/SSEHUB/StudentMgmt-Backend/tree/master/config).
 
-| Environment variable | Description                                                                                                                                                                                                                                                 |
-| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| SERVER_BASE_PATH     | URL that can be used to reach the api, i.e., "http://localhost:3000".                                                                                                                                                                                       |
-| SERVER_PORT          | The port, which the application is listening to.                                                                                                                                                                                                            |
-| DB_TYPE              | Specifies the database engine (i. e "postgres", "mysql", [etc.](https://typeorm.io/#/connection-options/common-connection-options)).                                                                                                                        |
-| DB_HOST              | Database host.                                                                                                                                                                                                                                              |
-| DB_PORT              | Port of the database.                                                                                                                                                                                                                                       |
-| DB_USERNAME          | Database username.                                                                                                                                                                                                                                          |
-| DB_PASSWORD          | Database password.                                                                                                                                                                                                                                          |
-| DB_DATABASE          | Name of the database.                                                                                                                                                                                                                                       |
-| TYPEORM_SYNC         | Indicates if database schema should be auto created on every application launch (true or false). Should not be used in production.                                                                                                                          |
-| SMTP_HOST            | The SMTP-Server used for sending email notifications.                                                                                                                                                                                                       |
-| SMTP_PORT            | Port of the SMTP -Server.                                                                                                                                                                                                                                   |
-| SMTP_SECURE          | If true the connection will use TLS when connecting to server. If false (the default) then TLS is used if server supports the STARTTLS extension. In most cases set this value to true if you are connecting to port 465. For port 587 or 25 keep it false. |
-| SMTP_USERNAME        | Username for the SMTP-Server.                                                                                                                                                                                                                               |
-| SMTP_PASSWORD        | Password for the SMTP-Server.                                                                                                                                                                                                                               |
+| Environment variable     | Description                                                                                                                                                                                                                                                 |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| SERVER_BASE_PATH         | URL that can be used to reach the api, i.e., "http://localhost:3000".                                                                                                                                                                                       |
+| SERVER_PORT              | The port, which the application is listening to.                                                                                                                                                                                                            |
+| AUTHENTICATION_BASE_PATH | URL to the authentication server (SparkyService), i.e., "http://localhost:1234".                                                                                                                                                                            |
+| CLIENT_BASE_PATH         | URL to the frontend client, i.e., "http://localhost:4200".                                                                                                                                                                                                  |
+| DB_TYPE                  | Specifies the database engine (i. e "postgres", "mysql", [etc.](https://typeorm.io/#/connection-options/common-connection-options)).                                                                                                                        |
+| DB_HOST                  | Database host.                                                                                                                                                                                                                                              |
+| DB_PORT                  | Port of the database.                                                                                                                                                                                                                                       |
+| DB_USERNAME              | Database username.                                                                                                                                                                                                                                          |
+| DB_PASSWORD              | Database password.                                                                                                                                                                                                                                          |
+| DB_DATABASE              | Name of the database.                                                                                                                                                                                                                                       |
+| TYPEORM_SYNC             | Indicates if database schema should be auto created on every application launch (true or false). Should not be used in production.                                                                                                                          |
+| SMTP_HOST                | The SMTP-Server used for sending email notifications.                                                                                                                                                                                                       |
+| SMTP_PORT                | Port of the SMTP -Server.                                                                                                                                                                                                                                   |
+| SMTP_SECURE              | If true the connection will use TLS when connecting to server. If false (the default) then TLS is used if server supports the STARTTLS extension. In most cases set this value to true if you are connecting to port 465. For port 587 or 25 keep it false. |
+| SMTP_USERNAME            | Username for the SMTP-Server.                                                                                                                                                                                                                               |
+| SMTP_PASSWORD            | Password for the SMTP-Server.                                                                                                                                                                                                                               |
 
 ## Development
 
