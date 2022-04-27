@@ -47,6 +47,13 @@ export class Config {
 			}
 		};
 
+		if (!cfgWithEnv.mailing.enabled) {
+			const definedSmtpKeys = JSON.parse(JSON.stringify(cfgWithEnv.mailing.smtp));
+			if (Object.keys(definedSmtpKeys).length == 0) {
+				cfgWithEnv.mailing.smtp = undefined; // Reset SMTP config to avoid validation
+			}
+		}
+
 		this._config = config.util.extendDeep(cfg, cfgWithEnv);
 	}
 

@@ -33,6 +33,11 @@ async function bootstrap(): Promise<void> {
 	const logLevels = Config.get().logger.levels as LogLevel[];
 	console.log("Log levels:", logLevels);
 
+	if (env("LOG_CONFIG") === "true") {
+		console.log("Configuration:");
+		console.log(Config.get());
+	}
+
 	Config.validate();
 	console.log("Configuration appears to be valid.");
 
@@ -46,11 +51,6 @@ async function bootstrap(): Promise<void> {
 		console.log(
 			"Warning: db.dropSchema is enabled. This option should not be used in production environments."
 		);
-	}
-
-	if (env("LOG_CONFIG") === "true") {
-		console.log("Configuration:");
-		console.log(Config.get());
 	}
 
 	logger.verbose("Creating application...");

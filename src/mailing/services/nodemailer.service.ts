@@ -4,14 +4,14 @@ import { Config } from "../../.config/config";
 import { Mail } from "../mail.model";
 import { Settings } from "../settings";
 
-const smtpConfig = Config.get().mailing.smtp;
+const { host, port, useSecureConnection, username, password } = Config.get().mailing.smtp || {};
 const settings: Settings = {
-	host: smtpConfig.host,
-	port: smtpConfig.port,
-	secure: smtpConfig.useSecureConnection,
+	host: host,
+	port: port,
+	secure: useSecureConnection,
 	auth: {
-		user: smtpConfig.username,
-		pass: smtpConfig.password
+		user: username,
+		pass: password
 	}
 };
 
