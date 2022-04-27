@@ -29,7 +29,7 @@ export type MailEvent = keyof typeof EventFunction;
  * Generic that extracts the type of the first parameter (`props`) of a function that
  * generates `MailContent`.
  */
-type Props<Fn> = Fn extends (props: infer Props, ...args: any) => MailContent ? Props : never;
+type Props<Fn> = Fn extends (props: infer Props, ...args: unknown[]) => MailContent ? Props : never;
 
 /**
  * Class that enables the creation of `Mail` objects.
