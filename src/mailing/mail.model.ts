@@ -1,5 +1,7 @@
+import { env } from "../.config/environment";
+
 export class Mail {
-	readonly from = "no-reply@student-mgmt-system";
+	readonly from = env("MAIL_FROM");
 	to?: string[];
 	cc?: string[];
 	bcc?: string[];

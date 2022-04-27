@@ -308,7 +308,7 @@ export class MailingListener {
 	createMailPromises(
 		recipients: RecipientsByLanguage,
 		createMailFn: (language: Language) => Mail
-	): Promise<void>[] {
+	): Promise<boolean>[] {
 		return Object.keys(recipients).map((language: Language) => {
 			if (recipients[language].length > 0) {
 				const mail = createMailFn(language);

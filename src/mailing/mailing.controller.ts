@@ -1,6 +1,19 @@
-import { Controller, NotImplementedException, Post } from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger";
+import {
+	BadRequestException,
+	Body,
+	Controller,
+	NotImplementedException,
+	Post,
+	UseGuards
+} from "@nestjs/common";
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { Config } from "../.config/config";
 import { environment } from "../.config/environment";
+import { Roles } from "../auth/decorators/roles.decorator";
+import { AuthGuard } from "../auth/guards/auth.guard";
+import { RoleGuard } from "../auth/guards/role.guard";
+import { UserRole } from "../shared/enums";
+import { Mail } from "./mail.model";
 // import { ASSESSMENT_JAVA_EVALUATED_GROUP_1 } from "../../test/mocks/assessments.mock";
 // import { ASSIGNMENT_JAVA_EVALUATED } from "../../test/mocks/assignments.mock";
 // import { GROUP_1_JAVA } from "../../test/mocks/groups/groups.mock";
@@ -18,11 +31,17 @@ import { environment } from "../.config/environment";
 import { MailingListener } from "./services/mailing-listener.service";
 import { MailingService } from "./services/mailing.service";
 
+@ApiBearerAuth()
 @ApiTags("mail")
 @Controller("mail")
 export class MailingController {
 	constructor(private mailingService: MailingService, private listener: MailingListener) {}
 
+	@ApiOperation({
+		operationId: "simulateEvent",
+		summary: "DEVELOPMENT ONLY.",
+		description: "Convenience method to trigger events that trigger email notifications."
+	})
 	@Post("simulateEvent")
 	simulateEvent(): Promise<void> {
 		if (!environment.is("development")) {
@@ -66,5 +85,42 @@ export class MailingController {
 		// return this.listener.onParticipantLeftGroup(event);
 
 		return null;
+	}
+
+	@ApiOperation({
+		operationId: "sendTestMail",
+		summary: "Send test email",
+		description: "ADMIN ONLY. Sends a test email to the given email address."
+	})
+	@Post("sendTestMail")
+	@Roles(UserRole.MGMT_ADMIN, UserRole.SYSTEM_ADMIN)
+	@ApiBody({
+		required: true,
+		schema: {
+			properties: {
+				receiverEmail: { type: "string" }
+			}
+		}
+	})
+	@UseGuards(AuthGuard, RoleGuard)
+	async sendTestMail(@Body() body: { receiverEmail: string }): Promise<unknown> {
+		if (!body || !body.receiverEmail) {
+			throw new BadRequestException("Request body is missing a 'receiverEmail'.");
+		}
+
+		if (!Config.get().mailing.enabled) {
+			throw new BadRequestException("Mailing is not enabled.");
+		}
+
+		const mail = new Mail([body.receiverEmail]);
+		mail.subject = "Student Management System - Test Email";
+		mail.text = "This is a test email. (Text)";
+		mail.html = "<a href='#'>This is a test email. (HTML)</a>";
+
+		await this.mailingService.send(mail);
+
+		return {
+			message: `An email has been send to: ${body.receiverEmail}`
+		};
 	}
 }
