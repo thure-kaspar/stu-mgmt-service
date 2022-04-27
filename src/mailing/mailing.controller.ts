@@ -13,6 +13,8 @@ import { Roles } from "../auth/decorators/roles.decorator";
 import { AuthGuard } from "../auth/guards/auth.guard";
 import { RoleGuard } from "../auth/guards/role.guard";
 import { UserRole } from "../shared/enums";
+import { Language } from "../shared/language";
+import { MailEvent, MailFactory } from "./mail-templates";
 import { Mail } from "./mail.model";
 // import { ASSESSMENT_JAVA_EVALUATED_GROUP_1 } from "../../test/mocks/assessments.mock";
 // import { ASSIGNMENT_JAVA_EVALUATED } from "../../test/mocks/assignments.mock";
@@ -90,7 +92,18 @@ export class MailingController {
 	@ApiOperation({
 		operationId: "sendTestMail",
 		summary: "Send test email",
-		description: "ADMIN ONLY. Sends a test email to the given email address."
+		description: `ADMIN ONLY. Sends a test email to the given email addresses.
+
+		Languages: [DE, EN]
+
+		MailEvents: [
+			ASSIGNMENT_STARTED,
+			ASSIGNMENT_EVALUATED,
+			ASSESSMENT_SCORE_CHANGED,
+			PARTICIPANT_JOINED_GROUP,
+			PARTICIPANT_LEFT_GROUP,
+			SUBMISSION_CREATED
+		]`
 	})
 	@Post("sendTestMail")
 	@Roles(UserRole.MGMT_ADMIN, UserRole.SYSTEM_ADMIN)
@@ -98,13 +111,26 @@ export class MailingController {
 		required: true,
 		schema: {
 			properties: {
-				receiverEmail: { type: "string" }
+				receiverEmails: { minLength: 1, items: { type: "string" } },
+				language: { enum: [Language.DE, Language.EN], default: Language.DE },
+				mailEvent: {
+					enum: [
+						"ASSIGNMENT_STARTED",
+						"ASSIGNMENT_EVALUATED",
+						"ASSESSMENT_SCORE_CHANGED",
+						"PARTICIPANT_JOINED_GROUP",
+						"PARTICIPANT_LEFT_GROUP",
+						"SUBMISSION_CREATED"
+					]
+				}
 			}
 		}
 	})
 	@UseGuards(AuthGuard, RoleGuard)
-	async sendTestMail(@Body() body: { receiverEmail: string }): Promise<unknown> {
-		if (!body || !body.receiverEmail) {
+	async sendTestMail(
+		@Body() body: { receiverEmails: string[]; language?: Language; mailEvent?: MailEvent }
+	): Promise<unknown> {
+		if (!body || !body.receiverEmails || body.receiverEmails.length == 0) {
 			throw new BadRequestException("Request body is missing a 'receiverEmail'.");
 		}
 
@@ -112,15 +138,68 @@ export class MailingController {
 			throw new BadRequestException("Mailing is not enabled.");
 		}
 
-		const mail = new Mail([body.receiverEmail]);
-		mail.subject = "Student Management System - Test Email";
-		mail.text = "This is a test email. (Text)";
-		mail.html = "<a href='#'>This is a test email. (HTML)</a>";
+		const language = body.language ?? Language.DE;
+		const bcc = body.receiverEmails;
+		let mail: Mail = null;
+
+		const courseId = "email-example-course";
+		const courseName = "Email Example Course";
+		const assignmentId = "assignment_id_123";
+		const assessmentId = "assessment_id_123";
+		const assignmentName = "Email Example Assignment";
+
+		switch (body.mailEvent) {
+			case "ASSESSMENT_SCORE_CHANGED":
+				mail = MailFactory.create("ASSESSMENT_SCORE_CHANGED", bcc, language, {
+					assessment: { id: assignmentId },
+					assignment: { courseId, name: courseName, id: assignmentId }
+				});
+				break;
+
+			case "ASSIGNMENT_EVALUATED":
+				mail = MailFactory.create("ASSIGNMENT_EVALUATED", bcc, language, {
+					assessmentId,
+					courseId,
+					assignment: { id: assignmentId, name: assignmentName }
+				});
+				break;
+
+			case "ASSIGNMENT_STARTED":
+				mail = MailFactory.create("ASSIGNMENT_STARTED", bcc, language, {
+					courseId,
+					assignmentName,
+					endDate: new Date(2022, 3, 20)
+				});
+				break;
+
+			case "PARTICIPANT_JOINED_GROUP":
+				mail = MailFactory.create("PARTICIPANT_JOINED_GROUP", bcc, language, {
+					courseId,
+					participantName: "Max Mustermann",
+					participantEmail: "Max@Mustermann.email"
+				});
+				break;
+
+			case "SUBMISSION_CREATED":
+				mail = MailFactory.create("SUBMISSION_CREATED", bcc, language, {
+					assignmentName,
+					courseId,
+					groupName: "Email Example Group"
+				});
+				break;
+
+			default:
+				mail = new Mail(bcc);
+				mail.subject = "Student Management System - Test Email";
+				mail.text = "This is a test email. (Text)";
+				mail.html = "<a href='#'>This is a test email. (HTML)</a>";
+				break;
+		}
 
 		await this.mailingService.send(mail);
 
 		return {
-			message: `An email has been send to: ${body.receiverEmail}`
+			message: `An email has been send to: [${body.receiverEmails.join(", ")}]`
 		};
 	}
 }

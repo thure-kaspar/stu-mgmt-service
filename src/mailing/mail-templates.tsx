@@ -72,9 +72,7 @@ function AssignmentStartedMail(
 		mail.text = `Aufgabe "${props.assignmentName}" kann jetzt bearbeitet werden.`;
 		mail.html = jsxt.render(
 			<div>
-				<h2>
-					{props.courseId} – Neue Aufgabe {props.assignmentName}
-				</h2>
+				<h2>{props.courseId} – Neue Aufgabe</h2>
 				<p>Die Aufgabe "{props.assignmentName}" kann jetzt bearbeitet werden.</p>
 				<jsxt.If cond={!!props.endDate}>
 					<p>Die Bearbeitungszeit endet am {props.endDate?.toLocaleString()}.</p>
@@ -88,9 +86,7 @@ function AssignmentStartedMail(
 		mail.text = `The assignment "${props.assignmentName}" is now available.`;
 		mail.html = jsxt.render(
 			<div>
-				<h2>
-					{props.courseId} – New assignment {props.assignmentName}
-				</h2>
+				<h2>{props.courseId} – New assignment</h2>
 				<p>The assignment "{props.assignmentName}" is now available.</p>
 				<jsxt.If cond={!!props.endDate}>
 					<p>Submissions can be turned in until {props.endDate?.toLocaleString()}.</p>
@@ -107,7 +103,7 @@ function AssignmentStartedMail(
 function AssignmentEvaluatedMail(
 	props: {
 		courseId: string;
-		assignment: Assignment | AssignmentEntity;
+		assignment: { name: string; id: string };
 		assessmentId: string;
 	},
 	language: Language
@@ -124,11 +120,11 @@ function AssignmentEvaluatedMail(
 		mail.html = jsxt.render(
 			<>
 				<h2>
-					{props.assignment.courseId} – Bewertung von {props.assignment.name}
+					{props.courseId} – Bewertung von {props.assignment.name}
 				</h2>
 				<p>Die Bewertung für Aufgabe "{props.assignment.name}" wurde veröffentlicht.</p>
 				<a
-					href={`${clientBasePath}/courses/${props.assignment.courseId}/assignments/${props.assignment.id}/assessments/view/${props.assessmentId}`}
+					href={`${clientBasePath}/courses/${props.courseId}/assignments/${props.assignment.id}/assessments/view/${props.assessmentId}`}
 				>
 					Link zur Bewertung
 				</a>
@@ -137,7 +133,7 @@ function AssignmentEvaluatedMail(
 	}
 
 	if (language === Language.EN) {
-		mail.subject = `${props.assignment.courseId} – Assessment for ${props.assignment.name}`;
+		mail.subject = `${props.courseId} – Assessment for ${props.assignment.name}`;
 		mail.text = `Assessment for "${props.assignment.name}" is now available.`;
 		mail.html = jsxt.render(
 			<>
@@ -146,7 +142,7 @@ function AssignmentEvaluatedMail(
 				</h2>
 				<p>The assessment for "{props.assignment.name}" is now available.</p>
 				<a
-					href={`${clientBasePath}/courses/${props.assignment.courseId}/assignments/${props.assignment.id}/assessments/view/${props.assessmentId}`}
+					href={`${clientBasePath}/courses/${props.courseId}/assignments/${props.assignment.id}/assessments/view/${props.assessmentId}`}
 				>
 					Link to the assessment
 				</a>
