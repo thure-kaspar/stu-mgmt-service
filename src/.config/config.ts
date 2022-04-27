@@ -115,6 +115,10 @@ const authentication = y.object({
 const mailing = y
 	.object({
 		enabled: y.boolean().required(),
+		from: y.string().when("enabled", {
+			is: true,
+			then: y.string().required()
+		}),
 		smtp: y
 			.object({
 				host: y.string().required(),
@@ -124,8 +128,8 @@ const mailing = y
 				password: y.string()
 			})
 			.when("enabled", {
-				is: true,
-				then: y.object().required()
+				is: false,
+				then: y.object().notRequired().default(undefined)
 			})
 	})
 	.required();

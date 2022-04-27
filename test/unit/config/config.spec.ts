@@ -1,5 +1,5 @@
 import { ValidationError } from "yup";
-import { Config, configSchema } from "../../../src/.config/config";
+import { Config, configSchema, configValidationSchemas } from "../../../src/.config/config";
 import * as y from "yup";
 import { DeepPartial } from "typeorm";
 
@@ -126,6 +126,59 @@ describe("Config Validation", () => {
 					expect(error.errors).toHaveLength(17);
 				}
 			}
+		});
+	});
+});
+
+describe("Mailing Config Validation", () => {
+	describe("Valid", () => {
+		it("enabled: false -> No more configuration necessary", () => {
+			const mailingConfig = {
+				enabled: false
+			};
+
+			try {
+				configValidationSchemas.mailing.validateSync(mailingConfig);
+				expect(true).toEqual(true);
+			} catch (error) {
+				expect(error).toBeUndefined();
+			}
+		});
+
+		it("enabled: true with smtp and from", () => {
+			const mailingConfig = {
+				enabled: true,
+				from: "from@here",
+				smtp: {
+					host: "smtp.server",
+					useSecureConnection: false,
+					username: "username",
+					password: "password",
+					port: 587
+				}
+			};
+
+			try {
+				configValidationSchemas.mailing.validateSync(mailingConfig);
+				expect(true).toEqual(true);
+			} catch (error) {
+				expect(error).toBeUndefined();
+			}
+		});
+	});
+	describe("Invalid", () => {
+		it("Empty", () => {
+			const mailingConfig = {};
+			const isValid = configValidationSchemas.mailing.isValidSync(mailingConfig);
+			expect(isValid).toEqual(false);
+		});
+
+		it("Enabled but smtp and from is missing", () => {
+			const mailingConfig = {
+				enabled: true
+			};
+			const isValid = configValidationSchemas.mailing.isValidSync(mailingConfig);
+			expect(isValid).toEqual(false);
 		});
 	});
 });
