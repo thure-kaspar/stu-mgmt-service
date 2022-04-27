@@ -6,7 +6,7 @@ import { getConnection } from "typeorm";
 import { DEMO_CONFIG } from "../test/db-setup/demo";
 import { StudentMgmtDbEntities } from "../test/utils/demo-db";
 import { Config } from "./.config/config";
-import { environment } from "./.config/environment";
+import { environment, env } from "./.config/environment";
 import {
 	IndividualPercentWithAllowedFailuresRuleDto,
 	OverallPercentRuleDto
@@ -24,17 +24,21 @@ import { VERSION } from "./version";
 async function bootstrap(): Promise<void> {
 	const version = VERSION;
 	const logger = new Logger("Bootstrap");
-	const basePath = process.env.SERVER_BASE_PATH || Config.get().server.basePath;
-	const port = process.env.SERVER_PORT || Config.get().server.port;
+	const basePath = Config.get().server.basePath;
+	const port = Config.get().server.port;
 
 	console.log(`Student-Management-System-API v${version}`);
-	console.log(`Environment: ${process.env.NODE_ENV}`);
+	console.log(`Environment: ${env("NODE_ENV")}`);
 
 	Config.validate();
-	console.log("Your configuration appears to be valid.");
 
 	const logLevels = Config.get().logger.levels as LogLevel[];
 	console.log("Log levels:", logLevels);
+
+	if (env("LOG_CONFIG") === "true") {
+		console.log("Configuration:");
+		console.log(Config.get());
+	}
 
 	logger.verbose("Creating application...");
 	const app = await NestFactory.create<NestExpressApplication>(AppModule, { logger: logLevels });

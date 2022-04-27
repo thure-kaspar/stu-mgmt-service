@@ -105,6 +105,7 @@ The following environment variables can be set. Environment variables will take 
 | SMTP_SECURE              | If true the connection will use TLS when connecting to server. If false (the default) then TLS is used if server supports the STARTTLS extension. In most cases set this value to true if you are connecting to port 465. For port 587 or 25 keep it false. |
 | SMTP_USERNAME            | Username for the SMTP-Server.                                                                                                                                                                                                                               |
 | SMTP_PASSWORD            | Password for the SMTP-Server.                                                                                                                                                                                                                               |
+| LOG_CONFIG               | If set to "true", prints the entire configuration object to the console. Useful for debugging purposes.                                                                                                                                                     |
 
 ## Development
 
