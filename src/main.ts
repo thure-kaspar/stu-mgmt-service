@@ -30,10 +30,23 @@ async function bootstrap(): Promise<void> {
 	console.log(`Student-Management-System-API v${version}`);
 	console.log(`Environment: ${env("NODE_ENV")}`);
 
-	Config.validate();
-
 	const logLevels = Config.get().logger.levels as LogLevel[];
 	console.log("Log levels:", logLevels);
+
+	Config.validate();
+	console.log("Configuration appears to be valid.");
+
+	if (environment.is("production") && Config.get().db.synchronize) {
+		console.log(
+			"Warning: db.synchronize is enabled. This option should not be used in production environments."
+		);
+	}
+
+	if (environment.is("production") && Config.get().db.dropSchema) {
+		console.log(
+			"Warning: db.dropSchema is enabled. This option should not be used in production environments."
+		);
+	}
 
 	if (env("LOG_CONFIG") === "true") {
 		console.log("Configuration:");
@@ -98,6 +111,7 @@ function setupSwaggerDocument(
 		.addTag("activity")
 		.addTag("assessment-allocation")
 		.addTag("notification")
+		.addTag("mail")
 		.addTag("demo")
 		.build();
 
