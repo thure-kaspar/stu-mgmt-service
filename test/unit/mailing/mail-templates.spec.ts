@@ -3,7 +3,6 @@ import { MailFactory } from "../../../src/mailing/mail-templates";
 import { Language } from "../../../src/shared/language";
 
 describe("Mail Templates", () => {
-	process.env.MAIL_FROM = "no-reply@student-mgmt-system";
 	const bcc = ["ex@mple.email"];
 
 	describe("ASSIGNMENT_STARTED", () => {

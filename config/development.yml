@@ -4,6 +4,7 @@ db:
 mailing:
     enabled: true
     from: "no-reply@student-mgmt-system"
+    clientBasePath: "http://localhost:4200"
     smtp:
         host: "smtp.mailtrap.io"
         useSecureConnection: false

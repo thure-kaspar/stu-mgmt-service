@@ -5,6 +5,17 @@ db:
     synchronize: true
     dropSchema: true
 
+mailing:
+    enabled: false
+    from: "no-reply@student-mgmt-system"
+    clientBasePath: "http://localhost:4200"
+    smtp:
+        host: "smtp.server"
+        useSecureConnection: false
+        username: "username"
+        password: "password"
+        port: 587
+
 logger:
     levels:
         - error
