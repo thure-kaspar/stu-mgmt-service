@@ -18,7 +18,8 @@ type EnvironmentVariable =
 	| "SMTP_PORT"
 	| "SMTP_SECURE"
 	| "SMTP_USERNAME"
-	| "SMTP_PASSWORD";
+	| "SMTP_PASSWORD"
+	| "MAIL_FROM";
 
 /**
  * Contains the possible environments that this application might run in, as well as

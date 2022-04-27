@@ -36,6 +36,7 @@ export class Config {
 					: cfg.db?.synchronize
 			},
 			mailing: {
+				from: env("MAIL_FROM") ?? cfg.mailing.from,
 				smtp: {
 					host: env("SMTP_HOST") ?? cfg.mailing?.smtp?.host,
 					port: env("SMTP_PORT") ? Number(env("SMTP_PORT")) : cfg.mailing?.smtp?.port,
