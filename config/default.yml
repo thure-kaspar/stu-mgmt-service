@@ -20,6 +20,7 @@ notifications:
 
 mailing:
     enabled: false
+    from: "no-reply@student-mgmt-system"
     smtp:
         host: "smtp.server"
         useSecureConnection: false

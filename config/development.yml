@@ -2,7 +2,14 @@ db:
     synchronize: true
 
 mailing:
-    enabled: false
+    enabled: true
+    from: "no-reply@student-mgmt-system"
+    smtp:
+        host: "smtp.mailtrap.io"
+        useSecureConnection: false
+        username: "3f094336feeea2"
+        password: "5c31da72a84fc4"
+        port: 2525
 
 logger:
     levels:
