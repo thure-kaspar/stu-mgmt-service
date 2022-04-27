@@ -21,9 +21,6 @@ export class Config {
 				basePath: env("SERVER_BASE_PATH") ?? cfg.server?.basePath,
 				port: env("SERVER_PORT") ? Number(env("SERVER_PORT")) : cfg.server?.port
 			},
-			client: {
-				basePath: env("CLIENT_BASE_PATH") ?? cfg.client?.basePath
-			},
 			db: {
 				type: env("DB_TYPE") ?? cfg.db?.type,
 				host: env("DB_HOST") ?? cfg.db?.host,
@@ -36,6 +33,7 @@ export class Config {
 					: cfg.db?.synchronize
 			},
 			mailing: {
+				clientBasePath: env("CLIENT_BASE_PATH") ?? cfg.mailing?.clientBasePath,
 				from: env("MAIL_FROM") ?? cfg.mailing.from,
 				smtp: {
 					host: env("SMTP_HOST") ?? cfg.mailing?.smtp?.host,
@@ -90,12 +88,6 @@ const server = y
 	})
 	.required();
 
-const client = y
-	.object({
-		basePath: y.string()
-	})
-	.required();
-
 const db = y
 	.object({
 		type: y.string().required(),
@@ -116,6 +108,10 @@ const authentication = y.object({
 const mailing = y
 	.object({
 		enabled: y.boolean().required(),
+		clientBasePath: y.string().when("enabled", {
+			is: true,
+			then: y.string().required()
+		}),
 		from: y.string().when("enabled", {
 			is: true,
 			then: y.string().required()
@@ -159,7 +155,6 @@ const logger = y.object({
  */
 export const configValidationSchemas = {
 	server,
-	client,
 	db,
 	authentication,
 	notifications,

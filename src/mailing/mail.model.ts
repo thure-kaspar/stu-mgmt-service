@@ -1,7 +1,7 @@
-import { env } from "../.config/environment";
+import { Config } from "../.config/config";
 
 export class Mail {
-	readonly from = env("MAIL_FROM");
+	readonly from = Config.get().mailing.from;
 	to?: string[];
 	cc?: string[];
 	bcc?: string[];

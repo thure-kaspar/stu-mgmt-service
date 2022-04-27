@@ -8,9 +8,6 @@ const validConfig = {
 		basePath: "http://localhost:3000",
 		port: 3000
 	},
-	client: {
-		basePath: "http://localhost:4200"
-	},
 	db: {
 		type: "postgres",
 		port: 5432,
@@ -26,14 +23,7 @@ const validConfig = {
 		subscribers: []
 	},
 	mailing: {
-		enabled: false,
-		smtp: {
-			host: "smtp.server",
-			useSecureConnection: false,
-			username: "username",
-			password: "password",
-			port: 587
-		}
+		enabled: false
 	},
 	authentication: {
 		url: "http://localhost:8080"
@@ -50,7 +40,6 @@ it("Config Creation", () => {
 	expect(cfg).toBeDefined();
 	expect(cfg.db).toBeDefined();
 	expect(cfg.server).toBeDefined();
-	expect(cfg.client).toBeDefined();
 	expect(cfg.notifications).toBeDefined();
 	expect(cfg.mailing).toBeDefined();
 	expect(cfg.authentication).toBeDefined();
@@ -145,9 +134,10 @@ describe("Mailing Config Validation", () => {
 			}
 		});
 
-		it("enabled: true with smtp and from", () => {
+		it("enabled: true with smtp + from + clientBasePath", () => {
 			const mailingConfig = {
 				enabled: true,
+				clientBasePath: "http://localhost:4200",
 				from: "from@here",
 				smtp: {
 					host: "smtp.server",
