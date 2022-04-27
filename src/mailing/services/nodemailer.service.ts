@@ -6,12 +6,12 @@ import { Settings } from "../settings";
 
 const smtpConfig = Config.get().mailing.smtp;
 const settings: Settings = {
-	host: process.env.SMTP_HOST || smtpConfig.host,
-	port: (process.env.SMTP_PORT as any) || smtpConfig.port,
-	secure: (process.env.SMTP_SECURE as any) || smtpConfig.useSecureConnection,
+	host: smtpConfig.host,
+	port: smtpConfig.port,
+	secure: smtpConfig.useSecureConnection,
 	auth: {
-		user: process.env.SMTP_USERNAME || smtpConfig.username,
-		pass: process.env.SMTP_PASSWORD || smtpConfig.password
+		user: smtpConfig.username,
+		pass: smtpConfig.password
 	}
 };
 

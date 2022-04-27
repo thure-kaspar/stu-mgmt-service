@@ -1,13 +1,13 @@
 import * as config from "config";
 import { DeepPartial } from "typeorm";
 import * as y from "yup";
-import { environment } from "./environment";
+import { env } from "./environment";
 
 export class Config {
 	private static _config: ConfigurationSettings = null;
 
 	/** Merges the configuration values from `/config/[environment].yml` with environment variables. */
-	private static create(): void {
+	static create(): void {
 		const cfg = config.util.toObject() as ConfigurationSettings;
 
 		// Partial configuration with environment variables and original config values as fallback
@@ -15,37 +15,35 @@ export class Config {
 			logger: {},
 			notifications: {},
 			authentication: {
-				url: process.env.AUTHENTICATION_BASE_PATH ?? cfg.authentication?.url
+				url: env("AUTHENTICATION_BASE_PATH") ?? cfg.authentication?.url
 			},
 			server: {
-				basePath: process.env.SERVER_BASE_PATH ?? cfg.server?.basePath,
-				port: process.env.SERVER_PORT ? Number(process.env.SERVER_PORT) : cfg.server?.port
+				basePath: env("SERVER_BASE_PATH") ?? cfg.server?.basePath,
+				port: env("SERVER_PORT") ? Number(env("SERVER_PORT")) : cfg.server?.port
 			},
 			client: {
-				basePath: process.env.CLIENT_BASE_PATH ?? cfg.client?.basePath
+				basePath: env("CLIENT_BASE_PATH") ?? cfg.client?.basePath
 			},
 			db: {
-				type: process.env.DB_TYPE ?? cfg.db?.type,
-				host: process.env.DB_HOST ?? cfg.db?.host,
-				port: process.env.DB_PORT ? Number(process.env.DB_PORT) : cfg.db?.port,
-				database: process.env.DB_DATABASE ?? cfg.db?.database,
-				username: process.env.DB_USERNAME ?? cfg.db?.username,
-				password: process.env.DB_PASSWORD ?? cfg.db?.password,
-				synchronize: process.env.TYPEORM_SYNC
-					? Boolean(JSON.parse(process.env.TYPEORM_SYNC))
+				type: env("DB_TYPE") ?? cfg.db?.type,
+				host: env("DB_HOST") ?? cfg.db?.host,
+				port: env("DB_PORT") ? Number(env("DB_PORT")) : cfg.db?.port,
+				database: env("DB_DATABASE") ?? cfg.db?.database,
+				username: env("DB_USERNAME") ?? cfg.db?.username,
+				password: env("DB_PASSWORD") ?? cfg.db?.password,
+				synchronize: env("TYPEORM_SYNC")
+					? Boolean(JSON.parse(env("TYPEORM_SYNC")))
 					: cfg.db?.synchronize
 			},
 			mailing: {
 				smtp: {
-					host: process.env.SMTP_HOST ?? cfg.mailing?.smtp?.host,
-					port: process.env.SMTP_PORT
-						? Number(process.env.SMTP_PORT)
-						: cfg.mailing?.smtp?.port,
-					useSecureConnection: process.env.SMTP_SECURE
-						? Boolean(JSON.parse(process.env.SMTP_SECURE))
+					host: env("SMTP_HOST") ?? cfg.mailing?.smtp?.host,
+					port: env("SMTP_PORT") ? Number(env("SMTP_PORT")) : cfg.mailing?.smtp?.port,
+					useSecureConnection: env("SMTP_SECURE")
+						? Boolean(JSON.parse(env("SMTP_SECURE")))
 						: cfg.mailing?.smtp?.useSecureConnection,
-					username: process.env.SMTP_USERNAME ?? cfg.mailing?.smtp?.username,
-					password: process.env.SMTP_PASSWORD ?? cfg.mailing?.smtp?.password
+					username: env("SMTP_USERNAME") ?? cfg.mailing?.smtp?.username,
+					password: env("SMTP_PASSWORD") ?? cfg.mailing?.smtp?.password
 				}
 			}
 		};
