@@ -5,9 +5,9 @@ pipeline {
     
     environment {
         DEMO_SERVER = '147.172.178.30'
-        DEMO_SERVER_PORT = '8080'
+        DEMO_SERVER_PORT = '3000'
         API_FILE = 'api-json'
-        API_URL = "http://${env.DEMO_SERVER}:${env.DEMO_SERVER_PORT}/stmgmt/${env.API_FILE}"
+        API_URL = "http://${env.DEMO_SERVER}:${env.DEMO_SERVER_PORT}/${env.API_FILE}"
     }
     
     stages {
@@ -97,7 +97,7 @@ pipeline {
             steps {
                 archiveArtifacts artifacts: '*.tar.gz'
                 
-                sleep(time:20, unit:"SECONDS")
+                sleep(time:40, unit:"SECONDS")
                 sh "wget ${env.API_URL}"
                 archiveArtifacts artifacts: "${env.API_FILE}"
             }
