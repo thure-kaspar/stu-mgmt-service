@@ -79,7 +79,8 @@ export class ExportService {
 				userId: result.student.userId,
 				username: result.student.username,
 				displayName: result.student.displayName,
-				email: result.student.email
+				email: result.student.email,
+				matrNr: result.student.matrNr
 			};
 			let row = {
 				...student
