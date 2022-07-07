@@ -12,5 +12,5 @@ EXPOSE 3000
 
 ENV NODE_ENV=demo
 
-# CMD ["npm", "run", "typeorm", "migrations:run"]
+#  CMD ["npm", "run", "typeorm", "migrations:run"]
 CMD ["node", "dist/src/main"]
