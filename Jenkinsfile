@@ -59,7 +59,7 @@ pipeline {
             steps {
                 sh 'npm run build'
                 sh 'rm -f Backend.tar.gz'
-                sh 'tar czf Backend.tar.gz dist src test config package.json ormconfig.ts tsconfig.json'
+                sh 'tar czf Backend.tar.gz dist src test config package.json package-lock.json ormconfig.ts tsconfig.json'
             }
         }
 
