@@ -89,7 +89,7 @@ export class ParticipantRepository extends Repository<Participant> {
 	}
 
 	async getStudentsWithAssessments(courseId: CourseId): Promise<Participant[]> {
-		return this.createQueryBuilder("participant")
+		const query = this.createQueryBuilder("participant")
 			.where("participant.courseId = :courseId", { courseId })
 			.andWhere("participant.role = :role", { role: CourseRole.STUDENT })
 			.innerJoinAndSelect("participant.user", "user")
@@ -100,12 +100,23 @@ export class ParticipantRepository extends Repository<Participant> {
 				"assignment",
 				"assignment.courseId = :courseId",
 				{ courseId }
-			)
-			.getMany();
+			);
+
+		const students = await query.getMany();
+
+		// The query above seems to return all assessments of a user (not just in this course), so we filter manually
+		// Assignment may be null if the user has no assessments in this course
+		for (const student of students) {
+			student.user.assessmentUserRelations = student.user.assessmentUserRelations.filter(
+				aur => aur.assessment.assignment?.courseId === courseId
+			);
+		}
+
+		return students;
 	}
 
 	async getStudentWithAssessments(courseId: CourseId, userId: UserId): Promise<Participant> {
-		const query = await this.createQueryBuilder("participant")
+		const student = await this.createQueryBuilder("participant")
 			.where("participant.userId = :userId", { userId })
 			.andWhere("participant.courseId = :courseId", { courseId })
 			.andWhere("participant.role = :role", { role: CourseRole.STUDENT })
@@ -120,11 +131,17 @@ export class ParticipantRepository extends Repository<Participant> {
 			)
 			.getOne();
 
-		if (!query) {
+		if (!student) {
 			throw new EntityNotFoundError(Participant, { courseId, userId });
 		}
 
-		return query;
+		// The query above seems to return all assessments of a user (not just in this course), so we filter manually
+		// Assignment may be null if the user has no assessments in this course
+		student.user.assessmentUserRelations = student.user.assessmentUserRelations.filter(
+			aur => aur.assessment.assignment?.courseId === courseId
+		);
+
+		return student;
 	}
 
 	async getParticipantsWithUserSettings(
