@@ -6,4 +6,4 @@
  * - Adding/Changing/Removing a DTO
  * - etc.
  */
-export const VERSION = "2.7.2";
+export const VERSION = "3.0.0";
