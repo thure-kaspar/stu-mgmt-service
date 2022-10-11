@@ -62,6 +62,25 @@ pipeline {
                 sh 'tar czf Backend.tar.gz dist src test config package.json package-lock.json ormconfig.ts tsconfig.json'
             }
         }
+        
+        stage('Build Docker') {
+            steps {
+                script {
+                    // Based on:
+                    // - https://e.printstacktrace.blog/jenkins-pipeline-environment-variables-the-definitive-guide/
+                    // - https://stackoverflow.com/a/16817748
+                    // - https://stackoverflow.com/a/51991389
+                    env.API_VERSION = sh(returnStdout: true, script: 'grep -Po "(?<=export const VERSION = \')[^\';]+" src/version.ts').trim()
+                    echo "API: ${env.API_VERSION}"
+                    dockerImage = docker.build 'e-learning-by-sse/qualityplus-student-management-service'
+                    docker.withRegistry('https://ghcr.io', 'github-ssejenkins') {
+                        dockerImage.push("${env.API_VERSION}")
+                        dockerImage.push('latest')
+                    }
+                }
+            }
+        }
+        
 
         // Based on: https://medium.com/@mosheezderman/c51581cc783c
         stage('Deploy') {
@@ -76,7 +95,7 @@ pipeline {
                             git pull
                             npm install
                             rm ~/.pm2/logs/npm-error.log
-                            pm2 restart 0 --wait-ready # requires project intialized with: pm2 start npm -- run start:demo
+                            pm2 restart Stu-Mgmt-Backend --wait-ready # requires project intialized with: pm2 start -n Stu-Mgmt-Backend npm -- run start:demo
                             cd ..
                             sleep 30
                             ./chk_logs_for_err.sh
