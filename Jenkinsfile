@@ -70,7 +70,7 @@ pipeline {
                     // - https://e.printstacktrace.blog/jenkins-pipeline-environment-variables-the-definitive-guide/
                     // - https://stackoverflow.com/a/16817748
                     // - https://stackoverflow.com/a/51991389
-                    env.API_VERSION = sh(returnStdout: true, script: 'grep -Po "(?<=export const VERSION = \')[^\';]+" src/version.ts').trim()
+                    env.API_VERSION = sh(returnStdout: true, script: 'grep -Po \'(?<=export const VERSION = ")[^";]+\' src/version.ts').trim()
                     echo "API: ${env.API_VERSION}"
                     dockerImage = docker.build 'e-learning-by-sse/qualityplus-student-management-service'
                     docker.withRegistry('https://ghcr.io', 'github-ssejenkins') {
