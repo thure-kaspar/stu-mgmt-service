@@ -19,7 +19,8 @@ type EnvironmentVariable =
 	| "SMTP_SECURE"
 	| "SMTP_USERNAME"
 	| "SMTP_PASSWORD"
-	| "MAIL_FROM";
+	| "MAIL_FROM"
+	| "NOTIFICATIONS_ENABLED";
 
 /**
  * Contains the possible environments that this application might run in, as well as
