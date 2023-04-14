@@ -14,7 +14,9 @@ export class Config {
 		const cfgWithEnv: DeepPartial<ConfigurationSettings> = {
 			logger: {},
 			notifications: {
-				enabled: env("NOTIFICATIONS_ENABLED") ?? cfg.notifications?.enabled
+				enabled: env("NOTIFICATIONS_ENABLED")
+					? Boolean(JSON.parse(env("NOTIFICATIONS_ENABLED")))
+					: cfg.notifications?.enabled
 			},
 			authentication: {
 				url: env("AUTHENTICATION_BASE_PATH") ?? cfg.authentication?.url
