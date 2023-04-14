@@ -13,7 +13,9 @@ export class Config {
 		// Partial configuration with environment variables and original config values as fallback
 		const cfgWithEnv: DeepPartial<ConfigurationSettings> = {
 			logger: {},
-			notifications: {},
+			notifications: {
+				enabled: env("NOTIFICATIONS_ENABLED") ?? cfg.notifications?.enabled
+			},
 			authentication: {
 				url: env("AUTHENTICATION_BASE_PATH") ?? cfg.authentication?.url
 			},
