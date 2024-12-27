@@ -99,7 +99,7 @@ export class AssessmentAllocationRepository extends Repository<AssessmentAllocat
 			criteria = { ...criteria, userId: allocation.userId };
 		}
 
-		const result = await this.delete(criteria);
+		const result = await this.delete(criteria.id);
 		return result.affected == 1;
 	}
 

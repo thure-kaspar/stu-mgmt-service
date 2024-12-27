@@ -292,7 +292,9 @@ export class AssessmentRepository extends Repository<Assessment> {
 		changeCreator: boolean
 	): Promise<Assessment> {
 		const { achievedPoints, isDraft, comment, partialAssessments } = updateDto;
-		const assessment = await this.findOneOrFail(assessmentId, {
+		const assessment = await this.findOneOrFail({where: {
+			assignmentId: assessmentId
+		}, 
 			relations: ["partialAssessments"]
 		});
 
