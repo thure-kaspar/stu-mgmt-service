@@ -119,14 +119,16 @@ const authentication = y.object({
 const mailing = y
 	.object({
 		enabled: y.boolean().required(),
-		clientBasePath: y.string().when("enabled", {
-			is: true,
-			then: y.string().required()
-		}),
-		from: y.string().when("enabled", {
-			is: true,
-			then: y.string().required()
-		}),
+		clientBasePath: y.string().when("enabled", (enabled, y) => {
+			if(enabled)
+			  return y.required()
+			return y
+		  }),
+		from: y.string().when("enabled", (enabled, y) => {
+			if(enabled)
+			  return y.required()
+			return y
+		  }),
 		smtp: y
 			.object({
 				host: y.string().required(),
@@ -134,11 +136,11 @@ const mailing = y
 				useSecureConnection: y.boolean().required(),
 				username: y.string().required(),
 				password: y.string()
-			})
-			.when("enabled", {
-				is: false,
-				then: y.object().notRequired().default(undefined)
-			})
+			}).when("enabled", (enabled, y) => {
+				if(!enabled)
+				  return y.notRequired().default(undefined)
+				return y
+			  }),
 	})
 	.required();
 

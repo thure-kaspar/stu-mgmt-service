@@ -36,9 +36,6 @@ const typeOrmConfig: TypeOrmModuleOptions = {
 	dropSchema: dbConfig.dropSchema || false,
 	migrationsRun: false,
 	migrations: ["dist/migrations/*.js"],
-	cli: {
-		migrationsDir: "migrations"
-	},
 	keepConnectionAlive: true, // prevents AlreadyHasActiveConnectionError, needed for testing // TODO: Check if it should be disabled in production
 	logging: Config.get().logger ? ["error"] : undefined,
 	entities: [
