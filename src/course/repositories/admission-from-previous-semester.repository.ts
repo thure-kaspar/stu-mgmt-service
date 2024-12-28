@@ -5,8 +5,12 @@ import { CourseId } from "../entities/course.entity";
 @EntityRepository(AdmissionFromPreviousSemester)
 export class AdmissionFromPreviousSemesterRepository extends Repository<AdmissionFromPreviousSemester> {
 	/** Retrieves the admission criteria. Throws error, if not found. */
-	getById(id: number): Promise<AdmissionFromPreviousSemester> {
-		return this.findOneOrFail(id);
+	getById(id_number: number): Promise<AdmissionFromPreviousSemester> {
+		return this.findOneOrFail({
+			where: {
+				id: id_number
+			}
+		});
 	}
 
 	/** Retrieves the AdmissionFromPreviousSemester. Throws error, if not found. */

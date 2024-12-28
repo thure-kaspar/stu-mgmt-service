@@ -21,7 +21,7 @@ export class AssessmentGuard implements CanActivate {
 			throw new Error("AssignmentGuard is missing for this request handler");
 		}
 
-		const assessment = await this.assessments.findOneOrFail(request.params.assessmentId, {
+		const assessment = await this.assessments.findOneOrFail({
 			where: {
 				assignmentId: request.assignment.id
 			},

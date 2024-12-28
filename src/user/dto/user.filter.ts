@@ -10,7 +10,7 @@ export class UserFilter extends PaginationFilter {
 	@ApiPropertyOptional()
 	displayName?: string;
 
-	@ApiPropertyOptional({ enum: UserRole, type: UserRole, isArray: true })
+	@ApiPropertyOptional({ enum: UserRole, isArray: true })
 	roles?: UserRole[];
 
 	constructor(filter?: Partial<UserFilter>) {

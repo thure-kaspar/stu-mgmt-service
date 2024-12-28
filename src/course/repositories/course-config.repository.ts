@@ -15,8 +15,12 @@ export class CourseConfigRepository extends Repository<CourseConfig> {
 	}
 
 	/** Returns the course config without relations. Throws error, if not found. */
-	getById(id: number): Promise<CourseConfig> {
-		return this.findOneOrFail(id);
+	getById(id_number: number): Promise<CourseConfig> {
+		return this.findOneOrFail({
+			where: {
+				id: id_number
+			}
+		});
 	}
 
 	/** Returns the complete course config. Throws Error, if not found. */

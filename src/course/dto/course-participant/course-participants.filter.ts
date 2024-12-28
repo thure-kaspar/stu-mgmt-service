@@ -4,7 +4,7 @@ import { ApiPropertyOptional } from "@nestjs/swagger";
 import { sanitizeEnum } from "../../../utils/http-utils";
 
 export class CourseParticipantsFilter extends PaginationFilter {
-	@ApiPropertyOptional({ enum: CourseRole, type: CourseRole, isArray: true })
+	@ApiPropertyOptional({ enum: CourseRole, isArray: true })
 	courseRole?: CourseRole[];
 	@ApiPropertyOptional({
 		description: "Compared to the participant's username and displayName with ILIKE %name%."

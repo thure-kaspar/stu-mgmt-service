@@ -13,8 +13,12 @@ export class GroupSettingsRepository extends Repository<GroupSettings> {
 	}
 
 	/** Retrieves the group settings. Throws error, if not found. */
-	getById(id: number): Promise<GroupSettings> {
-		return this.findOneOrFail(id);
+	getById(idNumber: number): Promise<GroupSettings> {
+		return this.findOneOrFail({
+			where: {
+				id: idNumber
+			}
+		});
 	}
 
 	/** Retrieves the group settings. Throws error, if not found. */

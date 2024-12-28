@@ -118,7 +118,7 @@ function AssignmentEvaluatedMail(
 		mail.subject = `${props.courseId} – Bewertung von ${props.assignment.name}`;
 		mail.text = `Bewertung für Aufgabe "${props.assignment.name}" wurde veröffentlicht.`;
 		mail.html = jsxt.render(
-			<>
+			<div>
 				<h2>
 					{props.courseId} – Bewertung von {props.assignment.name}
 				</h2>
@@ -128,7 +128,7 @@ function AssignmentEvaluatedMail(
 				>
 					Link zur Bewertung
 				</a>
-			</>
+			</div>
 		);
 	}
 
@@ -136,7 +136,7 @@ function AssignmentEvaluatedMail(
 		mail.subject = `${props.courseId} – Assessment for ${props.assignment.name}`;
 		mail.text = `Assessment for "${props.assignment.name}" is now available.`;
 		mail.html = jsxt.render(
-			<>
+			<jsxt.Default>
 				<h2>
 					{props.courseId} – Assessment for {props.assignment.name}
 				</h2>
@@ -146,7 +146,7 @@ function AssignmentEvaluatedMail(
 				>
 					Link to the assessment
 				</a>
-			</>
+			</jsxt.Default>
 		);
 	}
 
@@ -170,7 +170,7 @@ function AssessmentScoreChangedMail(
 		mail.subject = `${props.assignment.courseId} – Änderung der Bewertung von ${props.assignment.name}`;
 		mail.text = `Bewertung für Aufgabe "${props.assignment.name}" wurde verändert.`;
 		mail.html = jsxt.render(
-			<>
+			<jsxt.Default>
 				<h2>
 					{props.assignment.courseId} – Änderung der Bewertung von {props.assignment.name}
 				</h2>
@@ -180,7 +180,7 @@ function AssessmentScoreChangedMail(
 				>
 					Link zur Bewertung
 				</a>
-			</>
+			</jsxt.Default>
 		);
 	}
 
@@ -188,7 +188,7 @@ function AssessmentScoreChangedMail(
 		mail.subject = `${props.assignment.courseId} – Updated assessment for ${props.assignment.name}`;
 		mail.text = `Assessment for "${props.assignment.name}" has been updated.`;
 		mail.html = jsxt.render(
-			<>
+			<jsxt.Default>
 				<h2>
 					{props.assignment.courseId} – Updated assessment for {props.assignment.name}
 				</h2>
@@ -198,7 +198,7 @@ function AssessmentScoreChangedMail(
 				>
 					Link to the assessment
 				</a>
-			</>
+			</jsxt.Default>
 		);
 	}
 
@@ -223,13 +223,13 @@ function ParticipantJoinedGroupMail(
 		mail.subject = `${props.courseId} – Neues Gruppenmitglied`;
 		mail.text = "Ein neues Mitglied hat sich ihrer Gruppe angeschlossen.";
 		mail.html = jsxt.render(
-			<>
+			<jsxt.Default>
 				<h2>{props.courseId} – Neues Gruppenmitglied</h2>
 				<p>Ein neues Mitglied hat sich ihrer Gruppe angeschlossen:</p>
 				<p>
 					{props.participantName} - {props.participantEmail}
 				</p>
-			</>
+			</jsxt.Default>
 		);
 	}
 
@@ -237,10 +237,10 @@ function ParticipantJoinedGroupMail(
 		mail.subject = `${props.courseId} – New group member`;
 		mail.text = "A new member has joined your group.";
 		mail.html = jsxt.render(
-			<>
+			<jsxt.Default>
 				<h2>{props.courseId} – New group member</h2>
 				<p>A new member has joined your group.</p>
-			</>
+			</jsxt.Default>
 		);
 	}
 
@@ -264,11 +264,11 @@ function ParticipantLeftGroupMail(
 		mail.subject = `${props.courseId} – Ein Mitglied hat Ihre Gruppe verlassen`;
 		mail.text = "Ein Mitglied hat Ihre Gruppe verlassen.";
 		mail.html = jsxt.render(
-			<>
+			<jsxt.Default>
 				<h2>{props.courseId} – Ein Mitglied hat Ihre Gruppe verlassen</h2>
 				<p>Ein Mitglied hat Ihre Gruppe verlassen:</p>
 				<p>{props.participantName}</p>
-			</>
+			</jsxt.Default>
 		);
 	}
 
@@ -276,10 +276,10 @@ function ParticipantLeftGroupMail(
 		mail.subject = `${props.courseId} – A member has left your group`;
 		mail.text = "A member has left your group.";
 		mail.html = jsxt.render(
-			<>
+			<jsxt.Default>
 				<h2>{props.courseId} – A member has left your group</h2>
 				<p>A member has left your group.</p>
-			</>
+			</jsxt.Default>
 		);
 	}
 

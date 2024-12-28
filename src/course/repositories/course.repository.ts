@@ -64,8 +64,12 @@ export class CourseRepository extends Repository<Course> {
 	/**
 	 * Retrieves the course with the specified id.
 	 */
-	async getCourseById(id: string): Promise<Course> {
-		return this.findOneOrFail(id);
+	async getCourseById(idNumber: string): Promise<Course> {
+		return this.findOneOrFail({
+			where: {
+				id: idNumber
+			}
+		});
 	}
 
 	async getCourseByNameAndSemester(name: string, semester: string): Promise<Course> {

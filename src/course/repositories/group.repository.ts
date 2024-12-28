@@ -48,7 +48,11 @@ export class GroupRepository extends Repository<Group> {
 	}
 
 	async getGroupById(groupId: GroupId): Promise<Group> {
-		return this.findOneOrFail(groupId);
+		return this.findOneOrFail({
+			where: {
+				id: groupId
+			}
+		});
 	}
 
 	/** Returns the group with all relations loaded. */

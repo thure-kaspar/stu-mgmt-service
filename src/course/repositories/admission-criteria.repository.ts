@@ -21,8 +21,12 @@ export class AdmissionCriteriaRepository extends Repository<AdmissionCriteria> {
 	}
 
 	/** Retrieves the admission criteria. Throws error, if not found. */
-	getById(id: number): Promise<AdmissionCriteria> {
-		return this.findOneOrFail(id);
+	getById(id_number: number): Promise<AdmissionCriteria> {
+		return this.findOneOrFail({
+			where: {
+				id: id_number
+			}
+		});
 	}
 
 	/** Retrieves the admission criteria. Throws error, if not found. */

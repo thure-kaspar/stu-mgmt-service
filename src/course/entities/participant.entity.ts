@@ -23,7 +23,6 @@ export class Participant implements ToDto<ParticipantDto> {
 	id: number;
 
 	@ManyToOne(() => Course, course => course.participants, {
-		primary: true,
 		onDelete: "CASCADE"
 	})
 	@JoinColumn()
@@ -32,7 +31,7 @@ export class Participant implements ToDto<ParticipantDto> {
 	@Column()
 	courseId: CourseId;
 
-	@ManyToOne(() => User, user => user.participations, { primary: true, onDelete: "CASCADE" })
+	@ManyToOne(() => User, user => user.participations, { onDelete: "CASCADE" })
 	@JoinColumn()
 	user?: User;
 
