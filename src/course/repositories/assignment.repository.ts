@@ -34,7 +34,7 @@ export class AssignmentRepository extends Repository<Assignment> {
 	}
 
 	async getAssignmentById_WithAssessments(assignmentId: string): Promise<Assignment> {
-		return this.findOneOrFail(assignmentId, {
+		return this.findOneOrFail({where: { id: assignmentId }, 
 			relations: ["assessments"]
 		});
 	}

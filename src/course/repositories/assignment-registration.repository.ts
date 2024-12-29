@@ -78,7 +78,7 @@ export class AssignmentRegistrationRepository extends Repository<AssignmentRegis
 		);
 		await this.groupRelationsRepository.insert(registrationRelation);
 
-		return this.findOne(groupRegistration.id, {
+		return this.findOne({where: { id: groupRegistration.id }, 
 			relations: [
 				"groupRelations",
 				"groupRelations.participant",

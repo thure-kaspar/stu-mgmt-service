@@ -79,7 +79,7 @@ export class GroupRepository extends Repository<Group> {
 	 * Returns the group with its members.
 	 */
 	async getGroupWithUsers(groupId: GroupId): Promise<Group> {
-		return this.findOneOrFail(groupId, {
+		return this.findOneOrFail({where: { id: groupId }, 
 			relations: [
 				"course",
 				"userGroupRelations",

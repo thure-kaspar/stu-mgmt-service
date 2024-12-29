@@ -82,7 +82,8 @@ export class CourseRepository extends Repository<Course> {
 	}
 
 	async getCourseWithUsers(id: string): Promise<Course> {
-		return this.findOneOrFail(id, { relations: ["participants", "participants.user"] });
+		return this.findOneOrFail({where: { id }, 
+			relations: ["participants", "participants.user"] });
 	}
 
 	/**
@@ -118,7 +119,7 @@ export class CourseRepository extends Repository<Course> {
 	 * - AdmissionCriteria
 	 */
 	async getCourseWithConfig(id: string): Promise<Course> {
-		return this.findOneOrFail(id, {
+		return this.findOneOrFail({where: { id }, 
 			relations: ["config", "config.groupSettings", "config.admissionCriteria"]
 		});
 	}
@@ -127,11 +128,12 @@ export class CourseRepository extends Repository<Course> {
 	 * Returns the course with its course config. The course config includes the group settings.
 	 */
 	async getCourseWithConfigAndGroupSettings(id: string): Promise<Course> {
-		return this.findOneOrFail(id, { relations: ["config", "config.groupSettings"] });
+		return this.findOneOrFail({where: { id }, 
+			relations: ["config", "config.groupSettings"] });
 	}
 
 	async getCourseWithGroups(courseId: CourseId): Promise<Course> {
-		return this.findOneOrFail(courseId, {
+		return this.findOneOrFail({where: { id: courseId }, 
 			relations: ["groups"]
 		});
 	}

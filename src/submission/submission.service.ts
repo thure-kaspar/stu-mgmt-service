@@ -38,7 +38,8 @@ export class SubmissionService {
 	}
 
 	private async getSubmissionById(id: number): Promise<SubmissionDto> {
-		const submission = await this.submissionRepository.findOne(id, { relations: ["user"] });
+		const submission = await this.submissionRepository.findOne({where: { id }, 
+			relations: ["user"] });
 		return submission.toDto();
 	}
 

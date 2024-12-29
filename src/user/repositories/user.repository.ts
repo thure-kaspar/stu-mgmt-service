@@ -59,7 +59,8 @@ export class UserRepository extends Repository<User> {
 	}
 
 	async getUserById(id: string): Promise<User> {
-		return this.findOneOrFail(id, { relations: ["participations", "participations.course"] });
+		return this.findOneOrFail({where: { id }, 
+			relations: ["participations", "participations.course"] });
 	}
 
 	async getUserByMatrNr(matrNr: number): Promise<User> {
@@ -91,9 +92,8 @@ export class UserRepository extends Repository<User> {
 	}
 
 	async getCoursesOfUser(userId: UserId): Promise<Course[]> {
-		const user = await this.findOneOrFail(userId, {
-			relations: ["participations", "participations.course"]
-		});
+		const user = await this.findOneOrFail({where: { id: userId }, 
+			relations: ["participations", "participations.course"] });
 
 		return user.participations.map(relation => relation.course);
 	}
