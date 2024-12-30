@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
-import * as flat from "flat";
+
 import { AdmissionStatusService } from "../admission-status/admission-status.service";
 import { AssessmentService } from "../assessment/services/assessment.service";
 import { AssignmentRegistrationService } from "../course/services/assignment-registration.service";
@@ -8,7 +8,11 @@ import { createWorkbook, Workbook } from "./excel";
 
 /** Maps an object with nested properties to an object that contains dot-separated properties. */
 function flatten<T>(data: T[]): unknown[] {
-	return data.map(entry => flat.flatten(entry));
+	let result: unknown[]
+	import("flat").then(flat => {
+		result = data.map(entry => flat.flatten(entry))
+	})
+	return result
 }
 
 @Injectable()
