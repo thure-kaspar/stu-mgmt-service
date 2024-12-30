@@ -1,4 +1,4 @@
-import * as config from "config";
+const config = require("config")
 import { DeepPartial } from "typeorm";
 import * as y from "yup";
 import { env } from "./environment";
@@ -8,7 +8,7 @@ export class Config {
 
 	/** Merges the configuration values from `/config/[environment].yml` with environment variables. */
 	static create(): void {
-		const cfg = config.util.toObject() as ConfigurationSettings;
+		const cfg = config.util.toObject() as ConfigurationSettings
 
 		// Partial configuration with environment variables and original config values as fallback
 		const cfgWithEnv: DeepPartial<ConfigurationSettings> = {
