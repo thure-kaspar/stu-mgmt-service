@@ -1,5 +1,4 @@
 import { AuthInfo } from "../../../src/auth/dto/auth-info.dto";
-import { SparkyService } from "../../../src/auth/services/sparky.service";
 import { AuthService } from "../../../src/auth/services/auth.service";
 import { UserDto, UserUpdateDto } from "../../../src/shared/dto/user.dto";
 import { User } from "../../../src/shared/entities/user.entity";
@@ -12,10 +11,6 @@ const mock_UserRepository = (): Partial<UserRepository> => ({
 	updateUser: jest.fn(),
 	createUser: jest.fn(),
 	tryGetUserByUsername: jest.fn()
-});
-
-const mock_SparkyService = (): Partial<SparkyService> => ({
-	authenticate: jest.fn()
 });
 
 function createAuthInfo(data: {
@@ -44,13 +39,11 @@ function createAuthInfo(data: {
 describe("AuthService", () => {
 	let service: AuthService;
 	let userRepository: UserRepository;
-	let sparkyService: SparkyService;
 	let userDto: UserDto;
 
 	beforeEach(async () => {
 		userRepository = mock_UserRepository() as UserRepository;
-		sparkyService = mock_SparkyService() as SparkyService;
-		service = new AuthService(userRepository, sparkyService);
+		service = new AuthService(userRepository);
 		userDto = copy(USER_STUDENT_JAVA);
 	});
 

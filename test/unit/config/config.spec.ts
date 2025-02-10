@@ -26,7 +26,10 @@ const validConfig = {
 		enabled: false
 	},
 	authentication: {
-		url: "http://localhost:8080"
+		issuer: "http://localhost:8081",
+		realm: "oidctest",
+		clientId: "stumgmt-dev-thure",
+		clientSecret: "QvRTymbqczt5z2ryYYnq0EkZKBpcToWc"
 	},
 	logger: {
 		levels: ["error", "warn", "debug", "verbose"],
@@ -87,17 +90,17 @@ describe("Config Validation", () => {
 				}
 			}
 		});
-		it("Empty Object -> 17 errors", () => {
+		it("Empty Object -> 20 errors", () => {
 			try {
 				configSchema.validateSync({}, { abortEarly: false });
 			} catch (error) {
 				if (error instanceof ValidationError) {
-					expect(error.errors).toHaveLength(17);
+					expect(error.errors).toHaveLength(20);
 				}
 			}
 		});
 
-		it("Empty Object for each key -> 17 errors", () => {
+		it("Empty Object for each key -> 20 errors", () => {
 			const emptyConfig: DeepPartial<ReturnType<typeof Config["get"]>> = {
 				authentication: {},
 				db: {},
@@ -111,7 +114,7 @@ describe("Config Validation", () => {
 				configSchema.validateSync(emptyConfig, { abortEarly: false });
 			} catch (error) {
 				if (error instanceof ValidationError) {
-					expect(error.errors).toHaveLength(17);
+					expect(error.errors).toHaveLength(20);
 				}
 			}
 		});

@@ -106,11 +106,11 @@ describe("StudentMgmtDbEntities", () => {
 		const data = EXAMPLE_CONFIG;
 
 		beforeAll(async () => {
-			await new StudentMgmtDbEntities(data).populateDatabase(setup.connection);
+			await new StudentMgmtDbEntities(data).populateDatabase(setup.dataSource);
 		});
 
 		it("Creates users", async () => {
-			const userRepo = setup.connection.getRepository(User);
+			const userRepo = setup.dataSource.getRepository(User);
 			const users = await userRepo.find({
 				relations: ["settings"]
 			});
@@ -121,7 +121,7 @@ describe("StudentMgmtDbEntities", () => {
 		});
 
 		it("Creates courses", async () => {
-			const courseRepo = setup.connection.getRepository(Course);
+			const courseRepo = setup.dataSource.getRepository(Course);
 			const courses = await courseRepo.find({
 				relations: [
 					"config",
@@ -141,7 +141,7 @@ describe("StudentMgmtDbEntities", () => {
 		});
 
 		it("Creates participants", async () => {
-			const participantsRepo = setup.connection.getRepository(Participant);
+			const participantsRepo = setup.dataSource.getRepository(Participant);
 			const participants = await participantsRepo.find();
 
 			const participant = participants[0];
@@ -151,7 +151,7 @@ describe("StudentMgmtDbEntities", () => {
 		});
 
 		it("Creates groups", async () => {
-			const repo = setup.connection.getRepository(Group);
+			const repo = setup.dataSource.getRepository(Group);
 			const groups = await repo.find({
 				relations: ["userGroupRelations", "userGroupRelations.user"]
 			});
@@ -167,14 +167,14 @@ describe("StudentMgmtDbEntities", () => {
 		});
 
 		it("Creates assignments", async () => {
-			const repo = setup.connection.getRepository(Assignment);
+			const repo = setup.dataSource.getRepository(Assignment);
 			const assignments = await repo.find();
 
 			expect(assignments).toHaveLength(2);
 		});
 
 		it("Creates assessments", async () => {
-			const repo = setup.connection.getRepository(Assessment);
+			const repo = setup.dataSource.getRepository(Assessment);
 			const assessments = await repo.find({
 				relations: ["partialAssessments", "assessmentUserRelations", "assignment"]
 			});
@@ -199,7 +199,7 @@ describe("StudentMgmtDbEntities", () => {
 		});
 
 		it("Creates assignment registrations", async () => {
-			const repo = setup.connection.getRepository(AssignmentRegistration);
+			const repo = setup.dataSource.getRepository(AssignmentRegistration);
 			const registrations = await repo.find({
 				relations: [
 					"groupRelations",
@@ -221,19 +221,19 @@ describe("StudentMgmtDbEntities", () => {
 		});
 
 		it("Creates subscribers", async () => {
-			const repo = setup.connection.getRepository(Subscriber);
+			const repo = setup.dataSource.getRepository(Subscriber);
 			const subscribers = await repo.find();
 			expect(subscribers).toHaveLength(1);
 		});
 
 		it("Creates group events", async () => {
-			const repo = setup.connection.getRepository(GroupEvent);
+			const repo = setup.dataSource.getRepository(GroupEvent);
 			const events = await repo.find();
 			expect(events).toHaveLength(2);
 		});
 
 		it("Creates submissions", async () => {
-			const repo = setup.connection.getRepository(Submission);
+			const repo = setup.dataSource.getRepository(Submission);
 			const submissions = await repo.find();
 			expect(submissions).toHaveLength(1);
 		});
@@ -242,9 +242,9 @@ describe("StudentMgmtDbEntities", () => {
 	describe("Demo Config", () => {
 		it("Insert", async () => {
 			await setup.clearDb();
-			await new StudentMgmtDbEntities(DEMO_CONFIG).populateDatabase(setup.connection);
+			await new StudentMgmtDbEntities(DEMO_CONFIG).populateDatabase(setup.dataSource);
 
-			const courseRepo = setup.connection.getRepository(Course);
+			const courseRepo = setup.dataSource.getRepository(Course);
 			const courses = await courseRepo.find();
 
 			expect(courses).toHaveLength(8);
@@ -254,9 +254,9 @@ describe("StudentMgmtDbEntities", () => {
 	describe("Testing Config", () => {
 		it("Insert", async () => {
 			await setup.clearDb();
-			await new StudentMgmtDbEntities(TESTING_CONFIG).populateDatabase(setup.connection);
+			await new StudentMgmtDbEntities(TESTING_CONFIG).populateDatabase(setup.dataSource);
 
-			const courseRepo = setup.connection.getRepository(Course);
+			const courseRepo = setup.dataSource.getRepository(Course);
 			const courses = await courseRepo.find();
 
 			expect(courses).toHaveLength(4);

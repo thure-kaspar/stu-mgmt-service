@@ -8,7 +8,7 @@ import { DtoFactory } from "src/shared/dto-factory";
 import { jwtDecode } from "jwt-decode";
 
 @Injectable()
-export class SparkyAuthStrategy extends AuthStrategy {
+export class KeycloakAuthStrategy extends AuthStrategy {
 	constructor(
 		private cache: CacheService,
 		private readonly userRepository: UserRepository
@@ -29,7 +29,8 @@ export class SparkyAuthStrategy extends AuthStrategy {
 			const testUser = await this.userRepository.tryGetUserByUsername(username);
 
 			if (!testUser) {
-				throw new UnauthorizedException("Unknown sparky username: " + username);
+				throw new UnauthorizedException("Unknown username: " + username 
+					+ "\nThe name inside the JWT (preferred_username field) is not in the StudMngmt database.");
 			}
 
 			user = DtoFactory.createUserDto(testUser);

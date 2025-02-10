@@ -30,7 +30,7 @@ describe("Activity E2E", () => {
 		await setup.dbMockService.createAll();
 
 		// Create activity data
-		const repository = setup.connection.getRepository(Activity);
+		const repository = setup.dataSource.getRepository(Activity);
 		await repository.insert([act1, activityOtherCourse, act2, act3]);
 	});
 
@@ -107,7 +107,7 @@ describe("Activity E2E", () => {
 					date: act2.date
 				});
 
-				const repository = setup.connection.getRepository(Activity);
+				const repository = setup.dataSource.getRepository(Activity);
 
 				const activity = await repository.find({
 					where: { courseId: COURSE_JAVA_1920.id, userId: USER_STUDENT_JAVA.id }
@@ -123,7 +123,7 @@ describe("Activity E2E", () => {
 					date: new Date(2022, 1, 7)
 				});
 
-				const repository = setup.connection.getRepository(Activity);
+				const repository = setup.dataSource.getRepository(Activity);
 
 				const activity = await repository.find({
 					where: { courseId: COURSE_JAVA_1920.id, userId: USER_STUDENT_JAVA.id }

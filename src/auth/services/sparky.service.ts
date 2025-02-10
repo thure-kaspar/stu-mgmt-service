@@ -6,6 +6,7 @@ import { AuthSystemCredentials } from "../dto/auth-credentials.dto";
 import { AuthInfo } from "../dto/auth-info.dto";
 import { CredentialsDto } from "../dto/credentials.dto";
 
+// TODO: Remove this class since it is no longer used with Keycloak
 @Injectable()
 export class SparkyService {
 	private readonly sparkyUrl = Config.get().authentication.issuer;

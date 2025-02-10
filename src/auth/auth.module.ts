@@ -10,9 +10,8 @@ import { AuthStrategy } from "./guards/auth.strategy";
 import { RoleGuard } from "./guards/role.guard";
 import { TestUserAuthStrategy } from "./guards/test-user-auth.strategy";
 import { User } from "src/shared/entities/user.entity";
-import { SparkyAuthStrategy } from "./guards/sparky-auth.strategy";
+import { KeycloakAuthStrategy } from "./guards/keycloak-auth.strategy";
 import { AuthService } from "./services/auth.service";
-import { SparkyService } from "./services/sparky.service";
 
 @Module({
 	imports: [TypeOrmModule.forFeature([UserRepository, User]), HttpModule],
@@ -21,15 +20,14 @@ import { SparkyService } from "./services/sparky.service";
 		CacheService,
 		UserRepository,
 		RoleGuard,
-		SparkyService,
-		SparkyAuthStrategy,
+		KeycloakAuthStrategy,
 		AuthService,
 		{
 			provide: AuthStrategy,
 			useClass: (() =>
 				environment.is("development", "demo", "testing")
 					? TestUserAuthStrategy
-					: SparkyAuthStrategy)()
+					: KeycloakAuthStrategy)()
 		},
 		AuthGuard
 	],

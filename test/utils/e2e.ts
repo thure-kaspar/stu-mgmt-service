@@ -1,6 +1,6 @@
 import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
-import { Connection, getConnection } from "typeorm";
+import { Connection, DataSource, getConnection } from "typeorm";
 import { createApplication } from "../mocks/application.mock";
 import { DbMockService } from "../mocks/db-mock.service";
 
@@ -44,7 +44,7 @@ export class TestSetup {
 
 	private constructor(
 		readonly app: INestApplication,
-		readonly connection: Connection,
+		readonly dataSource: DataSource,
 		readonly dbMockService: DbMockService
 	) {}
 
@@ -64,12 +64,12 @@ export class TestSetup {
 
 	/** Drops all data from the database. */
 	clearDb(): Promise<void> {
-		return this.connection.synchronize(true);
+		return this.dataSource.synchronize(true);
 	}
 
 	/** Closes the database connection and terminates the application. */
 	async teardown(): Promise<void> {
-		await this.connection.close();
+		await this.dataSource.close();
 		await this.app.close();
 	}
 }

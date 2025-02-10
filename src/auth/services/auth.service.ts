@@ -8,6 +8,7 @@ import { UserRepository } from "../../user/repositories/user.repository";
 import { AuthInfo } from "../dto/auth-info.dto";
 import { AuthResultDto } from "../dto/auth-result.dto";
 import { CredentialsDto } from "../dto/credentials.dto";
+import { HttpService } from "@nestjs/axios";
 import { SparkyService } from "./sparky.service";
 
 @Injectable()
@@ -15,8 +16,7 @@ export class AuthService {
 	private readonly logger = new Logger(AuthService.name);
 
 	constructor(
-		private readonly userRepository: UserRepository,
-		private sparkyService: SparkyService
+		private readonly userRepository: UserRepository
 	) {}
 
 	async getUserById(id: string): Promise<UserDto> {
@@ -31,7 +31,9 @@ export class AuthService {
 	 * @param credentials
 	 */
 	async login(credentials: CredentialsDto): Promise<AuthResultDto> {
-		const authInfo = await this.sparkyService.authenticate(credentials);
+		// TODO: Create user if they don't exist after loggin in with Keycloak
+		const sparkyService = new SparkyService(new HttpService)
+		const authInfo = await sparkyService.authenticate(credentials);
 		const user = await this.getOrCreateUser(authInfo);
 		return {
 			user,

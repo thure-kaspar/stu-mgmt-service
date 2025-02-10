@@ -136,7 +136,7 @@ describe("Recommender Export", () => {
 
 	beforeAll(async () => {
 		setup = await TestSetup.create();
-		const activityRepo = setup.connection.getRepository(Activity);
+		const activityRepo = setup.dataSource.getRepository(Activity);
 		recommenderExportService = setup.app.get(RecommenderExportService);
 
 		await setup.dbMockService.createAll();
