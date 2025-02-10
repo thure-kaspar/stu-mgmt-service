@@ -35,10 +35,10 @@ function Imports(): (
 		NotificationModule,
 		ExportModule,
 		KeycloakConnectModule.register({
-			authServerUrl: 'http://localhost:8081',
-			realm: 'oidctest',
-			clientId: 'stumgmt-dev-thure',
-			secret: 'QvRTymbqczt5z2ryYYnq0EkZKBpcToWc',
+			authServerUrl: Config.get().authentication.issuer,
+			realm: Config.get().authentication.realm,
+			clientId: Config.get().authentication.clientId,
+			secret: Config.get().authentication.clientSecret,
 			policyEnforcement: PolicyEnforcementMode.PERMISSIVE, 
 			tokenValidation: TokenValidation.ONLINE, 
 		  })

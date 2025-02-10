@@ -19,7 +19,10 @@ mailing:
     enabled: false
 
 authentication:
-    url: "http://147.172.178.30:8080"
+    issuer: "http://localhost:8081"
+    realm: "oidctest"
+    clientId: "stumgmt-dev-thure"
+    clientSecret: "QvRTymbqczt5z2ryYYnq0EkZKBpcToWc"
 
 logger:
     levels:

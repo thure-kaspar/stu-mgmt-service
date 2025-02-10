@@ -19,7 +19,10 @@ export class Config {
 					: cfg.notifications?.enabled
 			},
 			authentication: {
-				url: env("AUTHENTICATION_BASE_PATH") ?? cfg.authentication?.url
+				issuer: env("KEYCLOAK_ISSUER") ?? cfg.authentication?.issuer,
+				realm: env("KEYCLOAK_REALM") ?? cfg.authentication.realm,
+				clientId: env("KEYCLOAK_CLIENT_ID") ?? cfg.authentication.clientId,
+				clientSecret: env("KEYCLOAK_CLIENT_SECRET") ?? cfg.authentication.clientSecret
 			},
 			server: {
 				basePath: env("SERVER_BASE_PATH") ?? cfg.server?.basePath,
@@ -113,7 +116,10 @@ const db = y
 	.required();
 
 const authentication = y.object({
-	url: y.string().required()
+	issuer: y.string().required(),
+	realm: y.string().required(),
+	clientId: y.string().required(),
+	clientSecret: y.string().required()
 });
 
 const mailing = y

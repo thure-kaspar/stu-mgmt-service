@@ -3,7 +3,10 @@ type EnvironmentName = "development" | "demo" | "production" | "testing";
 type EnvironmentVariable =
 	| "NODE_ENV"
 	| "LOG_CONFIG"
-	| "AUTHENTICATION_BASE_PATH"
+	| "KEYCLOAK_ISSUER"
+	| "KEYCLOAK_REALM"
+	| "KEYCLOAK_CLIENT_ID"
+	| "KEYCLOAK_CLIENT_SECRET"
 	| "SERVER_BASE_PATH"
 	| "SERVER_PORT"
 	| "CLIENT_BASE_PATH"
