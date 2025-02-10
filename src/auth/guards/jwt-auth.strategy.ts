@@ -8,7 +8,7 @@ import { DtoFactory } from "src/shared/dto-factory";
 import { jwtDecode } from "jwt-decode";
 
 @Injectable()
-export class KeycloakAuthStrategy extends AuthStrategy {
+export class JwtAuthStrategy extends AuthStrategy {
 	constructor(
 		private cache: CacheService,
 		private readonly userRepository: UserRepository
@@ -23,14 +23,18 @@ export class KeycloakAuthStrategy extends AuthStrategy {
 		const jwtContent = jwtDecode(token);
 		const username = jwtContent["preferred_username"];
 
+		if (username === undefined) {
+			throw new UnauthorizedException("JWT has no 'preferred_username' field. Maybe the identity provider is misconfigured.");
+		}
+
 		let user = this.cache.get<UserDto>(username);
 
 		if (!user) {
 			const testUser = await this.userRepository.tryGetUserByUsername(username);
 
 			if (!testUser) {
-				throw new UnauthorizedException("Unknown username: " + username 
-					+ "\nThe name inside the JWT (preferred_username field) is not in the StudMngmt database.");
+				throw new UnauthorizedException("Unknown username: '" + username 
+					+ "'. The name inside the JWT (preferred_username field) is not in the StudMngmt database.");
 			}
 
 			user = DtoFactory.createUserDto(testUser);

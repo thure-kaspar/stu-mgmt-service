@@ -10,7 +10,7 @@ import { AuthStrategy } from "./guards/auth.strategy";
 import { RoleGuard } from "./guards/role.guard";
 import { TestUserAuthStrategy } from "./guards/test-user-auth.strategy";
 import { User } from "src/shared/entities/user.entity";
-import { KeycloakAuthStrategy } from "./guards/keycloak-auth.strategy";
+import { JwtAuthStrategy } from "./guards/jwt-auth.strategy";
 import { AuthService } from "./services/auth.service";
 
 @Module({
@@ -20,14 +20,14 @@ import { AuthService } from "./services/auth.service";
 		CacheService,
 		UserRepository,
 		RoleGuard,
-		KeycloakAuthStrategy,
+		JwtAuthStrategy,
 		AuthService,
 		{
 			provide: AuthStrategy,
 			useClass: (() =>
 				environment.is("development", "demo", "testing")
 					? TestUserAuthStrategy
-					: KeycloakAuthStrategy)()
+					: JwtAuthStrategy)()
 		},
 		AuthGuard
 	],

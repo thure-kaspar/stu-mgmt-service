@@ -6,7 +6,7 @@ import { UserDto } from "../../shared/dto/user.dto";
 import { UserRepository } from "../../user/repositories/user.repository";
 import { CacheService } from "../cache.service";
 import { AuthStrategy } from "./auth.strategy";
-import { KeycloakAuthStrategy } from "./keycloak-auth.strategy";
+import { JwtAuthStrategy } from "./jwt-auth.strategy";
 
 const jwtRegex = /^.+\..+\..+$/; // Matches JWT, i.e., xxxxx.yyyyy.zzzzz
 
@@ -14,7 +14,7 @@ const jwtRegex = /^.+\..+\..+$/; // Matches JWT, i.e., xxxxx.yyyyy.zzzzz
 export class TestUserAuthStrategy extends AuthStrategy {
 	constructor(
 		private cache: CacheService,
-		private sparkyAuth: KeycloakAuthStrategy,
+		private sparkyAuth: JwtAuthStrategy,
 		private readonly userRepository: UserRepository
 	) {
 		super();
