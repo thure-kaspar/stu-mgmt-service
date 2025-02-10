@@ -1,5 +1,5 @@
 import { DynamicModule, ForwardReference, Module, Provider, Type } from "@nestjs/common";
-import { APP_INTERCEPTOR } from "@nestjs/core";
+import { APP_GUARD, APP_INTERCEPTOR } from "@nestjs/core";
 import { ScheduleModule } from "@nestjs/schedule";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import typeOrmConfig from "../ormconfig";
@@ -17,6 +17,7 @@ import { NotificationModule } from "./notification/notification.module";
 import { TaskSchedulingModule } from "./task-scheduling/task-scheduling.module";
 import { UserModule } from "./user/user.module";
 import { RequestLogger } from "./utils/request.logger";
+import { AuthGuard, KeycloakConnectModule, PolicyEnforcementMode, TokenValidation } from "nest-keycloak-connect";
 
 function Imports(): (
 	| Type<unknown>
@@ -32,7 +33,15 @@ function Imports(): (
 		AssessmentModule,
 		AdmissionStatusModule,
 		NotificationModule,
-		ExportModule
+		ExportModule,
+		KeycloakConnectModule.register({
+			authServerUrl: 'http://localhost:8081',
+			realm: 'oidctest',
+			clientId: 'stumgmt-dev-thure',
+			secret: 'QvRTymbqczt5z2ryYYnq0EkZKBpcToWc',
+			policyEnforcement: PolicyEnforcementMode.PERMISSIVE, 
+			tokenValidation: TokenValidation.ONLINE, 
+		  })
 	];
 
 	if (Config.get().mailing.enabled) {
@@ -46,12 +55,16 @@ function Imports(): (
 	if (!environment.is("production")) {
 		imports.push(DemoModule);
 	}
-
+	
 	return imports;
 }
 
 function Providers(): Provider<unknown>[] {
-	const providers: Provider<unknown>[] = [];
+	const providers: Provider<unknown>[] = [
+		{
+		provide: APP_GUARD,
+		useClass: AuthGuard,
+	  }];
 	if (Config.get().logger.requests) {
 		providers.push({ provide: APP_INTERCEPTOR, useClass: RequestLogger });
 	}

@@ -27,11 +27,10 @@ import { AssignmentRegistrationService } from "./assignment-registration.service
 @Injectable()
 export class GroupService {
 	constructor(
-		@InjectRepository(GroupRepository) private groupRepository: GroupRepository,
-		@InjectRepository(GroupSettingsRepository)
-		private groupSettingsRepository: GroupSettingsRepository,
+		private readonly groupRepository: GroupRepository,
+		private readonly groupSettingsRepository: GroupSettingsRepository,
 		@InjectRepository(GroupEventRepository) private groupEventRepository: GroupEventRepository,
-		@InjectRepository(AssessmentRepository) private assessmentRepository: AssessmentRepository,
+		private readonly assessmentRepository: AssessmentRepository,
 		private registrations: AssignmentRegistrationService,
 		private events: EventBus
 	) {}

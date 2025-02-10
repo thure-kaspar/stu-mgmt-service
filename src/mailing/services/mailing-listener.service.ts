@@ -100,8 +100,7 @@ export class MailingListener {
 	constructor(
 		private mailingService: MailingService,
 		private groupService: GroupService,
-		@InjectRepository(ParticipantRepository)
-		private participantRepository: ParticipantRepository,
+		private readonly participantRepository: ParticipantRepository,
 		@InjectRepository(AssessmentRepository)
 		private assessmentRepository: AssessmentRepository,
 		private registrations: AssignmentRegistrationRepository

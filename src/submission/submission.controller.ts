@@ -12,11 +12,14 @@ import { PaginatedResult } from "../utils/http-utils";
 import { SubmissionCreateDto, SubmissionDto } from "./submission.dto";
 import { SubmissionFilter } from "./submission.filter";
 import { SubmissionService } from "./submission.service";
+import { Public } from "nest-keycloak-connect";
+import { environment } from "src/.config/environment";
 
 @ApiBearerAuth()
 @ApiTags("submission")
 @Controller("courses/:courseId/submissions")
 @UseGuards(AuthGuard, CourseMemberGuard)
+@Public(environment.is("development", "demo", "testing"))
 export class SubmissionController {
 	constructor(private readonly service: SubmissionService) {}
 

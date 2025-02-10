@@ -23,7 +23,7 @@ import { AssessmentRepository } from "../repositories/assessment.repository";
 export class AssessmentService {
 	constructor(
 		@InjectRepository(AssessmentRepository) private assessmentRepository: AssessmentRepository,
-		@InjectRepository(AssignmentRepository) private assignmentRepository: AssignmentRepository,
+		private readonly assignmentRepository: AssignmentRepository,
 		@InjectRepository(AssessmentEvent)
 		private assessmentEventsRepo: Repository<AssessmentEvent>,
 		private groupService: GroupService,

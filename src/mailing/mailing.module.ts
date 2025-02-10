@@ -7,15 +7,17 @@ import { ParticipantRepository } from "../course/repositories/participant.reposi
 import { MailingController } from "./mailing.controller";
 import { Services } from "./services";
 import { MailingService } from "./services/mailing.service";
+import { Participant } from "src/course/entities/participant.entity";
+import { MailingListener } from "./services/mailing-listener.service";
 
 @Module({
 	controllers: [MailingController],
 	imports: [
 		AuthModule,
 		CourseModule,
-		TypeOrmModule.forFeature([ParticipantRepository, AssessmentRepository])
+		TypeOrmModule.forFeature([ParticipantRepository, AssessmentRepository, Participant])
 	],
-	providers: [...Services],
+	providers: [...Services, ParticipantRepository],
 	exports: [MailingService]
 })
 export class MailingModule {}

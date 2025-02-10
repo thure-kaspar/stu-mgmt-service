@@ -5,10 +5,13 @@ import { CourseMemberGuard } from "../course/guards/course-member/course-member.
 import { TeachingStaffGuard } from "../course/guards/teaching-staff.guard";
 import { ActivityDto } from "./activity.dto";
 import { ActivityService } from "./activity.service";
+import { Public } from "nest-keycloak-connect";
+import { environment } from "src/.config/environment";
 
 @ApiTags("activity")
 @ApiBearerAuth()
 @Controller("courses/:courseId/activity")
+@Public(environment.is("development", "demo", "testing"))
 @UseGuards(AuthGuard, CourseMemberGuard, TeachingStaffGuard)
 export class ActivityController {
 	constructor(private activityService: ActivityService) {}

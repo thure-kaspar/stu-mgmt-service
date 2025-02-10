@@ -20,12 +20,9 @@ import { AdmissionRuleFactory } from "./rules/factory";
 @Injectable()
 export class AdmissionStatusService {
 	constructor(
-		@InjectRepository(ParticipantRepository)
-		private participants: ParticipantRepository,
-		@InjectRepository(AdmissionCriteriaRepository)
-		private admissionCriteria: AdmissionCriteriaRepository,
-		@InjectRepository(AdmissionFromPreviousSemesterRepository)
-		private admissionFromPreviousRepo: AdmissionFromPreviousSemesterRepository,
+		private readonly participants: ParticipantRepository,
+		private readonly admissionCriteria: AdmissionCriteriaRepository,
+		private readonly admissionFromPreviousRepo: AdmissionFromPreviousSemesterRepository,
 		private assignmentService: AssignmentService
 	) {}
 

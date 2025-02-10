@@ -1,7 +1,8 @@
 import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
 import { CourseRepository } from "../../repositories/course.repository";
 import { checkIsCourseMemberOrAdmin } from "./impl";
+import { InjectRepository } from "@nestjs/typeorm";
+import { DataSource } from "typeorm";
 
 /**
  * Only allows requests for users, that are members of the course.
@@ -13,11 +14,11 @@ import { checkIsCourseMemberOrAdmin } from "./impl";
  */
 @Injectable()
 export class CourseMemberGuard implements CanActivate {
-	constructor(@InjectRepository(CourseRepository) private courses: CourseRepository) {}
+	constructor(private dataSource: DataSource) {}
 
 	async canActivate(context: ExecutionContext): Promise<boolean> {
 		const request = context.switchToHttp().getRequest();
-		await checkIsCourseMemberOrAdmin(request, this.courses);
+		await checkIsCourseMemberOrAdmin(request, new CourseRepository(this.dataSource));
 		return true;
 	}
 }

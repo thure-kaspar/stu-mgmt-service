@@ -9,15 +9,18 @@ import { AssessmentScoreChangedHandler } from "./events/assessment-score-changed
 import { QueryHandlers } from "./queries";
 import { Repositories } from "./repositories";
 import { Services } from "./services";
+import { Assignment } from "src/course/entities/assignment.entity";
+import { AssignmentRepository } from "src/course/repositories/assignment.repository";
 
 @Module({
 	imports: [
 		TypeOrmModule.forFeature([...Repositories, AssessmentEvent]),
 		CqrsModule,
 		AuthModule,
-		CourseModule
+		CourseModule,
+		Assignment
 	],
-	providers: [...Services, ...QueryHandlers, AssessmentScoreChangedHandler],
+	providers: [...Services, ...QueryHandlers, AssessmentScoreChangedHandler, AssignmentRepository],
 	controllers: [...Controllers],
 	exports: [...Services]
 })

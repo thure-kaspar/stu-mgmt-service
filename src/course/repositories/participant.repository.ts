@@ -1,5 +1,5 @@
-import { ConflictException } from "@nestjs/common";
-import { EntityRepository, Repository, Brackets, In } from "typeorm";
+import { ConflictException, Injectable } from "@nestjs/common";
+import { Repository, Brackets, In, DataSource } from "typeorm";
 import { Participant } from "../entities/participant.entity";
 import { CourseRole } from "../../shared/enums";
 import { CourseId } from "../entities/course.entity";
@@ -8,8 +8,12 @@ import { CourseParticipantsFilter } from "../dto/course-participant/course-parti
 import { UserId } from "../../shared/entities/user.entity";
 import { DbException } from "../../shared/database-exceptions";
 
-@EntityRepository(Participant)
+@Injectable()
 export class ParticipantRepository extends Repository<Participant> {
+	constructor(private dataSource: DataSource) {
+		super(Participant, dataSource.createEntityManager());
+	  }
+	  
 	async createParticipant(
 		courseId: CourseId,
 		userId: UserId,
@@ -154,11 +158,10 @@ export class ParticipantRepository extends Repository<Participant> {
 		courseId: CourseId,
 		filter?: { userIds?: string[] }
 	): Promise<Participant[]> {
-
 		if (filter?.userIds) {
 			return this.find({ where: { 
 				courseId, 
-				id: In(filter.userIds)
+				userId: In(filter.userIds)
 			 }, 
 				relations: ["user", "user.settings"]
 			});

@@ -1,11 +1,15 @@
-import { Repository, EntityRepository } from "typeorm";
+import { DataSource, Repository } from "typeorm";
 import { GroupEvent } from "../entities/group-event.entity";
 import { CourseId } from "../entities/course.entity";
 import { GroupId } from "../entities/group.entity";
 import { UserId } from "../../shared/entities/user.entity";
+import { Injectable } from "@nestjs/common";
 
-@EntityRepository(GroupEvent)
+@Injectable()
 export class GroupEventRepository extends Repository<GroupEvent> {
+	constructor(private dataSource: DataSource) {
+		super(GroupEvent, dataSource.createEntityManager());
+	  }
 	/**
 	 * Returns all GroupEvents of the course.
 	 * Events are sorted by their timestamp in descending order (new to old).

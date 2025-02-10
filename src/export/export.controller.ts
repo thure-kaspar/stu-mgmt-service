@@ -17,11 +17,14 @@ import { writeWorkbookToResponse, Workbook } from "./excel";
 import { ExportService } from "./export.service";
 import { RExportDto } from "./recommender-export.dto";
 import { RecommenderExportService } from "./recommender-export.service";
+import { Public } from "nest-keycloak-connect";
+import { environment } from "src/.config/environment";
 
 @ApiTags("export")
 @ApiBearerAuth()
 @Controller("export")
 @UseGuards(AuthGuard)
+@Public(environment.is("development", "demo", "testing"))
 export class ExportController {
 	constructor(
 		private exportService: ExportService,

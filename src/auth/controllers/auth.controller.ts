@@ -6,10 +6,13 @@ import { AuthResultDto } from "../dto/auth-result.dto";
 import { CredentialsDto } from "../dto/credentials.dto";
 import { AuthGuard } from "../guards/auth.guard";
 import { AuthService } from "../services/auth.service";
+import { Public } from "nest-keycloak-connect";
+import { environment } from "src/.config/environment";
 
 @ApiBearerAuth()
 @ApiTags("authentication")
 @Controller("auth")
+@Public(environment.is("development", "demo", "testing"))
 export class AuthController {
 	constructor(private readonly authService: AuthService) {}
 
@@ -22,16 +25,5 @@ export class AuthController {
 	@UseGuards(AuthGuard)
 	async whoAmI(@GetUser() user: UserDto): Promise<UserDto> {
 		return this.authService.getUserById(user.id);
-	}
-
-	@Post("login")
-	@ApiOperation({
-		operationId: "login",
-		summary: "Login.",
-		description:
-			"Attempts to authenticate the user with SparkyService. If successful, returns information about this user and an access token."
-	})
-	login(@Body() credentials: CredentialsDto): Promise<AuthResultDto> {
-		return this.authService.login(credentials);
 	}
 }

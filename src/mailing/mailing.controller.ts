@@ -32,10 +32,12 @@ import { Mail } from "./mail.model";
 // import { Assignment } from "../course/models/assignment.model";
 import { MailingListener } from "./services/mailing-listener.service";
 import { MailingService } from "./services/mailing.service";
+import { Public } from "nest-keycloak-connect";
 
 @ApiBearerAuth()
 @ApiTags("mail")
 @Controller("mail")
+@Public(environment.is("development", "demo", "testing"))
 export class MailingController {
 	constructor(private mailingService: MailingService, private listener: MailingListener) {}
 

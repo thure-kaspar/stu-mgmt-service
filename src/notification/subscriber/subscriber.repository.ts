@@ -1,10 +1,15 @@
-import { EntityRepository, Repository } from "typeorm";
+import { DataSource, EntityRepository, Repository } from "typeorm";
 import { CourseId } from "../../course/entities/course.entity";
 import { SubscriberDto } from "./subscriber.dto";
 import { Subscriber } from "./subscriber.entity";
+import { Injectable } from "@nestjs/common";
 
-@EntityRepository(Subscriber)
+@Injectable()
 export class SubscriberRepository extends Repository<Subscriber> {
+	constructor(private dataSource: DataSource) {
+		super(Subscriber, dataSource.createEntityManager());
+	  }
+	
 	async addOrUpdate(courseId: CourseId, subscriberDto: SubscriberDto): Promise<SubscriberDto> {
 		const { name, url, events } = subscriberDto;
 

@@ -14,11 +14,14 @@ import { Assignment } from "../models/assignment.model";
 import { Course } from "../models/course.model";
 import { Participant } from "../models/participant.model";
 import { AssignmentService } from "../services/assignment.service";
+import { Public } from "nest-keycloak-connect";
+import { environment } from "src/.config/environment";
 
 @ApiBearerAuth()
 @ApiTags("assignment")
 @UseGuards(AuthGuard, CourseMemberGuard)
 @Controller("courses/:courseId/assignments")
+@Public(environment.is("development", "demo", "testing"))
 export class AssignmentController {
 	constructor(private assignmentService: AssignmentService) {}
 

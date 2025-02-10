@@ -17,11 +17,14 @@ import { AssignmentRegistrationFilter } from "../dto/assignment/assignment-regis
 import { SelectedParticipantGuard } from "../guards/selected-participant.guard";
 import { AuthGuard } from "../../auth/guards/auth.guard";
 import { AssignmentGuard } from "../guards/assignment.guard";
+import { Public } from "nest-keycloak-connect";
+import { environment } from "src/.config/environment";
 
 @ApiBearerAuth()
 @ApiTags("assignment-registration")
 @UseGuards(AuthGuard, CourseMemberGuard, AssignmentGuard)
 @Controller("courses/:courseId/assignments/:assignmentId/registrations")
+@Public(environment.is("development", "demo", "testing"))
 export class AssignmentRegistrationController {
 	constructor(private registrations: AssignmentRegistrationService) {}
 

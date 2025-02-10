@@ -1,4 +1,4 @@
-const config = require("config")
+import * as config from "config";
 import { DeepPartial } from "typeorm";
 import * as y from "yup";
 import { env } from "./environment";
@@ -8,7 +8,7 @@ export class Config {
 
 	/** Merges the configuration values from `/config/[environment].yml` with environment variables. */
 	static create(): void {
-		const cfg = config.util.toObject() as ConfigurationSettings
+		const cfg = config.util.toObject() as ConfigurationSettings;
 
 		// Partial configuration with environment variables and original config values as fallback
 		const cfgWithEnv: DeepPartial<ConfigurationSettings> = {
@@ -119,15 +119,13 @@ const authentication = y.object({
 const mailing = y
 	.object({
 		enabled: y.boolean().required(),
-		clientBasePath: y.string().when("enabled", (enabled, y) => {
-			if(enabled)
-			  return y.required()
-			return y
+		clientBasePath: y.string().when("enabled", {
+			is: true,
+			then: (y) =>  y.required()
 		  }),
-		from: y.string().when("enabled", (enabled, y) => {
-			if(enabled)
-			  return y.required()
-			return y
+		from: y.string().when("enabled", {
+			is: true,
+			then: (y) =>  y.required()
 		  }),
 		smtp: y
 			.object({
@@ -136,10 +134,9 @@ const mailing = y
 				useSecureConnection: y.boolean().required(),
 				username: y.string().required(),
 				password: y.string()
-			}).when("enabled", (enabled, y) => {
-				if(!enabled)
-				  return y.notRequired().default(undefined)
-				return y
+			}).when("enabled", {
+				is: false,
+				then: (y) =>  y.notRequired().default(undefined)
 			  }),
 	})
 	.required();

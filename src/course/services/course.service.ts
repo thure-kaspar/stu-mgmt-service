@@ -9,7 +9,7 @@ import { CourseRepository } from "../repositories/course.repository";
 
 @Injectable()
 export class CourseService {
-	constructor(@InjectRepository(CourseRepository) private courseRepository: CourseRepository) {}
+	constructor(private readonly courseRepository: CourseRepository) {}
 
 	async createCourse(courseDto: CourseCreateDto): Promise<CourseDto> {
 		if (!courseDto.config) throw new BadRequestException("CourseConfig is missing.");

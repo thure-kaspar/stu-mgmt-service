@@ -14,6 +14,11 @@ import { AssessmentRepository } from "../assessment/repositories/assessment.repo
 import { UserSettingsController } from "./controllers/user-settings.controller";
 import { UserSettings } from "./entities/user-settings.entity";
 import { UserSettingsService } from "./services/user-settings.service";
+import { User } from "src/shared/entities/user.entity";
+import { UserSettingsRepository } from "./repositories/user-settings.repository";
+import { Assessment } from "src/assessment/entities/assessment.entity";
+import { AssignmentRegistration } from "src/course/entities/assignment-group-registration.entity";
+import { Assignment } from "src/course/entities/assignment.entity";
 
 @Module({
 	imports: [
@@ -24,12 +29,17 @@ import { UserSettingsService } from "./services/user-settings.service";
 			GroupEventRepository,
 			AssignmentRepository,
 			AssignmentRegistrationRepository,
-			AssessmentRepository
+			AssessmentRepository,
+			User,
+			Assessment,
+			AssignmentRegistration,
+			Assignment
 		]),
 		AuthModule,
 		CourseModule
 	],
 	controllers: [UserController, UserSettingsController],
-	providers: [UserService, UserSettingsService, IdentityGuard]
+	providers: [UserService, UserSettingsService, IdentityGuard, UserRepository, UserSettingsRepository, 
+		AssessmentRepository, AssignmentRegistrationRepository, AssignmentRepository]
 })
 export class UserModule {}

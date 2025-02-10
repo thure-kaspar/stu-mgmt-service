@@ -15,7 +15,7 @@ export class TestUserAuthStrategy extends AuthStrategy {
 	constructor(
 		private cache: CacheService,
 		private sparkyAuth: SparkyAuthStrategy,
-		@InjectRepository(UserRepository) private userRepository: UserRepository
+		private readonly userRepository: UserRepository
 	) {
 		super();
 	}
@@ -35,7 +35,7 @@ export class TestUserAuthStrategy extends AuthStrategy {
 			const testUser = await this.userRepository.tryGetUserByUsername(username);
 
 			if (!testUser) {
-				throw new UnauthorizedException("Unknown username: " + username);
+				throw new UnauthorizedException("Unknown test username: " + username);
 			}
 
 			user = DtoFactory.createUserDto(testUser);

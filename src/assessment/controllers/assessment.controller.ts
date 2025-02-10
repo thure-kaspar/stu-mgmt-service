@@ -30,11 +30,14 @@ import { AssessmentFilter } from "../dto/assessment-filter.dto";
 import { AssessmentCreateDto, AssessmentDto, AssessmentUpdateDto } from "../dto/assessment.dto";
 import { PartialAssessmentDto } from "../dto/partial-assessment.dto";
 import { AssessmentService } from "../services/assessment.service";
+import { Public } from "nest-keycloak-connect";
+import { environment } from "src/.config/environment";
 
 @ApiBearerAuth()
 @ApiTags("assessment")
 @Controller("courses/:courseId/assignments/:assignmentId/assessments")
 @UseGuards(AuthGuard, CourseMemberGuard, AssignmentGuard)
+@Public(environment.is("development", "demo", "testing"))
 export class AssessmentController {
 	constructor(private assessmentService: AssessmentService) {}
 

@@ -15,7 +15,7 @@ export class AuthService {
 	private readonly logger = new Logger(AuthService.name);
 
 	constructor(
-		@InjectRepository(UserRepository) private userRepository: UserRepository,
+		private readonly userRepository: UserRepository,
 		private sparkyService: SparkyService
 	) {}
 

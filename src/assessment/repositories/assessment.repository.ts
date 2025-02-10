@@ -1,6 +1,6 @@
-import { BadRequestException, ConflictException } from "@nestjs/common";
+import { BadRequestException, ConflictException, Injectable } from "@nestjs/common";
 import { randomUUID } from "crypto";
-import { Brackets, EntityManager, EntityRepository, Repository } from "typeorm";
+import { Brackets, DataSource, EntityManager, EntityRepository, Repository } from "typeorm";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
 import { GroupDto } from "../../course/dto/group/group.dto";
 import { CourseId } from "../../course/entities/course.entity";
@@ -15,8 +15,11 @@ import { AssessmentUserRelation } from "../entities/assessment-user-relation.ent
 import { Assessment } from "../entities/assessment.entity";
 import { PartialAssessment } from "../entities/partial-assessment.entity";
 
-@EntityRepository(Assessment)
+@Injectable()
 export class AssessmentRepository extends Repository<Assessment> {
+		constructor(private dataSource: DataSource) {
+			super(Assessment, dataSource.createEntityManager());
+		  }
 	async createAssessment(
 		assessmentDto: AssessmentCreateDto,
 		userIds: string[],

@@ -39,10 +39,13 @@ import { ParticipantsWithAssignedEvaluatorQuery } from "../../assessment/queries
 import { AuthGuard } from "../../auth/guards/auth.guard";
 import { GetUser } from "../../auth/decorators/get-user.decorator";
 import { UserDto } from "../../shared/dto/user.dto";
+import { Public } from "nest-keycloak-connect";
+import { environment } from "src/.config/environment";
 
 @ApiBearerAuth()
 @ApiTags("course-participants")
 @Controller("courses/:courseId/users")
+@Public(environment.is("development", "demo", "testing"))
 @UseGuards(AuthGuard)
 export class CourseParticipantsController {
 	constructor(

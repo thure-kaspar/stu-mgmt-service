@@ -8,20 +8,22 @@ import { AuthController } from "./controllers/auth.controller";
 import { AuthGuard } from "./guards/auth.guard";
 import { AuthStrategy } from "./guards/auth.strategy";
 import { RoleGuard } from "./guards/role.guard";
-import { SparkyAuthStrategy } from "./guards/sparky-auth.strategy";
 import { TestUserAuthStrategy } from "./guards/test-user-auth.strategy";
-import { SparkyService } from "./services/sparky.service";
+import { User } from "src/shared/entities/user.entity";
+import { SparkyAuthStrategy } from "./guards/sparky-auth.strategy";
 import { AuthService } from "./services/auth.service";
+import { SparkyService } from "./services/sparky.service";
 
 @Module({
-	imports: [TypeOrmModule.forFeature([UserRepository]), HttpModule],
+	imports: [TypeOrmModule.forFeature([UserRepository, User]), HttpModule],
 	controllers: [AuthController],
 	providers: [
-		AuthService,
-		SparkyService,
 		CacheService,
+		UserRepository,
 		RoleGuard,
+		SparkyService,
 		SparkyAuthStrategy,
+		AuthService,
 		{
 			provide: AuthStrategy,
 			useClass: (() =>

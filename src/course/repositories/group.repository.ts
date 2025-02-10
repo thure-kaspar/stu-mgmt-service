@@ -1,5 +1,5 @@
-import { ConflictException } from "@nestjs/common";
-import { EntityRepository, Repository } from "typeorm";
+import { ConflictException, Injectable } from "@nestjs/common";
+import { DataSource, Repository } from "typeorm";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
 import { UserId } from "../../shared/entities/user.entity";
 import { GroupFilter } from "../dto/group/group-filter.dto";
@@ -8,9 +8,14 @@ import { CourseId } from "../entities/course.entity";
 import { Group, GroupId } from "../entities/group.entity";
 import { UserGroupRelation } from "../entities/user-group-relation.entity";
 import { ParticipantRepository } from "./participant.repository";
+import { Participant } from "../entities/participant.entity";
 
-@EntityRepository(Group)
+@Injectable()
 export class GroupRepository extends Repository<Group> {
+	constructor(private dataSource: DataSource) {
+		super(Group, dataSource.createEntityManager());
+	  }
+	  
 	/**
 	 * Inserts the given group into the database.
 	 */
@@ -32,7 +37,7 @@ export class GroupRepository extends Repository<Group> {
 	 */
 	async addUserToGroup(courseId: CourseId, groupId: GroupId, userId: UserId): Promise<boolean> {
 		const userGroupRelationRepo = this.manager.getRepository(UserGroupRelation);
-		const participantRepo = this.manager.getCustomRepository(ParticipantRepository);
+		const participantRepo = new ParticipantRepository(this.dataSource)
 
 		const participant = await participantRepo.getParticipant(courseId, userId);
 

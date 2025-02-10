@@ -3,11 +3,12 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { UserSettingsDto } from "../dto/user-settings.dto";
 import { UserSettings } from "../entities/user-settings.entity";
+import { UserSettingsRepository } from "../repositories/user-settings.repository";
 
 @Injectable()
 export class UserSettingsService {
 	constructor(
-		@InjectRepository(UserSettings) private userSettingsRepository: Repository<UserSettings>
+		private readonly userSettingsRepository: UserSettingsRepository
 	) {}
 
 	/**
@@ -25,6 +26,10 @@ export class UserSettingsService {
 		const userSettings = await this.userSettingsRepository.findOne({
 			where: { userId }
 		});
-		return userSettings.toDto();
+		if (userSettings === null) {
+			return new UserSettings().toDto()
+		} else {
+			return userSettings.toDto();
+		}
 	}
 }

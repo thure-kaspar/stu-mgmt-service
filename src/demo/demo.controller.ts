@@ -1,12 +1,15 @@
 import { Controller, Logger, NotImplementedException, Post } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
-import { getConnection } from "typeorm";
+import { DataSource } from "typeorm";
 import { DbMockService } from "../../test/mocks/db-mock.service";
 import { environment } from "../.config/environment";
+import { Public } from "nest-keycloak-connect";
 
 @ApiTags("demo")
 @Controller("demo")
+@Public()
 export class DemoController {
+	constructor(private readonly dataSource: DataSource) {}
 	logger = new Logger(DemoController.name);
 
 	@ApiOperation({
@@ -22,8 +25,7 @@ export class DemoController {
 
 		this.logger.debug("Resetting database to initial state...");
 
-		const connection = getConnection();
-		await connection.synchronize(true); // Drop data and rebuild (empty) database
-		await new DbMockService(connection).createAll();
+		await this.dataSource.synchronize(true); // Drop data and rebuild (empty) database
+		await new DbMockService(this.dataSource).createAll();
 	}
 }

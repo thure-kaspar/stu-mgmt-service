@@ -24,13 +24,12 @@ import { UserRepository } from "../repositories/user.repository";
 @Injectable()
 export class UserService {
 	constructor(
-		@InjectRepository(UserRepository) private userRepository: UserRepository,
+		private readonly userRepository: UserRepository,
 		@InjectRepository(GroupRepository) private groupRepository: GroupRepository,
-		@InjectRepository(AssignmentRepository) private assignmentRepository: AssignmentRepository,
-		@InjectRepository(AssessmentRepository) private assessmentRepository: AssessmentRepository,
+		private readonly assignmentRepository: AssignmentRepository,
+		private readonly assessmentRepository: AssessmentRepository,
 		@InjectRepository(GroupEventRepository) private groupEventRepository: GroupEventRepository,
-		@InjectRepository(AssignmentRegistrationRepository)
-		private registrations: AssignmentRegistrationRepository
+		private readonly registrations: AssignmentRegistrationRepository
 	) {}
 
 	async createUser(userDto: UserDto): Promise<UserDto> {

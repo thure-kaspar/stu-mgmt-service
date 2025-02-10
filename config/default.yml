@@ -5,10 +5,10 @@ server:
 db:
     type: "postgres"
     port: 5432
-    database: "StudentMgmtDb"
+    database: "studentmgmtdb"
     host: "localhost"
     username: "postgres"
-    password: "admin"
+    password: "36dudhGG/r"
     synchronize: false
     dropSchema: false
 
@@ -26,6 +26,5 @@ logger:
         - error
         - warn
         - debug
-        - verbose
     requests: false
     dbErrors: false

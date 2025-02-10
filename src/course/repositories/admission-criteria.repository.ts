@@ -1,12 +1,16 @@
-import { EntityRepository, Repository } from "typeorm";
+import { DataSource, EntityRepository, Repository } from "typeorm";
 import { AdmissionCriteria } from "../entities/admission-criteria.entity";
 import { AdmissionCriteriaDto } from "../dto/course-config/admission-criteria.dto";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
 import { CourseId } from "../entities/course.entity";
 import { CourseConfigRepository } from "./course-config.repository";
+import { Injectable } from "@nestjs/common";
 
-@EntityRepository(AdmissionCriteria)
+@Injectable()
 export class AdmissionCriteriaRepository extends Repository<AdmissionCriteria> {
+	constructor(private dataSource: DataSource) {
+		super(AdmissionCriteria, dataSource.createEntityManager());
+	  }
 	/** Inserts the admission criteria into the database and returns it. */
 	async createAdmissionCriteria(
 		configId: number,

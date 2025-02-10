@@ -37,7 +37,7 @@ export class AssignmentSchedulerService {
 	constructor(
 		private schedulerRegistry: SchedulerRegistry,
 		private assignmentService: AssignmentService,
-		@InjectRepository(AssignmentRepository) private assignmentRepository: AssignmentRepository
+		private readonly assignmentRepository: AssignmentRepository
 	) {}
 
 	@Timeout("onInit", 0) // Executes after application start
@@ -97,11 +97,10 @@ export class AssignmentSchedulerService {
 	}
 
 	private findAssignmentsThatShouldBeStopped(): Promise<AssignmentEntity[]> {
-		return this.assignmentRepository.find({
-			where: {
-				state: AssignmentState.IN_PROGRESS,
-				endDate: LessThanOrEqual(new Date())
-			},
+		return this.assignmentRepository.find({ where: { 
+			state: AssignmentState.IN_PROGRESS, 
+			endDate: LessThanOrEqual(new Date())
+		 }, 
 			relations: ["course"]
 		});
 	}

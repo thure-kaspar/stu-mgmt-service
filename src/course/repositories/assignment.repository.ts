@@ -1,11 +1,16 @@
-import { Repository, EntityRepository } from "typeorm";
+import { DataSource, Repository } from "typeorm";
 import { Assignment } from "../entities/assignment.entity";
 import { AssignmentDto } from "../dto/assignment/assignment.dto";
 import { CourseId } from "../entities/course.entity";
 import { AssessmentUpdateDto } from "../../assessment/dto/assessment.dto";
+import { Injectable } from "@nestjs/common";
 
-@EntityRepository(Assignment)
+@Injectable()
 export class AssignmentRepository extends Repository<Assignment> {
+	constructor(private dataSource: DataSource) {
+		super(Assignment, dataSource.createEntityManager());
+	  }
+	  
 	async createAssignment(courseId: CourseId, assignmentDto: AssignmentDto): Promise<Assignment> {
 		const assignment = this.create(assignmentDto);
 		assignment.id = undefined;

@@ -19,7 +19,7 @@ import { ParticipantRepository } from "../repositories/participant.repository";
 export class CourseParticipantsService {
 	constructor(
 		@InjectRepository(CourseRepository) private courseRepo: CourseRepository,
-		@InjectRepository(ParticipantRepository) private participantRepo: ParticipantRepository,
+		private readonly participantRepo: ParticipantRepository,
 		private events: EventBus
 	) {}
 

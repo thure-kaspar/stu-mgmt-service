@@ -18,11 +18,14 @@ import { TeachingStaffGuard } from "../../course/guards/teaching-staff.guard";
 import { UserId } from "../../shared/entities/user.entity";
 import { AssessmentAllocationDto } from "../dto/assessment-allocation.dto";
 import { AssessmentAllocationService } from "../services/assessment-allocation.service";
+import { Public } from "nest-keycloak-connect";
+import { environment } from "src/.config/environment";
 
 @ApiBearerAuth()
 @ApiTags("assessment-allocation")
 @Controller("courses/:courseId/assignments/:assignmentId/assessment-allocations")
 @UseGuards(AuthGuard, CourseMemberGuard, TeachingStaffGuard)
+@Public(environment.is("development", "demo", "testing"))
 export class AssessmentAllocationController {
 	constructor(private allocationService: AssessmentAllocationService) {}
 

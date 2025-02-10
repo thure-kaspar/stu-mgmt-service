@@ -11,7 +11,7 @@ import { AssignmentRepository } from "../repositories/assignment.repository";
 @Injectable()
 export class AssignmentGuard implements CanActivate {
 	constructor(
-		@InjectRepository(AssignmentRepository) private assignments: AssignmentRepository
+		private readonly assignments: AssignmentRepository
 	) {}
 
 	async canActivate(context: ExecutionContext): Promise<boolean> {

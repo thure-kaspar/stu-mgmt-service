@@ -1,7 +1,6 @@
 {
 	"compilerOptions": {
-		"module": "Node16",
-		"moduleResolution": "Node16",
+		"module": "commonjs",
 		"declaration": true,
 		"removeComments": true,
 		"emitDecoratorMetadata": true,
@@ -13,7 +12,8 @@
 		"incremental": true,
 		"jsx": "react",
 		"jsxFactory": "jsxt.createElement",
-		"jsxFragmentFactory": "jsxt.Fragment"
+		"jsxFragmentFactory": "jsxt.Fragment",
+		"allowSyntheticDefaultImports": true
 	},
 	"exclude": ["node_modules", "dist", "migrations_old"]
 }

@@ -20,11 +20,14 @@ import { CourseId } from "../entities/course.entity";
 import { CourseMemberGuard } from "../guards/course-member/course-member.guard";
 import { TeachingStaffGuard } from "../guards/teaching-staff.guard";
 import { CourseConfigService } from "../services/course-config.service";
+import { Public } from "nest-keycloak-connect";
+import { environment } from "src/.config/environment";
 
 @ApiBearerAuth()
 @ApiTags("course-config")
 @Controller("courses/:courseId/config")
 @UseGuards(AuthGuard, CourseMemberGuard)
+@Public(environment.is("development", "demo", "testing"))
 export class CourseConfigController {
 	constructor(private configService: CourseConfigService) {}
 

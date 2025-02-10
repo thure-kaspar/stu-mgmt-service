@@ -1,9 +1,14 @@
-import { EntityNotFoundError, EntityRepository, Repository } from "typeorm";
+import { DataSource, EntityNotFoundError, Repository } from "typeorm";
 import { AdmissionFromPreviousSemester } from "../entities/admission-from-previous-semester.entity";
 import { CourseId } from "../entities/course.entity";
+import { Injectable } from "@nestjs/common";
 
-@EntityRepository(AdmissionFromPreviousSemester)
+@Injectable()
 export class AdmissionFromPreviousSemesterRepository extends Repository<AdmissionFromPreviousSemester> {
+		constructor(private dataSource: DataSource) {
+			super(AdmissionFromPreviousSemester, dataSource.createEntityManager());
+		  }
+		
 	/** Retrieves the admission criteria. Throws error, if not found. */
 	getById(id_number: number): Promise<AdmissionFromPreviousSemester> {
 		return this.findOneOrFail({

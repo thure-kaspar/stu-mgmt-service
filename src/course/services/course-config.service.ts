@@ -14,13 +14,11 @@ import { ParticipantRepository } from "../repositories/participant.repository";
 @Injectable()
 export class CourseConfigService {
 	constructor(
-		@InjectRepository(CourseConfigRepository) private configRepo: CourseConfigRepository,
+		private readonly configRepo: CourseConfigRepository,
 		@InjectRepository(GroupSettingsRepository)
 		private groupSettingsRepo: GroupSettingsRepository,
-		@InjectRepository(AdmissionCriteriaRepository)
-		private admissionCriteriaRepo: AdmissionCriteriaRepository,
-		@InjectRepository(AdmissionFromPreviousSemesterRepository)
-		private admissionFromPreviousRepo: AdmissionFromPreviousSemesterRepository,
+		private readonly admissionCriteriaRepo: AdmissionCriteriaRepository,
+		private readonly admissionFromPreviousRepo: AdmissionFromPreviousSemesterRepository,
 		@InjectRepository(ParticipantRepository) private participantRepo: ParticipantRepository
 	) {}
 

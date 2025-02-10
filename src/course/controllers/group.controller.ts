@@ -47,11 +47,14 @@ import { TeachingStaffGuard } from "../guards/teaching-staff.guard";
 import { JoinRandomGroupCommand } from "../commands/join-random-group.handler";
 import { AssessmentDto } from "../../assessment/dto/assessment.dto";
 import { AuthGuard } from "../../auth/guards/auth.guard";
+import { Public } from "nest-keycloak-connect";
+import { environment } from "src/.config/environment";
 
 @ApiBearerAuth()
 @ApiTags("group")
 @UseGuards(AuthGuard, CourseMemberGuard)
 @Controller("courses/:courseId/groups")
+@Public(environment.is("development", "demo", "testing"))
 export class GroupController {
 	constructor(
 		private groupService: GroupService,

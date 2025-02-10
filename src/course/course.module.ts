@@ -25,6 +25,25 @@ import { Repositories } from "./repositories";
 import { Services } from "./services";
 import { GroupMergeStrategy } from "./services/group-merge-strategy/group-merge.strategy";
 import { MergeByActivityStrategy } from "./services/group-merge-strategy/merge-by-activity.strategy";
+import { Course } from "./entities/course.entity";
+import { CourseRepository } from "./repositories/course.repository";
+import { Participant } from "./entities/participant.entity";
+import { ParticipantRepository } from "./repositories/participant.repository";
+import { Assignment } from "./entities/assignment.entity";
+import { AssignmentRepository } from "./repositories/assignment.repository";
+import { Group } from "./entities/group.entity";
+import { GroupRepository } from "./repositories/group.repository";
+import { AdmissionFromPreviousSemester } from "./entities/admission-from-previous-semester.entity";
+import { AdmissionFromPreviousSemesterRepository } from "./repositories/admission-from-previous-semester.repository";
+import { CourseConfig } from "./entities/course-config.entity";
+import { CourseConfigRepository } from "./repositories/course-config.repository";
+import { GroupSettings } from "./entities/group-settings.entity";
+import { GroupSettingsRepository } from "./repositories/group-settings.repository";
+import { Assessment } from "src/assessment/entities/assessment.entity";
+import { AdmissionCriteria } from "./entities/admission-criteria.entity";
+import { AdmissionCriteriaRepository } from "./repositories/admission-criteria.repository";
+import { GroupEvent } from "./entities/group-event.entity";
+import { GroupEventRepository } from "./repositories/group-event.repository";
 
 @Module({
 	imports: [
@@ -34,7 +53,17 @@ import { MergeByActivityStrategy } from "./services/group-merge-strategy/merge-b
 			GroupRegistrationRelation,
 			AssessmentRepository,
 			Activity,
-			Submission
+			Submission,
+			Course,
+			CourseConfig,
+			Participant,
+			Assignment,
+			Group,
+			GroupSettings,
+			GroupEvent,
+			AdmissionFromPreviousSemester,
+			Assessment,
+			AdmissionCriteria
 		]),
 		CqrsModule,
 		HttpModule,
@@ -50,6 +79,16 @@ import { MergeByActivityStrategy } from "./services/group-merge-strategy/merge-b
 		UserLeftGroupHandler,
 		CloseEmptyGroupsHandler,
 		ActivityEventHandler,
+		CourseRepository,
+		CourseConfigRepository,
+		ParticipantRepository,
+		AssignmentRepository,
+		GroupRepository,
+		GroupSettingsRepository,
+		GroupEventRepository,
+		AdmissionFromPreviousSemesterRepository,
+		AdmissionCriteriaRepository,
+		AssessmentRepository,
 		{ provide: GroupMergeStrategy, useClass: MergeByActivityStrategy }
 	],
 	exports: [

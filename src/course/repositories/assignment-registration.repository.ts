@@ -1,4 +1,4 @@
-import { EntityRepository, getRepository, Repository } from "typeorm";
+import { DataSource, Repository } from "typeorm";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
 import { DbException, EntityAlreadyExistsError } from "../../shared/database-exceptions";
 import { DtoFactory } from "../../shared/dto-factory";
@@ -12,11 +12,14 @@ import { CourseId } from "../entities/course.entity";
 import { GroupRegistrationRelation } from "../entities/group-registration-relation.entity";
 import { GroupId } from "../entities/group.entity";
 import { Participant } from "../entities/participant.entity";
-import { Group } from "../models/group.model";
+import { Injectable } from "@nestjs/common";
 
-@EntityRepository(AssignmentRegistration)
+@Injectable()
 export class AssignmentRegistrationRepository extends Repository<AssignmentRegistration> {
-	private readonly groupRelationsRepository = getRepository(GroupRegistrationRelation);
+		constructor(private dataSource: DataSource) {
+			super(AssignmentRegistration, dataSource.createEntityManager());
+		  }
+	private readonly groupRelationsRepository = this.dataSource.createEntityManager().getRepository(GroupRegistrationRelation);
 
 	/**
 	 * Creates a registration for specified group and its members.

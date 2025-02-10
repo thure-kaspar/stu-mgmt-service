@@ -1,11 +1,15 @@
-import { EntityRepository, Repository } from "typeorm";
+import { DataSource, EntityRepository, Repository } from "typeorm";
 import { GroupSettings } from "../entities/group-settings.entity";
 import { GroupSettingsDto } from "../dto/course-config/group-settings.dto";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
 import { CourseId } from "../entities/course.entity";
+import { Injectable } from "@nestjs/common";
 
-@EntityRepository(GroupSettings)
+@Injectable()
 export class GroupSettingsRepository extends Repository<GroupSettings> {
+		constructor(private dataSource: DataSource) {
+			super(GroupSettings, dataSource.createEntityManager());
+		  }
 	/** Inserts the group settings into the database and returns them. */
 	createGroupSettings(configId: number, settingsDto: GroupSettingsDto): Promise<GroupSettings> {
 		const settings = this.create(settingsDto);

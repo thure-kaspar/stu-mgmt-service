@@ -35,11 +35,14 @@ import { AssignmentGroupTuple } from "../dto/assignment-group-tuple.dto";
 import { UserFilter } from "../dto/user.filter";
 import { IdentityGuard } from "../guards/identity.guard";
 import { UserService } from "../services/user.service";
+import { Public } from "nest-keycloak-connect";
+import { environment } from "src/.config/environment";
 
 @ApiBearerAuth()
 @ApiTags("user")
 @Controller("users")
 @UseGuards(AuthGuard, RoleGuard)
+@Public(environment.is("development", "demo", "testing"))
 export class UserController {
 	constructor(private userService: UserService) {}
 

@@ -7,15 +7,19 @@ import { UserRole } from "../shared/enums";
 import { NotificationService } from "./notification.service";
 import { SubscriberDto } from "./subscriber/subscriber.dto";
 import { SubscriberRepository } from "./subscriber/subscriber.repository";
+import { Public } from "nest-keycloak-connect";
+import { environment } from "src/.config/environment";
 
 @ApiBearerAuth()
 @ApiTags("notification")
 @Roles(UserRole.SYSTEM_ADMIN, UserRole.MGMT_ADMIN, UserRole.ADMIN_TOOL)
 @Controller("notifications")
+// TODO: Is this supposed to always be accessible (@Public(true))
+@Public(environment.is("development", "demo", "testing"))
 export class NotificationController {
 	constructor(
 		private notificationService: NotificationService,
-		@InjectRepository(SubscriberRepository) private subscriberRepository: SubscriberRepository
+		private readonly subscriberRepository: SubscriberRepository
 	) {}
 
 	@ApiOperation({

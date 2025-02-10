@@ -1,11 +1,11 @@
 import { Injectable } from "@nestjs/common";
+import * as dayjs from "dayjs";
 import * as weekOfYear from "dayjs/plugin/weekOfYear";
 import { ActivityDto } from "../../../activity/activity.dto";
 import { ActivityService } from "../../../activity/activity.service";
 import { SubmissionDto } from "../../../submission/submission.dto";
 import { SubmissionService } from "../../../submission/submission.service";
 import { GroupMergeStrategy, SimpleGroup } from "./group-merge.strategy";
-const dayjs = require('dayjs')
 
 dayjs.extend(weekOfYear);
 

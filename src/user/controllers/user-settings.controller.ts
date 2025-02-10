@@ -4,11 +4,14 @@ import { AuthGuard } from "../../auth/guards/auth.guard";
 import { UserSettingsDto } from "../dto/user-settings.dto";
 import { IdentityGuard } from "../guards/identity.guard";
 import { UserSettingsService } from "../services/user-settings.service";
+import { Public } from "nest-keycloak-connect";
+import { environment } from "src/.config/environment";
 
 @ApiBearerAuth()
 @ApiTags("user")
 @UseGuards(AuthGuard)
 @Controller("users/:userId/settings")
+@Public(environment.is("development", "demo", "testing"))
 export class UserSettingsController {
 	constructor(private userSettingsService: UserSettingsService) {}
 

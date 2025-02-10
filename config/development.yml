@@ -2,7 +2,7 @@ db:
     synchronize: true
 
 mailing:
-    enabled: true
+    enabled: false
     from: "no-reply@student-mgmt-system"
     clientBasePath: "http://localhost:4200"
     smtp:

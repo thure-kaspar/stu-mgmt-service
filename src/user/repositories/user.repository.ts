@@ -1,13 +1,18 @@
-import { Repository, EntityRepository, In } from "typeorm";
+import { Repository, In, DataSource } from "typeorm";
 import { User, UserId } from "../../shared/entities/user.entity";
 import { UserDto, UserUpdateDto } from "../../shared/dto/user.dto";
 import { Course, CourseId } from "src/course/entities/course.entity";
 import { UserFilter } from "../dto/user.filter";
 import { UserSettings } from "../entities/user-settings.entity";
 import { Language } from "../../shared/language";
+import { Injectable } from "@nestjs/common";
 
-@EntityRepository(User)
+@Injectable()
 export class UserRepository extends Repository<User> {
+	constructor(private dataSource: DataSource) {
+		super(User, dataSource.createEntityManager());
+	  }
+	  
 	async createUser(userDto: UserDto): Promise<User> {
 		const createdUser = await this.manager.transaction(async transaction => {
 			const user = this.createEntityFromDto(userDto);

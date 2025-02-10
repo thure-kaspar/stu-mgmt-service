@@ -28,7 +28,7 @@ export class UserJoinedGroupEvent implements INotify {
 @EventsHandler(UserJoinedGroupEvent)
 export class UserJoinedGroupHandler implements IEventHandler<UserJoinedGroupEvent> {
 	constructor(
-		@InjectRepository(GroupEventRepository) private groupEvents: GroupEventRepository
+		private readonly groupEvents: GroupEventRepository
 	) {}
 
 	handle(event: UserJoinedGroupEvent): void {

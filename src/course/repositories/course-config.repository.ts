@@ -1,13 +1,17 @@
-import { EntityRepository, Repository } from "typeorm";
+import { DataSource, Repository } from "typeorm";
 import { CourseConfig } from "../entities/course-config.entity";
 import { CourseConfigDto } from "../dto/course-config/course-config.dto";
 import { CourseConfigUpdateDto } from "../dto/course-config/course-config.dto";
 import { GroupSettings } from "../entities/group-settings.entity";
 import { AdmissionCriteria } from "../entities/admission-criteria.entity";
 import { CourseId } from "../entities/course.entity";
+import { Injectable } from "@nestjs/common";
 
-@EntityRepository(CourseConfig)
+@Injectable()
 export class CourseConfigRepository extends Repository<CourseConfig> {
+		constructor(private dataSource: DataSource) {
+			super(CourseConfig, dataSource.createEntityManager());
+		  }
 	/** Inserts the course config into the database. */
 	createCourseConfig(courseId: CourseId, configDto: CourseConfigDto): Promise<CourseConfig> {
 		const config = this._createInsertableEntity(courseId, configDto);

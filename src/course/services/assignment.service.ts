@@ -17,7 +17,7 @@ import { AssignmentRegistrationService } from "./assignment-registration.service
 @Injectable()
 export class AssignmentService {
 	constructor(
-		@InjectRepository(AssignmentRepository) private assignmentRepository: AssignmentRepository,
+		private readonly assignmentRepository: AssignmentRepository,
 		private registrations: AssignmentRegistrationService,
 		private events: EventBus
 	) {}

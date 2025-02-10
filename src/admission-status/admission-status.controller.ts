@@ -9,11 +9,14 @@ import { UserId } from "../shared/entities/user.entity";
 import { AdmissionStatusService } from "./admission-status.service";
 import { AdmissionStatusDto } from "./dto/admission-status.dto";
 import { PointsOverviewDto } from "./dto/points-overview.dto";
+import { Public } from "nest-keycloak-connect";
+import { environment } from "src/.config/environment";
 
 @ApiBearerAuth()
 @ApiTags("admission-status")
 @UseGuards(AuthGuard, CourseMemberGuard)
 @Controller("courses/:courseId/admission-status")
+@Public(environment.is("development", "demo", "testing"))
 export class AdmissionStatusController {
 	constructor(private admissionStatus: AdmissionStatusService) {}
 

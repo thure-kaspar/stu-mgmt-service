@@ -33,10 +33,13 @@ import { Course } from "../models/course.model";
 import { Participant } from "../models/participant.model";
 import { CourseParticipantsService } from "../services/course-participants.service";
 import { CourseService } from "../services/course.service";
+import { Public } from "nest-keycloak-connect";
+import { environment } from "src/.config/environment";
 
 @ApiBearerAuth()
 @ApiTags("course")
 @Controller("courses")
+@Public(environment.is("development", "demo", "testing"))
 export class CourseController {
 	constructor(
 		private courseService: CourseService,
@@ -68,6 +71,7 @@ export class CourseController {
 		description: "Returns all courses that match the given filter."
 	})
 	@Get()
+	// TODO: Is this supposed to always be accessible (@Public(true))
 	getCourses(@Req() request: Request, @Query() filter?: CourseFilter): Promise<CourseDto[]> {
 		return PaginatedResult(this.courseService.getCourses(filter), request);
 	}

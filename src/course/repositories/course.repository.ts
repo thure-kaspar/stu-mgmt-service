@@ -1,4 +1,4 @@
-import { Repository, EntityRepository } from "typeorm";
+import { Repository, EntityRepository, DataSource } from "typeorm";
 import { Course, CourseId } from "../entities/course.entity";
 import { CourseDto } from "../dto/course/course.dto";
 import { CourseFilter } from "../dto/course/course-filter.dto";
@@ -11,9 +11,13 @@ import { CourseRole } from "../../shared/enums";
 import { User, UserId } from "../../shared/entities/user.entity";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
 import { CourseConfigDto } from "../dto/course-config/course-config.dto";
+import { Injectable } from "@nestjs/common";
 
-@EntityRepository(Course)
+@Injectable()
 export class CourseRepository extends Repository<Course> {
+	constructor(private dataSource: DataSource) {
+		super(Course, dataSource.createEntityManager());
+	  }
 	/**
 	 * Inserts a new course in the database. Includes the CourseConfig (with child-entities).
 	 * If lecturers are included in the Dto, the Participants will also be created.

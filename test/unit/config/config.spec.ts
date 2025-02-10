@@ -100,7 +100,6 @@ describe("Config Validation", () => {
 		it("Empty Object for each key -> 17 errors", () => {
 			const emptyConfig: DeepPartial<ReturnType<typeof Config["get"]>> = {
 				authentication: {},
-				client: {},
 				db: {},
 				logger: {},
 				mailing: {},
