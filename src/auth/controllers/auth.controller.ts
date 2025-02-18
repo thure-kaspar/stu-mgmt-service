@@ -24,4 +24,5 @@ export class AuthController {
 	async whoAmI(@GetUser() user: UserDto): Promise<UserDto> {
 		return this.authService.getUserById(user.id);
 	}
+	
 }

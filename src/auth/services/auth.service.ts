@@ -1,15 +1,9 @@
 import { Injectable, Logger } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
 import { DtoFactory } from "../../shared/dto-factory";
 import { UserDto } from "../../shared/dto/user.dto";
 import { User } from "../../shared/entities/user.entity";
 import { UserRole } from "../../shared/enums";
 import { UserRepository } from "../../user/repositories/user.repository";
-import { AuthInfo } from "../dto/auth-info.dto";
-import { AuthResultDto } from "../dto/auth-result.dto";
-import { CredentialsDto } from "../dto/credentials.dto";
-import { HttpService } from "@nestjs/axios";
-import { SparkyService } from "./sparky.service";
 
 @Injectable()
 export class AuthService {
@@ -25,39 +19,19 @@ export class AuthService {
 	}
 
 	/**
-	 * Attempts to authenticate the user with {@link SparkyService} using the given credentials.
-	 * If the user does not exists already, a new {@link User} will be created.
-	 *
-	 * @param credentials
-	 */
-	async login(credentials: CredentialsDto): Promise<AuthResultDto> {
-		// TODO: Create user if they don't exist after loggin in with Keycloak
-		const sparkyService = new SparkyService(new HttpService)
-		const authInfo = await sparkyService.authenticate(credentials);
-		const user = await this.getOrCreateUser(authInfo);
-		return {
-			user,
-			accessToken: authInfo.token.token,
-			expiration: authInfo.token.expiration ? new Date(authInfo.token.expiration) : undefined
-		};
-	}
-
-	/**
 	 * Tries to look up the external user by their `username`.
 	 * If it does not exists, the user will be created.
-	 *
-	 * @param extUser - AuthInfo returned from SparkyService.
 	 */
-	async getOrCreateUser(extUser: AuthInfo): Promise<UserDto> {
+	async getOrCreateUser(username: string, fullName: string, roles: string[], email: string): Promise<UserDto> {
 		// Try to find user in this system
-		let intUser = await this.userRepository.tryGetUserByUsername(extUser.user.username);
+		let intUser = await this.userRepository.tryGetUserByUsername(username);
 
 		if (!intUser) {
 			// User does not exist, create account in this system
-			intUser = await this.createUser(extUser);
+			intUser = await this.createUser(username, fullName, email, roles);
 			this.logger.verbose("Created new user: " + intUser.username);
-		} else if (this.userInfoHasChanged(intUser, extUser)) {
-			intUser = await this.updateUser(intUser, extUser);
+		} else if (this.userInfoHasChanged(intUser, fullName, email)) {
+			intUser = await this.updateUser(intUser, fullName, email);
 		}
 
 		return DtoFactory.createUserDto(intUser);
@@ -65,32 +39,30 @@ export class AuthService {
 
 	/**
 	 * Updates the user's `email` and `displayName` according to the information received
-	 * from Sparkyservice.
+	 * from Identity provider.
 	 */
-	async updateUser(user: User, authInfo: AuthInfo): Promise<User> {
+	async updateUser(user: User, fullName: string, email: string): Promise<User> {
 		return this.userRepository.updateUser(user.id, {
 			...user,
-			email: authInfo.user.settings.emailAddress,
-			displayName: authInfo.user.fullName ?? user.username
+			email: email,
+			displayName: fullName ?? user.username
 		});
 	}
 
 	/**
-	 * Returns `true`, if the user's `email` or `displayName` have been changed by Sparkyservice.
+	 * Returns `true`, if the user's `email` or `displayName` have been changed by Identity provider.
 	 */
-	userInfoHasChanged(user: User, authInfo: AuthInfo): boolean {
+	userInfoHasChanged(user: User, fullName: string, email: string): boolean {
 		return (
-			user.email !== authInfo.user.settings.emailAddress ||
-			user.displayName !== authInfo.user.fullName
+			user.email !== email ||
+			user.displayName !== fullName
 		);
 	}
 
-	async createUser(authInfo: AuthInfo): Promise<User> {
-		const username = authInfo.user.username;
+	async createUser(username: string, fullName: string, email: string, roles: string[]): Promise<User> {
 		const displayName =
-			authInfo.user.fullName?.length > 0 ? authInfo.user.fullName : authInfo.user.username;
-		const role = this.determineRole(authInfo.user.role);
-		const email = authInfo.user.settings?.emailAddress;
+			fullName.length > 0 ? fullName : username;
+		const role = this.determineRole(roles);
 
 		return this.userRepository.createUser({
 			id: undefined,
@@ -102,10 +74,18 @@ export class AuthService {
 	}
 
 	/**
-	 * Determines the role of a new account.
-	 * @param role Role given by the Sparkyservice.
+	 * Determines the role of a new account. 
+	 * The role with the highest permissions will be used. 
+	 * 
+	 * @param roles Array of roles from Identity provider
 	 */
-	private determineRole(role: string): UserRole {
+	private determineRole(roles: string[]): UserRole {
+		if (roles.length == 0) {
+			return UserRole.USER;
+		}
+		// TODO: Actually implement logic to extract highest value role from array.
+		const role = roles[0];
+
 		switch (role) {
 			case "DEFAULT":
 				return UserRole.USER;

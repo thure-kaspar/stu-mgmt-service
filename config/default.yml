@@ -22,7 +22,7 @@ authentication:
     issuer: "http://localhost:8081"
     realm: "oidctest"
     clientId: "stumgmt-dev-thure"
-    clientSecret: "QvRTymbqczt5z2ryYYnq0EkZKBpcToWc"
+    clientSecret: "kGjeJvdRMsFFQcPOSaaihd6aGNs8Es2q"
 
 logger:
     levels:

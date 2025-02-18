@@ -6,12 +6,14 @@ import { AuthStrategy } from "./auth.strategy";
 import { UserRepository } from "src/user/repositories/user.repository";
 import { DtoFactory } from "src/shared/dto-factory";
 import { jwtDecode } from "jwt-decode";
+import { AuthService } from "../services/auth.service";
 
 @Injectable()
 export class JwtAuthStrategy extends AuthStrategy {
 	constructor(
 		private cache: CacheService,
-		private readonly userRepository: UserRepository
+		private readonly userRepository: UserRepository,
+		private readonly authService: AuthService
 	) {
 		super();
 	}
@@ -23,21 +25,39 @@ export class JwtAuthStrategy extends AuthStrategy {
 		const jwtContent = jwtDecode(token);
 		const username = jwtContent["preferred_username"];
 
+		const errorMsg0 = "JWT has no '";
+		const errorMsg1 = "' field. Maybe the identity provider is misconfigured."
+
 		if (username === undefined) {
-			throw new UnauthorizedException("JWT has no 'preferred_username' field. Maybe the identity provider is misconfigured.");
+			throw new UnauthorizedException(errorMsg0 + "preferred_username" + errorMsg1);
 		}
 
 		let user = this.cache.get<UserDto>(username);
 
 		if (!user) {
-			const testUser = await this.userRepository.tryGetUserByUsername(username);
+			let existingUser = await this.userRepository.tryGetUserByUsername(username);
 
-			if (!testUser) {
-				throw new UnauthorizedException("Unknown username: '" + username 
-					+ "'. The name inside the JWT (preferred_username field) is not in the StudMngmt database.");
+			if (!existingUser) {
+				// Fresh user login -> add new user to StudMngmt database
+				// Only in this case create the user
+				const fullname = jwtContent["name"];
+				const email = jwtContent["email"];
+				const roles = jwtContent["realm_access"]["roles"]; // TODO: Implement role support 
+
+				if (fullname === undefined) {
+					throw new UnauthorizedException(errorMsg0 + "name" + errorMsg1);
+				}
+				if (email === undefined) {
+					throw new UnauthorizedException(errorMsg0 + "email" + errorMsg1);
+				}
+				if (roles === undefined) {
+					throw new UnauthorizedException(errorMsg0 + "roles" + "' array. Maybe the identity provider is misconfigured.");
+				}
+				existingUser = await this.authService.createUser(username, fullname, email, []);
+				console.log("Created new user for: " + existingUser.displayName);
 			}
 
-			user = DtoFactory.createUserDto(testUser);
+			user = DtoFactory.createUserDto(existingUser);
 			this.cache.set(username, user);
 		}
 
