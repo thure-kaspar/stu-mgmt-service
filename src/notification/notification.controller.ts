@@ -14,7 +14,6 @@ import { environment } from "src/.config/environment";
 @ApiTags("notification")
 @Roles(UserRole.SYSTEM_ADMIN, UserRole.MGMT_ADMIN, UserRole.ADMIN_TOOL)
 @Controller("notifications")
-// TODO: Is this supposed to always be accessible (@Public(true))
 @Public(environment.is("development", "demo", "testing"))
 export class NotificationController {
 	constructor(

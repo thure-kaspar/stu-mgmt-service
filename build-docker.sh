@@ -1,2 +1,3 @@
 #!/bin/bash
-docker build -f docker/Dockerfile -t std-mgmt-backend .
+docker build -t "stud-mngmt-backend" .
+

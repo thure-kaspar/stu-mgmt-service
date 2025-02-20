@@ -1,4 +1,4 @@
-import { DataSource, EntityRepository, Repository } from "typeorm";
+import { DataSource, Repository } from "typeorm";
 import { CourseId } from "../../course/entities/course.entity";
 import { SubscriberDto } from "./subscriber.dto";
 import { Subscriber } from "./subscriber.entity";
