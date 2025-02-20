@@ -44,6 +44,8 @@ import { AdmissionCriteria } from "./entities/admission-criteria.entity";
 import { AdmissionCriteriaRepository } from "./repositories/admission-criteria.repository";
 import { GroupEvent } from "./entities/group-event.entity";
 import { GroupEventRepository } from "./repositories/group-event.repository";
+import { AssignmentRegistration } from "./entities/assignment-group-registration.entity";
+import { AssignmentRegistrationRepository } from "./repositories/assignment-registration.repository";
 
 @Module({
 	imports: [
@@ -63,7 +65,8 @@ import { GroupEventRepository } from "./repositories/group-event.repository";
 			GroupEvent,
 			AdmissionFromPreviousSemester,
 			Assessment,
-			AdmissionCriteria
+			AdmissionCriteria,
+			AssignmentRegistration
 		]),
 		CqrsModule,
 		HttpModule,
@@ -89,6 +92,7 @@ import { GroupEventRepository } from "./repositories/group-event.repository";
 		AdmissionFromPreviousSemesterRepository,
 		AdmissionCriteriaRepository,
 		AssessmentRepository,
+		AssignmentRegistrationRepository,
 		{ provide: GroupMergeStrategy, useClass: MergeByActivityStrategy }
 	],
 	exports: [

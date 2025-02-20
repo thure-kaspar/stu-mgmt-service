@@ -11,6 +11,8 @@ import { Repositories } from "./repositories";
 import { Services } from "./services";
 import { Assignment } from "src/course/entities/assignment.entity";
 import { AssignmentRepository } from "src/course/repositories/assignment.repository";
+import { Assessment } from "./entities/assessment.entity";
+import { AssessmentRepository } from "./repositories/assessment.repository";
 
 @Module({
 	imports: [
@@ -18,9 +20,10 @@ import { AssignmentRepository } from "src/course/repositories/assignment.reposit
 		CqrsModule,
 		AuthModule,
 		CourseModule,
-		Assignment
+		Assignment,
+		Assessment
 	],
-	providers: [...Services, ...QueryHandlers, AssessmentScoreChangedHandler, AssignmentRepository],
+	providers: [...Services, ...QueryHandlers, AssessmentScoreChangedHandler, AssignmentRepository, AssessmentRepository],
 	controllers: [...Controllers],
 	exports: [...Services]
 })

@@ -26,12 +26,10 @@ import { GroupMergeStrategy } from "./group-merge-strategy/group-merge.strategy"
 @Injectable()
 export class AssignmentRegistrationService {
 	constructor(
-		@InjectRepository(AssignmentRegistrationRepository)
-		private registrations: AssignmentRegistrationRepository,
-		@InjectRepository(GroupRepository) private groups: GroupRepository,
-		@InjectRepository(GroupSettingsRepository) private groupSettings: GroupSettingsRepository,
-		@InjectRepository(ParticipantRepository)
-		private participantsRepository: ParticipantRepository,
+		private readonly registrations: AssignmentRegistrationRepository,
+		private readonly groups: GroupRepository,
+		private readonly groupSettings: GroupSettingsRepository,
+		private readonly participantsRepository: ParticipantRepository,
 		private groupMergeStrategy: GroupMergeStrategy,
 		private events: EventBus
 	) {}
