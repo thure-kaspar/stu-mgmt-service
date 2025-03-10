@@ -81,7 +81,7 @@ Alternatively, you can also setup a simple **demo** ([config/demo.yml](config/de
 docker compose up
 ```
 
-Also see [Student-Management-System/StuMgmtDocker](https://github.com/Student-Management-System/StuMgmtDocker) for a more complete setup with other related services (i.e. [Student-Management-System/Sparkyservice-Project](https://github.com/Student-Management-System/Sparkyservice-Project) for authentication)
+Also see [Student-Management-System/StuMgmtDocker](https://github.com/Student-Management-System/StuMgmtDocker) for a more complete setup with other related services (i.e. [Student-Management-System/Sparkyservice-Project](https://github.com/Student-Management-System/Sparkyservice-Project) for authentication) 
 
 ### Configuration
 
