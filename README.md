@@ -73,15 +73,11 @@ npm run start:prod
 npm run start:main
 ```
 
-### Alternatives
+### Docker
 
-Alternatively, you can also setup a simple **demo** ([config/demo.yml](config/demo.yml)) instance by using the included [docker-compose](docker-compose.yml) file, which will build and run the application with a PostgreSQL container.
+This project may be run using docker compose. The docker-compose file is inside the stu-mgmt-web-client (frontend) repository. To run it you need to build the stu-mgmt-service (backend/this repository) and stu-mgmt-web-client (frontend). Just run the build-docker.sh script once in front- and backend before executing docker compose. 
 
-```sh
-docker compose up
-```
-
-Also see [Student-Management-System/StuMgmtDocker](https://github.com/Student-Management-System/StuMgmtDocker) for a more complete setup with other related services (i.e. [Student-Management-System/Sparkyservice-Project](https://github.com/Student-Management-System/Sparkyservice-Project) for authentication)
+You may also run this project without docker compose but still through docker by executing the start-docker.sh script. 
 
 ### Configuration
 
@@ -91,7 +87,7 @@ The following environment variables can be set. Environment variables will take 
 | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | SERVER_BASE_PATH         | URL that can be used to reach the api, i.e., "http://localhost:3000".                                                                                                                                                                                       |
 | SERVER_PORT              | The port, which the application is listening to.                                                                                                                                                                                                            |
-| AUTHENTICATION_BASE_PATH | URL to the authentication server (SparkyService), i.e., "http://localhost:1234".                                                                                                                                                                            |
+| NOTIFICATIONS_ENABLED | TODO: Explain what NOTIFICATIONS_ENABLED does.                                                                                                                                                                            |
 | CLIENT_BASE_PATH         | URL to the frontend client, i.e., "http://localhost:4200".                                                                                                                                                                                                  |
 | DB_TYPE                  | Specifies the database engine (i. e "postgres", "mysql", [etc.](https://typeorm.io/#/connection-options/common-connection-options)).                                                                                                                        |
 | DB_HOST                  | Database host.                                                                                                                                                                                                                                              |
@@ -107,6 +103,10 @@ The following environment variables can be set. Environment variables will take 
 | SMTP_PASSWORD            | Password for the SMTP-Server.                                                                                                                                                                                                                               |
 | MAIL_FROM                | Sets the "From" header of an email. For example "no-reply@student-mgmt-system"                                                                                                                                                                              |
 | LOG_CONFIG               | If set to "true", prints the entire configuration object to the console. Useful for debugging purposes.                                                                                                                                                     |
+| KEYCLOAK_ISSUER | The URL base path of Keycloak (incl. Port). E.g. "http://localhost:8080" |
+| KEYCLOAK_REALM | The name of the Keycloak realm which contains the users and clients for front- and backend |
+| KEYCLOAK_CLIENT_ID | The private Keycloak client inside of the realm specified in KEYCLOAK_REALM |
+| KEYCLOAK_CLIENT_SECRET | The client secret of the private client specified in KEYCLOAK_CLIENT_ID |
 
 ## Development
 

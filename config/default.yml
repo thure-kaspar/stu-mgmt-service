@@ -19,7 +19,7 @@ mailing:
     enabled: false
 
 authentication:
-    issuer: "http://localhost:8081"
+    issuer: "http://localhost:8080"
     realm: "oidctest"
     clientId: "stumgmt-dev-thure"
     clientSecret: "kGjeJvdRMsFFQcPOSaaihd6aGNs8Es2q"
