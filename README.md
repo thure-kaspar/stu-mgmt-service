@@ -75,7 +75,7 @@ npm run start:main
 
 ### Docker
 
-This project may be run using docker compose. The docker-compose file is inside the stu-mgmt-web-client (frontend) repository. To run it you need to build the stu-mgmt-service (backend/this repository) and stu-mgmt-web-client (frontend). Just run the build-docker.sh script once in front- and backend before executing docker compose. 
+This project may be run using docker compose. The docker-compose file is inside this repository. To run it you need to build the stu-mgmt-service (backend/this repository) and stu-mgmt-web-client (frontend). Just run the build-docker.sh script once in front- and backend before executing docker compose. 
 
 You may also run this project without docker compose but still through docker by executing the start-docker.sh script. 
 

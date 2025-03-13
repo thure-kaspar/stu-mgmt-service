@@ -1,0 +1,54 @@
+version: "2"
+services:
+  frontend:
+    image: stud-mngmt-frontend
+    ports:
+      - "4200:4200"
+    depends_on:
+      - backend
+      - keycloak
+
+  backend:
+    image: stud-mngmt-backend
+    ports:
+      - "3000:3000"
+    environment:
+        DB_HOST: postgres # Same name as name of postgres service in this file
+        KEYCLOAK_CLIENT_SECRET: xEtpAcaPSoR6WwfZ5t9EzldG1MBcszYs
+    depends_on:
+      - postgres
+      - keycloak
+
+  postgres:
+    container_name: postgres
+    image: postgres:16-alpine
+    environment:
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: 36dudhGG/r
+        POSTGRES_DB: studentmgmtdb
+        PG_DATA: /var/lib/postgresql/data
+    ports:
+        - 5432:5432
+    expose:
+        - 5432
+    volumes:
+        - pgdata:/var/lib/postgresql/data
+
+  keycloak:
+    image: keycloak-preconfigured
+    # For regular Keycloak (manuall configuration) use quay.io/keycloak/keycloak instead of keycloak-preconfigured
+    ports:
+      - 8080:8080
+    environment:
+      - KC_HTTP_PORT=8080
+      - KC_BOOTSTRAP_ADMIN_USERNAME=admin
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=admin
+    volumes:
+      - keycloak:/opt/keycloak/data/
+    restart: no
+    command:
+      - "start-dev"
+
+volumes:
+    pgdata:
+    keycloak:
