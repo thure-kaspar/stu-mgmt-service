@@ -69,7 +69,7 @@ pipeline {
 
         stage('Build Docker') {
             steps {
-                // Use build Dockerfile instead of Test-DB Dockerfile to build image 
+                // Use build Dockerfile instead of Test-DB Dockerfile to build image  
                 sh 'cp -f docker/Dockerfile Dockerfile'
 				script {
                     // Based on:
