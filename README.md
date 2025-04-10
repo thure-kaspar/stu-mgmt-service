@@ -67,10 +67,15 @@ You may use one of the following commands to start the application:
 
 ```sh
 # Use config/production.yml
+# Does not automatically build your project
 npm run start:prod
 
 # Use config/demo.yml (Generates demo data)
 npm run start:main
+
+# Use config/development.yml (Enables developer login and removes JWT verification)
+# Also automatically build your project on start and if changes occur
+npm run start:dev
 ```
 
 ### Docker
