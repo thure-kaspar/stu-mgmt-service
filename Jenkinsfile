@@ -88,7 +88,7 @@ pipeline {
         }
 
 
-        // Based on: https://medium.com/@mosheezderman/c51581cc783c
+        /*// Based on: https://medium.com/@mosheezderman/c51581cc783c
         stage('Deploy') {
             steps {
                 sshagent(credentials: ['Stu-Mgmt_Demo-System']) {
@@ -135,10 +135,10 @@ pipeline {
             steps {
                 build job: 'Teaching_StudentMgmt-API-Client', parameters: [string(name: 'API', value:'STU-MGMT')], wait: false
             }
-        }
+        }*/
     }
 
-    post {
+    /*post {
         always {
              // Send e-mails if build becomes unstable/fails or returns stable
              // Based on: https://stackoverflow.com/a/39178479
@@ -148,5 +148,5 @@ pipeline {
              // Report static analyses
              recordIssues enabledForFailure: false, tool: checkStyle(pattern: 'output/eslint/eslint.xml')
         }
-    }
+    }*/
 }
