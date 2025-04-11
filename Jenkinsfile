@@ -19,7 +19,7 @@ pipeline {
         stage('Git') {
             steps {
                 cleanWs()
-                git 'https://github.com/Student-Management-System/StudentMgmt-Backend.git'
+                git 'https://github.com/thure-kaspar/stu-mgmt-service.git'
             }
         }
 
