@@ -1,6 +1,7 @@
 {
 	"moduleFileExtensions": ["ts", "tsx", "js"],
 	"rootDir": "../",
+	"modulePaths": ["<rootDir>", "<rootDir>/../"],
 	"testEnvironment": "node",
 	"testMatch": ["<rootDir>/test/e2e/**/*.e2e-spec.ts"],
 	"transform": {
