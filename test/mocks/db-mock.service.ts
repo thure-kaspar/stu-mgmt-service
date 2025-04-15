@@ -1,4 +1,4 @@
-import { Connection, EntityManager } from "typeorm";
+import { DataSource, EntityManager } from "typeorm";
 import { AssessmentAllocation } from "../../src/assessment/entities/assessment-allocation.entity";
 import { AssessmentUserRelation } from "../../src/assessment/entities/assessment-user-relation.entity";
 import { Assessment } from "../../src/assessment/entities/assessment.entity";
@@ -66,8 +66,8 @@ export class DbMockService {
 	submissions = SUBMISSION_MOCK;
 	subscribers = SUBSCRIBER_MOCK;
 
-	constructor(connection: Connection) {
-		this.con = connection.manager;
+	constructor(dataSource: DataSource) {
+		this.con = dataSource.manager;
 	}
 
 	/**
