@@ -100,6 +100,7 @@ import { AssignmentRegistrationRepository } from "./repositories/assignment-regi
 		CourseMemberGuard,
 		TeachingStaffGuard,
 		ParticipantIdentityGuard,
+		AssignmentRegistrationRepository,
 		...Services
 	]
 })

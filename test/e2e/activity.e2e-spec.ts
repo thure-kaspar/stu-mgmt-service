@@ -90,12 +90,12 @@ describe("Activity E2E", () => {
 				expect(result.date).toEqual(act2.date);
 			});
 
-			it("Does not exist -> Returns undefined", async () => {
+			it("Does not exist -> Returns null", async () => {
 				const result = await handler._tryGetLatestActivity(
 					USER_STUDENT_3_JAVA_TUTOR.id,
 					COURSE_JAVA_1920.id
 				);
-				expect(result).toBeUndefined();
+				expect(result).toBeNull();
 			});
 		});
 

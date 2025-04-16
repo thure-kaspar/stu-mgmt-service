@@ -25,7 +25,9 @@ import { AssignmentRegistrationRepository } from "src/course/repositories/assign
 		Assignment,
 		Assessment
 	],
-	providers: [...Services, ...QueryHandlers, AssessmentScoreChangedHandler, AssignmentRepository, AssessmentRepository, AssignmentRegistrationRepository],
+	providers: [...Services, ...QueryHandlers, 
+		AssessmentScoreChangedHandler, AssignmentRepository, 
+		AssessmentRepository, AssignmentRegistrationRepository],
 	controllers: [...Controllers],
 	exports: [...Services]
 })

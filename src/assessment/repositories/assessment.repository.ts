@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, Injectable } from "@nestjs/common";
+import { BadRequestException, ConflictException, Inject, Injectable } from "@nestjs/common";
 import { randomUUID } from "crypto";
 import { Brackets, DataSource, EntityManager, EntityRepository, Repository } from "typeorm";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
@@ -18,7 +18,7 @@ import { PartialAssessment } from "../entities/partial-assessment.entity";
 @Injectable()
 export class AssessmentRepository extends Repository<Assessment> {
 		constructor(private dataSource: DataSource,
-			private readonly assignmentRegistrationRepository: AssignmentRegistrationRepository
+			@Inject(AssignmentRegistrationRepository) private readonly assignmentRegistrationRepository: AssignmentRegistrationRepository
 		) {
 			super(Assessment, dataSource.createEntityManager());
 		  }

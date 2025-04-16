@@ -45,7 +45,7 @@ export class RecommenderExportService {
 		private courseService: CourseService,
 		private assignmentService: AssignmentService,
 		private participantsService: CourseParticipantsService,
-		@InjectRepository(AssessmentRepository) private assessmentsRepository: AssessmentRepository,
+		private readonly assessmentsRepository: AssessmentRepository,
 		private groupService: GroupService,
 		private activityService: ActivityService,
 		private registrations: AssignmentRegistrationService,

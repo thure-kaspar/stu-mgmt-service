@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Recommender Export getRecommenderExportData Creates RecommenderExport 1`] = `
-Object {
-  "assignments": Array [
-    Object {
+{
+  "assignments": [
+    {
       "bonusPoints": undefined,
       "collaboration": "GROUP_OR_SINGLE",
       "comment": undefined,
@@ -17,7 +17,7 @@ Object {
       "state": "INVISIBLE",
       "type": "HOMEWORK",
     },
-    Object {
+    {
       "bonusPoints": undefined,
       "collaboration": "SINGLE",
       "comment": undefined,
@@ -31,24 +31,24 @@ Object {
       "state": "IN_PROGRESS",
       "type": "TESTAT",
     },
-    Object {
+    {
       "bonusPoints": undefined,
       "collaboration": "GROUP",
       "comment": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione ab, quaerat minus corrupti quia nostrum facere quibusdam, repellendus, reprehenderit officiis rerum nemo modi perspiciatis ex obcaecati consectetur nisi voluptatum veritatis.",
-      "configs": Array [
-        Object {
+      "configs": [
+        {
           "config": "{hello: 'world'}",
           "tool": "tool-1",
         },
-        Object {
+        {
           "config": "{lorem: 'ipsum'}",
           "tool": "tool-2",
         },
       ],
       "endDate": undefined,
       "id": "b2f6c008-b9f7-477f-9e8b-ff34ce339077",
-      "links": Array [
-        Object {
+      "links": [
+        {
           "name": "Example URL",
           "url": "https://example-url.com",
         },
@@ -59,7 +59,7 @@ Object {
       "state": "IN_PROGRESS",
       "type": "HOMEWORK",
     },
-    Object {
+    {
       "bonusPoints": undefined,
       "collaboration": "GROUP",
       "comment": undefined,
@@ -73,7 +73,7 @@ Object {
       "state": "IN_REVIEW",
       "type": "HOMEWORK",
     },
-    Object {
+    {
       "bonusPoints": undefined,
       "collaboration": "SINGLE",
       "comment": undefined,
@@ -87,7 +87,7 @@ Object {
       "state": "IN_REVIEW",
       "type": "HOMEWORK",
     },
-    Object {
+    {
       "bonusPoints": undefined,
       "collaboration": "GROUP_OR_SINGLE",
       "comment": undefined,
@@ -101,7 +101,7 @@ Object {
       "state": "EVALUATED",
       "type": "HOMEWORK",
     },
-    Object {
+    {
       "bonusPoints": undefined,
       "collaboration": "SINGLE",
       "comment": undefined,
@@ -115,7 +115,7 @@ Object {
       "state": "EVALUATED",
       "type": "TESTAT",
     },
-    Object {
+    {
       "bonusPoints": undefined,
       "collaboration": "GROUP",
       "comment": undefined,
@@ -130,19 +130,19 @@ Object {
       "type": "HOMEWORK",
     },
   ],
-  "course": Object {
-    "admissionCriteria": Object {
-      "rules": Array [
-        Object {
-          "achievedPercentRounding": Object {
+  "course": {
+    "admissionCriteria": {
+      "rules": [
+        {
+          "achievedPercentRounding": {
             "type": "UP_NEAREST_INTEGER",
           },
           "assignmentType": "HOMEWORK",
           "requiredPercent": 50,
           "type": "REQUIRED_PERCENT_OVERALL",
         },
-        Object {
-          "achievedPercentRounding": Object {
+        {
+          "achievedPercentRounding": {
             "decimals": 0,
             "type": "DECIMALS",
           },
@@ -150,8 +150,8 @@ Object {
           "requiredPercent": 50,
           "type": "REQUIRED_PERCENT_OVERALL",
         },
-        Object {
-          "achievedPercentRounding": Object {
+        {
+          "achievedPercentRounding": {
             "type": "NONE",
           },
           "allowedFailures": 2,
@@ -161,7 +161,7 @@ Object {
         },
       ],
     },
-    "groupSettings": Object {
+    "groupSettings": {
       "allowGroups": true,
       "autoJoinGroupOnCourseJoined": true,
       "mergeGroupsOnAssignmentStarted": true,
@@ -172,8 +172,8 @@ Object {
     },
     "id": "java-wise1920",
     "isClosed": false,
-    "links": Array [
-      Object {
+    "links": [
+      {
         "name": "Example URL",
         "url": "http://example-url.com",
       },
@@ -182,13 +182,13 @@ Object {
     "shortname": "java",
     "title": "Programmierpraktikum I: Java",
   },
-  "groups": Array [
-    Object {
+  "groups": [
+    {
       "hasPassword": true,
       "id": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
       "isClosed": false,
-      "members": Array [
-        Object {
+      "members": [
+        {
           "displayName": "Max Mustermann",
           "email": "max.mustermann@test.com",
           "group": undefined,
@@ -198,7 +198,7 @@ Object {
           "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
           "username": "mmustermann",
         },
-        Object {
+        {
           "displayName": "Hans Peter",
           "email": "hans.peter@test.com",
           "group": undefined,
@@ -213,21 +213,21 @@ Object {
       "password": undefined,
       "size": 2,
     },
-    Object {
+    {
       "hasPassword": true,
       "id": "73b2afad-7198-4f99-86dc-a2c46c03db2c",
       "isClosed": true,
-      "members": Array [],
+      "members": [],
       "name": "Testgroup 2",
       "password": undefined,
       "size": 0,
     },
-    Object {
+    {
       "hasPassword": true,
       "id": "01144a38-bf03-4ef7-9c87-db6aa81ea7e0",
       "isClosed": false,
-      "members": Array [
-        Object {
+      "members": [
+        {
           "displayName": "elshar",
           "email": "elshar@test.com",
           "group": undefined,
@@ -237,7 +237,7 @@ Object {
           "userId": "3e52e822-4ebc-49c3-94e2-06ba447b5d1f",
           "username": "elshar",
         },
-        Object {
+        {
           "displayName": "kunold",
           "email": "kunold@test.com",
           "group": undefined,
@@ -253,24 +253,24 @@ Object {
       "size": 2,
     },
   ],
-  "groupsForAssignment": Array [
-    Object {
+  "groupsForAssignment": [
+    {
       "assignmentId": "8ffc9608-4c3d-4fca-b4fc-3768822d6c0d",
-      "groups": Array [],
+      "groups": [],
     },
-    Object {
+    {
       "assignmentId": "5b69db81-edbd-4f73-8928-1450036a75cb",
-      "groups": Array [],
+      "groups": [],
     },
-    Object {
+    {
       "assignmentId": "b2f6c008-b9f7-477f-9e8b-ff34ce339077",
-      "groups": Array [
-        Object {
+      "groups": [
+        {
           "hasPassword": true,
           "id": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
           "isClosed": false,
-          "members": Array [
-            Object {
+          "members": [
+            {
               "displayName": "Hans Peter",
               "email": "hans.peter@test.com",
               "group": undefined,
@@ -280,7 +280,7 @@ Object {
               "userId": "40f59aad-7473-4455-a3ea-1214f19b2565",
               "username": "hpeter",
             },
-            Object {
+            {
               "displayName": "Max Mustermann",
               "email": "max.mustermann@test.com",
               "group": undefined,
@@ -295,21 +295,21 @@ Object {
           "password": undefined,
           "size": 2,
         },
-        Object {
+        {
           "hasPassword": true,
           "id": "73b2afad-7198-4f99-86dc-a2c46c03db2c",
           "isClosed": true,
-          "members": Array [],
+          "members": [],
           "name": "Testgroup 2",
           "password": undefined,
           "size": 0,
         },
-        Object {
+        {
           "hasPassword": true,
           "id": "01144a38-bf03-4ef7-9c87-db6aa81ea7e0",
           "isClosed": false,
-          "members": Array [
-            Object {
+          "members": [
+            {
               "displayName": "kunold",
               "email": "kunold@test.com",
               "group": undefined,
@@ -319,7 +319,7 @@ Object {
               "userId": "24b4ec8c-dd8a-4bd6-843c-2c412fb1d5b7",
               "username": "kunold",
             },
-            Object {
+            {
               "displayName": "elshar",
               "email": "elshar@test.com",
               "group": undefined,
@@ -336,15 +336,15 @@ Object {
         },
       ],
     },
-    Object {
+    {
       "assignmentId": "f50b8474-1fb9-4d69-85a2-76648d0fd3f9",
-      "groups": Array [
-        Object {
+      "groups": [
+        {
           "hasPassword": true,
           "id": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
           "isClosed": false,
-          "members": Array [
-            Object {
+          "members": [
+            {
               "displayName": "Hans Peter",
               "email": "hans.peter@test.com",
               "group": undefined,
@@ -354,7 +354,7 @@ Object {
               "userId": "40f59aad-7473-4455-a3ea-1214f19b2565",
               "username": "hpeter",
             },
-            Object {
+            {
               "displayName": "Max Mustermann",
               "email": "max.mustermann@test.com",
               "group": undefined,
@@ -369,21 +369,21 @@ Object {
           "password": undefined,
           "size": 2,
         },
-        Object {
+        {
           "hasPassword": true,
           "id": "73b2afad-7198-4f99-86dc-a2c46c03db2c",
           "isClosed": true,
-          "members": Array [],
+          "members": [],
           "name": "Testgroup 2",
           "password": undefined,
           "size": 0,
         },
-        Object {
+        {
           "hasPassword": true,
           "id": "01144a38-bf03-4ef7-9c87-db6aa81ea7e0",
           "isClosed": false,
-          "members": Array [
-            Object {
+          "members": [
+            {
               "displayName": "kunold",
               "email": "kunold@test.com",
               "group": undefined,
@@ -393,7 +393,7 @@ Object {
               "userId": "24b4ec8c-dd8a-4bd6-843c-2c412fb1d5b7",
               "username": "kunold",
             },
-            Object {
+            {
               "displayName": "elshar",
               "email": "elshar@test.com",
               "group": undefined,
@@ -410,19 +410,19 @@ Object {
         },
       ],
     },
-    Object {
+    {
       "assignmentId": "993b3cd0-6207-11ea-bc55-0242ac130003",
-      "groups": Array [],
+      "groups": [],
     },
-    Object {
+    {
       "assignmentId": "c2bc4aa4-6207-11ea-bc55-0242ac130003",
-      "groups": Array [
-        Object {
+      "groups": [
+        {
           "hasPassword": true,
           "id": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
           "isClosed": false,
-          "members": Array [
-            Object {
+          "members": [
+            {
               "displayName": "Hans Peter",
               "email": "hans.peter@test.com",
               "group": undefined,
@@ -432,7 +432,7 @@ Object {
               "userId": "40f59aad-7473-4455-a3ea-1214f19b2565",
               "username": "hpeter",
             },
-            Object {
+            {
               "displayName": "Max Mustermann",
               "email": "max.mustermann@test.com",
               "group": undefined,
@@ -447,21 +447,21 @@ Object {
           "password": undefined,
           "size": 2,
         },
-        Object {
+        {
           "hasPassword": true,
           "id": "73b2afad-7198-4f99-86dc-a2c46c03db2c",
           "isClosed": true,
-          "members": Array [],
+          "members": [],
           "name": "Testgroup 2",
           "password": undefined,
           "size": 0,
         },
-        Object {
+        {
           "hasPassword": true,
           "id": "01144a38-bf03-4ef7-9c87-db6aa81ea7e0",
           "isClosed": false,
-          "members": Array [
-            Object {
+          "members": [
+            {
               "displayName": "kunold",
               "email": "kunold@test.com",
               "group": undefined,
@@ -471,7 +471,7 @@ Object {
               "userId": "24b4ec8c-dd8a-4bd6-843c-2c412fb1d5b7",
               "username": "kunold",
             },
-            Object {
+            {
               "displayName": "elshar",
               "email": "elshar@test.com",
               "group": undefined,
@@ -488,42 +488,42 @@ Object {
         },
       ],
     },
-    Object {
+    {
       "assignmentId": "75b799a1-a406-419b-a448-909aa3d34afa",
-      "groups": Array [],
+      "groups": [],
     },
-    Object {
+    {
       "assignmentId": "74aa124c-0753-467f-8f52-48d1901282f8",
-      "groups": Array [],
+      "groups": [],
     },
   ],
-  "students": Array [
-    Object {
-      "activity": Array [
+  "students": [
+    {
+      "activity": [
         2022-05-03T22:00:00.000Z,
         2022-05-13T22:00:00.000Z,
       ],
-      "admissionStatus": Object {
+      "admissionStatus": {
         "fulfillsAdmissionCriteria": false,
         "hasAdmission": false,
         "hasAdmissionFromPreviousSemester": false,
         "participant": undefined,
-        "results": Array [
-          Object {
+        "results": [
+          {
             "_assignmentType": "HOMEWORK",
             "_rule": "REQUIRED_PERCENT_OVERALL",
             "achievedPercent": 0,
             "achievedPoints": 0,
             "passed": false,
           },
-          Object {
+          {
             "_assignmentType": "TESTAT",
             "_rule": "REQUIRED_PERCENT_OVERALL",
             "achievedPercent": 0,
             "achievedPoints": 0,
             "passed": false,
           },
-          Object {
+          {
             "_assignmentType": "HOMEWORK",
             "_rule": "INDIVIDUAL_PERCENT_WITH_ALLOWED_FAILURES",
             "achievedPercent": 50,
@@ -532,38 +532,38 @@ Object {
           },
         ],
       },
-      "grades": Array [],
-      "submissions": Array [],
-      "userInfo": Object {
+      "grades": [],
+      "submissions": [],
+      "userInfo": {
         "displayName": "elshar",
         "matrNr": 777777,
         "userId": "3e52e822-4ebc-49c3-94e2-06ba447b5d1f",
         "username": "elshar",
       },
     },
-    Object {
-      "activity": Array [],
-      "admissionStatus": Object {
+    {
+      "activity": [],
+      "admissionStatus": {
         "fulfillsAdmissionCriteria": false,
         "hasAdmission": false,
         "hasAdmissionFromPreviousSemester": false,
         "participant": undefined,
-        "results": Array [
-          Object {
+        "results": [
+          {
             "_assignmentType": "HOMEWORK",
             "_rule": "REQUIRED_PERCENT_OVERALL",
             "achievedPercent": 75,
             "achievedPoints": 75,
             "passed": true,
           },
-          Object {
+          {
             "_assignmentType": "TESTAT",
             "_rule": "REQUIRED_PERCENT_OVERALL",
             "achievedPercent": 0,
             "achievedPoints": 0,
             "passed": false,
           },
-          Object {
+          {
             "_assignmentType": "HOMEWORK",
             "_rule": "INDIVIDUAL_PERCENT_WITH_ALLOWED_FAILURES",
             "achievedPercent": 0,
@@ -572,18 +572,18 @@ Object {
           },
         ],
       },
-      "grades": Array [
-        Object {
+      "grades": [
+        {
           "achievedPointsInPercent": 75,
           "assessmentId": "8f60f844-4129-48a4-a625-7a74c7defd0d",
           "assignmentId": "c2bc4aa4-6207-11ea-bc55-0242ac130003",
           "assignmentType": "HOMEWORK",
-          "group": Object {
+          "group": {
             "hasPassword": true,
             "id": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
             "isClosed": false,
-            "members": Array [
-              Object {
+            "members": [
+              {
                 "displayName": "Max Mustermann",
                 "email": "max.mustermann@test.com",
                 "matrNr": 123456,
@@ -591,7 +591,7 @@ Object {
                 "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
                 "username": "mmustermann",
               },
-              Object {
+              {
                 "displayName": "Hans Peter",
                 "email": "hans.peter@test.com",
                 "matrNr": 111111,
@@ -605,17 +605,17 @@ Object {
             "size": 2,
           },
         },
-        Object {
+        {
           "achievedPointsInPercent": 75,
           "assessmentId": "0d365334-6cb3-4ac5-b0fe-0b1a5aa1fbf4",
           "assignmentId": "f50b8474-1fb9-4d69-85a2-76648d0fd3f9",
           "assignmentType": "HOMEWORK",
-          "group": Object {
+          "group": {
             "hasPassword": true,
             "id": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
             "isClosed": false,
-            "members": Array [
-              Object {
+            "members": [
+              {
                 "displayName": "Max Mustermann",
                 "email": "max.mustermann@test.com",
                 "matrNr": 123456,
@@ -623,7 +623,7 @@ Object {
                 "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
                 "username": "mmustermann",
               },
-              Object {
+              {
                 "displayName": "Hans Peter",
                 "email": "hans.peter@test.com",
                 "matrNr": 111111,
@@ -638,37 +638,37 @@ Object {
           },
         },
       ],
-      "submissions": Array [],
-      "userInfo": Object {
+      "submissions": [],
+      "userInfo": {
         "displayName": "Hans Peter",
         "matrNr": 111111,
         "userId": "40f59aad-7473-4455-a3ea-1214f19b2565",
         "username": "hpeter",
       },
     },
-    Object {
-      "activity": Array [],
-      "admissionStatus": Object {
+    {
+      "activity": [],
+      "admissionStatus": {
         "fulfillsAdmissionCriteria": false,
         "hasAdmission": false,
         "hasAdmissionFromPreviousSemester": false,
         "participant": undefined,
-        "results": Array [
-          Object {
+        "results": [
+          {
             "_assignmentType": "HOMEWORK",
             "_rule": "REQUIRED_PERCENT_OVERALL",
             "achievedPercent": 0,
             "achievedPoints": 0,
             "passed": false,
           },
-          Object {
+          {
             "_assignmentType": "TESTAT",
             "_rule": "REQUIRED_PERCENT_OVERALL",
             "achievedPercent": 0,
             "achievedPoints": 0,
             "passed": false,
           },
-          Object {
+          {
             "_assignmentType": "HOMEWORK",
             "_rule": "INDIVIDUAL_PERCENT_WITH_ALLOWED_FAILURES",
             "achievedPercent": 50,
@@ -677,38 +677,38 @@ Object {
           },
         ],
       },
-      "grades": Array [],
-      "submissions": Array [],
-      "userInfo": Object {
+      "grades": [],
+      "submissions": [],
+      "userInfo": {
         "displayName": "kunold",
         "matrNr": 888888,
         "userId": "24b4ec8c-dd8a-4bd6-843c-2c412fb1d5b7",
         "username": "kunold",
       },
     },
-    Object {
-      "activity": Array [],
-      "admissionStatus": Object {
+    {
+      "activity": [],
+      "admissionStatus": {
         "fulfillsAdmissionCriteria": false,
         "hasAdmission": false,
         "hasAdmissionFromPreviousSemester": false,
         "participant": undefined,
-        "results": Array [
-          Object {
+        "results": [
+          {
             "_assignmentType": "HOMEWORK",
             "_rule": "REQUIRED_PERCENT_OVERALL",
             "achievedPercent": 75,
             "achievedPoints": 75,
             "passed": true,
           },
-          Object {
+          {
             "_assignmentType": "TESTAT",
             "_rule": "REQUIRED_PERCENT_OVERALL",
             "achievedPercent": 25,
             "achievedPoints": 25,
             "passed": false,
           },
-          Object {
+          {
             "_assignmentType": "HOMEWORK",
             "_rule": "INDIVIDUAL_PERCENT_WITH_ALLOWED_FAILURES",
             "achievedPercent": 0,
@@ -717,24 +717,24 @@ Object {
           },
         ],
       },
-      "grades": Array [
-        Object {
+      "grades": [
+        {
           "achievedPointsInPercent": 50,
           "assessmentId": "680dd44a-93b0-4d1c-a947-9b50a4bbb68e",
           "assignmentId": "993b3cd0-6207-11ea-bc55-0242ac130003",
           "assignmentType": "HOMEWORK",
         },
-        Object {
+        {
           "achievedPointsInPercent": 75,
           "assessmentId": "8f60f844-4129-48a4-a625-7a74c7defd0d",
           "assignmentId": "c2bc4aa4-6207-11ea-bc55-0242ac130003",
           "assignmentType": "HOMEWORK",
-          "group": Object {
+          "group": {
             "hasPassword": true,
             "id": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
             "isClosed": false,
-            "members": Array [
-              Object {
+            "members": [
+              {
                 "displayName": "Max Mustermann",
                 "email": "max.mustermann@test.com",
                 "matrNr": 123456,
@@ -742,7 +742,7 @@ Object {
                 "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
                 "username": "mmustermann",
               },
-              Object {
+              {
                 "displayName": "Hans Peter",
                 "email": "hans.peter@test.com",
                 "matrNr": 111111,
@@ -756,23 +756,23 @@ Object {
             "size": 2,
           },
         },
-        Object {
+        {
           "achievedPointsInPercent": 25,
           "assessmentId": "932c7bd8-2338-4e60-955a-39da5f858212",
           "assignmentId": "75b799a1-a406-419b-a448-909aa3d34afa",
           "assignmentType": "TESTAT",
         },
-        Object {
+        {
           "achievedPointsInPercent": 75,
           "assessmentId": "0d365334-6cb3-4ac5-b0fe-0b1a5aa1fbf4",
           "assignmentId": "f50b8474-1fb9-4d69-85a2-76648d0fd3f9",
           "assignmentType": "HOMEWORK",
-          "group": Object {
+          "group": {
             "hasPassword": true,
             "id": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
             "isClosed": false,
-            "members": Array [
-              Object {
+            "members": [
+              {
                 "displayName": "Max Mustermann",
                 "email": "max.mustermann@test.com",
                 "matrNr": 123456,
@@ -780,7 +780,7 @@ Object {
                 "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
                 "username": "mmustermann",
               },
-              Object {
+              {
                 "displayName": "Hans Peter",
                 "email": "hans.peter@test.com",
                 "matrNr": 111111,
@@ -795,17 +795,17 @@ Object {
           },
         },
       ],
-      "submissions": Array [
-        Object {
+      "submissions": [
+        {
           "assignmentId": "b2f6c008-b9f7-477f-9e8b-ff34ce339077",
           "date": 2022-02-01T23:00:00.000Z,
         },
-        Object {
+        {
           "assignmentId": "b2f6c008-b9f7-477f-9e8b-ff34ce339077",
           "date": 2022-01-31T23:00:00.000Z,
         },
       ],
-      "userInfo": Object {
+      "userInfo": {
         "displayName": "Max Mustermann",
         "matrNr": 123456,
         "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
