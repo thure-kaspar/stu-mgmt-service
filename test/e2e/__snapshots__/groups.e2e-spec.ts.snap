@@ -1,13 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Groups E2E GET-REQUESTS of GroupController (e2e) (GET) /courses/{courseId}/groups Filters by member name 1`] = `
-Array [
-  Object {
+[
+  {
     "hasPassword": true,
     "id": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
     "isClosed": false,
-    "members": Array [
-      Object {
+    "members": [
+      {
         "displayName": "Max Mustermann",
         "email": "max.mustermann@test.com",
         "matrNr": 123456,
@@ -15,7 +15,7 @@ Array [
         "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
         "username": "mmustermann",
       },
-      Object {
+      {
         "displayName": "Hans Peter",
         "email": "hans.peter@test.com",
         "matrNr": 111111,
@@ -31,13 +31,13 @@ Array [
 `;
 
 exports[`Groups E2E GET-REQUESTS of GroupController (e2e) (GET) /courses/{courseId}/groups Filters empty groups (exludeEmpty=true) 1`] = `
-Array [
-  Object {
+[
+  {
     "hasPassword": true,
     "id": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
     "isClosed": false,
-    "members": Array [
-      Object {
+    "members": [
+      {
         "displayName": "Max Mustermann",
         "email": "max.mustermann@test.com",
         "matrNr": 123456,
@@ -45,7 +45,7 @@ Array [
         "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
         "username": "mmustermann",
       },
-      Object {
+      {
         "displayName": "Hans Peter",
         "email": "hans.peter@test.com",
         "matrNr": 111111,
@@ -57,12 +57,12 @@ Array [
     "name": "Testgroup 1",
     "size": 2,
   },
-  Object {
+  {
     "hasPassword": true,
     "id": "01144a38-bf03-4ef7-9c87-db6aa81ea7e0",
     "isClosed": false,
-    "members": Array [
-      Object {
+    "members": [
+      {
         "displayName": "elshar",
         "email": "elshar@test.com",
         "matrNr": 777777,
@@ -70,7 +70,7 @@ Array [
         "userId": "3e52e822-4ebc-49c3-94e2-06ba447b5d1f",
         "username": "elshar",
       },
-      Object {
+      {
         "displayName": "kunold",
         "email": "kunold@test.com",
         "matrNr": 888888,
@@ -86,12 +86,12 @@ Array [
 `;
 
 exports[`Groups E2E GET-REQUESTS of GroupController (e2e) (GET) /groups/{groupId} Retrieves the group 1`] = `
-Object {
+{
   "hasPassword": true,
   "id": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
   "isClosed": false,
-  "members": Array [
-    Object {
+  "members": [
+    {
       "displayName": "Max Mustermann",
       "email": "max.mustermann@test.com",
       "matrNr": 123456,
@@ -99,7 +99,7 @@ Object {
       "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
       "username": "mmustermann",
     },
-    Object {
+    {
       "displayName": "Hans Peter",
       "email": "hans.peter@test.com",
       "matrNr": 111111,

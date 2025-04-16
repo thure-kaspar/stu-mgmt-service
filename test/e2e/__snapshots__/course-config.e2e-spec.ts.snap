@@ -1,23 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`CourseConfig E2E PUT-REQUEST of CourseConfigController (e2e) (PUT) courses/{courseId}/config/admission-from-previous-semester Empty array -> Clears existing data 1`] = `
-Object {
-  "matrNrs": Array [],
-  "participants": Array [],
+{
+  "matrNrs": [],
+  "participants": [],
 }
 `;
 
 exports[`CourseConfig E2E PUT-REQUEST of CourseConfigController (e2e) (PUT) courses/{courseId}/config/admission-from-previous-semester With matrNrs -> Returns DTO 1`] = `
-Object {
-  "matrNrs": Array [
+{
+  "matrNrs": [
     123456,
     111111,
   ],
-  "participants": Array [
-    Object {
+  "participants": [
+    {
       "displayName": "Max Mustermann",
       "email": "max.mustermann@test.com",
-      "group": Object {
+      "group": {
         "hasPassword": true,
         "id": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
         "isClosed": false,
@@ -29,10 +29,10 @@ Object {
       "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
       "username": "mmustermann",
     },
-    Object {
+    {
       "displayName": "Hans Peter",
       "email": "hans.peter@test.com",
-      "group": Object {
+      "group": {
         "hasPassword": true,
         "id": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
         "isClosed": false,

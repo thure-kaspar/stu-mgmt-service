@@ -17,7 +17,9 @@ import { PartialAssessment } from "../entities/partial-assessment.entity";
 
 @Injectable()
 export class AssessmentRepository extends Repository<Assessment> {
-		constructor(private dataSource: DataSource) {
+		constructor(private dataSource: DataSource,
+			private readonly assignmentRegistrationRepository: AssignmentRegistrationRepository
+		) {
 			super(Assessment, dataSource.createEntityManager());
 		  }
 	async createAssessment(
@@ -78,10 +80,9 @@ export class AssessmentRepository extends Repository<Assessment> {
 		assessments: AssessmentCreateDto[],
 		creatorId: string
 	): Promise<Assessment[]> {
-		const registrationRepo = this.manager.getCustomRepository(AssignmentRegistrationRepository);
 		const assessmentRelationsRepo = this.manager.getRepository(AssessmentUserRelation);
 		const [[registeredGroups]] = await Promise.all([
-			registrationRepo.getRegisteredGroupsWithMembers(assignmentId),
+			this.assignmentRegistrationRepository.getRegisteredGroupsWithMembers(assignmentId),
 			assessmentRelationsRepo.find({ where: { assignmentId } })
 		]);
 

@@ -1,15 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Submission E2E GET-Requests of SubmissionController (e2e) (GET) /courses/:courseId/submissions Retrieves all submissions 1`] = `
-Array [
-  Object {
+[
+  {
     "assignmentId": "b2f6c008-b9f7-477f-9e8b-ff34ce339077",
     "date": "2022-02-01T23:00:00.000Z",
     "displayName": "Max Mustermann",
     "groupId": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
     "groupName": "Testgroup 1",
-    "links": Array [
-      Object {
+    "links": [
+      {
         "name": "A link",
         "url": "http://example.url",
       },
@@ -17,14 +17,14 @@ Array [
     "payload": null,
     "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
   },
-  Object {
+  {
     "assignmentId": "b2f6c008-b9f7-477f-9e8b-ff34ce339077",
     "date": "2022-01-31T23:00:00.000Z",
     "displayName": "Max Mustermann",
     "groupId": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
     "groupName": "Testgroup 1",
     "links": null,
-    "payload": Object {
+    "payload": {
       "hello": "world",
     },
     "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
@@ -33,15 +33,15 @@ Array [
 `;
 
 exports[`Submission E2E GET-Requests of SubmissionController (e2e) (GET) /courses/:courseId/submissions/groups/:groupId/assignments/:assignmentId Retrieves all submissions of a group for an assignment 1`] = `
-Array [
-  Object {
+[
+  {
     "assignmentId": "b2f6c008-b9f7-477f-9e8b-ff34ce339077",
     "date": "2022-02-01T23:00:00.000Z",
     "displayName": "Max Mustermann",
     "groupId": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
     "groupName": "Testgroup 1",
-    "links": Array [
-      Object {
+    "links": [
+      {
         "name": "A link",
         "url": "http://example.url",
       },
@@ -49,14 +49,14 @@ Array [
     "payload": null,
     "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
   },
-  Object {
+  {
     "assignmentId": "b2f6c008-b9f7-477f-9e8b-ff34ce339077",
     "date": "2022-01-31T23:00:00.000Z",
     "displayName": "Max Mustermann",
     "groupId": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
     "groupName": "Testgroup 1",
     "links": null,
-    "payload": Object {
+    "payload": {
       "hello": "world",
     },
     "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
@@ -65,13 +65,13 @@ Array [
 `;
 
 exports[`Submission E2E GET-Requests of SubmissionController (e2e) (GET) /courses/:courseId/submissions/users/:user/assignments/:assignments Retrieves the latest submission of a user (or their group) for an assignment 1`] = `
-Object {
+{
   "assignmentId": "b2f6c008-b9f7-477f-9e8b-ff34ce339077",
   "date": "2022-02-01T23:00:00.000Z",
   "displayName": "Max Mustermann",
   "groupId": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
-  "links": Array [
-    Object {
+  "links": [
+    {
       "name": "A link",
       "url": "http://example.url",
     },
@@ -82,15 +82,15 @@ Object {
 `;
 
 exports[`Submission E2E GET-Requests of SubmissionController (e2e) (GET) /courses/:courseId/submissions/users/:userId Retrieves all submissions of user 1`] = `
-Array [
-  Object {
+[
+  {
     "assignmentId": "b2f6c008-b9f7-477f-9e8b-ff34ce339077",
     "date": "2022-02-01T23:00:00.000Z",
     "displayName": "Max Mustermann",
     "groupId": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
     "groupName": "Testgroup 1",
-    "links": Array [
-      Object {
+    "links": [
+      {
         "name": "A link",
         "url": "http://example.url",
       },
@@ -98,14 +98,14 @@ Array [
     "payload": null,
     "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
   },
-  Object {
+  {
     "assignmentId": "b2f6c008-b9f7-477f-9e8b-ff34ce339077",
     "date": "2022-01-31T23:00:00.000Z",
     "displayName": "Max Mustermann",
     "groupId": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
     "groupName": "Testgroup 1",
     "links": null,
-    "payload": Object {
+    "payload": {
       "hello": "world",
     },
     "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
@@ -114,22 +114,22 @@ Array [
 `;
 
 exports[`Submission E2E POST-Requests of SubmissionController (e2e) (POST) /courses/:courseId/submissions/assignments/:assignmentId Adds a submission 1`] = `
-Object {
+{
   "assignmentId": "b2f6c008-b9f7-477f-9e8b-ff34ce339077",
   "date": null,
   "displayName": "Max Mustermann",
   "groupId": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
-  "links": Array [
-    Object {
+  "links": [
+    {
       "name": "Link 1",
       "url": "http://example.url",
     },
-    Object {
+    {
       "name": "Link 2",
       "url": "http://example.url",
     },
   ],
-  "payload": Object {
+  "payload": {
     "error": "Something went wrong.",
   },
   "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",

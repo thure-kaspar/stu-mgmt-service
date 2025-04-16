@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Assessment E2E GET-REQUESTS of AssessmentController (e2e) (GET) /courses/{courseId}/assignments/{assignmentId}/assessments/{assessmentId} Assessment with partial assessments -> Retrieves partials 1`] = `
-Object {
+{
   "achievedPoints": 50,
-  "assignment": Object {
+  "assignment": {
     "collaboration": "SINGLE",
     "endDate": "2020-06-17T22:00:00.000Z",
     "id": "993b3cd0-6207-11ea-bc55-0242ac130003",
@@ -16,7 +16,7 @@ Object {
   "assignmentId": "993b3cd0-6207-11ea-bc55-0242ac130003",
   "comment": "ASSESSMENT_JAVA_IN_REVIEW",
   "creationDate": null,
-  "creator": Object {
+  "creator": {
     "displayName": "John Doe",
     "id": "8330300e-9be7-4a70-ba7d-8a0139311343",
     "matrNr": 222222,
@@ -26,15 +26,15 @@ Object {
   "creatorId": "8330300e-9be7-4a70-ba7d-8a0139311343",
   "id": "680dd44a-93b0-4d1c-a947-9b50a4bbb68e",
   "isDraft": false,
-  "partialAssessments": Array [
-    Object {
+  "partialAssessments": [
+    {
       "comment": "Very good",
       "draftOnly": false,
       "key": "task-1",
       "points": 10,
       "title": "Task 1",
     },
-    Object {
+    {
       "comment": "Very bad",
       "draftOnly": false,
       "key": "task-2",
@@ -42,7 +42,7 @@ Object {
       "title": "Task 2",
     },
   ],
-  "participant": Object {
+  "participant": {
     "displayName": "Max Mustermann",
     "email": "max.mustermann@test.com",
     "matrNr": 123456,
@@ -298,7 +298,7 @@ Object {
 `;
 
 exports[`Assessment E2E POST-REQUESTS of AssessmentController (e2e) (POST) /courses/{courseId}/assignments/{assignmentId}/assessments Assessment with partial assessments -> Creates partial assessments 1`] = `
-Object {
+{
   "achievedPoints": 50,
   "assignmentId": "993b3cd0-6207-11ea-bc55-0242ac130003",
   "comment": "ASSESSMENT_JAVA_IN_REVIEW",
@@ -306,15 +306,15 @@ Object {
   "creatorId": "c17b67ea-d0b7-46bc-a2e0-ea2ec18f441d",
   "id": undefined,
   "isDraft": false,
-  "partialAssessments": Array [
-    Object {
+  "partialAssessments": [
+    {
       "comment": "Very good",
       "draftOnly": false,
       "key": "task-1",
       "points": 10,
       "title": "Task 1",
     },
-    Object {
+    {
       "comment": "Very bad",
       "draftOnly": false,
       "key": "task-2",
@@ -328,7 +328,7 @@ Object {
 `;
 
 exports[`Assessment E2E POST-REQUESTS of AssessmentController (e2e) (POST) /courses/{courseId}/assignments/{assignmentId}/assessments Creates the given (group-)assessment and returns it 1`] = `
-Object {
+{
   "achievedPoints": 75,
   "assignmentId": "c2bc4aa4-6207-11ea-bc55-0242ac130003",
   "comment": "ASSESSMENT_JAVA_EVALUATED_GROUP_1 for GROUP_1_JAVA (ASSIGNMENT_JAVA_EVALUATED)",
@@ -338,13 +338,13 @@ Object {
   "id": undefined,
   "isDraft": false,
   "lastUpdatedById": "8330300e-9be7-4a70-ba7d-8a0139311343",
-  "partialAssessments": Array [],
+  "partialAssessments": [],
   "updateDate": undefined,
 }
 `;
 
 exports[`Assessment E2E POST-REQUESTS of AssessmentController (e2e) (POST) /courses/{courseId}/assignments/{assignmentId}/assessments Creates the given (user-)assessment and returns it 1`] = `
-Object {
+{
   "achievedPoints": 25,
   "assignmentId": "75b799a1-a406-419b-a448-909aa3d34afa",
   "comment": "ASSESSMENT_JAVA_TESTAT_USER_1",
@@ -352,7 +352,7 @@ Object {
   "creatorId": "c17b67ea-d0b7-46bc-a2e0-ea2ec18f441d",
   "id": undefined,
   "isDraft": false,
-  "partialAssessments": Array [],
+  "partialAssessments": [],
   "updateDate": undefined,
   "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
 }

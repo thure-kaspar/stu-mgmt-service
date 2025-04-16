@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`UserSettings E2E GET-REQUESTS of UserSettingsController (e2e) (GET) /users/{userId}/settings Returns user settings 1`] = `
-Object {
+{
   "allowEmails": true,
   "blacklistedEvents": null,
   "language": "DE",

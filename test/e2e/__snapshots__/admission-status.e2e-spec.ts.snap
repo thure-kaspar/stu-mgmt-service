@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Admission Status [GET] /courses/{courseId}/admission-status 1`] = `
-Array [
-  Object {
+[
+  {
     "fulfillsAdmissionCriteria": false,
     "hasAdmission": false,
     "hasAdmissionFromPreviousSemester": false,
-    "participant": Object {
+    "participant": {
       "displayName": "Max Mustermann",
       "email": "max.mustermann@test.com",
       "matrNr": 123456,
@@ -14,22 +14,22 @@ Array [
       "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
       "username": "mmustermann",
     },
-    "results": Array [
-      Object {
+    "results": [
+      {
         "_assignmentType": "HOMEWORK",
         "_rule": "REQUIRED_PERCENT_OVERALL",
         "achievedPercent": 75,
         "achievedPoints": 75,
         "passed": true,
       },
-      Object {
+      {
         "_assignmentType": "TESTAT",
         "_rule": "REQUIRED_PERCENT_OVERALL",
         "achievedPercent": 25,
         "achievedPoints": 25,
         "passed": false,
       },
-      Object {
+      {
         "_assignmentType": "HOMEWORK",
         "_rule": "INDIVIDUAL_PERCENT_WITH_ALLOWED_FAILURES",
         "achievedPercent": 0,
@@ -38,11 +38,11 @@ Array [
       },
     ],
   },
-  Object {
+  {
     "fulfillsAdmissionCriteria": false,
     "hasAdmission": false,
     "hasAdmissionFromPreviousSemester": false,
-    "participant": Object {
+    "participant": {
       "displayName": "Hans Peter",
       "email": "hans.peter@test.com",
       "matrNr": 111111,
@@ -50,22 +50,22 @@ Array [
       "userId": "40f59aad-7473-4455-a3ea-1214f19b2565",
       "username": "hpeter",
     },
-    "results": Array [
-      Object {
+    "results": [
+      {
         "_assignmentType": "HOMEWORK",
         "_rule": "REQUIRED_PERCENT_OVERALL",
         "achievedPercent": 75,
         "achievedPoints": 75,
         "passed": true,
       },
-      Object {
+      {
         "_assignmentType": "TESTAT",
         "_rule": "REQUIRED_PERCENT_OVERALL",
         "achievedPercent": 0,
         "achievedPoints": 0,
         "passed": false,
       },
-      Object {
+      {
         "_assignmentType": "HOMEWORK",
         "_rule": "INDIVIDUAL_PERCENT_WITH_ALLOWED_FAILURES",
         "achievedPercent": 0,
@@ -74,11 +74,11 @@ Array [
       },
     ],
   },
-  Object {
+  {
     "fulfillsAdmissionCriteria": false,
     "hasAdmission": false,
     "hasAdmissionFromPreviousSemester": false,
-    "participant": Object {
+    "participant": {
       "displayName": "elshar",
       "email": "elshar@test.com",
       "matrNr": 777777,
@@ -86,22 +86,22 @@ Array [
       "userId": "3e52e822-4ebc-49c3-94e2-06ba447b5d1f",
       "username": "elshar",
     },
-    "results": Array [
-      Object {
+    "results": [
+      {
         "_assignmentType": "HOMEWORK",
         "_rule": "REQUIRED_PERCENT_OVERALL",
         "achievedPercent": 0,
         "achievedPoints": 0,
         "passed": false,
       },
-      Object {
+      {
         "_assignmentType": "TESTAT",
         "_rule": "REQUIRED_PERCENT_OVERALL",
         "achievedPercent": 0,
         "achievedPoints": 0,
         "passed": false,
       },
-      Object {
+      {
         "_assignmentType": "HOMEWORK",
         "_rule": "INDIVIDUAL_PERCENT_WITH_ALLOWED_FAILURES",
         "achievedPercent": 50,
@@ -110,11 +110,11 @@ Array [
       },
     ],
   },
-  Object {
+  {
     "fulfillsAdmissionCriteria": false,
     "hasAdmission": false,
     "hasAdmissionFromPreviousSemester": false,
-    "participant": Object {
+    "participant": {
       "displayName": "kunold",
       "email": "kunold@test.com",
       "matrNr": 888888,
@@ -122,22 +122,22 @@ Array [
       "userId": "24b4ec8c-dd8a-4bd6-843c-2c412fb1d5b7",
       "username": "kunold",
     },
-    "results": Array [
-      Object {
+    "results": [
+      {
         "_assignmentType": "HOMEWORK",
         "_rule": "REQUIRED_PERCENT_OVERALL",
         "achievedPercent": 0,
         "achievedPoints": 0,
         "passed": false,
       },
-      Object {
+      {
         "_assignmentType": "TESTAT",
         "_rule": "REQUIRED_PERCENT_OVERALL",
         "achievedPercent": 0,
         "achievedPoints": 0,
         "passed": false,
       },
-      Object {
+      {
         "_assignmentType": "HOMEWORK",
         "_rule": "INDIVIDUAL_PERCENT_WITH_ALLOWED_FAILURES",
         "achievedPercent": 50,
@@ -150,11 +150,11 @@ Array [
 `;
 
 exports[`Admission Status [GET] /courses/{courseId}/admission-status/{userId} 1`] = `
-Object {
+{
   "fulfillsAdmissionCriteria": false,
   "hasAdmission": false,
   "hasAdmissionFromPreviousSemester": false,
-  "participant": Object {
+  "participant": {
     "displayName": "Max Mustermann",
     "email": "max.mustermann@test.com",
     "matrNr": 123456,
@@ -162,22 +162,22 @@ Object {
     "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
     "username": "mmustermann",
   },
-  "results": Array [
-    Object {
+  "results": [
+    {
       "_assignmentType": "HOMEWORK",
       "_rule": "REQUIRED_PERCENT_OVERALL",
       "achievedPercent": 75,
       "achievedPoints": 75,
       "passed": true,
     },
-    Object {
+    {
       "_assignmentType": "TESTAT",
       "_rule": "REQUIRED_PERCENT_OVERALL",
       "achievedPercent": 25,
       "achievedPoints": 25,
       "passed": false,
     },
-    Object {
+    {
       "_assignmentType": "HOMEWORK",
       "_rule": "INDIVIDUAL_PERCENT_WITH_ALLOWED_FAILURES",
       "achievedPercent": 0,
@@ -189,9 +189,9 @@ Object {
 `;
 
 exports[`Admission Status [GET] /courses/{courseId}/admission-status/overview 1`] = `
-Object {
-  "assignments": Array [
-    Object {
+{
+  "assignments": [
+    {
       "collaboration": "GROUP_OR_SINGLE",
       "endDate": "2020-05-10T22:00:00.000Z",
       "id": "c2bc4aa4-6207-11ea-bc55-0242ac130003",
@@ -201,7 +201,7 @@ Object {
       "state": "EVALUATED",
       "type": "HOMEWORK",
     },
-    Object {
+    {
       "collaboration": "SINGLE",
       "endDate": "2020-04-26T22:00:00.000Z",
       "id": "75b799a1-a406-419b-a448-909aa3d34afa",
@@ -212,17 +212,17 @@ Object {
       "type": "TESTAT",
     },
   ],
-  "results": Array [
-    Object {
-      "achievedPoints": Array [
+  "results": [
+    {
+      "achievedPoints": [
         75,
         25,
       ],
-      "assessmentIds": Array [
+      "assessmentIds": [
         "8f60f844-4129-48a4-a625-7a74c7defd0d",
         "932c7bd8-2338-4e60-955a-39da5f858212",
       ],
-      "student": Object {
+      "student": {
         "displayName": "Max Mustermann",
         "email": "max.mustermann@test.com",
         "matrNr": 123456,
@@ -231,16 +231,16 @@ Object {
         "username": "mmustermann",
       },
     },
-    Object {
-      "achievedPoints": Array [
+    {
+      "achievedPoints": [
         75,
         null,
       ],
-      "assessmentIds": Array [
+      "assessmentIds": [
         "8f60f844-4129-48a4-a625-7a74c7defd0d",
         null,
       ],
-      "student": Object {
+      "student": {
         "displayName": "Hans Peter",
         "email": "hans.peter@test.com",
         "matrNr": 111111,
@@ -249,16 +249,16 @@ Object {
         "username": "hpeter",
       },
     },
-    Object {
-      "achievedPoints": Array [
+    {
+      "achievedPoints": [
         null,
         null,
       ],
-      "assessmentIds": Array [
+      "assessmentIds": [
         null,
         null,
       ],
-      "student": Object {
+      "student": {
         "displayName": "elshar",
         "email": "elshar@test.com",
         "matrNr": 777777,
@@ -267,16 +267,16 @@ Object {
         "username": "elshar",
       },
     },
-    Object {
-      "achievedPoints": Array [
+    {
+      "achievedPoints": [
         null,
         null,
       ],
-      "assessmentIds": Array [
+      "assessmentIds": [
         null,
         null,
       ],
-      "student": Object {
+      "student": {
         "displayName": "kunold",
         "email": "kunold@test.com",
         "matrNr": 888888,
@@ -290,9 +290,9 @@ Object {
 `;
 
 exports[`Admission Status [GET] /courses/{courseId}/admission-status/overview/{userId} 1`] = `
-Object {
-  "assignments": Array [
-    Object {
+{
+  "assignments": [
+    {
       "collaboration": "GROUP_OR_SINGLE",
       "endDate": "2020-05-10T22:00:00.000Z",
       "id": "c2bc4aa4-6207-11ea-bc55-0242ac130003",
@@ -302,7 +302,7 @@ Object {
       "state": "EVALUATED",
       "type": "HOMEWORK",
     },
-    Object {
+    {
       "collaboration": "SINGLE",
       "endDate": "2020-04-26T22:00:00.000Z",
       "id": "75b799a1-a406-419b-a448-909aa3d34afa",
@@ -313,17 +313,17 @@ Object {
       "type": "TESTAT",
     },
   ],
-  "results": Array [
-    Object {
-      "achievedPoints": Array [
+  "results": [
+    {
+      "achievedPoints": [
         75,
         25,
       ],
-      "assessmentIds": Array [
+      "assessmentIds": [
         "8f60f844-4129-48a4-a625-7a74c7defd0d",
         "932c7bd8-2338-4e60-955a-39da5f858212",
       ],
-      "student": Object {
+      "student": {
         "displayName": "Max Mustermann",
         "email": "max.mustermann@test.com",
         "matrNr": 123456,

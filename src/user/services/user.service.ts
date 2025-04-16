@@ -1,5 +1,4 @@
 import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
 import { CourseDto } from "src/course/dto/course/course.dto";
 import { EntityNotFoundError } from "typeorm/error/EntityNotFoundError";
 import { AssessmentDto } from "../../assessment/dto/assessment.dto";
@@ -25,10 +24,10 @@ import { UserRepository } from "../repositories/user.repository";
 export class UserService {
 	constructor(
 		private readonly userRepository: UserRepository,
-		@InjectRepository(GroupRepository) private groupRepository: GroupRepository,
+		private readonly groupRepository: GroupRepository,
 		private readonly assignmentRepository: AssignmentRepository,
 		private readonly assessmentRepository: AssessmentRepository,
-		@InjectRepository(GroupEventRepository) private groupEventRepository: GroupEventRepository,
+		private readonly groupEventRepository: GroupEventRepository,
 		private readonly registrations: AssignmentRegistrationRepository
 	) {}
 

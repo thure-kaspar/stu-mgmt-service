@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Auth E2E GET-REQUESTS of AuthController (e2e) auth/whoAmI Returns user associated with the provided auth token 1`] = `
-Object {
-  "courses": Array [],
+{
+  "courses": [],
   "displayName": "System Admin",
   "email": "system.admin@test.com",
   "id": "d4b50fe8-f949-4317-bdde-d9ae61f53b96",

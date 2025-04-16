@@ -1,19 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Courses E2E GET-REQUESTS of CourseController (e2e) (GET) /courses/{courseId} Retrieves the course 1`] = `
-Object {
-  "admissionCriteria": Object {
-    "rules": Array [
-      Object {
-        "achievedPercentRounding": Object {
+{
+  "admissionCriteria": {
+    "rules": [
+      {
+        "achievedPercentRounding": {
           "type": "UP_NEAREST_INTEGER",
         },
         "assignmentType": "HOMEWORK",
         "requiredPercent": 50,
         "type": "REQUIRED_PERCENT_OVERALL",
       },
-      Object {
-        "achievedPercentRounding": Object {
+      {
+        "achievedPercentRounding": {
           "decimals": 0,
           "type": "DECIMALS",
         },
@@ -21,8 +21,8 @@ Object {
         "requiredPercent": 50,
         "type": "REQUIRED_PERCENT_OVERALL",
       },
-      Object {
-        "achievedPercentRounding": Object {
+      {
+        "achievedPercentRounding": {
           "type": "NONE",
         },
         "allowedFailures": 2,
@@ -32,7 +32,7 @@ Object {
       },
     ],
   },
-  "groupSettings": Object {
+  "groupSettings": {
     "allowGroups": true,
     "autoJoinGroupOnCourseJoined": true,
     "mergeGroupsOnAssignmentStarted": true,
@@ -42,8 +42,8 @@ Object {
   },
   "id": "java-wise1920",
   "isClosed": false,
-  "links": Array [
-    Object {
+  "links": [
+    {
       "name": "Example URL",
       "url": "http://example-url.com",
     },

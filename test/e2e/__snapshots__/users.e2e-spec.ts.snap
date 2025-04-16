@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Users E2E GET-REQUESTS of UserController (e2e) (GET) /users/{userId}/courses/{courseId}/group-history Retrieves the user's group history in a course (sorted by timestamp descending) 1`] = `
-Array [
-  Object {
+[
+  {
     "event": "UserJoinedGroupEvent",
     "groupId": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
     "payload": null,

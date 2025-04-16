@@ -13,17 +13,19 @@ import { Assignment } from "src/course/entities/assignment.entity";
 import { AssignmentRepository } from "src/course/repositories/assignment.repository";
 import { Assessment } from "./entities/assessment.entity";
 import { AssessmentRepository } from "./repositories/assessment.repository";
+import { AssignmentRegistration } from "src/course/entities/assignment-group-registration.entity";
+import { AssignmentRegistrationRepository } from "src/course/repositories/assignment-registration.repository";
 
 @Module({
 	imports: [
-		TypeOrmModule.forFeature([...Repositories, AssessmentEvent]),
+		TypeOrmModule.forFeature([...Repositories, AssessmentEvent, AssignmentRegistration]),
 		CqrsModule,
 		AuthModule,
 		CourseModule,
 		Assignment,
 		Assessment
 	],
-	providers: [...Services, ...QueryHandlers, AssessmentScoreChangedHandler, AssignmentRepository, AssessmentRepository],
+	providers: [...Services, ...QueryHandlers, AssessmentScoreChangedHandler, AssignmentRepository, AssessmentRepository, AssignmentRegistrationRepository],
 	controllers: [...Controllers],
 	exports: [...Services]
 })
