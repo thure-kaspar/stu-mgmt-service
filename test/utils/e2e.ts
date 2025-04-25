@@ -63,7 +63,7 @@ export class TestSetup {
 	}
 
 	/** Returns a request builder that will send the configured HTTP request to the application instance managed by this class. */
-	request(): request.SuperTest<request.Test> {
+	request(): request.Agent {
 		return request(this.app.getHttpServer());
 	}
 
