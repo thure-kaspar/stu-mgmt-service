@@ -87,66 +87,10 @@ pipeline {
             }
         }
 
-
-        // Based on: https://medium.com/@mosheezderman/c51581cc783c
-        stage('Deploy') {
-            steps {
-                sshagent(credentials: ['Stu-Mgmt_Demo-System']) {
-                    sh """
-                        # [ -d ~/.ssh ] || mkdir ~/.ssh && chmod 0700 ~/.ssh
-                        # ssh-keyscan -t rsa,dsa example.com >> ~/.ssh/known_hosts
-                        ssh -i ~/.ssh/id_rsa_student_mgmt_backend elscha@${env.DEMO_SERVER} <<EOF
-                            cd /staging/qualityplus-student-management-system
-                            ./recreate.sh
-                            exit
-                        EOF"""
-                }
-                //findText(textFinders: [textFinder(regexp: '(- error TS\\*)|(Cannot find module.*or its corresponding type declarations\\.)', alsoCheckConsoleOutput: true, buildResult: 'FAILURE')])
-            }
-        }
-
         stage('Lint') {
             steps {
                 sh 'npm run lint:ci'
             }
-        }
-
-        stage('Publish Results') {
-            steps {
-                archiveArtifacts artifacts: '*.tar.gz'
-
-                sleep(time:40, unit:"SECONDS")
-                sh "wget ${env.API_URL}"
-                archiveArtifacts artifacts: "${env.API_FILE}"
-            }
-        }
-
-        stage("Trigger Downstream Projects") {
-            steps {
-                build job: 'Teaching_StuMgmtDocker', wait: false
-                build job: 'Teaching_StudentMgmt-Backend-API-Gen', wait: false
-            }
-        }
-
-        stage('Trigger API Client') {
-            // Execute this step only if Version number was changed
-            // Based on: https://stackoverflow.com/a/57823724
-            when { changeset "src/version.ts"}
-            steps {
-                build job: 'Teaching_StudentMgmt-API-Client', parameters: [string(name: 'API', value:'STU-MGMT')], wait: false
-            }
-        }
-    }
-
-    post {
-        always {
-             // Send e-mails if build becomes unstable/fails or returns stable
-             // Based on: https://stackoverflow.com/a/39178479
-             load "$JENKINS_HOME/.envvars/emails.groovy"
-             step([$class: 'Mailer', recipients: "${env.elsharkawy}, ${env.klingebiel}", notifyEveryUnstableBuild: true, sendToIndividuals: false])
-
-             // Report static analyses
-             recordIssues enabledForFailure: false, tool: checkStyle(pattern: 'output/eslint/eslint.xml')
         }
     }
 }
