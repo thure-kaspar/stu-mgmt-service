@@ -88,7 +88,7 @@ export class AssessmentController {
 		@Param("assignmentId") assignmentId: string,
 		@Param("assessmentId") assessmentId: string,
 		@GetUser() requestingUser: UserDto
-	): Promise<AssessmentDto[]> {
+	): Promise<AssessmentDto[]> {// TODO: look at this function
 		return this.assessmentService.convertGroupToIndividualAssessment(
 			assessmentId,
 			requestingUser.id

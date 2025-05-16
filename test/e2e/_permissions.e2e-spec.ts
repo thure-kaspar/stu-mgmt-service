@@ -730,6 +730,7 @@ describe("Permissions", () => {
 			});
 
 			it(`Attack: ${lecturerOtherCourse} with assessmentId of course -> 404`, () => {
+				// TOFIX: This test fails before the setPartialAssessment endpoint (put) is hit
 				return test(
 					"put",
 					`/courses/${otherCourseId}/assignments/${otherAssignmentId}/assessments/${assessmentId}`,

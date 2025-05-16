@@ -11,7 +11,7 @@ import { Participant } from "../models/participant.model";
 @Injectable()
 export class AssessmentGuard implements CanActivate {
 	constructor(
-		@InjectRepository(AssessmentRepository) private assessments: AssessmentRepository
+		@InjectRepository(AssessmentRepository) private readonly assessments: AssessmentRepository
 	) {}
 
 	async canActivate(context: ExecutionContext): Promise<boolean> {
