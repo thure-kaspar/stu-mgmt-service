@@ -731,6 +731,7 @@ describe("Permissions", () => {
 
 			it(`Attack: ${lecturerOtherCourse} with assessmentId of course -> 404`, () => {
 				// TOFIX: This test fails before the setPartialAssessment endpoint (put) is hit
+				// Spark suggested: Maybe JSON is wrong thats why it returns bad request (400); or follow logic of what I changed regarding Assessment controller in the early commits
 				return test(
 					"put",
 					`/courses/${otherCourseId}/assignments/${otherAssignmentId}/assessments/${assessmentId}`,
