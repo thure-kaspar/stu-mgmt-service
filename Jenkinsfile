@@ -1,6 +1,9 @@
 pipeline {
     agent {
-        docker { image 'node:22.12-alpine3.21' }
+        docker { 
+            image 'node:22.12-alpine3.21' 
+            reuseNode true
+        }
     }
 
     options {
