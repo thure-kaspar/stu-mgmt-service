@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        docker { 
-            image 'node:22.12-alpine3.21' 
-            reuseNode true
-        }
-    }
+    agent any
 
     options {
         ansiColor('xterm')
@@ -20,6 +15,12 @@ pipeline {
     stages {
 
         stage('Git') {
+            agent {
+                docker { 
+                    image 'node:22.12-alpine3.21' 
+                    reuseNode true
+                }
+            }
             steps {
                 cleanWs()
                 git 'https://github.com/thure-kaspar/stu-mgmt-service.git'
@@ -27,12 +28,24 @@ pipeline {
         }
 
         stage('Install Dependencies') {
+            agent {
+                docker { 
+                    image 'node:22.12-alpine3.21' 
+                    reuseNode true
+                }
+            }
             steps {
                 sh 'npm install'
             }
         }
 
         stage('Test') {
+            agent {
+                docker { 
+                    image 'node:22.12-alpine3.21' 
+                    reuseNode true
+                }
+            }
             environment {
                 POSTGRES_DB = 'StudentMgmtDb'
                 POSTGRES_USER = 'postgres'
@@ -63,6 +76,12 @@ pipeline {
         }
 
         stage('Build') {
+            agent {
+                docker { 
+                    image 'node:22.12-alpine3.21' 
+                    reuseNode true
+                }
+            }
             steps {
                 sh 'npm run build'
                 sh 'rm -f Backend.tar.gz'
@@ -71,6 +90,12 @@ pipeline {
         }
 
         stage('Build Docker') {
+            agent {
+                docker { 
+                    image 'node:22.12-alpine3.21' 
+                    reuseNode true
+                }
+            }
             steps {
                 // Use build Dockerfile instead of Test-DB Dockerfile to build image
                 sh 'cp -f docker/Dockerfile Dockerfile'
@@ -91,6 +116,12 @@ pipeline {
         }
 
         stage('Lint') {
+            agent {
+                docker { 
+                    image 'node:22.12-alpine3.21' 
+                    reuseNode true
+                }
+            }
             steps {
                 sh 'npm run lint:ci'
             }
