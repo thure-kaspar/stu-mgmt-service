@@ -4,6 +4,7 @@ pipeline {
             image 'node:22.12-alpine3.21' 
             reuseNode true
         }
+    }
 
     options {
         ansiColor('xterm')
@@ -18,8 +19,6 @@ pipeline {
 
     stages {
         stage('Git') {
-            
-            }
             steps {
                 cleanWs()
                 git 'https://github.com/thure-kaspar/stu-mgmt-service.git'
