@@ -37,6 +37,8 @@ pipeline {
                 }
             }
             steps {
+                sh 'apk update'
+                sh 'apk add docker'
                 sh 'npm install'
             }
         }
@@ -57,14 +59,11 @@ pipeline {
             }
             steps {
                 script {
-                    node {
-                        // Sidecar Pattern: https://www.jenkins.io/doc/book/pipeline/docker/#running-sidecar-containers 
-                        docker.image('postgres:14.1-alpine').withRun("-e POSTGRES_USER=${env.POSTGRES_USER} -e POSTGRES_PASSWORD=${env.POSTGRES_PASSWORD} -e POSTGRES_DB=${env.POSTGRES_DB} -p ${env.PORT}:${env.PORT}") { c ->
-                            sh 'npm run test:jenkins'
-                        }
-                    }
                     // "docker" command not found inside docker container
-                    
+                    // Sidecar Pattern: https://www.jenkins.io/doc/book/pipeline/docker/#running-sidecar-containers 
+                    docker.image('postgres:14.1-alpine').withRun("-e POSTGRES_USER=${env.POSTGRES_USER} -e POSTGRES_PASSWORD=${env.POSTGRES_PASSWORD} -e POSTGRES_DB=${env.POSTGRES_DB} -p ${env.PORT}:${env.PORT}") { c ->
+                        sh 'npm run test:jenkins'
+                    }
                 }
                 step([
                     $class: 'CloverPublisher',
