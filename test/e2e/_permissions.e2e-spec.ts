@@ -731,6 +731,11 @@ describe("Permissions", () => {
 
 			it(`Attack: ${lecturerOtherCourse} with assessmentId of course -> 404`, () => {
 				// TOFIX: This test fails before the setPartialAssessment endpoint (put) is hit
+				// Wireshark intercepted response: {"message":["title should not be empty"],"error":"Bad Request","statusCode":400}
+				// --> so it is basically a Bad Request because the request has no body...
+				// The original response is (wireshark capture): 
+				//     {"statusCode":404,"path":"/courses/other-course/assignments/f5dff9f7-74ac-48a0-9235-3fe11ce8f256/assessments/466bf71e-6bdd-4f6b-90fd-b339b2dc16f6","error":"NotFound","message":"The requested resource was not found."}
+				// --> This also has no body but it returns 404. So the body check is after the existing resource check. And I apparently changed something so the resource is found??
 				// Spark suggested: Maybe JSON is wrong thats why it returns bad request (400); or follow logic of what I changed regarding Assessment controller in the early commits
 				return test(
 					"put",
