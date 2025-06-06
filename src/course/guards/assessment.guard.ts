@@ -23,7 +23,8 @@ export class AssessmentGuard implements CanActivate {
 
 		const assessment = await this.assessments.findOneOrFail({
 			where: {
-				assignmentId: request.assignment.id
+				assignmentId: request.assignment.id,
+				id: request.params.assessmentId
 			},
 			relations: ["assessmentUserRelations"]
 		});
