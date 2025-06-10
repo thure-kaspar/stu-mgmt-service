@@ -146,9 +146,11 @@ describe("convertGroupToIndividualAssessment", () => {
 
 			expect(individualAssessments).toHaveLength(2);
 
-			const removedAssessment = await assessmentRepository.findOne(assessmentId);
+			const removedAssessment = await assessmentRepository.findOne({where: {
+			id: assessmentId
+		}});
 
-			expect(removedAssessment).toBeUndefined();
+			expect(removedAssessment).toBeNull();
 		});
 
 		describe("_splitAssessment", () => {

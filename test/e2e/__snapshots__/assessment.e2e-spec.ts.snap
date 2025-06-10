@@ -56,9 +56,9 @@ exports[`Assessment E2E GET-REQUESTS of AssessmentController (e2e) (GET) /course
 `;
 
 exports[`Assessment E2E PATCH-REQUESTS of AssessmentController (e2e) (PATCH) /courses/{courseId}/assignments/{assignmentId}/assessments/{assessmentId} No partial assessments before -> Adds partial assessments 1`] = `
-Object {
+{
   "achievedPoints": 99,
-  "assignment": Object {
+  "assignment": {
     "collaboration": "SINGLE",
     "endDate": "2020-06-17T22:00:00.000Z",
     "id": "993b3cd0-6207-11ea-bc55-0242ac130003",
@@ -71,7 +71,7 @@ Object {
   "assignmentId": "993b3cd0-6207-11ea-bc55-0242ac130003",
   "comment": "new comment",
   "creationDate": null,
-  "creator": Object {
+  "creator": {
     "displayName": "John Doe",
     "id": "8330300e-9be7-4a70-ba7d-8a0139311343",
     "matrNr": 222222,
@@ -81,7 +81,7 @@ Object {
   "creatorId": "8330300e-9be7-4a70-ba7d-8a0139311343",
   "id": "08ea9724-fe3f-461c-9b3c-5d44ab9907e9",
   "isDraft": true,
-  "lastUpdatedBy": Object {
+  "lastUpdatedBy": {
     "displayName": "System Admin",
     "id": "d4b50fe8-f949-4317-bdde-d9ae61f53b96",
     "matrNr": 444444,
@@ -89,15 +89,15 @@ Object {
     "username": "sAdmin",
   },
   "lastUpdatedById": "d4b50fe8-f949-4317-bdde-d9ae61f53b96",
-  "partialAssessments": Array [
-    Object {
+  "partialAssessments": [
+    {
       "comment": "Very good",
       "draftOnly": false,
       "key": "task-1",
       "points": 10,
       "title": "Task 1",
     },
-    Object {
+    {
       "comment": "Very bad",
       "draftOnly": false,
       "key": "task-2",
@@ -105,7 +105,7 @@ Object {
       "title": "Task 2",
     },
   ],
-  "participant": Object {
+  "participant": {
     "displayName": "John Doe",
     "email": "john.doe@test.com",
     "matrNr": 222222,
@@ -119,9 +119,9 @@ Object {
 `;
 
 exports[`Assessment E2E PATCH-REQUESTS of AssessmentController (e2e) (PATCH) /courses/{courseId}/assignments/{assignmentId}/assessments/{assessmentId} Partial assessments before -> Remove partial assessments 1`] = `
-Object {
+{
   "achievedPoints": 75,
-  "assignment": Object {
+  "assignment": {
     "collaboration": "GROUP",
     "endDate": "2020-08-21T22:00:00.000Z",
     "id": "f50b8474-1fb9-4d69-85a2-76648d0fd3f9",
@@ -134,7 +134,7 @@ Object {
   "assignmentId": "f50b8474-1fb9-4d69-85a2-76648d0fd3f9",
   "comment": "ASSIGNMENT_JAVA_IN_REVIEW_GROUP",
   "creationDate": null,
-  "creator": Object {
+  "creator": {
     "displayName": "John Doe",
     "id": "8330300e-9be7-4a70-ba7d-8a0139311343",
     "matrNr": 222222,
@@ -142,12 +142,12 @@ Object {
     "username": "jdoe",
   },
   "creatorId": "8330300e-9be7-4a70-ba7d-8a0139311343",
-  "group": Object {
+  "group": {
     "hasPassword": true,
     "id": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
     "isClosed": false,
-    "members": Array [
-      Object {
+    "members": [
+      {
         "displayName": "Max Mustermann",
         "email": "max.mustermann@test.com",
         "matrNr": 123456,
@@ -155,7 +155,7 @@ Object {
         "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
         "username": "mmustermann",
       },
-      Object {
+      {
         "displayName": "Hans Peter",
         "email": "hans.peter@test.com",
         "matrNr": 111111,
@@ -170,7 +170,7 @@ Object {
   "groupId": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
   "id": "0d365334-6cb3-4ac5-b0fe-0b1a5aa1fbf4",
   "isDraft": false,
-  "lastUpdatedBy": Object {
+  "lastUpdatedBy": {
     "displayName": "System Admin",
     "id": "d4b50fe8-f949-4317-bdde-d9ae61f53b96",
     "matrNr": 444444,
@@ -178,15 +178,15 @@ Object {
     "username": "sAdmin",
   },
   "lastUpdatedById": "d4b50fe8-f949-4317-bdde-d9ae61f53b96",
-  "partialAssessments": Array [],
+  "partialAssessments": [],
   "updateDate": null,
 }
 `;
 
 exports[`Assessment E2E PATCH-REQUESTS of AssessmentController (e2e) (PATCH) /courses/{courseId}/assignments/{assignmentId}/assessments/{assessmentId} Partial assessments before -> Updates partial assessments 1`] = `
-Object {
+{
   "achievedPoints": 75,
-  "assignment": Object {
+  "assignment": {
     "collaboration": "GROUP",
     "endDate": "2020-08-21T22:00:00.000Z",
     "id": "f50b8474-1fb9-4d69-85a2-76648d0fd3f9",
@@ -199,7 +199,7 @@ Object {
   "assignmentId": "f50b8474-1fb9-4d69-85a2-76648d0fd3f9",
   "comment": "ASSIGNMENT_JAVA_IN_REVIEW_GROUP",
   "creationDate": null,
-  "creator": Object {
+  "creator": {
     "displayName": "John Doe",
     "id": "8330300e-9be7-4a70-ba7d-8a0139311343",
     "matrNr": 222222,
@@ -207,12 +207,12 @@ Object {
     "username": "jdoe",
   },
   "creatorId": "8330300e-9be7-4a70-ba7d-8a0139311343",
-  "group": Object {
+  "group": {
     "hasPassword": true,
     "id": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
     "isClosed": false,
-    "members": Array [
-      Object {
+    "members": [
+      {
         "displayName": "Max Mustermann",
         "email": "max.mustermann@test.com",
         "matrNr": 123456,
@@ -220,7 +220,7 @@ Object {
         "userId": "a019ea22-5194-4b83-8d31-0de0dc9bca53",
         "username": "mmustermann",
       },
-      Object {
+      {
         "displayName": "Hans Peter",
         "email": "hans.peter@test.com",
         "matrNr": 111111,
@@ -235,7 +235,7 @@ Object {
   "groupId": "b4f24e81-dfa4-4641-af80-8e34e02d9c4a",
   "id": "0d365334-6cb3-4ac5-b0fe-0b1a5aa1fbf4",
   "isDraft": false,
-  "lastUpdatedBy": Object {
+  "lastUpdatedBy": {
     "displayName": "System Admin",
     "id": "d4b50fe8-f949-4317-bdde-d9ae61f53b96",
     "matrNr": 444444,
@@ -243,13 +243,13 @@ Object {
     "username": "sAdmin",
   },
   "lastUpdatedById": "d4b50fe8-f949-4317-bdde-d9ae61f53b96",
-  "partialAssessments": Array [
-    Object {
+  "partialAssessments": [
+    {
       "comment": "Updated comment",
       "draftOnly": false,
       "key": "with-markers",
-      "markers": Array [
-        Object {
+      "markers": [
+        {
           "comment": "Missing ; at the end of line 5",
           "endColumn": 30,
           "endLineNumber": 5,
@@ -259,7 +259,7 @@ Object {
           "startColumn": 30,
           "startLineNumber": 5,
         },
-        Object {
+        {
           "comment": "Missing ; at the end of line 5",
           "endColumn": 30,
           "endLineNumber": 5,
@@ -269,7 +269,7 @@ Object {
           "startColumn": 30,
           "startLineNumber": 5,
         },
-        Object {
+        {
           "comment": "Missing ; at the end of line 5",
           "endColumn": 30,
           "endLineNumber": 5,
@@ -279,7 +279,7 @@ Object {
           "startColumn": 30,
           "startLineNumber": 5,
         },
-        Object {
+        {
           "comment": "Missing ; at the end of line 5",
           "endColumn": 30,
           "endLineNumber": 5,
