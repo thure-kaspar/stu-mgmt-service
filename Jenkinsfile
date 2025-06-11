@@ -1,8 +1,6 @@
 pipeline {
     agent any
 
-    tools {nodejs "NodeJS 16.13"}
-
     options {
         ansiColor('xterm')
     }
@@ -17,29 +15,53 @@ pipeline {
     stages {
 
         stage('Git') {
+            agent {
+                docker { 
+                    image 'node:22.12-alpine3.21' 
+                    reuseNode true
+                    args '-u root'
+                }
+            }
             steps {
                 cleanWs()
-                git 'https://github.com/Student-Management-System/StudentMgmt-Backend.git'
+                git 'https://github.com/thure-kaspar/stu-mgmt-service.git'
             }
         }
 
         stage('Install Dependencies') {
+            agent {
+                docker { 
+                    image 'node:22.12-alpine3.21' 
+                    reuseNode true
+                    args '-u root'
+                }
+            }
             steps {
                 sh 'npm install'
             }
         }
 
         stage('Test') {
+            agent {
+                docker { 
+                    image 'node:22.12-alpine3.21' 
+                    reuseNode true
+                    args '-u root -v /var/run/docker.sock:/var/run/docker.sock --network host'
+                }
+            }
             environment {
-                POSTGRES_DB = 'StudentMgmtDb'
+                POSTGRES_DB = 'studentmgmtdb'
                 POSTGRES_USER = 'postgres'
-                POSTGRES_PASSWORD = 'admin'
+                POSTGRES_PASSWORD = '36dudhGG/r'
                 PORT = '5432'
             }
             steps {
+                sh 'apk update'
+                sh 'apk add docker'
+                sh 'docker version'
                 script {
-                    // Sidecar Pattern: https://www.jenkins.io/doc/book/pipeline/docker/#running-sidecar-containers
-                    docker.image('postgres:14.1-alpine').withRun("-e POSTGRES_USER=${env.POSTGRES_USER} -e POSTGRES_PASSWORD=${env.POSTGRES_PASSWORD} -e POSTGRES_DB=${env.POSTGRES_DB} -p ${env.PORT}:${env.PORT}") { c ->
+                    // Sidecar Pattern: https://www.jenkins.io/doc/book/pipeline/docker/#running-sidecar-containers 
+                    docker.image('postgres:16-alpine').withRun("-e POSTGRES_USER=${env.POSTGRES_USER} -e POSTGRES_PASSWORD=${env.POSTGRES_PASSWORD} -e POSTGRES_DB=${env.POSTGRES_DB} -p ${env.PORT}:${env.PORT}") { c ->
                         sh 'npm run test:jenkins'
                     }
                 }
@@ -60,6 +82,13 @@ pipeline {
         }
 
         stage('Build') {
+            agent {
+                docker { 
+                    image 'node:22.12-alpine3.21' 
+                    reuseNode true
+                    args '-u root'
+                }
+            }
             steps {
                 sh 'npm run build'
                 sh 'rm -f Backend.tar.gz'
@@ -68,6 +97,13 @@ pipeline {
         }
 
         stage('Build Docker') {
+            agent {
+                docker { 
+                    image 'node:22.12-alpine3.21' 
+                    reuseNode true
+                    args '-u root'
+                }
+            }
             steps {
                 // Use build Dockerfile instead of Test-DB Dockerfile to build image
                 sh 'cp -f docker/Dockerfile Dockerfile'
@@ -87,9 +123,15 @@ pipeline {
             }
         }
 
-
         // Based on: https://medium.com/@mosheezderman/c51581cc783c
         stage('Deploy') {
+            agent {
+                docker { 
+                    image 'node:22.12-alpine3.21' 
+                    reuseNode true
+                    args '-u root'
+                }
+            }
             steps {
                 sshagent(credentials: ['Stu-Mgmt_Demo-System']) {
                     sh """
@@ -106,12 +148,26 @@ pipeline {
         }
 
         stage('Lint') {
+            agent {
+                docker { 
+                    image 'node:22.12-alpine3.21' 
+                    reuseNode true
+                    args '-u root'
+                }
+            }
             steps {
                 sh 'npm run lint:ci'
             }
         }
 
         stage('Publish Results') {
+            agent {
+                docker { 
+                    image 'node:22.12-alpine3.21' 
+                    reuseNode true
+                    args '-u root'
+                }
+            }
             steps {
                 archiveArtifacts artifacts: '*.tar.gz'
 
@@ -122,6 +178,13 @@ pipeline {
         }
 
         stage("Trigger Downstream Projects") {
+            agent {
+                docker { 
+                    image 'node:22.12-alpine3.21' 
+                    reuseNode true
+                    args '-u root'
+                }
+            }
             steps {
                 build job: 'Teaching_StuMgmtDocker', wait: false
                 build job: 'Teaching_StudentMgmt-Backend-API-Gen', wait: false
@@ -129,6 +192,13 @@ pipeline {
         }
 
         stage('Trigger API Client') {
+            agent {
+                docker { 
+                    image 'node:22.12-alpine3.21' 
+                    reuseNode true
+                    args '-u root'
+                }
+            }
             // Execute this step only if Version number was changed
             // Based on: https://stackoverflow.com/a/57823724
             when { changeset "src/version.ts"}
@@ -137,7 +207,7 @@ pipeline {
             }
         }
     }
-
+    
     post {
         always {
              // Send e-mails if build becomes unstable/fails or returns stable
