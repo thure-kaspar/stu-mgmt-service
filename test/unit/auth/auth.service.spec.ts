@@ -74,7 +74,7 @@ describe("AuthService", () => {
 		});
 
 		it("FullName included -> Creates with FullName as DisplayName", async () => {
-			await service.createUser(authInfo);
+			await service.createUser(authInfo.user.username, authInfo.user.fullName, authInfo.user.settings.emailAddress, [authInfo.user.role]);
 			expect(userRepository.createUser).toHaveBeenCalledWith<[UserDto]>(expectedUserDto);
 		});
 
@@ -82,7 +82,7 @@ describe("AuthService", () => {
 			authInfo.user.fullName = null;
 			expectedUserDto.displayName = authInfo.user.username;
 
-			await service.createUser(authInfo);
+			await service.createUser(authInfo.user.username, authInfo.user.fullName, authInfo.user.settings.emailAddress, [authInfo.user.role]);
 			expect(userRepository.createUser).toHaveBeenCalledWith<[UserDto]>(expectedUserDto);
 		});
 	});
@@ -110,7 +110,7 @@ describe("AuthService", () => {
 		});
 
 		it("Updates email", async () => {
-			await service.updateUser(user, authInfo);
+			await service.updateUser(user, authInfo.user.fullName, authInfo.user.settings.emailAddress);
 			expect(userRepository.updateUser).toHaveBeenCalledWith<[string, UserUpdateDto]>(
 				user.id,
 				expectedUserUpdateDto
@@ -118,7 +118,7 @@ describe("AuthService", () => {
 		});
 
 		it("FullName included -> Updates DisplayName", async () => {
-			await service.updateUser(user, authInfo);
+			await service.updateUser(user, authInfo.user.fullName, authInfo.user.settings.emailAddress);
 			expect(userRepository.updateUser).toHaveBeenCalledWith<[string, UserUpdateDto]>(
 				user.id,
 				expectedUserUpdateDto
@@ -129,7 +129,7 @@ describe("AuthService", () => {
 			authInfo.user.fullName = null;
 			expectedUserUpdateDto.displayName = authInfo.user.username;
 
-			await service.updateUser(user, authInfo);
+			await service.updateUser(user, authInfo.user.fullName, authInfo.user.settings.emailAddress);
 
 			expect(userRepository.updateUser).toHaveBeenCalledWith<[string, UserUpdateDto]>(
 				user.id,
@@ -153,19 +153,19 @@ describe("AuthService", () => {
 		});
 
 		it("No changes -> Returns false", () => {
-			const result = service.userInfoHasChanged(user, authInfo);
+			const result = service.userInfoHasChanged(user, authInfo.user.fullName, authInfo.user.settings.emailAddress);
 			expect(result).toEqual(false);
 		});
 
 		it("Email changed -> Returns true", () => {
 			authInfo.user.settings.emailAddress = "a.changed@email";
-			const result = service.userInfoHasChanged(user, authInfo);
+			const result = service.userInfoHasChanged(user, authInfo.user.fullName, authInfo.user.settings.emailAddress);
 			expect(result).toEqual(true);
 		});
 
 		it("FullName changed -> Returns true", () => {
 			authInfo.user.fullName = "Changed FullName";
-			const result = service.userInfoHasChanged(user, authInfo);
+			const result = service.userInfoHasChanged(user, authInfo.user.fullName, authInfo.user.settings.emailAddress);
 			expect(result).toEqual(true);
 		});
 	});

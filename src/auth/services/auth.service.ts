@@ -60,6 +60,9 @@ export class AuthService {
 	}
 
 	async createUser(username: string, fullName: string, email: string, roles: string[]): Promise<User> {
+		if (fullName == undefined) {
+			fullName = "";
+		}
 		const displayName =
 			fullName.length > 0 ? fullName : username;
 		const role = this.determineRole(roles);
