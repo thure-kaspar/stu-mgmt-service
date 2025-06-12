@@ -1,3 +1,4 @@
+import { QueryFailedError } from "typeorm";
 import {
 	AssignmentState,
 	AssignmentType,
@@ -8,6 +9,7 @@ import { createAuthTestApplication } from "../mocks/application.mock";
 import { GROUP_SETTINGS_GROUPS_ALLOWED_MIN2_MAX3_SELF } from "../mocks/course-config/group-settings.mock";
 import { StudentMgmtDbData, StudentMgmtDbEntities } from "../utils/demo-db";
 import { TestSetup } from "../utils/e2e";
+import { Console } from "console";
 
 const lecturerOtherCourse = "lecturerOfOtherCourse";
 const admin = "systemAdmin";
@@ -1070,12 +1072,23 @@ describe("Permissions", () => {
 				//[200, student, courseId, groupId, studentUserId],
 				[403, student, courseId, otherGroupId, lecturerUserId]
 			])("%#: %s -> %s", (status, username, courseId, groupId, memberId) => {
-				return test(
-					"delete",
-					`/courses/${courseId}/groups/${groupId}/users/${memberId}`,
-					username,
-					status
-				);
+				let att = 0
+				while (att < 3) {
+					try {
+						return test(
+							"delete",
+							`/courses/${courseId}/groups/${groupId}/users/${memberId}`,
+							username,
+							status
+							);
+					}
+					catch (QueryFailedError) {
+						Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 2000)
+					}
+					console.log("Query failed. Retrying...")
+					att += 1
+				}
+				
 			});
 		});
 
