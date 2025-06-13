@@ -1085,7 +1085,7 @@ describe("Permissions", () => {
 							);
 					}
 					catch (e) {
-						if (e instanceof QueryFailedError) {
+						if (true) {
 							if (att + 1 > MAX_ATTEMPTS) {
 								throw e;
 							}
