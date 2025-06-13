@@ -1,4 +1,3 @@
-import { QueryFailedError } from "typeorm";
 import {
 	AssignmentState,
 	AssignmentType,
@@ -9,7 +8,7 @@ import { createAuthTestApplication } from "../mocks/application.mock";
 import { GROUP_SETTINGS_GROUPS_ALLOWED_MIN2_MAX3_SELF } from "../mocks/course-config/group-settings.mock";
 import { StudentMgmtDbData, StudentMgmtDbEntities } from "../utils/demo-db";
 import { TestSetup } from "../utils/e2e";
-import { Console } from "console";
+import { CannotConnectAlreadyConnectedError, QueryFailedError } from "typeorm";
 
 const lecturerOtherCourse = "lecturerOfOtherCourse";
 const admin = "systemAdmin";
@@ -1072,21 +1071,34 @@ describe("Permissions", () => {
 				//[200, student, courseId, groupId, studentUserId],
 				[403, student, courseId, otherGroupId, lecturerUserId]
 			])("%#: %s -> %s", (status, username, courseId, groupId, memberId) => {
-				let att = 0
-				while (att < 3) {
+				let att = 0;
+				const MAX_ATTEMPTS = 2;
+				const RETRY_TIMEOUT_SECONDS = 20;
+				while (att <= MAX_ATTEMPTS) {
+					let testResult = undefined;
 					try {
-						return test(
+						testResult = test(
 							"delete",
 							`/courses/${courseId}/groups/${groupId}/users/${memberId}`,
 							username,
 							status
 							);
 					}
-					catch (QueryFailedError) {
-						Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 2000)
+					catch (e) {
+						if (e instanceof QueryFailedError) {
+							if (att + 1 > MAX_ATTEMPTS) {
+								throw e;
+							}
+						console.warn(`Query failed. Retrying in ${ RETRY_TIMEOUT_SECONDS } seconds (${ att + 1 }/${ MAX_ATTEMPTS })...`);
+						Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, RETRY_TIMEOUT_SECONDS * 1000);
+						} else {
+							throw e;
+						}
 					}
-					console.log("Query failed. Retrying...")
-					att += 1
+					if (testResult !== undefined) {
+						return testResult;
+					}
+					att += 1;
 				}
 				
 			});
