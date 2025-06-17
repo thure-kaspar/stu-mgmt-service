@@ -67,8 +67,6 @@ pipeline {
                 }
             }
             steps {
-                // Use build Dockerfile instead of Test-DB Dockerfile to build image
-                sh 'cp -f docker/Dockerfile Dockerfile'
 				script {
                     // Based on:
                     // - https://e.printstacktrace.blog/jenkins-pipeline-environment-variables-the-definitive-guide/
