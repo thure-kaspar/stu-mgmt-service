@@ -35,7 +35,7 @@ export class UserLeftGroupHandler implements IEventHandler<UserLeftGroupEvent> {
 	) {}
 
 	handle(event: UserLeftGroupEvent): void {
-		this.groupEvents.insert({
+		this.groupEvents.save({
 			event: UserLeftGroupEvent.name,
 			groupId: event.groupId,
 			userId: event.userId,

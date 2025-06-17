@@ -29,7 +29,7 @@ export class GroupService {
 	constructor(
 		private readonly groupRepository: GroupRepository,
 		private readonly groupSettingsRepository: GroupSettingsRepository,
-		@InjectRepository(GroupEventRepository) private groupEventRepository: GroupEventRepository,
+		private readonly groupEventRepository: GroupEventRepository,
 		private readonly assessmentRepository: AssessmentRepository,
 		private registrations: AssignmentRegistrationService,
 		private events: EventBus
