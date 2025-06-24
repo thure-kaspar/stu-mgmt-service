@@ -105,6 +105,8 @@ pipeline {
                 }
             }
             steps {
+                // Add grep
+                sh 'apk add grep'
 				script {
                     // Based on:
                     // - https://e.printstacktrace.blog/jenkins-pipeline-environment-variables-the-definitive-guide/
