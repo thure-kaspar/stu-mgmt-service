@@ -2,7 +2,7 @@ import { Logger, LogLevel, ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { NestExpressApplication } from "@nestjs/platform-express";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
-import { getConnection } from "typeorm";
+import { DataSource, getConnection } from "typeorm";
 import { DEMO_CONFIG } from "../test/db-setup/demo";
 import { StudentMgmtDbEntities } from "../test/utils/demo-db";
 import { Config } from "./.config/config";
@@ -20,6 +20,7 @@ import { EntityAlreadyExistsFilter } from "./shared/entity-already-exists.filter
 import { EntityNotFoundFilter } from "./shared/entity-not-found.filter";
 import { RoundingBehavior } from "./utils/math";
 import { VERSION } from "./version";
+import typeOrmConfig from "ormconfig";
 
 async function bootstrap(): Promise<void> {
 	const version = VERSION;
@@ -66,7 +67,19 @@ async function bootstrap(): Promise<void> {
 
 	// If demo environment, populate database with test data
 	if (environment.is("demo")) {
-		await new StudentMgmtDbEntities(DEMO_CONFIG).populateDatabase(getConnection());
+		const dbConfig = Config.get().db;
+		const dataSource = new DataSource({
+			type: dbConfig.type as any,
+			host: dbConfig.host,
+			port: dbConfig.port,
+			username: dbConfig.username,
+			password: dbConfig.password,
+			database: dbConfig.database,
+			synchronize: dbConfig.synchronize,
+			entities: typeOrmConfig.entities,
+		});
+		await dataSource.initialize()
+		await new StudentMgmtDbEntities(DEMO_CONFIG).populateDatabase(dataSource);
 	}
 
 	// If notification subscribers were specified
