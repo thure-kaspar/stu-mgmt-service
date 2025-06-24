@@ -61,12 +61,12 @@ pipeline {
                 docker { 
                     image 'node:22.12-alpine3.21' 
                     reuseNode true
-                    args '-u root'
+                    args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
                 }
             }
             steps {
-                // Add grep
-                sh 'apk add grep'
+                // Add grep because the default grep of the node:22.12-alpine3.21 image does not have the -P option
+                sh 'apk add grep docker'
 				script {
                     // Based on:
                     // - https://e.printstacktrace.blog/jenkins-pipeline-environment-variables-the-definitive-guide/
