@@ -87,14 +87,11 @@ pipeline {
         stage('Deploy') {
             agent {
                 docker { 
-                    image 'node:22.12-alpine3.21' 
-                    reuseNode true
-                    args '-u root'
+                    image 'node:22.12-alpine3.21'
                 }
             }
             steps {
-                sh 'apk add openssh'
-                sshagent(credentials: ['Stu-Mgmt_Demo-System'], ignoreMissing: true) {
+                sshagent(credentials: ['Stu-Mgmt_Demo-System'], ignoreMissing: true) { // Stu-Mgmt_Demo-System credentials don't exist
                     sh """
                         # [ -d ~/.ssh ] || mkdir ~/.ssh && chmod 0700 ~/.ssh
                         # ssh-keyscan -t rsa,dsa example.com >> ~/.ssh/known_hosts
