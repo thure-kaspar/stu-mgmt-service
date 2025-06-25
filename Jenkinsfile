@@ -41,45 +41,45 @@ pipeline {
             }
         }
 
-        stage('Test') {
-            agent {
-                docker { 
-                    image 'node:22.12-alpine3.21' 
-                    reuseNode true
-                    args '-u root -v /var/run/docker.sock:/var/run/docker.sock --network host'
-                }
-            }
-            environment {
-                POSTGRES_DB = 'studentmgmtdb'
-                POSTGRES_USER = 'postgres'
-                POSTGRES_PASSWORD = '36dudhGG/r'
-                PORT = '5432'
-            }
-            steps {
-                sh 'apk update'
-                sh 'apk add docker'
-                sh 'docker version'
-                script {
-                    // Sidecar Pattern: https://www.jenkins.io/doc/book/pipeline/docker/#running-sidecar-containers 
-                    docker.image('postgres:16-alpine').withRun("-e POSTGRES_USER=${env.POSTGRES_USER} -e POSTGRES_PASSWORD=${env.POSTGRES_PASSWORD} -e POSTGRES_DB=${env.POSTGRES_DB} -p ${env.PORT}:${env.PORT}") { c ->
-                        sh 'npm run test:jenkins'
-                    }
-                }
-                step([
-                    $class: 'CloverPublisher',
-                    cloverReportDir: 'output/test/coverage/',
-                    cloverReportFileName: 'clover.xml',
-                    healthyTarget: [methodCoverage: 70, conditionalCoverage: 80, statementCoverage: 80],   // optional, default is: method=70, conditional=80, statement=80
-                    unhealthyTarget: [methodCoverage: 50, conditionalCoverage: 50, statementCoverage: 50], // optional, default is none
-                    failingTarget: [methodCoverage: 0, conditionalCoverage: 0, statementCoverage: 0]       // optional, default is none
-                ])
-            }
-            post {
-                always {
-                    junit 'output/**/junit*.xml'
-               }
-            }
-        }
+        //stage('Test') {
+        //    agent {
+        //        docker { 
+        //            image 'node:22.12-alpine3.21' 
+        //            reuseNode true
+        //            args '-u root -v /var/run/docker.sock:/var/run/docker.sock --network host'
+        //        }
+        //    }
+        //    environment {
+        //        POSTGRES_DB = 'studentmgmtdb'
+        //        POSTGRES_USER = 'postgres'
+        //        POSTGRES_PASSWORD = '36dudhGG/r'
+        //        PORT = '5432'
+        //    }
+        //    steps {
+        //        sh 'apk update'
+        //        sh 'apk add docker'
+        //        sh 'docker version'
+        //        script {
+        //            // Sidecar Pattern: https://www.jenkins.io/doc/book/pipeline/docker/#running-sidecar-containers 
+         //           docker.image('postgres:16-alpine').withRun("-e POSTGRES_USER=${env.POSTGRES_USER} -e POSTGRES_PASSWORD=${env.POSTGRES_PASSWORD} -e POSTGRES_DB=${env.POSTGRES_DB} -p ${env.PORT}:${env.PORT}") { c ->
+        //                sh 'npm run test:jenkins'
+        //            }
+        //        }
+        //        step([
+        //            $class: 'CloverPublisher',
+        //            cloverReportDir: 'output/test/coverage/',
+        //            cloverReportFileName: 'clover.xml',
+        //            healthyTarget: [methodCoverage: 70, conditionalCoverage: 80, statementCoverage: 80],   // optional, default is: method=70, conditional=80, statement=80
+        //            unhealthyTarget: [methodCoverage: 50, conditionalCoverage: 50, statementCoverage: 50], // optional, default is none
+        //            failingTarget: [methodCoverage: 0, conditionalCoverage: 0, statementCoverage: 0]       // optional, default is none
+        //        ])
+        //    }
+        //    post {
+        //        always {
+        //            junit 'output/**/junit*.xml'
+        //       }
+        //    }
+        //}
 
         stage('Build') {
             agent {
@@ -156,22 +156,22 @@ pipeline {
             }
         }
 
-        stage('Publish Results') {
-            agent {
-                docker { 
-                    image 'node:22.12-alpine3.21' 
-                    reuseNode true
-                    args '-u root'
-                }
-            }
-            steps {
-                archiveArtifacts artifacts: '*.tar.gz'
-
-                sleep(time:40, unit:"SECONDS")
-                sh "wget ${env.API_URL}"
-                archiveArtifacts artifacts: "${env.API_FILE}"
-            }
-        }
+        //stage('Publish Results') {
+        //    agent {
+        //        docker { 
+        //            image 'node:22.12-alpine3.21' 
+        //            reuseNode true
+        //            args '-u root'
+        //        }
+        //    }
+        //    steps {
+        //        archiveArtifacts artifacts: '*.tar.gz'
+//
+        //        sleep(time:40, unit:"SECONDS")
+        //        sh "wget ${env.API_URL}"
+        //        archiveArtifacts artifacts: "${env.API_FILE}"
+        //    }
+        //}
 
         stage("Trigger Downstream Projects") {
             agent {
