@@ -85,9 +85,7 @@ pipeline {
 
         // Based on: https://medium.com/@mosheezderman/c51581cc783c
         stage('Deploy') {
-            agent {
-                any
-            }
+            agent any
             steps {
                 sshagent(credentials: ['Stu-Mgmt_Demo-System'], ignoreMissing: false) { // Stu-Mgmt_Demo-System credentials don't exist?
                     sh """
