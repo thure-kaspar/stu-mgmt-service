@@ -1,5 +1,7 @@
-pipeline { 
+pipeline {
     agent any
+
+    tools {nodejs "NodeJS 16.13"}
 
     options {
         ansiColor('xterm')
@@ -15,40 +17,20 @@ pipeline {
     stages {
 
         stage('Git') {
-            agent {
-                docker { 
-                    image 'node:22.12-alpine3.21' 
-                    reuseNode true
-                    args '-u root'
-                }
-            }
             steps {
                 cleanWs()
-                git 'https://github.com/thure-kaspar/stu-mgmt-service.git'
+                git 'https://github.com/Student-Management-System/StudentMgmt-Backend.git'
             }
         }
 
         stage('Install Dependencies') {
-            agent {
-                docker { 
-                    image 'node:22.12-alpine3.21' 
-                    reuseNode true
-                    args '-u root'
-                }
-            }
             steps {
                 sh 'npm install'
             }
         }
 
+
         stage('Build') {
-            agent {
-                docker { 
-                    image 'node:22.12-alpine3.21' 
-                    reuseNode true
-                    args '-u root'
-                }
-            }
             steps {
                 sh 'npm run build'
                 sh 'rm -f Backend.tar.gz'
@@ -57,16 +39,9 @@ pipeline {
         }
 
         stage('Build Docker') {
-            agent {
-                docker { 
-                    image 'node:22.12-alpine3.21' 
-                    reuseNode true
-                    args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
-                }
-            }
             steps {
-                // Add grep because the default grep of the node:22.12-alpine3.21 image does not have the -P option
-                sh 'apk add grep docker'
+                // Use build Dockerfile instead of Test-DB Dockerfile to build image
+                sh 'cp -f docker/Dockerfile Dockerfile'
 				script {
                     // Based on:
                     // - https://e.printstacktrace.blog/jenkins-pipeline-environment-variables-the-definitive-guide/
@@ -83,11 +58,11 @@ pipeline {
             }
         }
 
+
         // Based on: https://medium.com/@mosheezderman/c51581cc783c
         stage('Deploy') {
-            agent any
             steps {
-                sshagent(credentials: ['Stu-Mgmt_Demo-System'], ignoreMissing: false) { // Stu-Mgmt_Demo-System credentials don't exist?
+                sshagent(credentials: ['Stu-Mgmt_Demo-System']) {
                     sh """
                         # [ -d ~/.ssh ] || mkdir ~/.ssh && chmod 0700 ~/.ssh
                         # ssh-keyscan -t rsa,dsa example.com >> ~/.ssh/known_hosts
@@ -102,26 +77,12 @@ pipeline {
         }
 
         stage('Lint') {
-            agent {
-                docker { 
-                    image 'node:22.12-alpine3.21' 
-                    reuseNode true
-                    args '-u root'
-                }
-            }
             steps {
                 sh 'npm run lint:ci'
             }
         }
 
         stage('Publish Results') {
-            agent {
-                docker { 
-                    image 'node:22.12-alpine3.21' 
-                    reuseNode true
-                    args '-u root'
-                }
-            }
             steps {
                 archiveArtifacts artifacts: '*.tar.gz'
 
@@ -132,13 +93,6 @@ pipeline {
         }
 
         stage("Trigger Downstream Projects") {
-            agent {
-                docker { 
-                    image 'node:22.12-alpine3.21' 
-                    reuseNode true
-                    args '-u root'
-                }
-            }
             steps {
                 build job: 'Teaching_StuMgmtDocker', wait: false
                 build job: 'Teaching_StudentMgmt-Backend-API-Gen', wait: false
@@ -146,13 +100,6 @@ pipeline {
         }
 
         stage('Trigger API Client') {
-            agent {
-                docker { 
-                    image 'node:22.12-alpine3.21' 
-                    reuseNode true
-                    args '-u root'
-                }
-            }
             // Execute this step only if Version number was changed
             // Based on: https://stackoverflow.com/a/57823724
             when { changeset "src/version.ts"}
@@ -161,6 +108,4 @@ pipeline {
             }
         }
     }
-    
-    
 }
