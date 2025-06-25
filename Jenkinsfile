@@ -94,7 +94,7 @@ pipeline {
             }
             steps {
                 sh 'apk add openssh'
-                sshagent(credentials: ['Stu-Mgmt_Demo-System']) {
+                sshagent(credentials: ['Stu-Mgmt_Demo-System'], ignoreMissing: true) {
                     sh """
                         # [ -d ~/.ssh ] || mkdir ~/.ssh && chmod 0700 ~/.ssh
                         # ssh-keyscan -t rsa,dsa example.com >> ~/.ssh/known_hosts
