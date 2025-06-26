@@ -55,7 +55,7 @@ export class UserLeftGroupHandler implements IEventHandler<UserLeftGroupEvent> {
 					if (att + 1 > MAX_ATTEMPTS) {
 						throw e;
 					}
-				console.warn(`Query failed. Retrying in ${ RETRY_TIMEOUT_SECONDS } seconds (${ att + 1 }/${ MAX_ATTEMPTS })...`);
+				console.log(`Query failed. Retrying in ${ RETRY_TIMEOUT_SECONDS } seconds (${ att + 1 }/${ MAX_ATTEMPTS })...`);
 				Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, RETRY_TIMEOUT_SECONDS * 1000);
 				} else {
 					throw e;
