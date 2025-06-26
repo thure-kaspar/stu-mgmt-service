@@ -1071,35 +1071,12 @@ describe("Permissions", () => {
 				//[200, student, courseId, groupId, studentUserId],
 				[403, student, courseId, otherGroupId, lecturerUserId]
 			])("%#: %s -> %s", (status, username, courseId, groupId, memberId) => {
-				let att = 0;
-				const MAX_ATTEMPTS = 2;
-				const RETRY_TIMEOUT_SECONDS = 2;
-				while (att <= MAX_ATTEMPTS) {
-					let testResult = undefined;
-					try {
-						testResult = test(
-							"delete",
-							`/courses/${courseId}/groups/${groupId}/users/${memberId}`,
-							username,
-							status
-							);
-					}
-					catch (e) {
-						if (e instanceof QueryFailedError) {
-							if (att + 1 > MAX_ATTEMPTS) {
-								throw e;
-							}
-						console.warn(`Query failed. Retrying in ${ RETRY_TIMEOUT_SECONDS } seconds (${ att + 1 }/${ MAX_ATTEMPTS })...`);
-						Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, RETRY_TIMEOUT_SECONDS * 1000);
-						} else {
-							throw e;
-						}
-					}
-					if (testResult !== undefined) {
-						return testResult;
-					}
-					att += 1;
-				}
+				return test(
+					"delete",
+					`/courses/${courseId}/groups/${groupId}/users/${memberId}`,
+					username,
+					status
+					);
 			});
 		});
 

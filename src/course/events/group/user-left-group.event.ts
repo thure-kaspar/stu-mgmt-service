@@ -49,7 +49,6 @@ export class UserLeftGroupHandler implements IEventHandler<UserLeftGroupEvent> {
 					payload: event.reason ? { reason: event.reason } : null
 					});
 
-				success = true;
 			}
 			catch (e) {
 				if (e instanceof QueryFailedError) {
