@@ -1064,7 +1064,7 @@ describe("Permissions", () => {
 			});
 
 			it.each([
-				[403, lecturerOtherCourse, courseId, groupId, studentUserId],
+				[403, lecturerOtherCourse, courseId, groupId, studentUserId], // TOFIX: First iteration causes deadlock
 				[404, lecturerOtherCourse, otherCourseId, groupId, studentUserId],
 				[200, admin, courseId, groupId, studentUserId],
 				//[200, lecturer, courseId, groupId, studentUserId], // TODO: Disabled, because CloseEmptyGroupsHandler occasionally causes failure

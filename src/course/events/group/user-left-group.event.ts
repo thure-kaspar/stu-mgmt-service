@@ -35,27 +35,27 @@ export class UserLeftGroupHandler implements IEventHandler<UserLeftGroupEvent> {
 		@InjectRepository(GroupEventRepository) private groupEvents: GroupEventRepository
 	) {}
 
-	handle(event: UserLeftGroupEvent): void {
+	async handle(event: UserLeftGroupEvent): Promise<void> {
 		let att = 0;
 		const MAX_ATTEMPTS = 2;
 		const RETRY_TIMEOUT_SECONDS = 2;
 		while (att <= MAX_ATTEMPTS) {
 			let success = false;
 			try {
-				this.groupEvents.insert({
+				await this.groupEvents.insert({
 					event: UserLeftGroupEvent.name,
 					groupId: event.groupId,
 					userId: event.userId,
 					payload: event.reason ? { reason: event.reason } : null
 					});
-
+				success = true;
 			}
 			catch (e) {
 				if (e instanceof QueryFailedError) {
 					if (att + 1 > MAX_ATTEMPTS) {
 						throw e;
 					}
-				console.log(`Query failed. Retrying in ${ RETRY_TIMEOUT_SECONDS } seconds (${ att + 1 }/${ MAX_ATTEMPTS })...`);
+				console.warn(`Query failed. Retrying in ${ RETRY_TIMEOUT_SECONDS } seconds (${ att + 1 }/${ MAX_ATTEMPTS })...`);
 				Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, RETRY_TIMEOUT_SECONDS * 1000);
 				} else {
 					throw e;
