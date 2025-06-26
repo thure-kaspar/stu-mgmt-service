@@ -9,6 +9,7 @@ import { GroupId } from "../../entities/group.entity";
 import { GroupEventRepository } from "../../repositories/group-event.repository";
 import { GroupRepository } from "../../repositories/group.repository";
 import { INotify } from "../interfaces";
+import { QueryFailedError } from "typeorm";
 
 export class UserLeftGroupEvent implements INotify {
 	constructor(
@@ -35,12 +36,37 @@ export class UserLeftGroupHandler implements IEventHandler<UserLeftGroupEvent> {
 	) {}
 
 	handle(event: UserLeftGroupEvent): void {
-		this.groupEvents.save({
-			event: UserLeftGroupEvent.name,
-			groupId: event.groupId,
-			userId: event.userId,
-			payload: event.reason ? { reason: event.reason } : null
-		});
+		let att = 0;
+		const MAX_ATTEMPTS = 2;
+		const RETRY_TIMEOUT_SECONDS = 2;
+		while (att <= MAX_ATTEMPTS) {
+			let success = false;
+			try {
+				this.groupEvents.insert({
+					event: UserLeftGroupEvent.name,
+					groupId: event.groupId,
+					userId: event.userId,
+					payload: event.reason ? { reason: event.reason } : null
+					});
+
+				success = true;
+			}
+			catch (e) {
+				if (e instanceof QueryFailedError) {
+					if (att + 1 > MAX_ATTEMPTS) {
+						throw e;
+					}
+				console.warn(`Query failed. Retrying in ${ RETRY_TIMEOUT_SECONDS } seconds (${ att + 1 }/${ MAX_ATTEMPTS })...`);
+				Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, RETRY_TIMEOUT_SECONDS * 1000);
+				} else {
+					throw e;
+				}
+			}
+			if (success) {
+				return;
+			}
+			att += 1;
+		}
 	}
 }
 
