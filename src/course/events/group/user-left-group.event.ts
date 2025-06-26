@@ -32,7 +32,7 @@ export class UserLeftGroupEvent implements INotify {
 @EventsHandler(UserLeftGroupEvent)
 export class UserLeftGroupHandler implements IEventHandler<UserLeftGroupEvent> {
 	constructor(
-		@InjectRepository(GroupEventRepository) private groupEvents: GroupEventRepository
+		private readonly groupEvents: GroupEventRepository
 	) {}
 
 	async handle(event: UserLeftGroupEvent): Promise<void> {
@@ -56,7 +56,7 @@ export class UserLeftGroupHandler implements IEventHandler<UserLeftGroupEvent> {
 						throw e;
 					}
 				console.warn(`Query failed. Retrying in ${ RETRY_TIMEOUT_SECONDS } seconds (${ att + 1 }/${ MAX_ATTEMPTS })...`);
-				Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, RETRY_TIMEOUT_SECONDS * 1000);
+				await new Promise(f => setTimeout(f, 1000*RETRY_TIMEOUT_SECONDS));
 				} else {
 					throw e;
 				}
