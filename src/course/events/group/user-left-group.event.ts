@@ -36,7 +36,7 @@ export class UserLeftGroupHandler implements IEventHandler<UserLeftGroupEvent> {
 	) {}
 
 	async handle(event: UserLeftGroupEvent): Promise<void> {
-		await this.groupEvents.insert({
+		this.groupEvents.insert({
 			event: UserLeftGroupEvent.name,
 			groupId: event.groupId,
 			userId: event.userId,
