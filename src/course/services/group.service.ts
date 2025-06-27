@@ -1,6 +1,5 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { EventBus } from "@nestjs/cqrs";
-import { InjectRepository } from "@nestjs/typeorm";
 import { AssessmentDto } from "../../assessment/dto/assessment.dto";
 import { AssessmentRepository } from "../../assessment/repositories/assessment.repository";
 import { DtoFactory } from "../../shared/dto-factory";
