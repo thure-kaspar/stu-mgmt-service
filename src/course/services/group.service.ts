@@ -322,9 +322,9 @@ export class GroupService {
 			course.with(CourseWithGroupSettings, groupSettings).allowsSelfManagedGroups();
 		}
 
-		const removed = await this.groupRepository.removeUser(group.id, selectedParticipant.userId);
+		const removed = this.groupRepository.removeUser(group.id, selectedParticipant.userId);
 		if (removed) {
-			await this.events.publish(
+			this.events.publish(
 				new UserLeftGroupEvent(course.id, group.id, selectedParticipant.userId, reason)
 			);
 		} else {
