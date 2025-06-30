@@ -37,12 +37,13 @@ export class UserLeftGroupHandler implements IEventHandler<UserLeftGroupEvent> {
 
 	async handle(event: UserLeftGroupEvent): Promise<void> {
 		try {
-			await this.groupEvents.insert({
+			console.log(this.groupEvents.createQueryBuilder("event")
+			.useTransaction(true).insert().values({
 				event: UserLeftGroupEvent.name,
 				groupId: event.groupId,
 				userId: event.userId,
 				payload: event.reason ? { reason: event.reason } : null
-			});
+			}));
 		} catch (e) {
 			console.log(e)
 		}

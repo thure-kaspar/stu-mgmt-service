@@ -28,8 +28,6 @@ export class GroupSettingsRepository extends Repository<GroupSettings> {
 	/** Retrieves the group settings. Throws error, if not found. */
 	async getByCourseId(courseId: CourseId): Promise<GroupSettings> {
 		const settings = await this.createQueryBuilder("settings")
-			.useTransaction(true)
-			.setLock("pessimistic_read")
 			.innerJoin("settings.courseConfig", "c")
 			.where("c.courseId = :courseId", { courseId })
 			.getOne();
