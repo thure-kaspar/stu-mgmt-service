@@ -1067,6 +1067,7 @@ describe("Permissions", () => {
 				[403, lecturerOtherCourse, courseId, groupId, studentUserId], // TOFIX: First iteration causes deadlock
 				// 'Process 67 waits for RowShareLock on relation 35615 of database 16384; blocked by process 62.\n' +
                 // 'Process 62 waits for AccessExclusiveLock on relation 35606 of database 16384; blocked by process 67.',
+				// Either 35615 or 35606 is the GroupEvent repository
 				[404, lecturerOtherCourse, otherCourseId, groupId, studentUserId],
 				[200, admin, courseId, groupId, studentUserId],
 				//[200, lecturer, courseId, groupId, studentUserId], // TODO: Disabled, because CloseEmptyGroupsHandler occasionally causes failure

@@ -35,18 +35,14 @@ export class UserLeftGroupHandler implements IEventHandler<UserLeftGroupEvent> {
 		private readonly groupEvents: GroupEventRepository
 	) {}
 
-	async handle(event: UserLeftGroupEvent): Promise<void> {
-		try {
-			console.log(this.groupEvents.createQueryBuilder("event")
-			.useTransaction(true).insert().values({
-				event: UserLeftGroupEvent.name,
-				groupId: event.groupId,
-				userId: event.userId,
-				payload: event.reason ? { reason: event.reason } : null
-			}));
-		} catch (e) {
-			console.log(e)
-		}
+	handle(event: UserLeftGroupEvent): void {
+		this.groupEvents.createQueryBuilder()
+		.useTransaction(true).insert().values({
+			event: UserLeftGroupEvent.name,
+			groupId: event.groupId,
+			userId: event.userId,
+			payload: event.reason ? { reason: event.reason } : null
+		});
 	}
 }
 
